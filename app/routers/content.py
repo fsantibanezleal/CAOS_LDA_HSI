@@ -11,6 +11,7 @@ from app.models.schemas import (
     Methodology,
     ProjectOverview,
     RealScenesPayload,
+    SpectralLibraryPayload,
 )
 from app.services.content import (
     get_app_payload,
@@ -20,6 +21,7 @@ from app.services.content import (
     get_methodology,
     get_overview,
     get_real_scenes,
+    get_spectral_library,
 )
 
 
@@ -49,6 +51,11 @@ def real_scenes() -> RealScenesPayload:
 @router.get("/field-samples", response_model=FieldScenesPayload)
 def field_samples() -> FieldScenesPayload:
     return get_field_samples()
+
+
+@router.get("/spectral-library", response_model=SpectralLibraryPayload)
+def spectral_library() -> SpectralLibraryPayload:
+    return get_spectral_library()
 
 
 @router.get("/demo", response_model=DemoPayload)

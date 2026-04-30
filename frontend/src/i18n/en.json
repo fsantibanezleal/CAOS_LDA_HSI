@@ -82,6 +82,7 @@
   "demoDocuments": "Demo documents",
   "realScenes": "Real HSI scenes",
   "fieldSamples": "Field MSI samples",
+  "spectralLibrary": "Spectral library",
   "datasetCatalog": "Dataset catalog",
   "workbenchMode": "Active workflow",
   "workbenchTitle": "Minerals, clays, and transfer demos",
@@ -94,5 +95,7 @@
   "datasetEntries": "entries",
   "methodInspector": "Method inspector",
   "modelReadout": "Model readout",
-  "baselineDelta": "Target - baseline"
+  "baselineDelta": "Target - baseline",
+  "referenceSpectrum": "Reference spectrum",
+  "spectralWords": "Spectral words"
 }

@@ -11,6 +11,7 @@ import {
   type FieldSceneSnapshot,
   type RealSceneSnapshot,
   type RepresentationVariant,
+  type SpectralLibrarySample,
   type TopicProfile
 } from "./lib/api";
 import { useStore } from "./store/useStore";
@@ -102,22 +103,26 @@ function NavigatorPanel({
   selectedSample,
   selectedScene,
   selectedField,
+  selectedLibrarySample,
   query,
   onQueryChange,
   onSampleSelect,
   onSceneSelect,
-  onFieldSelect
+  onFieldSelect,
+  onLibrarySampleSelect
 }: {
   data: AppPayload;
   language: Language;
   selectedSample: DemoSample;
   selectedScene: RealSceneSnapshot;
   selectedField: FieldSceneSnapshot;
+  selectedLibrarySample: SpectralLibrarySample;
   query: string;
   onQueryChange: (value: string) => void;
   onSampleSelect: (id: string) => void;
   onSceneSelect: (id: string) => void;
   onFieldSelect: (id: string) => void;
+  onLibrarySampleSelect: (id: string) => void;
 }) {
   const { t } = useTranslation();
 
@@ -213,6 +218,28 @@ function NavigatorPanel({
               <span>{scene.name}</span>
               <small>
                 {scene.patch_count} {t("patchesUnit")} / {scene.sensor}
+              </small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("spectralLibrary")}</span>
+          <strong>{data.spectral_library.samples.length}</strong>
+        </div>
+        <div className="nav-list compact">
+          {data.spectral_library.samples.slice(0, 14).map((sample) => (
+            <button
+              key={sample.id}
+              className={`nav-item ${selectedLibrarySample.id === sample.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onLibrarySampleSelect(sample.id)}
+            >
+              <span>{sample.name}</span>
+              <small>
+                {sample.group} / {sample.sensor}
               </small>
             </button>
           ))}
@@ -388,6 +415,56 @@ function SceneWorkbench({
   );
 }
 
+function SpectralLibraryWorkbench({ sample }: { sample: SpectralLibrarySample }) {
+  const { t } = useTranslation();
+
+  return (
+    <section className="workbench-card spectral-library-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("spectralLibrary")}</p>
+          <h3>{sample.name}</h3>
+          <p>{sample.group} / {sample.sensor}</p>
+        </div>
+        <a className="small-link" href={sample.source_url} target="_blank" rel="noreferrer">
+          {t("sourceShort")}
+        </a>
+      </div>
+
+      <div className="chart-stack dense">
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("referenceSpectrum")}</span>
+            <small>{sample.band_count} {t("bands")}</small>
+          </div>
+          <LineChart values={sample.spectrum} stroke="var(--accent-blue)" />
+        </div>
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("spectralWords")}</span>
+            <small>{sample.absorption_tokens.length} {t("tokensTitle")}</small>
+          </div>
+          <div className="token-cloud compact-cloud">
+            {sample.absorption_tokens.map((token) => (
+              <span key={token} className="token-pill subtle">
+                {token}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="token-cloud library-token-cloud">
+        {sample.token_preview.slice(0, 18).map((token) => (
+          <span key={token} className="token-pill">
+            {token}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function DatasetStatusPanel({
   datasets,
   language
@@ -533,6 +610,7 @@ export function App() {
   const [query, setQuery] = useState("");
   const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [selectedLibrarySampleId, setSelectedLibrarySampleId] = useState<string | null>(null);
 
   const selectedSampleId = useStore((state) => state.selectedSampleId);
   const setSelectedSampleId = useStore((state) => state.setSelectedSampleId);
@@ -571,6 +649,7 @@ export function App() {
     const firstTopic = data.demo.topics[0];
     const firstScene = data.real_scenes.scenes[0];
     const firstField = data.field_samples.scenes[0];
+    const firstLibrarySample = data.spectral_library.samples[0];
 
     if (firstSample && !selectedSampleId) {
       setSelectedSampleId(firstSample.id);
@@ -584,7 +663,19 @@ export function App() {
     if (firstField && !selectedFieldId) {
       setSelectedFieldId(firstField.id);
     }
-  }, [data, selectedFieldId, selectedSampleId, selectedSceneId, selectedTopicId, setSelectedSampleId, setSelectedTopicId]);
+    if (firstLibrarySample && !selectedLibrarySampleId) {
+      setSelectedLibrarySampleId(firstLibrarySample.id);
+    }
+  }, [
+    data,
+    selectedFieldId,
+    selectedLibrarySampleId,
+    selectedSampleId,
+    selectedSceneId,
+    selectedTopicId,
+    setSelectedSampleId,
+    setSelectedTopicId
+  ]);
 
   if (error) {
     return (
@@ -611,6 +702,8 @@ export function App() {
   const sample = data.demo.samples.find((item) => item.id === selectedSampleId) ?? data.demo.samples[0];
   const scene = data.real_scenes.scenes.find((item) => item.id === selectedSceneId) ?? data.real_scenes.scenes[0];
   const field = data.field_samples.scenes.find((item) => item.id === selectedFieldId) ?? data.field_samples.scenes[0];
+  const librarySample =
+    data.spectral_library.samples.find((item) => item.id === selectedLibrarySampleId) ?? data.spectral_library.samples[0];
   const selectedTopic = getTopic(data.demo.topics, selectedTopicId ?? sample.dominant_topic_id);
   const representation =
     data.methodology.representations.find((item) => item.id === selectedRepresentation) ?? data.methodology.representations[0];
@@ -626,6 +719,7 @@ export function App() {
           selectedSample={sample}
           selectedScene={scene}
           selectedField={field}
+          selectedLibrarySample={librarySample}
           query={query}
           onQueryChange={setQuery}
           onSampleSelect={(id) => {
@@ -637,6 +731,7 @@ export function App() {
           }}
           onSceneSelect={setSelectedSceneId}
           onFieldSelect={setSelectedFieldId}
+          onLibrarySampleSelect={setSelectedLibrarySampleId}
         />
 
         <section className="center-workbench">
@@ -650,6 +745,7 @@ export function App() {
 
           <SampleWorkbench sample={sample} topics={data.demo.topics} language={language} />
           <SceneWorkbench scene={scene} field={field} language={language} />
+          <SpectralLibraryWorkbench sample={librarySample} />
           <DatasetStatusPanel datasets={data.datasets.datasets} language={language} />
         </section>
 

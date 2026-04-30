@@ -20,6 +20,7 @@ Subcommands:
   fetch-all   Download all public raw sources used by the local demo
   build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes
   build-field Rebuild compact field MSI derived assets from downloaded raw scenes
+  build-spectral Rebuild compact USGS spectral-library samples
   clean       Remove build outputs and Python caches
   stop        Kill local Python and Node processes started from this repo
   help        Show this message
@@ -61,6 +62,9 @@ ensure_derived_if_missing() {
   fi
   if [[ -d data/raw/micasense && ! -f data/derived/field/field_samples.json ]]; then
     .venv-pipeline/bin/python data-pipeline/build_field_samples.py >/dev/null
+  fi
+  if [[ -d data/raw/usgs_splib07 && ! -f data/derived/spectral/library_samples.json ]]; then
+    .venv-pipeline/bin/python data-pipeline/build_spectral_library_samples.py >/dev/null
   fi
 }
 
@@ -137,6 +141,10 @@ case "$command_name" in
   build-field)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_field_samples.py
+    ;;
+  build-spectral)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_spectral_library_samples.py
     ;;
   clean)
     find . -type d -name "__pycache__" -prune -exec rm -rf {} +

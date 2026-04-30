@@ -82,6 +82,7 @@
   "demoDocuments": "Documentos demo",
   "realScenes": "Escenas HSI reales",
   "fieldSamples": "Muestras MSI de campo",
+  "spectralLibrary": "Libreria espectral",
   "datasetCatalog": "Catalogo de datasets",
   "workbenchMode": "Flujo activo",
   "workbenchTitle": "Minerales, arcillas y demos de transferencia",
@@ -94,5 +95,7 @@
   "datasetEntries": "entradas",
   "methodInspector": "Inspector de metodo",
   "modelReadout": "Lectura del modelo",
-  "baselineDelta": "Objetivo - base"
+  "baselineDelta": "Objetivo - base",
+  "referenceSpectrum": "Espectro de referencia",
+  "spectralWords": "Palabras espectrales"
 }

@@ -10,3 +10,5 @@ Design rules:
 - `real/` contains compact HSI summaries plus generated preview images
 - `field/` contains compact MSI field summaries plus generated preview
   images
+- `spectral/` contains compact spectra extracted from public spectral
+  libraries for material-reference workflows

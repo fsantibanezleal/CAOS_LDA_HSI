@@ -321,6 +321,32 @@ class FieldScenesPayload(BaseModel):
     scenes: list[FieldSceneSnapshot]
 
 
+class SpectralLibrarySample(BaseModel):
+    """Compact material spectrum extracted from a public spectral library."""
+
+    id: str
+    name: str
+    group: str
+    sensor: str
+    source_url: str
+    source_file: str
+    band_count: int
+    wavelengths_nm: list[float]
+    spectrum: list[float]
+    quantized_levels: list[int]
+    token_preview: list[str]
+    absorption_tokens: list[str]
+    notes: str
+
+
+class SpectralLibraryPayload(BaseModel):
+    """Curated compact spectral-library samples used by the workbench."""
+
+    source: str
+    source_url: str
+    samples: list[SpectralLibrarySample]
+
+
 class AppPayload(BaseModel):
     """Single aggregated payload used by the SPA."""
 
@@ -328,6 +354,7 @@ class AppPayload(BaseModel):
     datasets: DatasetCatalog
     real_scenes: RealScenesPayload
     field_samples: FieldScenesPayload
+    spectral_library: SpectralLibraryPayload
     methodology: Methodology
     demo: DemoPayload
 

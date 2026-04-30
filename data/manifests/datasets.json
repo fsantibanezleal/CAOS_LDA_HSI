@@ -135,12 +135,12 @@
       "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
       "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
       "local_status": {
-        "en": "Cataloged for expansion",
-        "es": "Catalogado para expansion"
+        "en": "Downloaded locally and distilled into compact derived assets",
+        "es": "Descargado localmente y destilado en activos derivados compactos"
       },
       "repository_strategy": {
-        "en": "Eligible under the 100 MB per-file rule. Add to the downloader after the workbench redesign is validated.",
-        "es": "Elegible bajo la regla de 100 MB por archivo. Agregar al descargador despues de validar el rediseno del workbench."
+        "en": "Raw files remain excluded from Git; reproduce with `scripts/local.* fetch` and regenerate compact assets with `build-real`.",
+        "es": "Los archivos crudos siguen excluidos de Git; reproducir con `scripts/local.* fetch` y regenerar activos compactos con `build-real`."
       },
       "notes": {
         "en": "Full agricultural Salinas scene with 16 classes. It broadens the current Salinas-A subset without adding a heavy file.",
@@ -154,17 +154,17 @@
       "modality": "HSI scene",
       "domains": ["minerals", "clays", "geology", "unmixing"],
       "bands": 224,
-      "spatial_shape": null,
+      "spatial_shape": [512, 614],
       "file_size_mb": 95.3,
       "source": "UPV/EHU Hyperspectral Remote Sensing Scenes / AVIRIS",
       "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
       "local_status": {
-        "en": "Cataloged for mineral expansion",
-        "es": "Catalogado para expansion mineral"
+        "en": "Downloaded locally and distilled into compact derived assets",
+        "es": "Descargado localmente y destilado en activos derivados compactos"
       },
       "repository_strategy": {
-        "en": "Eligible but close to the GitHub single-file limit. Keep download-on-demand until the mineral-scene builder and attribution checks are finished.",
-        "es": "Elegible pero cerca del limite de archivo individual de GitHub. Mantener descarga bajo demanda hasta terminar el constructor de escenas minerales y las verificaciones de atribucion."
+        "en": "Keep raw Cuprite download-on-demand because it is close to the 100 MB policy; commit only derived previews and compact topic summaries.",
+        "es": "Mantener Cuprite crudo bajo descarga bajo demanda porque esta cerca de la politica de 100 MB; commitear solo previews derivados y resumenes compactos de topicos."
       },
       "notes": {
         "en": "High-value mineral and clay benchmark for the product's first serious workflow.",
@@ -180,15 +180,15 @@
       "bands": null,
       "spatial_shape": null,
       "file_size_mb": null,
-      "source": "Hyperspectral unmixing benchmark ROIs",
-      "source_url": "https://lesun.weebly.com/hyperspectral-data-set.html",
+      "source": "MUA_SparseUnmixing real_data",
+      "source_url": "https://github.com/ricardoborsoi/MUA_SparseUnmixing/tree/master/real_data",
       "local_status": {
-        "en": "Cataloged for expansion",
-        "es": "Catalogado para expansion"
+        "en": "Downloaded locally and distilled into compact derived assets",
+        "es": "Descargado localmente y destilado en activos derivados compactos"
       },
       "repository_strategy": {
-        "en": "Verify original host, license, and exact per-file sizes, then incorporate only small ROIs with clear provenance.",
-        "es": "Verificar host original, licencia y tamanos exactos por archivo, luego incorporar solo ROIs pequenos con procedencia clara."
+        "en": "Raw MATLAB files remain excluded from Git. The app tracks compact topic-stratum previews and JSON scene summaries only.",
+        "es": "Los archivos MATLAB crudos siguen excluidos de Git. La app versiona solo previews compactos de estratos por topico y resumenes JSON de escenas."
       },
       "notes": {
         "en": "Samson, Jasper Ridge, Urban, and Cuprite ROI scenes can support topic-mixture versus unmixing comparisons.",
@@ -447,12 +447,12 @@
       "source": "USGS Spectral Library Version 7",
       "source_url": "https://www.usgs.gov/data/usgs-spectral-library-version-7-data",
       "local_status": {
-        "en": "External library",
-        "es": "Libreria externa"
+        "en": "Compact AVIRIS and Sentinel-2 archives downloaded locally; curated samples are tracked as derived JSON",
+        "es": "Archivos compactos AVIRIS y Sentinel-2 descargados localmente; muestras curadas versionadas como JSON derivado"
       },
       "repository_strategy": {
-        "en": "Use curated per-material subsets or exported CSV snippets, not the entire library dump.",
-        "es": "Usar subconjuntos curados por material o fragmentos CSV exportados, no el volcado completo de la libreria."
+        "en": "Never commit the full multi-gigabyte library. Use the official small ASCII sensor subsets and track only compact material samples.",
+        "es": "Nunca commitear la libreria completa multi-GB. Usar subconjuntos ASCII oficiales pequenos por sensor y versionar solo muestras compactas por material."
       },
       "notes": {
         "en": "Closer to mineral and clay interpretation workflows than remote-sensing scenes. Excellent for one-dimensional spectral corpora.",

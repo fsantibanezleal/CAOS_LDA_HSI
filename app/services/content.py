@@ -13,6 +13,7 @@ from app.models.schemas import (
     Methodology,
     ProjectOverview,
     RealScenesPayload,
+    SpectralLibraryPayload,
 )
 
 
@@ -64,12 +65,20 @@ def get_field_samples() -> FieldScenesPayload:
 
 
 @lru_cache
+def get_spectral_library() -> SpectralLibraryPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.spectral_library_path))
+    return SpectralLibraryPayload.model_validate(data)
+
+
+@lru_cache
 def get_app_payload() -> AppPayload:
     return AppPayload(
         overview=get_overview(),
         datasets=get_datasets(),
         real_scenes=get_real_scenes(),
         field_samples=get_field_samples(),
+        spectral_library=get_spectral_library(),
         methodology=get_methodology(),
         demo=get_demo(),
     )

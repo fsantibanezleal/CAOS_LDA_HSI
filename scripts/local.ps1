@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -27,6 +27,7 @@ function Show-Help {
     Write-Host "  fetch-all   Download all public raw sources used by the local demo"
     Write-Host "  build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes"
     Write-Host "  build-field Rebuild compact field MSI derived assets from downloaded raw scenes"
+    Write-Host "  build-spectral Rebuild compact USGS spectral-library samples"
     Write-Host "  clean       Remove build outputs and Python caches"
     Write-Host "  stop        Kill local Python and Node processes started from this repo"
     Write-Host "  help        Show this message"
@@ -66,6 +67,9 @@ function Ensure-DerivedIfMissing {
     }
     if ((Test-Path "data\\raw\\micasense") -and -not (Test-Path "data\\derived\\field\\field_samples.json")) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_field_samples.py | Out-Null
+    }
+    if ((Test-Path "data\\raw\\usgs_splib07") -and -not (Test-Path "data\\derived\\spectral\\library_samples.json")) {
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_library_samples.py | Out-Null
     }
 }
 
@@ -150,6 +154,11 @@ switch ($Command) {
     "build-field" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_field_samples.py
+    }
+
+    "build-spectral" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_library_samples.py
     }
 
     "clean" {

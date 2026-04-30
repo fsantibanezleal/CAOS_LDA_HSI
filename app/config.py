@@ -60,6 +60,10 @@ class Settings(BaseSettings):
         return self.data_path / "derived" / "field" / "field_samples.json"
 
     @property
+    def spectral_library_path(self) -> Path:
+        return self.data_path / "derived" / "spectral" / "library_samples.json"
+
+    @property
     def derived_path(self) -> Path:
         return self.data_path / "derived"
 

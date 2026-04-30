@@ -255,11 +255,34 @@ export interface FieldScenesPayload {
   scenes: FieldSceneSnapshot[];
 }
 
+export interface SpectralLibrarySample {
+  id: string;
+  name: string;
+  group: string;
+  sensor: string;
+  source_url: string;
+  source_file: string;
+  band_count: number;
+  wavelengths_nm: number[];
+  spectrum: number[];
+  quantized_levels: number[];
+  token_preview: string[];
+  absorption_tokens: string[];
+  notes: string;
+}
+
+export interface SpectralLibraryPayload {
+  source: string;
+  source_url: string;
+  samples: SpectralLibrarySample[];
+}
+
 export interface AppPayload {
   overview: ProjectOverview;
   datasets: DatasetCatalog;
   real_scenes: RealScenesPayload;
   field_samples: FieldScenesPayload;
+  spectral_library: SpectralLibraryPayload;
   methodology: Methodology;
   demo: DemoPayload;
 }
@@ -278,5 +301,6 @@ export function pickText(value: LocalizedText, language: string): string {
 
 export const api = {
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
+  getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
   getAppData: () => getJson<AppPayload>("/api/app-data")
 };
