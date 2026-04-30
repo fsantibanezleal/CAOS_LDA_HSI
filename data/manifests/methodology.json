@@ -1,0 +1,180 @@
+{
+  "workflow": [
+    {
+      "order": 1,
+      "title": {
+        "en": "Acquire a spectral population",
+        "es": "Adquirir una poblacion espectral"
+      },
+      "body": {
+        "en": "Start from many spectra, not one cleaned signature. A document should have access to local variability if the final model is expected to learn it.",
+        "es": "Comenzar desde muchos espectros, no una unica firma limpia. Un documento debe tener acceso a la variabilidad local si se espera que el modelo final la aprenda."
+      }
+    },
+    {
+      "order": 2,
+      "title": {
+        "en": "Quantize reflectance or radiance",
+        "es": "Cuantizar reflectancia o radiancia"
+      },
+      "body": {
+        "en": "Transform continuous magnitudes into a finite alphabet of levels. This is the bridge between spectral measurements and topic-model tokens.",
+        "es": "Transformar magnitudes continuas en un alfabeto finito de niveles. Este es el puente entre mediciones espectrales y tokens para modelos de topicos."
+      }
+    },
+    {
+      "order": 3,
+      "title": {
+        "en": "Define documents and vocabulary",
+        "es": "Definir documentos y vocabulario"
+      },
+      "body": {
+        "en": "Choose whether words are wavelengths, intensity bins, or joint band-intensity tokens, and decide whether one document represents one spectrum or a local neighborhood.",
+        "es": "Elegir si las palabras son longitudes de onda, bins de intensidad o tokens conjuntos banda-intensidad, y decidir si un documento representa un espectro o un vecindario local."
+      }
+    },
+    {
+      "order": 4,
+      "title": {
+        "en": "Fit the topic model",
+        "es": "Ajustar el modelo de topicos"
+      },
+      "body": {
+        "en": "Estimate topic-word distributions and document-topic mixtures. At this stage, the corpus is reorganized into latent regimes that summarize recurring spectral patterns.",
+        "es": "Estimar distribuciones topico-palabra y mezclas documento-topico. En esta etapa, el corpus se reorganiza en regimenes latentes que resumen patrones espectrales recurrentes."
+      }
+    },
+    {
+      "order": 5,
+      "title": {
+        "en": "Perform topic-aware inference",
+        "es": "Realizar inferencia guiada por topicos"
+      },
+      "body": {
+        "en": "Use dominant topics, full mixtures, or topic-specific subsets to build regressors or classifiers that adapt to different spectral regimes.",
+        "es": "Usar topicos dominantes, mezclas completas o subconjuntos especificos por topico para construir regresores o clasificadores que se adapten a distintos regimenes espectrales."
+      }
+    }
+  ],
+  "representations": [
+    {
+      "id": "a",
+      "name": {
+        "en": "Band as word, intensity as count",
+        "es": "Banda como palabra, intensidad como conteo"
+      },
+      "summary": {
+        "en": "Each wavelength token is repeated according to the discretized magnitude measured at that band.",
+        "es": "Cada token de longitud de onda se repite segun la magnitud discretizada medida en esa banda."
+      },
+      "document_definition": {
+        "en": "A document aggregates one or more spectra from a local sample support.",
+        "es": "Un documento agrega uno o mas espectros de un soporte muestral local."
+      },
+      "word_definition": {
+        "en": "Words are wavelength identifiers such as 700nm or 2200nm.",
+        "es": "Las palabras son identificadores de longitud de onda como 700nm o 2200nm."
+      },
+      "strength": {
+        "en": "Easy to interpret physically because the strongest topic words are actual bands.",
+        "es": "Facil de interpretar fisicamente porque las palabras mas fuertes del topico son bandas reales."
+      },
+      "caution": {
+        "en": "Can overweight high-intensity regions and may blur sharp localized structures when many spectra are aggregated.",
+        "es": "Puede sobrerrepresentar regiones de alta intensidad y difuminar estructuras localizadas cuando se agregan muchos espectros."
+      },
+      "token_example": ["0700nm", "0700nm", "0715nm", "2200nm", "2200nm", "2200nm"]
+    },
+    {
+      "id": "b",
+      "name": {
+        "en": "Intensity bin as word",
+        "es": "Bin de intensidad como palabra"
+      },
+      "summary": {
+        "en": "The vocabulary is made of discrete intensity levels, and a document counts how many bands fall into each level.",
+        "es": "El vocabulario se compone de niveles discretos de intensidad, y un documento cuenta cuantas bandas caen en cada nivel."
+      },
+      "document_definition": {
+        "en": "A document summarizes the intensity histogram of one spectrum or a local spectral block.",
+        "es": "Un documento resume el histograma de intensidad de un espectro o de un bloque espectral local."
+      },
+      "word_definition": {
+        "en": "Words are quantization bins such as q00, q01, ..., q11.",
+        "es": "Las palabras son bins de cuantizacion como q00, q01, ..., q11."
+      },
+      "strength": {
+        "en": "Compact and robust when only the overall distribution of magnitudes matters.",
+        "es": "Compacta y robusta cuando solo importa la distribucion global de magnitudes."
+      },
+      "caution": {
+        "en": "Loses the direct link to specific wavelengths, so physical interpretation becomes weaker.",
+        "es": "Pierde el vinculo directo con longitudes de onda especificas, por lo que la interpretacion fisica se debilita."
+      },
+      "token_example": ["q01", "q01", "q02", "q05", "q09", "q11"]
+    },
+    {
+      "id": "c",
+      "name": {
+        "en": "Band-intensity pair as word",
+        "es": "Par banda-intensidad como palabra"
+      },
+      "summary": {
+        "en": "Each token binds one band to one quantized magnitude level, preserving location and intensity simultaneously.",
+        "es": "Cada token une una banda con un nivel de magnitud cuantizado, preservando ubicacion e intensidad simultaneamente."
+      },
+      "document_definition": {
+        "en": "A document is one spectrum or a short spectral sequence encoded as band-level word pairs.",
+        "es": "Un documento es un espectro o una secuencia espectral corta codificada como pares palabra a nivel de banda."
+      },
+      "word_definition": {
+        "en": "Words look like 0700nm_q08 or 2200nm_q03.",
+        "es": "Las palabras lucen como 0700nm_q08 o 2200nm_q03."
+      },
+      "strength": {
+        "en": "Preserves more structure than the other two variants and often supports richer latent patterns.",
+        "es": "Preserva mas estructura que las otras dos variantes y a menudo soporta patrones latentes mas ricos."
+      },
+      "caution": {
+        "en": "The vocabulary grows quickly, so sparsity and memory usage must be controlled.",
+        "es": "El vocabulario crece rapidamente, por lo que se debe controlar la esparsidad y el uso de memoria."
+      },
+      "token_example": ["0700nm_q08", "0715nm_q09", "0730nm_q09", "2200nm_q03"]
+    }
+  ],
+  "inference_modes": [
+    {
+      "id": "mixture-regression",
+      "title": {
+        "en": "Regression on topic mixtures",
+        "es": "Regresion sobre mezclas de topicos"
+      },
+      "description": {
+        "en": "Replace or complement raw spectral predictors with a low-dimensional mixture vector inferred from the topic model.",
+        "es": "Reemplazar o complementar predictores espectrales crudos con un vector de mezcla de baja dimension inferido desde el modelo de topicos."
+      }
+    },
+    {
+      "id": "topic-routing",
+      "title": {
+        "en": "Topic-routed local models",
+        "es": "Modelos locales enrutados por topicos"
+      },
+      "description": {
+        "en": "Send each sample to a specialist model trained on the subset of documents dominated by the same latent topic.",
+        "es": "Enviar cada muestra a un modelo especialista entrenado sobre el subconjunto de documentos dominados por el mismo topico latente."
+      }
+    },
+    {
+      "id": "retrieval",
+      "title": {
+        "en": "Topic-aware retrieval and comparison",
+        "es": "Recuperacion y comparacion guiadas por topicos"
+      },
+      "description": {
+        "en": "Compare samples in topic space to find related regimes even when their raw spectra are not trivially aligned point by point.",
+        "es": "Comparar muestras en espacio de topicos para encontrar regimenes relacionados incluso cuando sus espectros crudos no estan alineados trivialmente punto a punto."
+      }
+    }
+  ]
+}

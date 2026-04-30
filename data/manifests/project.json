@@ -1,0 +1,286 @@
+{
+  "slug": "caos-lda-hsi",
+  "title": "CAOS LDA HSI",
+  "tagline": {
+    "en": "Topic modelling for multispectral and hyperspectral variability.",
+    "es": "Modelado de topicos para la variabilidad multiespectral e hiperespectral."
+  },
+  "hypothesis": {
+    "en": "A sample is better described by a distribution of spectra than by a single representative signature. Variability across bands and locations is not only noise; it can be reorganized as a corpus and studied with probabilistic topic models.",
+    "es": "Una muestra se describe mejor por una distribucion de espectros que por una firma representativa unica. La variabilidad entre bandas y ubicaciones no es solo ruido; puede reorganizarse como un corpus y estudiarse con modelos probabilisticos de topicos."
+  },
+  "hero_stats": [
+    {
+      "label": {
+        "en": "Document encodings",
+        "es": "Codificaciones de documento"
+      },
+      "value": "3",
+      "detail": {
+        "en": "Three text-like ways to restructure one spectral cube.",
+        "es": "Tres maneras textuales de reestructurar un cubo espectral."
+      }
+    },
+    {
+      "label": {
+        "en": "Demo topics",
+        "es": "Topicos demo"
+      },
+      "value": "4",
+      "detail": {
+        "en": "Synthetic latent regimes used for the interactive example.",
+        "es": "Regimenes latentes sinteticos usados en el ejemplo interactivo."
+      }
+    },
+    {
+      "label": {
+        "en": "Downloaded public real assets",
+        "es": "Activos reales publicos descargados"
+      },
+      "value": "7",
+      "detail": {
+        "en": "Five official HSI scenes and two official MSI orthomosaics are stored locally outside Git and summarized for the app.",
+        "es": "Cinco escenas HSI oficiales y dos ortomosaicos MSI oficiales estan almacenados localmente fuera de Git y resumidos para la app."
+      }
+    },
+    {
+      "label": {
+        "en": "Curated public data options",
+        "es": "Opciones publicas curadas"
+      },
+      "value": "10",
+      "detail": {
+        "en": "Scenes, field MSI samples, laboratory references, and spectral libraries selected for expansion.",
+        "es": "Escenas, muestras MSI de campo, referencias de laboratorio y librerias espectrales seleccionadas para expansion."
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": "datasets",
+      "title": {
+        "en": "Datasets",
+        "es": "Datasets"
+      },
+      "summary": {
+        "en": "Public MSI / HSI sources selected with GitHub-friendly size constraints in mind.",
+        "es": "Fuentes publicas MSI / HSI seleccionadas pensando en restricciones de tamano compatibles con GitHub."
+      }
+    },
+    {
+      "id": "real-data",
+      "title": {
+        "en": "Real HSI scenes",
+        "es": "Escenas HSI reales"
+      },
+      "summary": {
+        "en": "Downloaded public HSI scenes distilled into compact, app-friendly summaries and previews.",
+        "es": "Escenas HSI publicas descargadas y destiladas en resumenes y previews compactos aptos para la app."
+      }
+    },
+    {
+      "id": "field-msi",
+      "title": {
+        "en": "Field MSI samples",
+        "es": "Muestras MSI de campo"
+      },
+      "summary": {
+        "en": "Downloaded official MicaSense orthomosaics converted into patch corpora, topics, and NDVI-driven strata.",
+        "es": "Ortomosaicos oficiales de MicaSense descargados y convertidos en corpus por parches, topicos y estratos guiados por NDVI."
+      }
+    },
+    {
+      "id": "representations",
+      "title": {
+        "en": "Representations",
+        "es": "Representaciones"
+      },
+      "summary": {
+        "en": "Three alternative mappings from spectra to documents, words, and corpora.",
+        "es": "Tres mapeos alternativos desde espectros hacia documentos, palabras y corpus."
+      }
+    },
+    {
+      "id": "topics",
+      "title": {
+        "en": "Topics",
+        "es": "Topicos"
+      },
+      "summary": {
+        "en": "Interactive topic profiles, token lists, mixtures, and dominant regimes.",
+        "es": "Perfiles interactivos de topicos, listas de tokens, mezclas y regimenes dominantes."
+      }
+    },
+    {
+      "id": "inference",
+      "title": {
+        "en": "Inference",
+        "es": "Inferencia"
+      },
+      "summary": {
+        "en": "Compare baseline regression against topic-based and topic-routed alternatives.",
+        "es": "Comparar una regresion base contra alternativas basadas en topicos y enrutamiento por topicos."
+      }
+    },
+    {
+      "id": "theory",
+      "title": {
+        "en": "Theory",
+        "es": "Teoria"
+      },
+      "summary": {
+        "en": "Why spectral variability can be treated as structured information instead of disposable noise.",
+        "es": "Por que la variabilidad espectral puede tratarse como informacion estructurada en vez de ruido descartable."
+      }
+    }
+  ],
+  "principles": [
+    {
+      "id": "variability-is-signal",
+      "title": {
+        "en": "Variability is signal, not only nuisance.",
+        "es": "La variabilidad es senal, no solo molestia."
+      },
+      "body": {
+        "en": "Many laboratory workflows collapse a sample into one representative spectrum. This project starts from the opposite assumption: the local spread of spectra is itself meaningful evidence about the sample composition and processes.",
+        "es": "Muchos flujos de laboratorio colapsan una muestra en un unico espectro representativo. Este proyecto parte de la suposicion opuesta: la dispersion local de espectros es evidencia significativa sobre la composicion y los procesos de la muestra."
+      },
+      "emphasis": "from signatures to distributions"
+    },
+    {
+      "id": "quantization-enables-language",
+      "title": {
+        "en": "Quantization makes spectral language possible.",
+        "es": "La cuantizacion hace posible un lenguaje espectral."
+      },
+      "body": {
+        "en": "Spectra are continuous-valued signals, so they do not become text automatically. By discretizing magnitudes and encoding bands or band-intensity pairs as tokens, topic models can operate on spectral corpora without discarding physical structure.",
+        "es": "Los espectros son senales de valores continuos, por lo que no se vuelven texto automaticamente. Al discretizar magnitudes y codificar bandas o pares banda-intensidad como tokens, los modelos de topicos pueden operar sobre corpus espectrales sin descartar la estructura fisica."
+      },
+      "emphasis": "continuous spectra, discrete tokens"
+    },
+    {
+      "id": "documents-should-capture-context",
+      "title": {
+        "en": "Documents should preserve sample context.",
+        "es": "Los documentos deben preservar el contexto de la muestra."
+      },
+      "body": {
+        "en": "The document definition controls what a topic can learn. A document can summarize one spectrum, a local set of spectra, a patch population, or a reduced-band neighborhood. Each choice changes the semantic capacity of the corpus.",
+        "es": "La definicion de documento controla lo que un topico puede aprender. Un documento puede resumir un espectro, un conjunto local de espectros, una poblacion de parches o un vecindario reducido en bandas. Cada eleccion cambia la capacidad semantica del corpus."
+      },
+      "emphasis": "document design matters"
+    },
+    {
+      "id": "topics-are-not-endmembers",
+      "title": {
+        "en": "Topics are not pure endmembers.",
+        "es": "Los topicos no son endmembers puros."
+      },
+      "body": {
+        "en": "A topic is a distribution over recurring token patterns, not a claim that one perfectly isolated material exists in the sample. This makes topic models attractive when mixtures, variability, and process-driven heterogeneity dominate the measurements.",
+        "es": "Un topico es una distribucion sobre patrones recurrentes de tokens, no una afirmacion de que exista un material perfectamente aislado en la muestra. Esto vuelve atractivos los modelos de topicos cuando dominan las mezclas, la variabilidad y la heterogeneidad guiada por procesos."
+      },
+      "emphasis": "regimes, not purity"
+    },
+    {
+      "id": "topic-aware-inference",
+      "title": {
+        "en": "Inference can be routed through topics.",
+        "es": "La inferencia puede enrutarse por topicos."
+      },
+      "body": {
+        "en": "Once spectral documents are mapped to mixtures of latent topics, downstream models no longer need to treat every sample as coming from the same regime. Topic-specific regressors or classifiers can specialize on narrower, more coherent subsets.",
+        "es": "Una vez que los documentos espectrales se mapean a mezclas de topicos latentes, los modelos aguas abajo ya no necesitan tratar cada muestra como si viniera del mismo regimen. Regresores o clasificadores especificos por topico pueden especializarse en subconjuntos mas coherentes."
+      },
+      "emphasis": "mixtures enable segregation"
+    }
+  ],
+  "citations": [
+    {
+      "id": "blei-2003",
+      "title": "Latent Dirichlet Allocation",
+      "source": "Blei, Ng, Jordan (JMLR, 2003)",
+      "url": "https://jmlr.csail.mit.edu/papers/v3/blei03a.html",
+      "note": {
+        "en": "Foundational definition of documents as mixtures of latent topics and topics as distributions over words.",
+        "es": "Definicion fundacional de documentos como mezclas de topicos latentes y de topicos como distribuciones sobre palabras."
+      }
+    },
+    {
+      "id": "upv-ehu-scenes",
+      "title": "Hyperspectral Remote Sensing Scenes",
+      "source": "University of the Basque Country",
+      "url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "note": {
+        "en": "Primary source for several compact benchmark scenes such as Indian Pines, Salinas-A, Pavia University, KSC, and Botswana.",
+        "es": "Fuente primaria de varias escenas benchmark compactas como Indian Pines, Salinas-A, Pavia University, KSC y Botswana."
+      }
+    },
+    {
+      "id": "micasense-samples",
+      "title": "MicaSense RedEdge Sample Data",
+      "source": "MicaSense official sample page",
+      "url": "https://sample.micasense.com/",
+      "note": {
+        "en": "Primary source for compact 4-band field MSI examples with both raw captures and reflectance-calibrated orthomosaics.",
+        "es": "Fuente primaria de ejemplos MSI de campo compactos de 4 bandas con capturas crudas y ortomosaicos calibrados en reflectancia."
+      }
+    },
+    {
+      "id": "wordification",
+      "title": "Using wordification to characterize adaptive genetic diversity",
+      "source": "Scientific Reports",
+      "url": "https://www.nature.com/articles/srep22482",
+      "note": {
+        "en": "Useful conceptual precedent for turning structured continuous measurements into word-like symbolic units.",
+        "es": "Precedente conceptual util para convertir mediciones continuas estructuradas en unidades simbolicas tipo palabra."
+      }
+    },
+    {
+      "id": "drought-lda",
+      "title": "Latent Dirichlet Allocation Uncovers Spectral Characteristics of Drought Stressed Plants",
+      "source": "arXiv",
+      "url": "https://arxiv.org/abs/1210.4919",
+      "note": {
+        "en": "Early example of LDA used directly on hyperspectral plant data to discover stress-related spectral structure.",
+        "es": "Ejemplo temprano de uso directo de LDA sobre datos hiperespectrales de plantas para descubrir estructura espectral asociada a estres."
+      }
+    },
+    {
+      "id": "pm-lda",
+      "title": "Hyperspectral Unmixing with Endmember Variability using Partial Membership Latent Dirichlet Allocation",
+      "source": "arXiv",
+      "url": "https://arxiv.org/abs/1609.03500",
+      "note": {
+        "en": "Strong bridge between topic models, spatial documents, endmember variability, and hyperspectral unmixing.",
+        "es": "Puente fuerte entre modelos de topicos, documentos espaciales, variabilidad de endmembers y unmixing hiperespectral."
+      }
+    },
+    {
+      "id": "spectral-variability-review",
+      "title": "Spectral Variability in Hyperspectral Data Unmixing: A Comprehensive Review",
+      "source": "arXiv",
+      "url": "https://arxiv.org/abs/2001.07307",
+      "note": {
+        "en": "Survey support for the idea that ignoring spectral variability can damage inference and interpretation.",
+        "es": "Soporte de revision para la idea de que ignorar la variabilidad espectral puede perjudicar la inferencia y la interpretacion."
+      }
+    },
+    {
+      "id": "minerals-2020",
+      "title": "A Robust Stochastic Approach to Mineral Hyperspectral Analysis for Geometallurgy",
+      "source": "Minerals 10(12):1139",
+      "url": "https://www.mdpi.com/2075-163X/10/12/1139",
+      "note": {
+        "en": "Related ALGES / AMTC line of work emphasizing robust mineral hyperspectral analysis under variability.",
+        "es": "Linea de trabajo relacionada de ALGES / AMTC que enfatiza el analisis hiperespectral mineral robusto bajo variabilidad."
+      }
+    }
+  ],
+  "repo": {
+    "owner": "fsantibanezleal",
+    "name": "CAOS_LDA_HSI",
+    "url": "https://github.com/fsantibanezleal/CAOS_LDA_HSI"
+  }
+}

@@ -1,0 +1,199 @@
+Geometallurgical estimation of mineral samples from hyperspectral images and statistical topic modelling
+Felipe A. Santibáñez-Leal1*, Alejandro Ehrenfeld2, Felipe Garrido2, Felipe Navarro2 and Álvaro F. Egaña2
+(ORCID 0000-0002-0150-3246). ALGES, AMTC, Universidad de Chile, Chile
+Advanced Laboratory for Geostatistical Supercomputing (ALGES), Advanced Mining Technology Center (AMTC), Department of Mining Engineering, Universidad de Chile, Chile
+ABSTRACT
+Due to the development and consolidation of classical spectrographic techniques, many mining industries have extensive libraries of monopixel drill core spectra. In addition, laboratory characterization based on multispectral sampling by identifying and comparing reference spectral characteristics is used in many industrial processes. This work delves into the implementation of statistical generative modelling techniques for the characterization of mineral samples captured by hyperspectral imaging. The focus is on the generalization of previous developments based on hierarchical regression schemes on hyperspectral images for the modelling of geometallurgical properties that attempt to go beyond the direct identification of reference spectral features.
+The problem of characterizing the spatial-spectral variability of mineral samples is formalized as a topic modelling task, a central technique from the field of natural language processing. For this, we provide experimental evidence on how to organize hyperspectral pixels of a mineral sample for the definition of a corpus and the application of the popular topic modelling technique known as Latent Dirichlet Allocation (LDA). The use of LDA for the estimation of geometallurgical properties is demonstrated by presenting three ways of converting the spatial-spectral information to a corpus suitable for the LDA framework.
+A set of experiments was developed to validate the proposal. Two sample sets are presented for which laboratory characterization of geometallurgical properties and mineral occurrence measurements are available. These samples have also been captured using hyperspectral cameras in SWIR (Short-wave infrared) and VNIR (visible and near-infrared) wavelengths.
+*Corresponding author: Advanced Laboratory for Geostatistical Supercomputing (ALGES), Advanced Mining Technology Center (AMTC), Department of Mining Engineering, University of Chile, Chile. Researcher, Av. Tupper 2007, of. 401 AMTC. Phone: +56 2 2978 4987. Email: contacto@alges.cl
+INTRODUCTION
+The use of multispectral (MSI) and hyperspectral images (HSI) has been shown to provide a minimally invasive tool applicable in several industries (Berne et al. 2010, Lu et al. 2014, Li et al. 2017, Ortega et al. 2020, Saiko et al. 2020). Nevertheless, the use of MSI and HSI data to infer or estimate the elementary content in sampled materials, predicting performance of metallurgical variables, or designing quantitative or qualitative analysis systems that are robust to variability and other external factors remains as an open challenge (Zhu et al. 2020).
+Classical approach for HSI analysis sought the characterization based on properties of the spectral curves directly. For this, specific absorption bands, increasing/decreasing trends or documented features in certain wavelengths are the core of the spectrum databases (Kruse 2012). General approaches have focused on unsupervised classification systems (Villa et al. 2013) and on the identification of endmembers (pure spectral signatures).
+A common practice in this topic is to apply a classifier on the spectrum obtained for each pixel independently. While the pixel wise information is important, understanding the spatial structure of a HSI could improve analysis. Higher dimensionality data usually decreases the performance of normal pixel wise classifiers, and the use of segmentation maps to train Support Vector Machine classifiers has proven beneficial in the past (Tarabalka et al. 2010).
+Several clustering approaches has been implemented on HSI data attempting to highlight spatial properties. For example, super pixels are regions in an image built from pixels that share common information and that are relatively close in the spatial domain (Achanta et al. 2012). Over-segmentation has been proposed for understanding the spatial structure of an image by calculating super pixels that can be later joined in order to search for the final targeted segmentation result (Tarabalka et al. 2009). Algorithms that do not require very big amounts of training spectral data, like K-Nearest Neighbors or Support Vector Machines, can be redesigned to work on segments instead of individual spectral pixels.
+Despite the various options, in general the high dimensionality of HSI and the noise of industrial samples lead to problems in the robustness of the available solutions. As a reference, K-Means has some drawbacks (it tends to be very inefficient when performed over a large set of data points, it is very sensible to its parameters, and the method doesn't consider spatial information).
+While some clustering methods explored the use of spatial information (Theiler and Gisler 1997, Paganin 2021), and others use recent advances in deep learning (Shuxin and weimin 2017), there is still a need for approaches that can robustly clustering HSI data under real-world conditions.
+In this context, a hierarchical approach has recently been proposed to solve this problem by means of a two-stage system with an initial clustering and a segregated inference system (Egaña et al. 2020). Here, we extend this hierarchical methodology considering the robustness of the clustering stage. The proposed approach is powered by a clustering strategy from probabilistic topic modelling and a segregated classification over the previously generated topics. This document is organized as follows: The methodology is presented by introducing topical modelling from natural language. Then we proceed to propose 3 ways to restructure the HSI data (known as hypercube) in order to have a suitable structure for topical modelling. In addition, we describe how the topical model integrates to the proposed hierarchical inference strategy. In the Experiments section, two datasets are summarized along with the type of characterization available for each one. The results include visualizations of the achieved topics for each dataset and the impact obtained in a regression model for the available variables. Finally, the conclusion and proposals for future work are presented.
+METHODOLOGY
+The proposed system incorporates an initial stage of clustering based in Probabilistic topic modelling (PTM) using Latent Dirichlet Allocation (LDA). Bayesian nonparametric methods have become standard tools in the statistics and machine learning due to their flexibility and wide applicability. By introducing latent selection indicators, these models can be extended to perform variable selection for clustering, which is particularly relevant in high-dimensional settings (Blei 2003, Zhai and Boyd-Graber 2013).
+Probabilistic Topic Modelling
+The proposal for using PTM in the context HSI data comes from the known application of these tools in text analysis, where LDA is a popular technique for the discovery of hidden semantic architecture of text datasets achieving a fundamental role in many machine learning applications (Blei 2003). LDA can map the high-dimensional text data to a low-dimensional topic space while retaining the implicit semantics (Blei 2003), which has been an effective learning technique for clustering or classification. The basic components in the LDA formulation are shown in Table 1.
+Table 1 Components of LDA representation
+Component
+Description
+Word
+Fundamental data unit. One-dimensional vector w∈{1, …, V} taking a value from a vocabulary of V elements
+Document
+Sequence of N words organized as an array d:[w1,w2, …, wN]
+Corpus
+Collection of documents as a matrix of size NxM, D:[d1,d2, …, dM]
+Topic
+Probability distribution over the Vocabulary for the topic k∈{1,2,…, K}
+The key concept in the PTM is the topic. A topic describes a probabilistic distribution of words expected to be found in the documents of a text. By characterizing a corpus, LDA can organize the documents available in that corpus. Probability distributions with a common semantic concept are expected to be described by the same topic. LDA therefore analyses the implicit semantic architecture of the corpus (Blei 2003). In LDA model, any document dm in a corpus D can be described by different distributions on K latent topics, where each topic k can be represented by a distribution on all the available words. For the generative process, LDA assumes:
+A discrete probability distribution over the fixed vocabulary that represents the k-th topic distribution:
+ϕ(k)~Dirichlet(β) (1)
+A document-specific distribution over the available topics, for each document:
+θd~Dirichlet(α) (2)
+For each word in each document:
+zi~Discrete(θd) (3)
+wi~Discrete(ϕ(zi)) (4)
+Here, zi is the topic index for word wi, while α and β are hyperparameters for the symmetric Dirichlet distributions that the discrete distributions are drawn from. Thus, this generative process results in the following joint distribution:
+pw,z,θ,ϕα,β)=p(ϕ|β)p(θ|α)p(z|θ)p(w|ϕz) (5)
+The inference requires reversing the defined generative process and learning the posterior distributions of the latent variables in the model given the observed data. Practical solvers for this task usually use Gibb sampling (Rehuvrek and Sojka 2010). After multiple rounds of sampling over the whole corpus, the topic sample of each word can be obtained. (For detailed procedures the reader can be referred to Heinrich 2005).
+For this work, GENSIM python package has been used for all experiments (Rehuvrek and Sojka 2010). For the visualization of the topics and its comparison, LDAVIZ python package (Sievert and Shirley 2014) has been considered. To build an LDA model, the optimal number of topics must be estimated. The coherence score of the LDA model can be used to identify the optimal number of topics (Rehuvrek and Sojka 2010), by iterating through the list of several topics and building the LDA model for each number of topics.
+LDA applied to HSI
+LDA assumes that each document in a corpus (collection of documents) is associated with a mixture of topics and the proportions of the topics varies per document. It is therefore important to define what a document is in the context of HSI, while attempting to maximize the representation capacity that this document has for the data it represents.
+For HSI, the data is stored as a hypercube. This hypercube is a multidimensional matrix that on the one hand has spatial dimensions and on the other hand has spectral bands. Each element of this hypercube is an integer that reflects the reflectance of the object or sample of interest, at a specific position and for a defined wavelength.
+By construction we will consider each HSI image as a sample of an object of interest. Thus, in the same image we do not find samples with different labels or identification. A priori it may seem restrictive, but in practice it is consistent with the fact that the MSI and HSI are used to record laboratory or process samples. It is not forcing that all pixels of a sample must be the same, but they must be part of a sample representing the same reality that needs to be characterized.
+Under this definition, it is possible to select P spectra from an HSI image and consider them as the feed information for the documents required by LDA. If the spectra have L bands, then we can arrange this P spectra in a matrix of PxL elements.
+The first step in order to apply the TPM-HSI strategy correspond to the quantization of the HSI pixels. For each wavelength band of every HSI pixels, the value of the measured spectral response (radiance or reflectance) is quantized to a specific number of levels Q. In practice, the HSI images are acquired in 8, 16, 32 bits. In the case of a representation in float format, the data must convert to finite number of levels V. It is required to map the HSI to a finite size vocabulary.
+There are the proposed alternatives to map topic modelling concepts to HSI. The simple proposed maps are presented in Table 2.
+Table 2 Maps for LDA-HSI
+Component
+LDA-HSI Version1
+LDA-HSI Version2
+LDA-HSI Version3
+Word
+Each wavelength w∈{1,2,.. ., L}
+Each quantized intensity i∈{0,1,…,Q-1}
+Each wavelength w∈{1,2,.. ., L}
+Document
+d:[∑Iw1,∑Iw2, …
+,∑IwL]
+d:[∑Wi1,∑Wi2, …
+,∑WiQ]
+d:[I1w1,I1(w1),…, I1(wL)
+…, IPw1,IP(w1),…, ,IP(wL)]
+These options provide a translation for the information of an HSI image into documents suitable for the LDA framework.
+The first option allows a reduced and interpretable representation, since it is equivalent to consider each wavelength wi as a word, and the sum of the intensities (quantized) in all the P spectra as the number of occurrences ∑Iw1. The second option is more abstract and describes the words as quantized reflectance values and then counts how many wavelengths have that intensity value. The third option concatenates the P spectra, preserving the individuality of each spectrum, and considering for each spectrum and each length the intensity as the count of occurrences.
+Inference with PTM-HSI
+To perform the final inference stage, a simple approach has been considered by assigning each sample to a particular TPM-HSI topic. It is performed by assigning each sample to the topic having the closest distance to the specific sample.
+At this stage, the testing HSI samples are arranged as documents and by using the trained LDA model assigned to the respective topics. Then, for every single found topic a regression system is trained by using objective measurements associated with the input data. Thus, the final regression for a new sample is applied considering only documents in the database sharing the same topics.
+RESULTS AND DISCUSSION
+For these experiments mineral samples were captured with two hyperspectral cameras. Acquired HSI data considers a VNIR camera that covers the wavelength range from 400 nm to 1000 nm (with 942 bands), together with a SWIR camera that covers the range from 1000 nm to 2500 nm (with 268 bands).
+The first dataset corresponds to 146 samples from 20-meter drilling composite samples. For each sample a set of variables has been obtained from laboratory metallurgical tests. The measured variables are the mean metallurgical recoveries of copper (RECCU), and molybdenum (RECMO), the PH of the sample (PH), calcium carbonate consumption (CONSCAL), and the bond working index (WI). All these variables are of interest in long-term mining planning processes.
+A second data set considers 27 samples of material characterized by XRD and XRF analysis. In addition, tests of swelling pressure have been performed on the data.
+Clustering DB1
+There are several parameters that regulate the way in which topics are generated by LDA. It was initially explored with different number of clusters. Applying the Coherence score, 10 clusters was finally chosen. Each topic detected by the LDA model is described by a set of words from the defined dictionary and their estimated probability of occurrence.
+Fig. 1 shows the LDA result using definition 1. On the left a low dimensional version of the intertopic distance provides evidence of several overlapping and similar sized between topics. The similar size indicates that the model estimates that they have a similar marginal topic distribution. The high level of overlapping indicates that the topics group similar semantic content. It is relevant to note that the words correspond to wavelengths, which makes it possible to interpret which spectral bands are more recurrent in the detected topics.
+Figure 1 Topics DB1 using LDA Version1, 10 topics. Left: Visual representation of intertypic distance via multidimensional scaling. Right: Example of Top 30 most relevant terms for topic 2.
+Figure 2 Topics DB1 using LDA Version2, 10 topics. Left: Visual representation of intertypic distance via multidimensional scaling. Right: Example of Top 30 most relevant terms for topic 4.
+Figure 3 Topics DB1 using LDA Version1, 10 topics. Left: Visual representation of intertypic distance via multidimensional scaling. Right: Example of Top 30 most relevant terms for topic 2.
+Fig. 2 shows the topicals generated by version 2 of document grouping strategy for LDA. Again, there is a strong overlap, and the content of the documents is more difficult to interpret. In our case it would indicate whether high or low levels of reflectance are more recurrent in the documents.
+Fig. 3 shows the effect of the third LDA definition. There is greater variability in the marginal distribution contribution of cluster 1. Although the definition of documents is a little more complex, its interpretation is identical to definition 1. Therefore, we also have words representing wavelengths and their occurrences in each sample.
+Clustering DB2
+Figure 4 Topics DB2 using LDA Version3, 10 topics. Left: Visual representation of intertypic distance via multidimensional scaling. Right: Example of Top 30 most relevant terms for topic 4.
+The second database has fewer images available, so we expect that it will not be possible to capture the variability of the samples in as much detail. In addition, the material associated with these samples was intended for mechanical and hydraulic testing, so characterization is expected to be complex.
+Fig. 4 reflects the effect of trying to apply LDA with a high number of topicals for a sample where less inter-sample variability is expected. Topics of similar size and with high overlap between them are seen. Cluster 9 and 10 do not appear to be very differentiable.
+After reviewing the coherence metrics of the LDA models for various values of the number of clusters, the final cluster number was set to 7. Fig. 5 shows this change. As the number of clusters decreases, the overlap between clusters is reduced.
+Figure 5 Topics DB2 using LDA Version3, 07 topics. Left: Visual representation of intertypic distance via multidimensional scaling. Right: Example of Top 30 most relevant terms for topic 4.
+Hierarchical Regression
+The goal of applying LDA is to have a robust hierarchical structure for inference. Since we have measured variables on each sample, we can train an inference model on that variable. We do this for each topical found. Then when we receive a new sample, we apply the LDA model to identify its membership in the topics. Finally, we apply the inference model on each of those topics and weight by the estimated distribution.
+For DB1 the comparison of regression over testing data (20% of available samples) is summarized in Table 3.
+Table 3 Performance of the proposed Hierarchical Clustered Regression based on DB1
+Model Regression
+RECCU
+RECMO
+PH
+CONSCAL
+WI
+Dynamic Range
+24.799
+88.500
+4.799
+0.800
+10.600
+Naive individual Spectra based classification
+MAE
+4.568
+18.639
+0.810
+0.095
+1.594
+RMSE
+5.192
+23.387
+1.061
+0.125
+2.077
+Hierarchical approach with NN clustering
+MAE
+0.680
+2.871
+0.151
+0.036
+0.350
+RMSE
+0.804
+2.679
+0.178
+0.053
+0.441
+Hierarchical approach with LDA version 1 clustering
+MAE
+0.422
+2.227
+0.100
+0.030
+0.288
+RMSE
+0.609
+2.048
+0.117
+0.048
+0.293
+Hierarchical approach with LDA version 2 clustering
+MAE
+0.714
+3.105
+0.146
+0.039
+0.400
+RMSE
+0.793
+2.656
+0.177
+0.068
+0.471
+Hierarchical approach with LDA version 3 clustering
+MAE
+0.432
+2.218
+0.114
+0.023
+0.274
+RMSE
+0.530
+2.052
+0.129
+0.041
+0.289
+It is observed that systematically the proposed strategy presents better results in terms of error compared to naive and simple clustering approaches.
+For DB2 considering the 7 topics the estimation error of the available variables was also reduced by 10% to 15% in relation to the base scenarios.
+CONCLUSION
+In this work we have explored the application of probabilistic topic modelling to the characterization of hyperspectral images with the aim of making more robust the characterization of mineral samples of different naturals. Several representations of an HSI image have been successfully implemented to work correctly with Latent Dirichlet Allocation.
+Additionally, LDA has been integrated into a hierarchical inference framework for regression and classification tasks on hyperspectral images. The error of estimation of mineralogical and geometallurgical variables using HSI has been improved with respect to previous implementations. It is planned to study the opportunity to extend the methodology to other types of materials and other types of variables that could be characterized using hyperspectral content as proxy.
+ACKNOWLEDGEMENTS
+The work was supported and partially funded by The Advanced Mining Technology Center (AMTC) Basal project (CONICYT Project AFB180004). F.S acknowledges partial support from FONDECYT through grant 3220094.
+REFERENCES
+Achanta, R., Shaji, A., Smith, K., Lucchi, A., Fua, P., Susstrunk, S. (2012) ‘Slic superpixels compared to state-of-the-art superpixel methods’. Pattern Analysis and Machine Intelligence, IEEE Transactions on 34(11): 2274–2282
+Berne, O., Helens, A., Pilleri, P., Joblin, C. (2010) ‘Non-negative matrix factorization pansharpening of hyperspectral data: An application to mid-infrared astronomy’. In: HyperspectralImage and Signal Processing: Evolution in Remote Sensing (WHISPERS), 2010 2nd Workshop on, IEEE, pp 1–4
+Blei, DM., Ng, AY., Jordan, MI. (2003) ‘Latent dirichlet allocation’. J. Mach. Learn. Res., 3, 993--1022. http://dx.doi.org/10.1162/jmlr.2003.3.4-5.993
+Egaña, A.F., Santibáñez-Leal, F.A., Vidal, C., Díaz, G., Liberman, S., Ehrenfeld, A. (2020) ‘A Robust Stochastic Approach to Mineral Hyperspectral Analysis for Geometallurgy’. Minerals 2020, 10, 1139. https://doi.org/10.3390/min10121139
+Heinrich, G. (2005) ‘Parameter estimation for text analysis’. Technical report.
+Kruse, F. A. (2012) ‘Spectral-feature-based analysis of reflectance and emission spectral libraries and imaging spectrometer data’, Algorithms and Technologies for Multispectral, Hyperspectral, and Ultraspectral Imagery XVIII. https://doi.org/10.1117/12.918233
+Li, X., Li, R., Wang, M., Liu, Y., Zhou, BZ. (2017) ‘Hyperspectral Imaging and Their Applications in the Nondestructive Quality Assessment of Fruits and Vegetables’. In A. I. L. Maldonado, H. R. Fuentes, & J. A. V. Contreras (Eds.), Hyperspectral Imaging in Agriculture, Food and Environment. IntechOpen. https://doi.org/10.5772/intechopen.72250
+Lu, G., Fei, B. (2014) ‘Medical hyperspectral imaging: a review’, Journal of biomedical optics, 19(1), 10901. https://doi.org/10.1117/1.JBO.19.1.010901
+Ortega, S., Halicek, M., Fabelo, H., Quevedo, E., Fei, B., Callico, G. M. (2020) ‘Information Extraction Techniques in Hyperspectral Imaging Biomedical Applications’. In (Ed.), Multimedia Information Retrieval. IntechOpen. https://doi.org/10.5772/intechopen.93960
+Paganin, S., Herring, A. H., Olshan, A. F., Dunson, D. B., National Birth Defects Prevention Study (2021) ‘Centered Partition Processes: Informative Priors for Clustering (with Discussion)’. Bayesian analysis, 16(1), 301–370. https://doi.org/10.1214/20-BA1197
+Rehuvrek, R., Sojka, P. (2010) ‘Software Framework for Topic Modelling with Large Corpora’. In Proceedings of the LREC 2010 Workshop on New Challenges for NLP Frameworks, pp 45–50. ELRA.
+Saiko, G., Lombardi, P., Au, Y., Queen, D., Armstrong, D., & Harding, K. (2020) ‘Hyperspectral imaging in wound care: A systematic review’. International wound journal, 17(6), 1840–1856. https://doi.org/10.1111/iwj.13474
+Sievert, C., Shirley, K. (2014) ‘LDAvis: A method for visualizing and interpreting topics’. In Proceedings of the Workshop on Interactive Language Learning, Visualization, and Interfaces, pp 63–70, Baltimore, Maryland, USA. Association for Computational Linguistics
+Shuxin, C., Weimin, S. (2017) ‘Grid clustering analysis the big data of spectrum by deep learning’, 2nd International Conference on Image, Vision and Computing, Chengdu, pp. 1002-1005.
+Tarabalka, Y., Benediktsson, JA., Chanussot, J. (2009) ‘Spectral–spatial classification of hyperspectral imagery based on partitional clustering techniques’. Geoscience and Remote Sensing, IEEE Transactions on 47(8):2973–2987.
+Tarabalka, Y., Chanussot, J., Benediktsson, J. (2010) ‘Segmentation and classification of hyperspectral images using watershed transformation’. Pattern Recognition 43(7):2367 – 2379.  http://dx.doi.org/10.1016/j.patcog.2010.01.016
+Theiler, JP., Gisler, G. (1997) ‘Contiguity-enhanced k-means clustering algorithm for unsupervised multispectral image segmentation’. In: Optical Science, Engineering and Instrumentation’97, International Society for Optics and Photonics, pp 108–118.
+Villa, A., Chanussot, J., Benediktsson, JA. (2013) ‘Unsupervised methods for the classification of hyperspectral images with low spatial resolution’, Pattern Recognition Pattern Recognition, 46, 6, pp 1556-1568. https://doi.org/10.1016/j.patcog.2012.10.030
+Zhai, K., Boyd-Graber, J. (2013) ‘Online Latent Dirichlet Allocation with Infinite Vocabulary’, Proceedings of the 30th International Conference on Machine Learning, PMLR 28(1):561-569, 2013
+Zhu, M., Huang, D., Hu, X. J., Tong, W. H., Han, B. L., Tian, J. P., & Luo, H. B. (2020) ‘Application of hyperspectral technology in detection of agricultural products and food: A Review’. Food science & nutrition, 8(10), 5206–5214. https://doi.org/10.1002/fsn3.1852

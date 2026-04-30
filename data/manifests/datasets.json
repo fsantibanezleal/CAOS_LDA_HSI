@@ -1,0 +1,258 @@
+{
+  "selection_policy": {
+    "en": "Prefer public examples that are small enough to keep individual raw files below roughly 80 MB whenever possible. When a source is larger, keep only a manifest and load subsets on demand. Prefer sources with direct official downloads so the pipeline can be reproduced locally and on the VPS without manual portal work.",
+    "es": "Preferir ejemplos publicos lo bastante pequenos para mantener archivos crudos individuales bajo aproximadamente 80 MB cuando sea posible. Cuando una fuente es mayor, mantener solo un manifiesto y cargar subconjuntos bajo demanda. Privilegiar fuentes con descargas oficiales directas para que el pipeline pueda reproducirse localmente y en el VPS sin trabajo manual en portales."
+  },
+  "datasets": [
+    {
+      "id": "indian-pines-corrected",
+      "name": "Indian Pines corrected",
+      "modality": "HSI scene",
+      "domains": ["agriculture", "vegetation"],
+      "bands": 200,
+      "spatial_shape": [145, 145],
+      "file_size_mb": 5.7,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Downloaded and derived locally",
+        "es": "Descargado y derivado localmente"
+      },
+      "repository_strategy": {
+        "en": "Excellent first raw scene for a public repo. Small enough to keep locally if licensing and attribution are respected.",
+        "es": "Excelente primera escena cruda para un repo publico. Lo bastante pequena para mantenerla localmente si se respetan licencia y atribucion."
+      },
+      "notes": {
+        "en": "Classic agricultural benchmark with enough bands to demonstrate quantization, band words, and topic mixtures without stressing the repository.",
+        "es": "Benchmark agricola clasico con suficientes bandas para demostrar cuantizacion, palabras por banda y mezclas de topicos sin tensionar el repositorio."
+      },
+      "fit_for_demo": "good-first-demo"
+    },
+    {
+      "id": "salinas-a-corrected",
+      "name": "Salinas-A corrected",
+      "modality": "HSI scene",
+      "domains": ["agriculture", "vegetation"],
+      "bands": 204,
+      "spatial_shape": [83, 86],
+      "file_size_mb": 1.5,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Downloaded and derived locally",
+        "es": "Descargado y derivado localmente"
+      },
+      "repository_strategy": {
+        "en": "Ideal for tiny demos, tests, and example notebooks.",
+        "es": "Ideal para demos pequenas, pruebas y notebooks de ejemplo."
+      },
+      "notes": {
+        "en": "Very compact scene that is especially useful when the product needs one fully reproducible public sample under tight size limits.",
+        "es": "Escena muy compacta, especialmente util cuando el producto necesita una muestra publica completamente reproducible bajo limites de tamano estrictos."
+      },
+      "fit_for_demo": "best-size-footprint"
+    },
+    {
+      "id": "pavia-university",
+      "name": "Pavia University",
+      "modality": "HSI scene",
+      "domains": ["urban", "built-environment"],
+      "bands": 103,
+      "spatial_shape": [610, 340],
+      "file_size_mb": 33.2,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Downloaded and derived locally",
+        "es": "Descargado y derivado localmente"
+      },
+      "repository_strategy": {
+        "en": "Large but still manageable as a single public raw file.",
+        "es": "Grande pero aun manejable como un unico archivo crudo publico."
+      },
+      "notes": {
+        "en": "Urban texture and material transitions make it useful for showing that topics can capture regimes beyond agriculture.",
+        "es": "Las texturas urbanas y transiciones de materiales la vuelven util para mostrar que los topicos pueden capturar regimenes mas alla de la agricultura."
+      },
+      "fit_for_demo": "good-second-scene"
+    },
+    {
+      "id": "kennedy-space-center",
+      "name": "Kennedy Space Center",
+      "modality": "HSI scene",
+      "domains": ["wetlands", "vegetation", "water"],
+      "bands": 176,
+      "spatial_shape": [512, 614],
+      "file_size_mb": 56.8,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Downloaded and derived locally",
+        "es": "Descargado y derivado localmente"
+      },
+      "repository_strategy": {
+        "en": "Still under the target threshold, but better treated as an optional raw asset.",
+        "es": "Aun bajo el umbral objetivo, pero mejor tratado como un activo crudo opcional."
+      },
+      "notes": {
+        "en": "Useful when the story needs water, marsh, and vegetation transitions instead of only crop fields or urban materials.",
+        "es": "Util cuando la narrativa necesita transiciones entre agua, humedales y vegetacion en vez de solo cultivos o materiales urbanos."
+      },
+      "fit_for_demo": "optional-raw-scene"
+    },
+    {
+      "id": "botswana",
+      "name": "Botswana",
+      "modality": "HSI scene",
+      "domains": ["wetlands", "vegetation", "soil"],
+      "bands": 145,
+      "spatial_shape": [1476, 256],
+      "file_size_mb": 78.9,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Downloaded and derived locally",
+        "es": "Descargado y derivado localmente"
+      },
+      "repository_strategy": {
+        "en": "Technically within the target, but close enough to the limit that manifests or subsets are safer for routine development.",
+        "es": "Tecnicamente dentro del objetivo, pero lo bastante cerca del limite como para que manifiestos o subconjuntos sean mas seguros para el desarrollo rutinario."
+      },
+      "notes": {
+        "en": "Good boundary case for the size policy and still attractive for diversity in vegetation and soil conditions.",
+        "es": "Buen caso limite para la politica de tamano y aun atractivo por su diversidad en vegetacion y condiciones de suelo."
+      },
+      "fit_for_demo": "borderline-raw-scene"
+    },
+    {
+      "id": "micasense-rededge-samples",
+      "name": "MicaSense RedEdge sample data",
+      "modality": "MSI field samples",
+      "domains": ["vegetation", "agriculture", "uav", "reflectance"],
+      "bands": 4,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "MicaSense RedEdge Sample Data",
+      "source_url": "https://sample.micasense.com/",
+      "local_status": {
+        "en": "Downloaded and derived locally",
+        "es": "Descargado y derivado localmente"
+      },
+      "repository_strategy": {
+        "en": "Keep only derived JSON and previews in Git. Fetch orthomosaics and raw captures on demand with the local pipeline.",
+        "es": "Mantener en Git solo JSON derivados y previews. Descargar ortomosaicos y capturas crudas bajo demanda con el pipeline local."
+      },
+      "notes": {
+        "en": "Official 4-band field samples at 480, 550, 670, and 850 nm. Example 1 orthomosaic is about 18.2 MB and Example 2 is about 68.6 MB, so both stay inside the current per-file target.",
+        "es": "Muestras de campo oficiales de 4 bandas en 480, 550, 670 y 850 nm. El ortomosaico del Ejemplo 1 pesa aproximadamente 18.2 MB y el del Ejemplo 2 aproximadamente 68.6 MB, por lo que ambos quedan dentro del objetivo actual por archivo."
+      },
+      "fit_for_demo": "downloaded-msi-demo"
+    },
+    {
+      "id": "eurosat",
+      "name": "EuroSAT",
+      "modality": "MSI patch dataset",
+      "domains": ["land-cover", "agriculture", "urban", "water"],
+      "bands": 13,
+      "spatial_shape": [64, 64],
+      "file_size_mb": null,
+      "source": "EuroSAT official repository",
+      "source_url": "https://github.com/phelber/EuroSAT",
+      "local_status": {
+        "en": "Catalog only",
+        "es": "Solo catalogado"
+      },
+      "repository_strategy": {
+        "en": "Do not commit the full archive. Keep a curated patch subset or a downloader script.",
+        "es": "No commitear el archivo completo. Mantener un subconjunto curado de parches o un script de descarga."
+      },
+      "notes": {
+        "en": "Strong MSI complement to remote-sensing HSI scenes. Individual patches are tiny even if the full archive should stay external.",
+        "es": "Complemento MSI fuerte a las escenas HSI de teledeteccion. Los parches individuales son pequenos aunque el archivo completo deba mantenerse externo."
+      },
+      "fit_for_demo": "subset-only"
+    },
+    {
+      "id": "cave-multispectral",
+      "name": "CAVE Multispectral Image Database",
+      "modality": "MSI / HSI laboratory scenes",
+      "domains": ["laboratory", "food", "objects", "reflectance"],
+      "bands": 31,
+      "spatial_shape": [512, 512],
+      "file_size_mb": null,
+      "source": "Columbia CAVE Multispectral Image Database",
+      "source_url": "https://www.cs.columbia.edu/CAVE/databases/multispectral/images/",
+      "local_status": {
+        "en": "Catalog only",
+        "es": "Solo catalogado"
+      },
+      "repository_strategy": {
+        "en": "Treat as a manual-acquisition or secondary-reference source unless a stable direct download endpoint is identified.",
+        "es": "Tratar como fuente de adquisicion manual o referencia secundaria mientras no se identifique un endpoint de descarga directa estable."
+      },
+      "notes": {
+        "en": "Useful laboratory-scale complement to airborne or satellite scenes. It is widely cited as a 31-band visible-range benchmark, but official public access is more brittle than UPV/EHU or MicaSense.",
+        "es": "Complemento de escala laboratorio util frente a escenas aerotransportadas o satelitales. Es ampliamente citado como benchmark visible de 31 bandas, pero su acceso oficial publico es mas fragil que UPV/EHU o MicaSense."
+      },
+      "fit_for_demo": "lab-reference"
+    },
+    {
+      "id": "usgs-splib07",
+      "name": "USGS Spectral Library Version 7",
+      "modality": "Spectral library",
+      "domains": ["minerals", "rocks", "soil", "vegetation"],
+      "bands": null,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "USGS Spectral Library Version 7",
+      "source_url": "https://www.usgs.gov/data/usgs-spectral-library-version-7-data",
+      "local_status": {
+        "en": "External library",
+        "es": "Libreria externa"
+      },
+      "repository_strategy": {
+        "en": "Use curated per-material subsets or exported CSV snippets, not the entire library dump.",
+        "es": "Usar subconjuntos curados por material o fragmentos CSV exportados, no el volcado completo de la libreria."
+      },
+      "notes": {
+        "en": "Closer to mineral and clay interpretation workflows than remote-sensing scenes. Excellent for one-dimensional spectral corpora.",
+        "es": "Mas cercano a flujos de interpretacion mineral y de arcillas que las escenas de teledeteccion. Excelente para corpus espectrales unidimensionales."
+      },
+      "fit_for_demo": "high-value-library"
+    },
+    {
+      "id": "ecostress-spectral-library",
+      "name": "ECOSTRESS Spectral Library v1.0",
+      "modality": "Spectral library",
+      "domains": ["vegetation", "non-photosynthetic vegetation", "minerals", "man-made materials"],
+      "bands": null,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "NASA/JPL ECOSTRESS Spectral Library",
+      "source_url": "https://speclib.jpl.nasa.gov/",
+      "local_status": {
+        "en": "External library",
+        "es": "Libreria externa"
+      },
+      "repository_strategy": {
+        "en": "Keep the library external and extract only small representative slices into the repo.",
+        "es": "Mantener la libreria externa y extraer solo pequenos cortes representativos al repo."
+      },
+      "notes": {
+        "en": "Valuable when the app needs examples spanning natural and man-made materials, with much richer variability than a single spectral signature.",
+        "es": "Valiosa cuando la app necesita ejemplos que abarquen materiales naturales y artificiales, con mucha mas variabilidad que una firma espectral unica."
+      },
+      "fit_for_demo": "external-library"
+    }
+  ],
+  "exclusions": [
+    {
+      "name": "Cuprite corrected",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "reason": {
+        "en": "The official single-scene file is about 95.3 MB, so it exceeds the current target for directly committed raw assets. Use crops or download-on-demand instead.",
+        "es": "El archivo oficial de una sola escena es de aproximadamente 95.3 MB, por lo que excede el objetivo actual para activos crudos commiteados directamente. Usar recortes o descarga bajo demanda."
+      }
+    }
+  ]
+}

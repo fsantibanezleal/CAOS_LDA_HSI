@@ -1,0 +1,6 @@
+numpy==2.2.0
+Pillow==12.2.0
+requests==2.33.1
+scikit-learn==1.6.0
+scipy==1.14.1
+tifffile==2026.4.11

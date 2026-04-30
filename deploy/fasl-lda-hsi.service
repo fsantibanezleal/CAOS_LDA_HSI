@@ -1,0 +1,14 @@
+[Unit]
+Description=FASL CAOS LDA HSI interactive demo
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/fasl-apps/CAOS_LDA_HSI
+EnvironmentFile=-/etc/fasl-lda-hsi.env
+ExecStart=/opt/fasl-apps/CAOS_LDA_HSI/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8105
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
