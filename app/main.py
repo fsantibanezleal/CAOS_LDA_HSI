@@ -13,6 +13,10 @@ from app.routers import content
 
 
 settings = get_settings()
+INDEX_HEADERS = {
+    "Cache-Control": "no-store, max-age=0",
+    "Pragma": "no-cache",
+}
 
 app = FastAPI(
     title="CAOS LDA HSI",
@@ -59,11 +63,11 @@ if _dist.is_dir():
 
     @app.get("/", include_in_schema=False)
     def root() -> FileResponse:
-        return FileResponse(_dist / "index.html")
+        return FileResponse(_dist / "index.html", headers=INDEX_HEADERS)
 
     @app.get("/{path:path}", include_in_schema=False)
     def spa_fallback(path: str) -> FileResponse:
         target = _dist / path
         if target.is_file():
             return FileResponse(target)
-        return FileResponse(_dist / "index.html")
+        return FileResponse(_dist / "index.html", headers=INDEX_HEADERS)

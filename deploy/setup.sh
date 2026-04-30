@@ -14,13 +14,10 @@ python3 -m venv .venv
 .venv/bin/pip install --upgrade pip
 .venv/bin/pip install -r requirements.txt
 
-python3 -m venv .venv-pipeline
-.venv-pipeline/bin/pip install --upgrade pip
-.venv-pipeline/bin/pip install -r data-pipeline/requirements.txt
-.venv-pipeline/bin/python data-pipeline/build_demo.py
-
-if command -v pnpm >/dev/null 2>&1; then
-  (cd frontend && pnpm install && pnpm build)
+if [ -f frontend/package-lock.json ]; then
+  (cd frontend && npm ci && npm run build)
+elif command -v pnpm >/dev/null 2>&1; then
+  (cd frontend && pnpm install --frozen-lockfile && pnpm build)
 else
   (cd frontend && npm install && npm run build)
 fi
