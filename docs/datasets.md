@@ -24,7 +24,9 @@ The following scenes are already represented in compact app summaries:
 | Scene | Theme | Bands | Raw Size | Current Use |
 |---|---|---:|---:|---|
 | Indian Pines corrected | Agriculture, vegetation | 200 | 5.7 MB | Real-scene summary and preview |
+| Salinas corrected | Agriculture, vegetation, soil, vineyards | 204 | 25.3 MB | Real-scene summary and preview |
 | Salinas-A corrected | Agriculture, vegetation | 204 | 1.5 MB | Real-scene summary and preview |
+| Cuprite AVIRIS reflectance | Minerals, clays, geology | 224 | 95.3 MB | Mineral scene summary and inferred topic-stratum preview |
 | Pavia University | Urban materials | 103 | 33.2 MB | Real-scene summary and preview |
 | Kennedy Space Center | Wetlands, vegetation, water | 176 | 56.8 MB | Real-scene summary and preview |
 | Botswana | Wetlands, vegetation, soil | 145 | 78.9 MB | Real-scene summary and preview |
@@ -46,10 +48,37 @@ RedEdge examples:
 These samples are important because they prove the workflow can handle
 field multispectral imagery, not only academic hyperspectral cubes.
 
+### Public Unmixing ROIs
+
+The app now includes compact summaries derived from the Borsoi
+MUA_SparseUnmixing `real_data` examples:
+
+| Asset | Theme | Bands | Raw Size | Current Use |
+|---|---|---:|---:|---|
+| Samson ROI | Water, soil/tree style unmixing | 156 | 3.6 MB | Unlabeled topic-stratum preview and scene summary |
+| Jasper Ridge ROI | Vegetation, soil, water, road | 198 | 3.0 MB | Unlabeled topic-stratum preview and scene summary |
+| Urban HYDICE ROI | Urban materials | 162 | 17.7 MB | Unlabeled topic-stratum preview and scene summary |
+
+These scenes are unlabeled in the current app. Their colored previews are
+inferred topic-stratum maps, not official ground truth.
+
+### USGS Spectral Library Samples
+
+The app now includes 26 compact material spectra extracted from official
+USGS Spectral Library Version 7 ASCII sensor subsets:
+
+| Source Archive | Bands | Current Use |
+|---|---:|---|
+| AVIRIS-Classic 1997 convolution | 224 | Clay, alteration mineral, oxide, carbonate, urban, and vegetation reference spectra |
+| Sentinel-2 MSI resampling | 13 | MSI-scale comparison references for the same material vocabulary |
+
+The full USGS library is not committed. Only compact derived material
+samples are tracked.
+
 ## Under-100 MB Expansion Candidates
 
-These should be the first additions after the workbench redesign is
-validated.
+The first priority additions below have been implemented locally. They
+remain documented here because they define the current data policy.
 
 ### Full Salinas Corrected
 
@@ -58,8 +87,8 @@ validated.
 - Theme: agriculture, vegetation, soil, vineyards
 - Value: expands the current Salinas-A subset into a full agricultural
   scene with richer spatial context
-- Handling: add to `fetch_public_hsi.py`, derive previews, and compare
-  topic mixtures against Salinas-A
+- Handling: downloaded through `fetch_public_hsi.py`, derived through
+  `build_real_samples.py`
 
 ### Cuprite Reflectance
 
@@ -67,18 +96,19 @@ validated.
 - Size: about 95.3 MB
 - Theme: minerals, clays, geology, unmixing
 - Value: directly supports the first serious mineral/clay workflow
-- Handling: keep download-on-demand until attribution, exact URL, and
-  preview generation are validated
+- Handling: downloaded through `fetch_public_hsi.py`; raw file stays out
+  of Git because it is close to the 100 MB rule
 - Risk: close to the GitHub individual-file limit, so derived summaries
   should stay compact
 
 ### Small Unmixing ROI Suite
 
-- Source family: hyperspectral unmixing benchmark ROI datasets
+- Source family: Borsoi MUA_SparseUnmixing `real_data`
 - Theme: minerals, urban, vegetation, water, endmember variability
 - Value: enables topic-mixture versus unmixing comparisons
-- Handling: verify original source, license, and exact per-file sizes
-  before ingestion
+- Handling: Samson, Jasper Ridge, and Urban are downloaded through
+  `fetch_public_unmixing.py`; Cuprite ROI remains pending source
+  verification
 
 ## Cataloged Subset Sources
 
@@ -114,18 +144,20 @@ Dataset entries should use explicit status labels:
 - Catalog entries are not the same as local app data.
 - Wetland, Landsat, BigEarthNet, HySpecNet, WHU-Hi, and Houston are not
   local first-class demos yet.
-- Mineral/clay interpretation is not validated until Cuprite or curated
-  spectral-library slices are integrated with calibrated wavelengths.
+- Mineral/clay interpretation is not validated until Cuprite and curated
+  spectral-library samples are linked to calibrated wavelength metadata,
+  absorption-feature tokens, and explicit expert caveats.
 - MicaSense strata are heuristic; they are not labeled agronomic ground
   truth.
 
 ## Near-Term Data Work
 
-1. Add full Salinas and Cuprite to the HSI downloader once direct URLs are
-   rechecked.
-2. Regenerate compact previews and derived summaries for the new scenes.
-3. Add a small mineral/clay spectral-library subset from USGS or
-   ECOSTRESS with transparent attribution.
+1. Add calibrated band-center vectors where reliable metadata is
+   available.
+2. Add stronger clustering, heatmap, and topic-map visualizations over the
+   expanded real-scene payload.
+3. Add ECOSTRESS compact samples with transparent attribution if direct
+   public access and licensing are verified.
 4. Add a tiny Sentinel-2 patch subset that includes urban, water,
    vegetation, and agriculture classes.
 5. Add wetland patches only through an external-download plus

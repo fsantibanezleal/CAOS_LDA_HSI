@@ -19,10 +19,12 @@ The repository now includes:
 - a React + Vite frontend with English / Spanish UI and dark / light
   theme support
 - a compact synthetic topic-modelling demo in `data/demo/demo.json`
-- compact derived summaries of five downloaded public HSI scenes in
+- compact derived summaries of ten downloaded public HSI / unmixing scenes in
   `data/derived/real/real_samples.json`
 - compact derived summaries of two downloaded official MicaSense MSI
   field orthomosaics in `data/derived/field/field_samples.json`
+- compact material spectra extracted from official USGS spectral-library
+  subsets in `data/derived/spectral/library_samples.json`
 - reproducible download and build scripts for raw public data under
   `data-pipeline/`
 - `legacy/` material preserved as historical reference for the early
@@ -31,10 +33,13 @@ The repository now includes:
 ## Product Surface
 
 - `Datasets`: curated MSI / HSI sources with GitHub-aware size strategy
-- `Real HSI scenes`: downloaded UPV/EHU benchmarks with topic summaries
-  and previews
+- `Real HSI scenes`: downloaded UPV/EHU benchmarks and unmixing ROIs with
+  topic summaries, official label previews where available, and inferred
+  topic-stratum previews for unlabeled scenes
 - `Field MSI samples`: downloaded MicaSense orthomosaics converted to
   patch corpora and topic summaries
+- `Spectral library`: compact material spectra for clay, mineral,
+  oxide, carbonate, urban, and vegetation references
 - `Representations`: alternative spectral-to-document encodings
 - `Topics`: topic-word and document-topic visualizations
 - `Inference`: topic-aware downstream modelling examples
@@ -84,6 +89,7 @@ The app currently uses three data layers:
 - a compact synthetic demo in `data/demo/demo.json`
 - compact derived HSI scene assets in `data/derived/real/`
 - compact derived MSI field assets in `data/derived/field/`
+- compact derived spectral-library samples in `data/derived/spectral/`
 
 Raw third-party files are downloaded into `data/raw/` and kept out of
 Git on purpose.
@@ -93,8 +99,12 @@ Useful commands:
 ```powershell
 .\scripts\local.ps1 fetch
 .\scripts\local.ps1 fetch-msi
+.\scripts\local.ps1 fetch-spectral
+.\scripts\local.ps1 fetch-unmixing
+.\scripts\local.ps1 fetch-all
 .\scripts\local.ps1 build-real
 .\scripts\local.ps1 build-field
+.\scripts\local.ps1 build-spectral
 .\scripts\local.ps1 demo
 .\scripts\local.ps1 dev
 ```
@@ -102,20 +112,24 @@ Useful commands:
 ```bash
 ./scripts/local.sh fetch
 ./scripts/local.sh fetch-msi
+./scripts/local.sh fetch-spectral
+./scripts/local.sh fetch-unmixing
+./scripts/local.sh fetch-all
 ./scripts/local.sh build-real
 ./scripts/local.sh build-field
+./scripts/local.sh build-spectral
 ./scripts/local.sh demo
 ./scripts/local.sh dev
 ```
 
 ## Immediate Next Steps
 
-- Replace the rejected hero-first UI with the professional three-panel
-  workbench described in `docs/functional-scope.md`
-- Add curated spectral-library subsets for mineral and clay workflows
-- Add under-100 MB public data options for minerals, urban scenes,
-  vegetation, wetlands, satellite patches, and field multispectral
-  examples
+- Manually review the professional three-panel workbench before any
+  production redeploy
+- Add stronger clustering, heatmap, topic-map, and embedding
+  visualizations for the real scenes
+- Add ECOSTRESS and satellite/UAV curated subsets after direct access,
+  size, and licensing checks
 - Replace approximate HSI wavelength axes with calibrated band-center
   vectors where available
 - Extend real-scene modelling to compare multiple document encodings on

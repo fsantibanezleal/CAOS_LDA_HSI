@@ -19,6 +19,9 @@ selection, and theoretical framing.
 - Borsoi et al. *Spectral Variability in Hyperspectral Data Unmixing: A
   Comprehensive Review*.
   <https://arxiv.org/abs/2001.07307>
+- Borsoi. *MUA_SparseUnmixing real_data* repository assets used for
+  compact Samson, Jasper Ridge, and Urban ROI examples.
+  <https://github.com/ricardoborsoi/MUA_SparseUnmixing/tree/master/real_data>
 - Egana et al. *A Robust Stochastic Approach to Mineral Hyperspectral
   Analysis for Geometallurgy*.
   <https://www.mdpi.com/2075-163X/10/12/1139>
@@ -53,6 +56,8 @@ selection, and theoretical framing.
   <https://www.cs.columbia.edu/CAVE/databases/multispectral/images/>
 - USGS. *USGS Spectral Library Version 7 data*.
   <https://www.usgs.gov/data/usgs-spectral-library-version-7-data>
+- USGS ScienceBase. *Spectra of materials in ASCII format*.
+  <https://www.sciencebase.gov/catalog/item/586e8c88e4b0f5ce109fccae>
 - NASA/JPL. *ECOSTRESS Spectral Library v1.0*.
   <https://speclib.jpl.nasa.gov/>
 - Ehrenfeld et al. *HIDSAG: Hyperspectral Image Database for Supervised

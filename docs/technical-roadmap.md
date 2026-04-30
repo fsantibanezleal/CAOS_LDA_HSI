@@ -15,7 +15,8 @@ Delivered:
 - VPS deployment at `https://lda-hsi.fasl-work.com`.
 - `/healthz` and `/api/app-data` endpoints.
 - Compact synthetic demo.
-- Derived summaries from five HSI scenes and two MSI field samples.
+- Derived summaries from the first five HSI scenes and two MSI field
+  samples.
 
 Problem:
 
@@ -25,7 +26,8 @@ Problem:
 
 ## Phase 1: Professional Workbench
 
-Status: active.
+Status: implemented locally; pending manual visual review before
+production redeploy.
 
 Acceptance criteria:
 
@@ -39,17 +41,21 @@ Acceptance criteria:
 - ES/EN i18n works.
 - Light/dark mode works.
 - Public repository link is visible.
-- Backend API payload shape remains unchanged.
+- Backend payload may grow only when the workbench needs a new data
+  surface. The current local pass added `spectral_library`.
 
 ## Phase 2: Dataset Expansion
 
-Status: planned after Phase 1 local validation.
+Status: partially implemented locally.
 
 Immediate additions:
 
-- full Salinas corrected
-- Cuprite reflectance
-- small unmixing ROIs after source verification
+- full Salinas corrected: implemented
+- Cuprite reflectance: implemented as an unlabeled mineral scene with
+  inferred topic-stratum preview
+- Samson, Jasper Ridge, and Urban unmixing ROIs: implemented as unlabeled
+  scenes with inferred topic-stratum previews
+- USGS Spectral Library v7 AVIRIS/Sentinel-2 compact samples: implemented
 
 Catalog and subset additions:
 
@@ -63,6 +69,13 @@ Catalog and subset additions:
 - Landsat Collection 2 Level-2
 - HIDSAG
 
+Remaining immediate data work:
+
+- ECOSTRESS compact material samples
+- verified Cuprite unmixing ROI
+- curated Sentinel-2 / EuroSAT patch subset
+- calibrated wavelength metadata where available
+
 Acceptance criteria:
 
 - every added source has provenance, URL, status, and repository strategy
@@ -74,7 +87,8 @@ Acceptance criteria:
 
 ## Phase 3: Tokenization Engine
 
-Status: planned.
+Status: partially scaffolded through deterministic derived assets; the
+full tokenizer engine is still planned.
 
 Work:
 
@@ -93,14 +107,16 @@ Acceptance criteria:
 
 ## Phase 4: Mineral/Clay Workflow
 
-Status: planned.
+Status: partially scaffolded.
 
 Work:
 
-- integrate Cuprite or another mineral scene
+- integrate Cuprite or another mineral scene: first Cuprite scene is now
+  local, but interpretation remains provisional
 - add calibrated wavelength metadata
 - add continuum-removal and absorption-feature tokens
-- add curated USGS/ECOSTRESS mineral and clay reference slices
+- add curated USGS/ECOSTRESS mineral and clay reference slices: USGS
+  compact samples are local; ECOSTRESS remains planned
 - compare topic profiles with known wavelength regions
 
 Acceptance criteria:
