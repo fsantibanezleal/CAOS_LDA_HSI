@@ -26,8 +26,8 @@ Problem:
 
 ## Phase 1: Professional Workbench
 
-Status: implemented locally; pending manual visual review before
-production redeploy.
+Status: implemented and deployed on the 2026-04-30 main release; pending
+continued manual product review for the next iteration.
 
 Acceptance criteria:
 
@@ -42,13 +42,14 @@ Acceptance criteria:
 - Light/dark mode works.
 - Public repository link is visible.
 - Backend payload may grow only when the workbench needs a new data
-  surface. The current local pass added `spectral_library`.
+  surface. The current release includes `spectral_library` and
+  `analysis`.
 - A compact help/status modal is available from the header.
 - The spectral-library navigator participates in the main search filter.
 - Scene topic matrices and nearest spectral-library reference comparisons
-  are implemented locally.
-- Compact PCA/KMeans clustering diagnostics are implemented locally for
-  real-scene topic mixtures and spectral-library reference spectra.
+  are implemented and deployed.
+- Compact PCA/KMeans clustering diagnostics are implemented and deployed
+  for real-scene topic mixtures and spectral-library reference spectra.
 
 ## Phase 2: Dataset Expansion
 
