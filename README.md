@@ -54,6 +54,19 @@ The repository now includes:
 - `scripts/`: local development and maintenance scripts
 - `legacy/`: notebooks and reference papers retained for context
 
+## Technical Documentation
+
+- `docs/theory.md`: theoretical framing, implemented scope, risks, and
+  open research questions
+- `docs/spectral-tokenization.md`: document/word design, normalization,
+  quantization, vocabulary families, and metadata requirements
+- `docs/datasets.md`: current local data, under-100 MB expansion
+  candidates, external subset sources, and non-claims
+- `docs/functional-scope.md`: required workbench behavior and product
+  surface rules
+- `docs/technical-roadmap.md`: phased implementation and validation plan
+- `docs/sources.md`: research and data source references
+
 ## Conventions
 
 - Code, comments, docstrings, and documentation are written in English.
@@ -97,9 +110,15 @@ Useful commands:
 
 ## Immediate Next Steps
 
+- Replace the rejected hero-first UI with the professional three-panel
+  workbench described in `docs/functional-scope.md`
 - Add curated spectral-library subsets for mineral and clay workflows
+- Add under-100 MB public data options for minerals, urban scenes,
+  vegetation, wetlands, satellite patches, and field multispectral
+  examples
 - Replace approximate HSI wavelength axes with calibrated band-center
   vectors where available
 - Extend real-scene modelling to compare multiple document encodings on
   the downloaded public scenes, not only on the synthetic demo
-- Publish the repository and bind the first deployment target
+- Keep production deploys paused until local build, API smoke tests, and
+  visual checks pass

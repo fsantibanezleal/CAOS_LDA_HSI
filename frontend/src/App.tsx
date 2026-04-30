@@ -1,21 +1,544 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { DatasetCatalog } from "./components/DatasetCatalog";
-import { FieldSamplePanel } from "./components/FieldSamplePanel";
-import { Header } from "./components/Header";
-import { InferencePanel } from "./components/InferencePanel";
-import { RealScenePanel } from "./components/RealScenePanel";
-import { SectionNav } from "./components/SectionNav";
-import { SpectrumWorkbench } from "./components/SpectrumWorkbench";
-import { TheoryPanel } from "./components/TheoryPanel";
-import { TopicExplorer } from "./components/TopicExplorer";
-import { api, pickText, type AppPayload } from "./lib/api";
+import { BarStrip, LineChart, MixtureBars } from "./components/Charts";
+import {
+  api,
+  pickText,
+  type AppPayload,
+  type DatasetEntry,
+  type DemoSample,
+  type FieldSceneSnapshot,
+  type RealSceneSnapshot,
+  type RepresentationVariant,
+  type TopicProfile
+} from "./lib/api";
+import { useStore } from "./store/useStore";
+
+type Language = "en" | "es";
+
+const percent = (value: number) => `${Math.round(value * 100)}%`;
+
+function formatShape(shape: number[] | null): string {
+  if (!shape || shape.length === 0) {
+    return "external";
+  }
+  return shape.join(" x ");
+}
+
+function formatSize(value: number | null): string {
+  if (value === null) {
+    return "external";
+  }
+  return `${value.toLocaleString(undefined, { maximumFractionDigits: 1 })} MB`;
+}
+
+function domainLabel(dataset: DatasetEntry): string {
+  return dataset.domains.slice(0, 3).join(" / ");
+}
+
+function getDatasetStatus(dataset: DatasetEntry, language: Language): string {
+  return pickText(dataset.local_status, language);
+}
+
+function getTopic(topics: TopicProfile[], id: string | null | undefined): TopicProfile {
+  return topics.find((topic) => topic.id === id) ?? topics[0];
+}
+
+function WorkbenchHeader({
+  data,
+  language,
+  onLanguageChange
+}: {
+  data: AppPayload;
+  language: Language;
+  onLanguageChange: (language: Language) => void;
+}) {
+  const { t } = useTranslation();
+  const theme = useStore((state) => state.theme);
+  const toggleTheme = useStore((state) => state.toggleTheme);
+
+  return (
+    <header className="app-header">
+      <div className="brand-cluster">
+        <div className="brand-glyph" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <div>
+          <p className="app-kicker">{t("workflowFocus")}</p>
+          <h1>{data.overview.title}</h1>
+        </div>
+      </div>
+
+      <div className="header-summary">
+        <span>{pickText(data.overview.tagline, language)}</span>
+      </div>
+
+      <div className="header-actions" aria-label={t("headerActions")}>
+        <div className="segmented-control" aria-label={t("language")}>
+          <button className={language === "es" ? "is-active" : ""} type="button" onClick={() => onLanguageChange("es")}>
+            ES
+          </button>
+          <button className={language === "en" ? "is-active" : ""} type="button" onClick={() => onLanguageChange("en")}>
+            EN
+          </button>
+        </div>
+        <button className="icon-text-button" type="button" onClick={toggleTheme}>
+          {theme === "dark" ? t("themeLight") : t("themeDark")}
+        </button>
+        <a className="icon-text-button" href={data.overview.repo.url} target="_blank" rel="noreferrer">
+          {t("sourceCode")}
+        </a>
+      </div>
+    </header>
+  );
+}
+
+function NavigatorPanel({
+  data,
+  language,
+  selectedSample,
+  selectedScene,
+  selectedField,
+  query,
+  onQueryChange,
+  onSampleSelect,
+  onSceneSelect,
+  onFieldSelect
+}: {
+  data: AppPayload;
+  language: Language;
+  selectedSample: DemoSample;
+  selectedScene: RealSceneSnapshot;
+  selectedField: FieldSceneSnapshot;
+  query: string;
+  onQueryChange: (value: string) => void;
+  onSampleSelect: (id: string) => void;
+  onSceneSelect: (id: string) => void;
+  onFieldSelect: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+
+  const filteredDatasets = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return data.datasets.datasets;
+    }
+    return data.datasets.datasets.filter((dataset) => {
+      const text = [
+        dataset.name,
+        dataset.modality,
+        dataset.source,
+        dataset.fit_for_demo,
+        dataset.domains.join(" "),
+        pickText(dataset.local_status, language)
+      ]
+        .join(" ")
+        .toLowerCase();
+      return text.includes(normalized);
+    });
+  }, [data.datasets.datasets, language, query]);
+
+  return (
+    <aside className="left-panel">
+      <div className="panel-block">
+        <p className="panel-eyebrow">{t("navigatorTitle")}</p>
+        <h2>{t("navigatorSubtitle")}</h2>
+        <input
+          className="workbench-search"
+          type="search"
+          value={query}
+          onChange={(event) => onQueryChange(event.target.value)}
+          placeholder={t("searchData")}
+        />
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("demoDocuments")}</span>
+          <strong>{data.demo.samples.length}</strong>
+        </div>
+        <div className="nav-list">
+          {data.demo.samples.slice(0, 10).map((sample) => (
+            <button
+              key={sample.id}
+              className={`nav-item ${selectedSample.id === sample.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onSampleSelect(sample.id)}
+            >
+              <span>{pickText(sample.label, language)}</span>
+              <small>{pickText(sample.source_group, language)}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("realScenes")}</span>
+          <strong>{data.real_scenes.scenes.length}</strong>
+        </div>
+        <div className="nav-list compact">
+          {data.real_scenes.scenes.map((scene) => (
+            <button
+              key={scene.id}
+              className={`nav-item ${selectedScene.id === scene.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onSceneSelect(scene.id)}
+            >
+              <span>{scene.name}</span>
+              <small>
+                {scene.cube_shape[2]} {t("bands")} / {scene.modality}
+              </small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("fieldSamples")}</span>
+          <strong>{data.field_samples.scenes.length}</strong>
+        </div>
+        <div className="nav-list compact">
+          {data.field_samples.scenes.map((scene) => (
+            <button
+              key={scene.id}
+              className={`nav-item ${selectedField.id === scene.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onFieldSelect(scene.id)}
+            >
+              <span>{scene.name}</span>
+              <small>
+                {scene.patch_count} {t("patchesUnit")} / {scene.sensor}
+              </small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section catalog-section">
+        <div className="nav-section-header">
+          <span>{t("datasetCatalog")}</span>
+          <strong>{filteredDatasets.length}</strong>
+        </div>
+        <div className="catalog-list">
+          {filteredDatasets.slice(0, 8).map((dataset) => (
+            <a key={dataset.id} className="catalog-row" href={dataset.source_url} target="_blank" rel="noreferrer">
+              <span>{dataset.name}</span>
+              <small>{domainLabel(dataset)}</small>
+              <em>{getDatasetStatus(dataset, language)}</em>
+            </a>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function SampleWorkbench({
+  sample,
+  topics,
+  language
+}: {
+  sample: DemoSample;
+  topics: TopicProfile[];
+  language: Language;
+}) {
+  const { t } = useTranslation();
+  const setSelectedTopicId = useStore((state) => state.setSelectedTopicId);
+  const selectedTopicId = useStore((state) => state.selectedTopicId);
+  const topic = getTopic(topics, selectedTopicId ?? sample.dominant_topic_id);
+
+  return (
+    <section className="workbench-card primary-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("activeDocument")}</p>
+          <h2>{pickText(sample.label, language)}</h2>
+          <p>{pickText(sample.source_group, language)}</p>
+        </div>
+        <div className="status-pill">
+          <span className="status-dot ok" />
+          {t("localDemo")}
+        </div>
+      </div>
+
+      <div className="chart-stack">
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("spectrumTitle")}</span>
+            <small>{sample.spectrum.length} {t("bands")}</small>
+          </div>
+          <LineChart values={sample.spectrum} stroke="var(--accent-blue)" />
+        </div>
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("quantizedTitle")}</span>
+            <small>{t("levelsCount", { count: Math.max(...sample.quantized_levels) + 1 })}</small>
+          </div>
+          <BarStrip values={sample.quantized_levels} color="var(--accent-cyan)" />
+        </div>
+      </div>
+
+      <div className="topic-mixture-zone">
+        <div>
+          <div className="card-title-row tight">
+            <span>{t("inferredMixture")}</span>
+            <small>{t("dominantTopic")}: {pickText(topic.name, language)}</small>
+          </div>
+          <MixtureBars values={sample.inferred_topic_mixture} colors={topics.map((item) => item.color)} />
+        </div>
+        <div className="topic-grid-mini">
+          {topics.map((item, index) => (
+            <button
+              key={item.id}
+              className={`topic-button ${topic.id === item.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setSelectedTopicId(item.id)}
+            >
+              <span className="topic-dot" style={{ background: item.color }} />
+              <span>{pickText(item.name, language)}</span>
+              <strong>{percent(sample.inferred_topic_mixture[index] ?? 0)}</strong>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SceneWorkbench({
+  scene,
+  field,
+  language
+}: {
+  scene: RealSceneSnapshot;
+  field: FieldSceneSnapshot;
+  language: Language;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <section className="scene-grid">
+      <article className="workbench-card">
+        <div className="card-title-row">
+          <div>
+            <p className="panel-eyebrow">{t("realScenes")}</p>
+            <h3>{scene.name}</h3>
+            <p>{scene.sensor}</p>
+          </div>
+          <a className="small-link" href={scene.source_url} target="_blank" rel="noreferrer">
+            {t("sourceShort")}
+          </a>
+        </div>
+        <div className="preview-grid">
+          {scene.rgb_preview_path ? <img src={scene.rgb_preview_path} alt={`${scene.name} RGB preview`} /> : null}
+          {scene.label_preview_path ? <img src={scene.label_preview_path} alt={`${scene.name} label preview`} /> : null}
+        </div>
+        <dl className="metric-strip">
+          <div>
+            <dt>{t("shape")}</dt>
+            <dd>{formatShape(scene.cube_shape)}</dd>
+          </div>
+          <div>
+            <dt>{t("labeledPixels")}</dt>
+            <dd>{scene.labeled_pixels.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>{t("topicsTitle")}</dt>
+            <dd>{scene.topics.length}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article className="workbench-card">
+        <div className="card-title-row">
+          <div>
+            <p className="panel-eyebrow">{t("fieldSamples")}</p>
+            <h3>{field.name}</h3>
+            <p>{field.sensor}</p>
+          </div>
+          <a className="small-link" href={field.source_url} target="_blank" rel="noreferrer">
+            {t("sourceShort")}
+          </a>
+        </div>
+        <div className="preview-grid">
+          <img src={field.rgb_preview_path} alt={`${field.name} RGB preview`} />
+          <img src={field.ndvi_preview_path} alt={`${field.name} NDVI preview`} />
+        </div>
+        <dl className="metric-strip">
+          <div>
+            <dt>{t("patchCount")}</dt>
+            <dd>{field.patch_count.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>{t("patchSize")}</dt>
+            <dd>{field.patch_size}px</dd>
+          </div>
+          <div>
+            <dt>{t("bands")}</dt>
+            <dd>{field.band_names.length}</dd>
+          </div>
+        </dl>
+      </article>
+    </section>
+  );
+}
+
+function DatasetStatusPanel({
+  datasets,
+  language
+}: {
+  datasets: DatasetEntry[];
+  language: Language;
+}) {
+  const { t } = useTranslation();
+  const priority = datasets.filter((dataset) =>
+    ["cuprite-upv-reflectance", "salinas-corrected", "cross-scene-wetland-hsi", "bigearthnet-v2", "hyspecnet-11k"].includes(dataset.id)
+  );
+
+  return (
+    <section className="workbench-card dataset-status-panel">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("datasetExpansion")}</p>
+          <h3>{t("availableData")}</h3>
+        </div>
+        <span className="status-pill">{datasets.length} {t("datasetEntries")}</span>
+      </div>
+      <div className="dataset-table">
+        {priority.map((dataset) => (
+          <div key={dataset.id} className="dataset-row">
+            <div>
+              <strong>{dataset.name}</strong>
+              <span>{dataset.modality}</span>
+            </div>
+            <div>{formatSize(dataset.file_size_mb)}</div>
+            <em>{getDatasetStatus(dataset, language)}</em>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function InspectorPanel({
+  data,
+  sample,
+  selectedTopic,
+  representation,
+  language
+}: {
+  data: AppPayload;
+  sample: DemoSample;
+  selectedTopic: TopicProfile;
+  representation: RepresentationVariant;
+  language: Language;
+}) {
+  const { t } = useTranslation();
+  const selectedRepresentation = useStore((state) => state.selectedRepresentation);
+  const setSelectedRepresentation = useStore((state) => state.setSelectedRepresentation);
+  const tokens = sample.tokens_by_representation[selectedRepresentation] ?? sample.tokens_by_representation[representation.id];
+  const baseline = sample.predictions.baseline ?? sample.target_value;
+  const predictions = Object.entries(sample.predictions);
+  const bestMetric = [...data.demo.model_metrics].sort((a, b) => a.rmse - b.rmse)[0];
+
+  return (
+    <aside className="right-panel">
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("methodInspector")}</p>
+        <h2>{t("selectRepresentation")}</h2>
+        <div className="representation-stack">
+          {data.methodology.representations.map((item) => (
+            <button
+              key={item.id}
+              className={`representation-button ${selectedRepresentation === item.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setSelectedRepresentation(item.id)}
+            >
+              <strong>{pickText(item.name, language)}</strong>
+              <span>{pickText(item.summary, language)}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("documentDefinition")}</p>
+        <p>{pickText(representation.document_definition, language)}</p>
+        <p className="soft-note">{pickText(representation.word_definition, language)}</p>
+      </section>
+
+      <section className="inspector-block">
+        <div className="card-title-row tight">
+          <span>{t("tokensTitle")}</span>
+          <small>{tokens.preview.length} / {tokens.total_tokens}</small>
+        </div>
+        <div className="token-cloud">
+          {tokens.preview.slice(0, 16).map((token) => (
+            <span key={token} className="token-pill">
+              {token}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("selectedTopicProfile")}</p>
+        <div className="topic-profile-title">
+          <span className="topic-dot large" style={{ background: selectedTopic.color }} />
+          <h3>{pickText(selectedTopic.name, language)}</h3>
+        </div>
+        <p>{pickText(selectedTopic.summary, language)}</p>
+        <LineChart values={selectedTopic.band_profile} stroke={selectedTopic.color} />
+        <div className="token-cloud">
+          {selectedTopic.top_words.slice(0, 8).map((word) => (
+            <span key={word.token} className="token-pill subtle">
+              {word.token} {word.weight.toFixed(2)}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("modelReadout")}</p>
+        <div className="model-metric">
+          <span>{pickText(bestMetric.label, language)}</span>
+          <strong>{bestMetric.rmse.toFixed(2)} {t("rmse")}</strong>
+        </div>
+        <div className="prediction-list">
+          {predictions.map(([key, value]) => (
+            <div key={key}>
+              <span>{key}</span>
+              <strong>{value.toFixed(1)}</strong>
+            </div>
+          ))}
+          <div>
+            <span>{t("baselineDelta")}</span>
+            <strong>{(sample.target_value - baseline).toFixed(1)}</strong>
+          </div>
+        </div>
+      </section>
+    </aside>
+  );
+}
 
 export function App() {
   const { t, i18n } = useTranslation();
   const [data, setData] = useState<AppPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+
+  const selectedSampleId = useStore((state) => state.selectedSampleId);
+  const setSelectedSampleId = useStore((state) => state.setSelectedSampleId);
+  const selectedTopicId = useStore((state) => state.selectedTopicId);
+  const setSelectedTopicId = useStore((state) => state.setSelectedTopicId);
+  const selectedRepresentation = useStore((state) => state.selectedRepresentation);
 
   useEffect(() => {
     let active = true;
@@ -35,13 +558,33 @@ export function App() {
     };
   }, []);
 
-  const language = i18n.resolvedLanguage?.startsWith("en") ? "en" : "es";
+  const language: Language = i18n.resolvedLanguage?.startsWith("en") ? "en" : "es";
 
   useEffect(() => {
-    if (data) {
-      document.title = `${data.overview.title} - ${pickText(data.overview.tagline, language)}`;
-    }
+    if (!data) return;
+    document.title = `${data.overview.title} - ${pickText(data.overview.tagline, language)}`;
   }, [data, language]);
+
+  useEffect(() => {
+    if (!data) return;
+    const firstSample = data.demo.samples[0];
+    const firstTopic = data.demo.topics[0];
+    const firstScene = data.real_scenes.scenes[0];
+    const firstField = data.field_samples.scenes[0];
+
+    if (firstSample && !selectedSampleId) {
+      setSelectedSampleId(firstSample.id);
+    }
+    if (firstTopic && !selectedTopicId) {
+      setSelectedTopicId(firstTopic.id);
+    }
+    if (firstScene && !selectedSceneId) {
+      setSelectedSceneId(firstScene.id);
+    }
+    if (firstField && !selectedFieldId) {
+      setSelectedFieldId(firstField.id);
+    }
+  }, [data, selectedFieldId, selectedSampleId, selectedSceneId, selectedTopicId, setSelectedSampleId, setSelectedTopicId]);
 
   if (error) {
     return (
@@ -65,47 +608,53 @@ export function App() {
     );
   }
 
+  const sample = data.demo.samples.find((item) => item.id === selectedSampleId) ?? data.demo.samples[0];
+  const scene = data.real_scenes.scenes.find((item) => item.id === selectedSceneId) ?? data.real_scenes.scenes[0];
+  const field = data.field_samples.scenes.find((item) => item.id === selectedFieldId) ?? data.field_samples.scenes[0];
+  const selectedTopic = getTopic(data.demo.topics, selectedTopicId ?? sample.dominant_topic_id);
+  const representation =
+    data.methodology.representations.find((item) => item.id === selectedRepresentation) ?? data.methodology.representations[0];
+
   return (
     <div className="app-shell">
-      <Header overview={data.overview} language={language} />
+      <WorkbenchHeader data={data} language={language} onLanguageChange={(next) => void i18n.changeLanguage(next)} />
 
-      <main className="page-shell">
-        <section className="hero-panel">
-          <div className="hero-copy">
-            <p className="eyebrow">{t("heroKicker")}</p>
-            <h1>{data.overview.title}</h1>
-            <p className="hero-tagline">{pickText(data.overview.tagline, language)}</p>
-            <p className="hero-hypothesis">{pickText(data.overview.hypothesis, language)}</p>
+      <main className="workbench-shell">
+        <NavigatorPanel
+          data={data}
+          language={language}
+          selectedSample={sample}
+          selectedScene={scene}
+          selectedField={field}
+          query={query}
+          onQueryChange={setQuery}
+          onSampleSelect={(id) => {
+            setSelectedSampleId(id);
+            const nextSample = data.demo.samples.find((item) => item.id === id);
+            if (nextSample) {
+              setSelectedTopicId(nextSample.dominant_topic_id);
+            }
+          }}
+          onSceneSelect={setSelectedSceneId}
+          onFieldSelect={setSelectedFieldId}
+        />
+
+        <section className="center-workbench">
+          <div className="workbench-intro">
+            <div>
+              <p className="panel-eyebrow">{t("workbenchMode")}</p>
+              <h2>{t("workbenchTitle")}</h2>
+            </div>
+            <p>{pickText(data.overview.hypothesis, language)}</p>
           </div>
 
-          <div className="hero-stats">
-            {data.overview.hero_stats.map((stat) => (
-              <article key={stat.label.en} className="card stat-card">
-                <p className="small-label">{pickText(stat.label, language)}</p>
-                <div className="stat-value">{stat.value}</div>
-                <p>{pickText(stat.detail, language)}</p>
-              </article>
-            ))}
-          </div>
+          <SampleWorkbench sample={sample} topics={data.demo.topics} language={language} />
+          <SceneWorkbench scene={scene} field={field} language={language} />
+          <DatasetStatusPanel datasets={data.datasets.datasets} language={language} />
         </section>
 
-        <SectionNav sections={data.overview.sections} language={language} />
-
-        <DatasetCatalog catalog={data.datasets} language={language} />
-        <RealScenePanel payload={data.real_scenes} />
-        <FieldSamplePanel payload={data.field_samples} />
-        <SpectrumWorkbench demo={data.demo} methodology={data.methodology} language={language} />
-        <TopicExplorer demo={data.demo} language={language} />
-        <InferencePanel demo={data.demo} language={language} />
-        <TheoryPanel overview={data.overview} methodology={data.methodology} language={language} />
+        <InspectorPanel data={data} sample={sample} selectedTopic={selectedTopic} representation={representation} language={language} />
       </main>
-
-      <footer className="site-footer">
-        <span>{t("footerNote")}</span>
-        <a href={data.overview.repo.url} target="_blank" rel="noreferrer">
-          {t("sourceCode")}
-        </a>
-      </footer>
     </div>
   );
 }

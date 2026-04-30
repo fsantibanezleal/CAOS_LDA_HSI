@@ -48,10 +48,10 @@
         "en": "Curated public data options",
         "es": "Opciones publicas curadas"
       },
-      "value": "10",
+      "value": "21",
       "detail": {
-        "en": "Scenes, field MSI samples, laboratory references, and spectral libraries selected for expansion.",
-        "es": "Escenas, muestras MSI de campo, referencias de laboratorio y librerias espectrales seleccionadas para expansion."
+        "en": "Scenes, field MSI samples, satellite patch sources, laboratory references, and spectral libraries selected for expansion.",
+        "es": "Escenas, muestras MSI de campo, fuentes de parches satelitales, referencias de laboratorio y librerias espectrales seleccionadas para expansion."
       }
     }
   ],

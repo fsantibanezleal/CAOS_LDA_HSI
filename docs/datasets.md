@@ -1,63 +1,134 @@
-# Dataset Notes
+# Dataset Scope And Expansion
 
-The project needs public MSI / HSI examples that satisfy two competing
-constraints:
+This document records what data exists in the product today, what is
+cataloged for expansion, and what must remain external or subset-only.
 
-1. they should be realistic enough to support meaningful demos
-2. they should stay small enough that a public Git repository remains
-   practical
+## Active Size Rule
 
-## Downloaded HSI Benchmarks
+Public raw files are eligible only when each individual file is below
+100 MB and licensing/provenance are acceptable. This rule is about single
+files, not total repository size. Even if every file is below 100 MB, the
+repo must still avoid becoming heavy enough to make development and VPS
+deployment fragile.
 
-The current local pipeline downloads the following official UPV/EHU
-benchmarks into `data/raw/upv_ehu/` and converts them into compact app
-assets under `data/derived/real/`:
+## Current Local Data
 
-- `Indian Pines corrected`: 5.7 MB
-- `Salinas-A corrected`: 1.5 MB
-- `Pavia University`: 33.2 MB
-- `Kennedy Space Center`: 56.8 MB
-- `Botswana`: 78.9 MB
+The current pipeline downloads official public sources into `data/raw/`
+and creates compact app assets under `data/derived/`. Raw data is not
+tracked in Git.
 
-These scenes are a good first wave because they span agriculture, urban
-surfaces, wetlands, water, and soil while staying below the current
-per-file target.
+### UPV/EHU HSI Scenes
 
-## Downloaded MSI Field Samples
+The following scenes are already represented in compact app summaries:
 
-The current local pipeline also downloads official MicaSense RedEdge
-samples into `data/raw/micasense/` and converts the orthomosaics into
-compact app assets under `data/derived/field/`:
+| Scene | Theme | Bands | Raw Size | Current Use |
+|---|---|---:|---:|---|
+| Indian Pines corrected | Agriculture, vegetation | 200 | 5.7 MB | Real-scene summary and preview |
+| Salinas-A corrected | Agriculture, vegetation | 204 | 1.5 MB | Real-scene summary and preview |
+| Pavia University | Urban materials | 103 | 33.2 MB | Real-scene summary and preview |
+| Kennedy Space Center | Wetlands, vegetation, water | 176 | 56.8 MB | Real-scene summary and preview |
+| Botswana | Wetlands, vegetation, soil | 145 | 78.9 MB | Real-scene summary and preview |
 
-- `rededge_geotiff_example1.tif`: about 18.2 MB
-- `rededge_geotiff_example2.tif`: about 68.6 MB
-- raw sample captures for examples 1, 2, and 3 as ZIP archives
+These are useful because they already cover agriculture, urban, wetland,
+water, vegetation, and soil examples while staying below 100 MB per raw
+file.
 
-These field samples are especially useful because they offer a compact,
-real MSI complement to the HSI remote-sensing scenes while preserving
-local spectral variability over vegetation patches.
+### MicaSense Field MSI Samples
 
-## Cataloged Complementary Sources
+The app also includes compact summaries derived from official MicaSense
+RedEdge examples:
 
-- `EuroSAT`: strong MSI complement, but better handled as a curated
-  subset or downloader-driven asset rather than a full committed archive
-- `CAVE Multispectral Image Database`: useful laboratory-scale reference
-  for reflectance scenes, but official direct access is brittle enough
-  that it is treated as cataloged rather than automated for now
-- `USGS Spectral Library Version 7`: especially relevant for mineral and
-  clay-oriented one-dimensional spectra
-- `ECOSTRESS Spectral Library`: useful when the demo needs broader
-  material diversity and richer spectral variability
+| Asset | Theme | Bands | Raw Size | Current Use |
+|---|---|---:|---:|---|
+| Example 1 orthomosaic | Field vegetation | 4 | about 18.2 MB | Field MSI summary, RGB preview, NDVI preview |
+| Example 2 orthomosaic | Field vegetation | 4 | about 68.6 MB | Field MSI summary, RGB preview, NDVI preview |
 
-## Current Repository Strategy
+These samples are important because they prove the workflow can handle
+field multispectral imagery, not only academic hyperspectral cubes.
 
-- keep dataset discovery and editorial notes in `data/manifests/`
-- keep the interactive release powered by both a synthetic compact demo
-  and compact summaries derived from real public scenes
-- keep raw benchmark cubes and orthomosaics under `data/raw/` outside
-  Git tracking
-- regenerate app-friendly assets with:
-  `data-pipeline/fetch_public_hsi.py`,
-  `data-pipeline/fetch_public_msi.py`,
-  `data-pipeline/build_real_samples.py`, and
-  `data-pipeline/build_field_samples.py`
+## Under-100 MB Expansion Candidates
+
+These should be the first additions after the workbench redesign is
+validated.
+
+### Full Salinas Corrected
+
+- Source: UPV/EHU Hyperspectral Remote Sensing Scenes
+- Size: 25.3 MB
+- Theme: agriculture, vegetation, soil, vineyards
+- Value: expands the current Salinas-A subset into a full agricultural
+  scene with richer spatial context
+- Handling: add to `fetch_public_hsi.py`, derive previews, and compare
+  topic mixtures against Salinas-A
+
+### Cuprite Reflectance
+
+- Source: UPV/EHU / AVIRIS
+- Size: about 95.3 MB
+- Theme: minerals, clays, geology, unmixing
+- Value: directly supports the first serious mineral/clay workflow
+- Handling: keep download-on-demand until attribution, exact URL, and
+  preview generation are validated
+- Risk: close to the GitHub individual-file limit, so derived summaries
+  should stay compact
+
+### Small Unmixing ROI Suite
+
+- Source family: hyperspectral unmixing benchmark ROI datasets
+- Theme: minerals, urban, vegetation, water, endmember variability
+- Value: enables topic-mixture versus unmixing comparisons
+- Handling: verify original source, license, and exact per-file sizes
+  before ingestion
+
+## Cataloged Subset Sources
+
+These are useful for demonstrating broad method transfer, but they should
+not be committed as full raw datasets.
+
+| Source | Theme | Constraint | Intended Use |
+|---|---|---|---|
+| EuroSAT | Sentinel-2 cities, agriculture, vegetation, rivers, sea/lake | Full archive should remain external | Curated class-balanced MSI patches |
+| BigEarthNet v2.0 | Sentinel-1/Sentinel-2 multi-label land cover | Full S2 archive is about 59 GiB | Metadata-driven selected patches |
+| WHU-Hi | UAV HSI agriculture and fine crop classes | Download/licensing/per-file sizes need verification | UAV crop and high-resolution vegetation demo |
+| HyRANK | Cross-scene HSI | Canonical source and sizes need verification | Domain-shift and topic stability testing |
+| HySpecNet-11k | EnMAP HSI patches | Large patch collection | Selected satellite HSI patch manifests |
+| Houston 2013 GRSS | Urban HSI + LiDAR | Access and redistribution constraints | Urban multimodal demo |
+| Cross-scene wetland HSI | Wetlands and domain adaptation | Zenodo archive is about 1.3 GB | External wetland source plus tiny derived patches |
+| Landsat Collection 2 Level-2 | Surface reflectance, water, humidity, drought, temperature | Query-driven large scenes | Future geospatial ingestion and index comparisons |
+| HIDSAG | Geometallurgy, VNIR/SWIR, supervised lab samples | Figshare package sizing and redistribution need verification | Mineral/geometallurgy research reference |
+
+## Implementation Status Labels
+
+Dataset entries should use explicit status labels:
+
+- `Downloaded and derived locally`: compact app assets exist now.
+- `Cataloged for expansion`: source is selected, but not ingested.
+- `Catalog only`: useful source, no ingestion yet.
+- `External library`: do not track raw data; use curated slices later.
+- `External archive`: full archive is too large for Git.
+- `Access-gated catalog entry`: access or redistribution is not yet clear.
+
+## What Must Not Be Claimed Yet
+
+- The app does not currently train LDA over every cataloged dataset.
+- Catalog entries are not the same as local app data.
+- Wetland, Landsat, BigEarthNet, HySpecNet, WHU-Hi, and Houston are not
+  local first-class demos yet.
+- Mineral/clay interpretation is not validated until Cuprite or curated
+  spectral-library slices are integrated with calibrated wavelengths.
+- MicaSense strata are heuristic; they are not labeled agronomic ground
+  truth.
+
+## Near-Term Data Work
+
+1. Add full Salinas and Cuprite to the HSI downloader once direct URLs are
+   rechecked.
+2. Regenerate compact previews and derived summaries for the new scenes.
+3. Add a small mineral/clay spectral-library subset from USGS or
+   ECOSTRESS with transparent attribution.
+4. Add a tiny Sentinel-2 patch subset that includes urban, water,
+   vegetation, and agriculture classes.
+5. Add wetland patches only through an external-download plus
+   derived-subset workflow.
+6. Add a manifest field that clearly separates local data, optional raw
+   data, external data, and planned data.

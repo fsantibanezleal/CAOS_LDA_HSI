@@ -1,7 +1,7 @@
 {
   "selection_policy": {
-    "en": "Prefer public examples that are small enough to keep individual raw files below roughly 80 MB whenever possible. When a source is larger, keep only a manifest and load subsets on demand. Prefer sources with direct official downloads so the pipeline can be reproduced locally and on the VPS without manual portal work.",
-    "es": "Preferir ejemplos publicos lo bastante pequenos para mantener archivos crudos individuales bajo aproximadamente 80 MB cuando sea posible. Cuando una fuente es mayor, mantener solo un manifiesto y cargar subconjuntos bajo demanda. Privilegiar fuentes con descargas oficiales directas para que el pipeline pueda reproducirse localmente y en el VPS sin trabajo manual en portales."
+    "en": "Prefer public examples that keep each individual raw file below 100 MB whenever possible. When a source is larger, access-gated, or distributed as a heavy archive, keep only a manifest and load curated subsets on demand. Prefer sources with direct official downloads so the pipeline can be reproduced locally and on the VPS without manual portal work.",
+    "es": "Preferir ejemplos publicos que mantengan cada archivo crudo individual bajo 100 MB cuando sea posible. Cuando una fuente sea mayor, requiera acceso o se distribuya como archivo pesado, mantener solo un manifiesto y cargar subconjuntos curados bajo demanda. Privilegiar fuentes con descargas oficiales directas para que el pipeline pueda reproducirse localmente y en el VPS sin trabajo manual en portales."
   },
   "datasets": [
     {
@@ -125,6 +125,78 @@
       "fit_for_demo": "borderline-raw-scene"
     },
     {
+      "id": "salinas-corrected",
+      "name": "Salinas corrected",
+      "modality": "HSI scene",
+      "domains": ["agriculture", "vegetation", "soil", "vineyards"],
+      "bands": 204,
+      "spatial_shape": [512, 217],
+      "file_size_mb": 25.3,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Cataloged for expansion",
+        "es": "Catalogado para expansion"
+      },
+      "repository_strategy": {
+        "en": "Eligible under the 100 MB per-file rule. Add to the downloader after the workbench redesign is validated.",
+        "es": "Elegible bajo la regla de 100 MB por archivo. Agregar al descargador despues de validar el rediseno del workbench."
+      },
+      "notes": {
+        "en": "Full agricultural Salinas scene with 16 classes. It broadens the current Salinas-A subset without adding a heavy file.",
+        "es": "Escena agricola Salinas completa con 16 clases. Amplia el subconjunto Salinas-A actual sin agregar un archivo pesado."
+      },
+      "fit_for_demo": "under-100mb-expansion"
+    },
+    {
+      "id": "cuprite-upv-reflectance",
+      "name": "Cuprite reflectance",
+      "modality": "HSI scene",
+      "domains": ["minerals", "clays", "geology", "unmixing"],
+      "bands": 224,
+      "spatial_shape": null,
+      "file_size_mb": 95.3,
+      "source": "UPV/EHU Hyperspectral Remote Sensing Scenes / AVIRIS",
+      "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+      "local_status": {
+        "en": "Cataloged for mineral expansion",
+        "es": "Catalogado para expansion mineral"
+      },
+      "repository_strategy": {
+        "en": "Eligible but close to the GitHub single-file limit. Keep download-on-demand until the mineral-scene builder and attribution checks are finished.",
+        "es": "Elegible pero cerca del limite de archivo individual de GitHub. Mantener descarga bajo demanda hasta terminar el constructor de escenas minerales y las verificaciones de atribucion."
+      },
+      "notes": {
+        "en": "High-value mineral and clay benchmark for the product's first serious workflow.",
+        "es": "Benchmark mineral y de arcillas de alto valor para el primer flujo serio del producto."
+      },
+      "fit_for_demo": "mineral-priority-under-limit"
+    },
+    {
+      "id": "unmixing-roi-suite",
+      "name": "Small hyperspectral unmixing ROI suite",
+      "modality": "HSI unmixing benchmarks",
+      "domains": ["minerals", "urban", "vegetation", "water", "unmixing"],
+      "bands": null,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "Hyperspectral unmixing benchmark ROIs",
+      "source_url": "https://lesun.weebly.com/hyperspectral-data-set.html",
+      "local_status": {
+        "en": "Cataloged for expansion",
+        "es": "Catalogado para expansion"
+      },
+      "repository_strategy": {
+        "en": "Verify original host, license, and exact per-file sizes, then incorporate only small ROIs with clear provenance.",
+        "es": "Verificar host original, licencia y tamanos exactos por archivo, luego incorporar solo ROIs pequenos con procedencia clara."
+      },
+      "notes": {
+        "en": "Samson, Jasper Ridge, Urban, and Cuprite ROI scenes can support topic-mixture versus unmixing comparisons.",
+        "es": "Escenas ROI Samson, Jasper Ridge, Urban y Cuprite pueden apoyar comparaciones entre mezclas de topicos y unmixing."
+      },
+      "fit_for_demo": "small-diverse-unmixing"
+    },
+    {
       "id": "micasense-rededge-samples",
       "name": "MicaSense RedEdge sample data",
       "modality": "MSI field samples",
@@ -171,6 +243,174 @@
         "es": "Complemento MSI fuerte a las escenas HSI de teledeteccion. Los parches individuales son pequenos aunque el archivo completo deba mantenerse externo."
       },
       "fit_for_demo": "subset-only"
+    },
+    {
+      "id": "bigearthnet-v2",
+      "name": "BigEarthNet v2.0",
+      "modality": "Sentinel-1 / Sentinel-2 patch dataset",
+      "domains": ["satellite", "land-cover", "urban", "agriculture", "forest", "water"],
+      "bands": 13,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "BigEarthNet official archive",
+      "source_url": "https://bigearth.net/",
+      "local_status": {
+        "en": "Catalog only",
+        "es": "Solo catalogado"
+      },
+      "repository_strategy": {
+        "en": "Do not commit the full archive. Use metadata-driven class-balanced Sentinel-2 patch subsets after verifying license and patch layout.",
+        "es": "No commitear el archivo completo. Usar subconjuntos balanceados por clase de parches Sentinel-2 despues de verificar licencia y estructura."
+      },
+      "notes": {
+        "en": "Large benchmark for multi-label land cover. It is valuable for proving transfer across urban, vegetation, agricultural, and water scenes.",
+        "es": "Benchmark grande para cobertura de suelo multi-etiqueta. Es valioso para probar transferencia entre escenas urbanas, vegetacion, agricultura y agua."
+      },
+      "fit_for_demo": "external-patch-subset"
+    },
+    {
+      "id": "whu-hi-uav-scenes",
+      "name": "WHU-Hi UAV hyperspectral scenes",
+      "modality": "UAV HSI benchmark",
+      "domains": ["agriculture", "vegetation", "urban-fringe", "water", "shadows"],
+      "bands": 270,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "WHU-Hi: UAV-borne hyperspectral benchmark",
+      "source_url": "https://arxiv.org/abs/2012.13920",
+      "local_status": {
+        "en": "Catalog only",
+        "es": "Solo catalogado"
+      },
+      "repository_strategy": {
+        "en": "Use curated subsets only after verifying official download location, license, and per-file sizes.",
+        "es": "Usar solo subconjuntos curados despues de verificar ubicacion oficial de descarga, licencia y tamanos por archivo."
+      },
+      "notes": {
+        "en": "Useful for showing the method on high-spatial-resolution UAV crop and land-cover scenes, not only classic airborne benchmarks.",
+        "es": "Util para mostrar el metodo en escenas UAV de alta resolucion espacial para cultivos y cobertura de suelo, no solo benchmarks aerotransportados clasicos."
+      },
+      "fit_for_demo": "uav-crop-diversity"
+    },
+    {
+      "id": "hyrank-cross-scene",
+      "name": "HyRANK cross-scene hyperspectral benchmark",
+      "modality": "Satellite / airborne HSI benchmark",
+      "domains": ["urban", "forest", "agriculture", "rocks", "water", "coastal"],
+      "bands": 176,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "HyRANK cross-scene benchmark references",
+      "source_url": "https://github.com/YuxiangZhang-BIT/Data-CSHSI",
+      "local_status": {
+        "en": "Catalog only",
+        "es": "Solo catalogado"
+      },
+      "repository_strategy": {
+        "en": "Catalog for cross-scene experiments. Verify canonical source, license, and sizes before any local ingestion.",
+        "es": "Catalogar para experimentos cross-scene. Verificar fuente canonica, licencia y tamanos antes de cualquier ingestion local."
+      },
+      "notes": {
+        "en": "Candidate for testing whether topic structures remain stable when scene geography changes.",
+        "es": "Candidato para probar si las estructuras de topicos se mantienen estables cuando cambia la geografia de la escena."
+      },
+      "fit_for_demo": "cross-scene-diversity"
+    },
+    {
+      "id": "hyspecnet-11k",
+      "name": "HySpecNet-11k",
+      "modality": "EnMAP HSI patch collection",
+      "domains": ["satellite", "land-cover", "unsupervised-learning", "compression"],
+      "bands": 224,
+      "spatial_shape": [128, 128],
+      "file_size_mb": null,
+      "source": "HySpecNet-11k official site",
+      "source_url": "https://hyspecnet.rsim.berlin/",
+      "local_status": {
+        "en": "External patch library",
+        "es": "Libreria externa de parches"
+      },
+      "repository_strategy": {
+        "en": "Keep the collection external and later track selected patch IDs plus compact derived topic summaries.",
+        "es": "Mantener la coleccion externa y luego rastrear IDs de parches seleccionados junto con resumenes compactos de topicos."
+      },
+      "notes": {
+        "en": "Large-scale EnMAP source for demonstrating satellite HSI transfer beyond hand-picked academic scenes.",
+        "es": "Fuente EnMAP de gran escala para demostrar transferencia satelital HSI mas alla de escenas academicas seleccionadas manualmente."
+      },
+      "fit_for_demo": "external-patch-subset"
+    },
+    {
+      "id": "houston-2013-hsi-lidar",
+      "name": "Houston 2013 HSI + LiDAR",
+      "modality": "Urban multimodal benchmark",
+      "domains": ["urban", "campus", "multimodal", "lidar", "classification"],
+      "bands": 144,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "2013 IEEE GRSS Data Fusion Contest",
+      "source_url": "https://machinelearning.ee.uh.edu/2013-ieee-grss-data-fusion-contest/",
+      "local_status": {
+        "en": "Access-gated catalog entry",
+        "es": "Entrada catalogada con acceso controlado"
+      },
+      "repository_strategy": {
+        "en": "Do not assume redistributability. Use only after access, license, and redistribution constraints are verified.",
+        "es": "No asumir redistribucion. Usar solo despues de verificar acceso, licencia y restricciones de redistribucion."
+      },
+      "notes": {
+        "en": "Important urban case because it pairs hyperspectral imagery with LiDAR DSM over a campus and neighboring urban area.",
+        "es": "Caso urbano importante porque combina imagen hiperespectral con DSM LiDAR sobre un campus y area urbana vecina."
+      },
+      "fit_for_demo": "urban-access-gated"
+    },
+    {
+      "id": "cross-scene-wetland-hsi",
+      "name": "Cross-scene wetland HSI",
+      "modality": "Satellite HSI wetland scenes",
+      "domains": ["wetlands", "water", "vegetation", "domain-adaptation"],
+      "bands": null,
+      "spatial_shape": null,
+      "file_size_mb": 1300,
+      "source": "Zenodo cross-scene wetland HSI data",
+      "source_url": "https://zenodo.org/records/8105220",
+      "local_status": {
+        "en": "External archive",
+        "es": "Archivo externo"
+      },
+      "repository_strategy": {
+        "en": "Do not commit the full archive. Use it only through external download plus small, attribution-preserving derived patches.",
+        "es": "No commitear el archivo completo. Usarlo solo mediante descarga externa mas pequenos parches derivados con atribucion preservada."
+      },
+      "notes": {
+        "en": "Direct match for wetland demonstrations, but the archive size requires subset-only handling.",
+        "es": "Coincide directamente con demostraciones de humedales, pero el tamano del archivo exige manejo solo por subconjuntos."
+      },
+      "fit_for_demo": "wetland-external-subset"
+    },
+    {
+      "id": "landsat-c2-l2",
+      "name": "Landsat Collection 2 Level-2",
+      "modality": "Multispectral satellite surface reflectance / temperature",
+      "domains": ["satellite", "vegetation", "water", "humidity", "drought", "thermal"],
+      "bands": null,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "USGS Landsat Collection 2 Level-2 Science Products",
+      "source_url": "https://www.usgs.gov/landsat-missions/landsat-collection-2-level-2-science-products",
+      "local_status": {
+        "en": "External query-driven source",
+        "es": "Fuente externa guiada por consultas"
+      },
+      "repository_strategy": {
+        "en": "Use metadata-driven scene queries and small derived tiles. Do not track full Landsat products in Git.",
+        "es": "Usar consultas de escenas basadas en metadata y pequenos tiles derivados. No versionar productos Landsat completos en Git."
+      },
+      "notes": {
+        "en": "Best suited for vegetation, water, humidity, drought, and temperature index demonstrations when the app adds geospatial ingestion.",
+        "es": "Adecuado para demostraciones de vegetacion, agua, humedad, sequia e indices de temperatura cuando la app agregue ingestion geoespacial."
+      },
+      "fit_for_demo": "geospatial-ingestion-roadmap"
     },
     {
       "id": "cave-multispectral",
@@ -243,15 +483,55 @@
         "es": "Valiosa cuando la app necesita ejemplos que abarquen materiales naturales y artificiales, con mucha mas variabilidad que una firma espectral unica."
       },
       "fit_for_demo": "external-library"
+    },
+    {
+      "id": "hidsag-geometallurgy",
+      "name": "HIDSAG geometallurgy database",
+      "modality": "Laboratory HSI geometallurgy dataset",
+      "domains": ["minerals", "geometallurgy", "vnirswir", "regression", "classification"],
+      "bands": null,
+      "spatial_shape": null,
+      "file_size_mb": null,
+      "source": "HIDSAG: Hyperspectral Image Database for Supervised Analysis in Geometallurgy",
+      "source_url": "https://www.nature.com/articles/s41597-023-02061-x",
+      "local_status": {
+        "en": "External geometallurgy reference",
+        "es": "Referencia externa de geometalurgia"
+      },
+      "repository_strategy": {
+        "en": "Use only curated metadata and tiny derived examples until Figshare package sizes, redistribution rules, and selected subsets are verified.",
+        "es": "Usar solo metadata curada y ejemplos derivados pequenos hasta verificar tamanos de paquetes Figshare, reglas de redistribucion y subconjuntos seleccionados."
+      },
+      "notes": {
+        "en": "High-priority research reference for mineral workflows because it provides supervised VNIR/SWIR hyperspectral images and geometallurgical response variables.",
+        "es": "Referencia de investigacion prioritaria para flujos minerales porque provee imagenes hiperespectrales VNIR/SWIR supervisadas y variables de respuesta geometalurgicas."
+      },
+      "fit_for_demo": "geometallurgy-reference"
     }
   ],
   "exclusions": [
     {
-      "name": "Cuprite corrected",
+      "name": "Pavia Centre",
       "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
       "reason": {
-        "en": "The official single-scene file is about 95.3 MB, so it exceeds the current target for directly committed raw assets. Use crops or download-on-demand instead.",
-        "es": "El archivo oficial de una sola escena es de aproximadamente 95.3 MB, por lo que excede el objetivo actual para activos crudos commiteados directamente. Usar recortes o descarga bajo demanda."
+        "en": "The full raw scene is above the active 100 MB individual-file rule. Keep it external or build compact derived previews only.",
+        "es": "La escena cruda completa supera la regla activa de 100 MB por archivo individual. Mantenerla externa o construir solo previews derivados compactos."
+      }
+    },
+    {
+      "name": "Cross-scene wetland full archive",
+      "source_url": "https://zenodo.org/records/8105220",
+      "reason": {
+        "en": "The Zenodo archive is about 1.3 GB, so it is external-only until curated patches are extracted and documented.",
+        "es": "El archivo de Zenodo pesa aproximadamente 1.3 GB, por lo que es solo externo hasta extraer y documentar parches curados."
+      }
+    },
+    {
+      "name": "BigEarthNet full archive",
+      "source_url": "https://bigearth.net/",
+      "reason": {
+        "en": "The full benchmark is tens of GiB. Use metadata and selected patches, not a committed archive.",
+        "es": "El benchmark completo pesa decenas de GiB. Usar metadata y parches seleccionados, no un archivo commiteado."
       }
     }
   ]
