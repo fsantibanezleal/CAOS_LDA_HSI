@@ -133,8 +133,8 @@ Useful commands:
 
 ## Immediate Next Steps
 
-- Manually review the professional three-panel workbench and clustering
-  diagnostics before any production redeploy
+- Review the deployed professional workbench and clustering diagnostics
+  on `https://lda-hsi.fasl-work.com` before the next iteration
 - Extend the new PCA/KMeans diagnostics into topic stability, seed
   comparison, and representation-comparison reports
 - Add ECOSTRESS and satellite/UAV curated subsets after direct access,
@@ -143,5 +143,5 @@ Useful commands:
   vectors where available
 - Extend real-scene modelling to compare multiple document encodings on
   the downloaded public scenes, not only on the synthetic demo
-- Keep production deploys paused until local build, API smoke tests, and
-  visual checks pass
+- Keep future production deploys gated by local build, API smoke tests,
+  public smoke tests, and visual checks
