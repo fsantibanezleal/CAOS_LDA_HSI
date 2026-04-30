@@ -15,7 +15,9 @@ Subcommands:
   demo        Rebuild the synthetic demo payload
   fetch       Download official compact public HSI raw scenes into data/raw
   fetch-msi   Download official MicaSense MSI sample data into data/raw
-  fetch-all   Download both HSI and MSI public raw sources
+  fetch-spectral Download compact USGS spectral-library archives
+  fetch-unmixing Download compact public HSI unmixing scenes and libraries
+  fetch-all   Download all public raw sources used by the local demo
   build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes
   build-field Rebuild compact field MSI derived assets from downloaded raw scenes
   clean       Remove build outputs and Python caches
@@ -113,10 +115,20 @@ case "$command_name" in
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/fetch_public_msi.py
     ;;
+  fetch-spectral)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/fetch_public_spectral_libraries.py
+    ;;
+  fetch-unmixing)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/fetch_public_unmixing.py
+    ;;
   fetch-all)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/fetch_public_hsi.py
     .venv-pipeline/bin/python data-pipeline/fetch_public_msi.py
+    .venv-pipeline/bin/python data-pipeline/fetch_public_spectral_libraries.py
+    .venv-pipeline/bin/python data-pipeline/fetch_public_unmixing.py
     ;;
   build-real)
     ensure_pipeline_venv

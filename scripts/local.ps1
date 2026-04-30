@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-all", "build-real", "build-field", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -22,7 +22,9 @@ function Show-Help {
     Write-Host "  demo        Rebuild the synthetic demo payload"
     Write-Host "  fetch       Download official compact public HSI raw scenes into data/raw"
     Write-Host "  fetch-msi   Download official MicaSense MSI sample data into data/raw"
-    Write-Host "  fetch-all   Download both HSI and MSI public raw sources"
+    Write-Host "  fetch-spectral Download compact USGS spectral-library archives"
+    Write-Host "  fetch-unmixing Download compact public HSI unmixing scenes and libraries"
+    Write-Host "  fetch-all   Download all public raw sources used by the local demo"
     Write-Host "  build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes"
     Write-Host "  build-field Rebuild compact field MSI derived assets from downloaded raw scenes"
     Write-Host "  clean       Remove build outputs and Python caches"
@@ -122,10 +124,22 @@ switch ($Command) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_msi.py
     }
 
+    "fetch-spectral" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_spectral_libraries.py
+    }
+
+    "fetch-unmixing" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_unmixing.py
+    }
+
     "fetch-all" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_hsi.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_msi.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_spectral_libraries.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_unmixing.py
     }
 
     "build-real" {
