@@ -257,15 +257,38 @@ Current status: cataloged as a roadmap item.
 Compare topic word distributions or reconstructed topic spectra against
 USGS, ECOSTRESS, HIDSAG, or curated mineral/clay references.
 
-Current status: not implemented.
+Current status: partially scaffolded through nearest-reference comparison
+and spectral-library PCA/KMeans diagnostics. Full mineral interpretation
+still requires calibrated wavelength metadata and absorption-feature
+tokens.
+
+### Topic-Space Clustering Diagnostics
+
+After each scene has class or inferred-regime mean topic mixtures, those
+vectors can be treated as a compact geometry of spectral documents. PCA
+is used as the first projection because it is deterministic, simple to
+explain, and exposes how much variance the two displayed axes capture.
+KMeans is used as a first clustering baseline because it gives explicit
+cluster centers and a direct silhouette diagnostic.
+
+Current status: implemented as a derived payload, not as runtime model
+training. These clusters are diagnostic views over existing summaries.
+They are not ground-truth classes and should not be described as mineral
+identifications without external evidence.
 
 ## What Is Implemented Today
 
 - FastAPI payload for project metadata, methodology, datasets, demo
-  samples, real-scene summaries, and field MSI summaries.
+  samples, real-scene summaries, field MSI summaries, spectral-library
+  samples, and analysis diagnostics.
 - Synthetic compact LDA-style demo with topic mixtures and tokens.
-- Derived app assets from five public UPV/EHU HSI scenes.
+- Derived app assets from seven public UPV/EHU HSI scenes.
+- Derived app assets from three compact public unmixing ROIs.
 - Derived app assets from two MicaSense RedEdge orthomosaic examples.
+- Derived app assets from official USGS Spectral Library v7 AVIRIS and
+  Sentinel-2 compact archives.
+- Topic-space PCA/KMeans diagnostics for nine real scenes and
+  spectral-library PCA/KMeans diagnostics for two band-count groups.
 - Bilingual frontend, theme switching, and public repo link.
 - Dataset manifest with implemented, cataloged, external, and access-gated
   sources.
@@ -275,8 +298,9 @@ Current status: not implemented.
 - Real LDA training inside the app runtime.
 - Calibrated wavelength vectors for every scene.
 - Continuum removal and absorption-feature tokenization.
-- Spectral-library alignment and mineral/clay interpretation confidence.
-- Cross-scene topic stability experiments.
+- Full spectral-library alignment and mineral/clay interpretation
+  confidence.
+- Cross-scene topic stability experiments across seeds and tokenizers.
 - Download scripts for every cataloged source.
 - Curated patches from EuroSAT, BigEarthNet, HySpecNet-11k, WHU-Hi,
   Landsat, or wetland archives.
@@ -302,9 +326,11 @@ The highest-value technical improvements are:
 1. Add calibrated wavelength metadata wherever available.
 2. Implement band-intensity, derivative, and absorption-feature token
    families behind a stable representation interface.
-3. Add topic stability diagnostics.
-4. Add curated mineral/clay spectral-library slices.
-5. Add Cuprite and full Salinas under the 100 MB rule.
+3. Add topic stability diagnostics across random seeds and tokenizers.
+4. Add curated ECOSTRESS and HIDSAG mineral/clay spectral-library slices
+   where licensing and file sizes permit.
+5. Improve calibrated Cuprite and Salinas wavelength handling under the
+   100 MB rule.
 6. Add curated satellite, wetland, and urban patch subsets.
 7. Compare topic mixtures against standard baselines and simple spectral
    indices instead of showing topics alone.

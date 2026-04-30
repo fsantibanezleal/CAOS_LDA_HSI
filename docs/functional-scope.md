@@ -112,10 +112,13 @@ The redesign must preserve the existing backend payload shape:
 - `real_scenes`
 - `field_samples`
 - `spectral_library`
+- `analysis`
 
 The first workbench pass preserved the original payloads and later added
-`spectral_library` as a dedicated material-reference surface. Future
-payload growth should remain deliberate and documented.
+`spectral_library` as a dedicated material-reference surface. The current
+analysis pass adds compact derived PCA/KMeans diagnostics through
+`analysis`. Future payload growth should remain deliberate and
+documented.
 
 ## Implemented Functional Surface
 
@@ -133,6 +136,8 @@ The current backend supports:
 - spectral-library material references and nearest-reference comparison
 - scene topic-mixture matrices over the current compact real-scene
   summaries
+- topic-space PCA/KMeans clustering diagnostics over real scenes
+- spectral-library PCA/KMeans clustering diagnostics by band-count group
 
 ## Missing Functional Surface
 
@@ -145,7 +150,7 @@ The app does not yet support:
 - calibrated wavelength inspection for every source
 - geospatial map navigation
 - downloadable experiment reports
-- topic stability reports
+- topic stability reports across seeds, tokenizers, and scenes
 - authenticated project storage
 
 ## Product Improvement Focus
@@ -157,6 +162,8 @@ Short-term:
 - mineral/clay first workflow
 - better use of existing real-scene and field-sample summaries
 - reusable smoke-test scripts for local or deployed URLs
+- compact clustering and embedding diagnostics that are tied to real
+  derived data rather than decorative charts
 
 Medium-term:
 
@@ -165,6 +172,7 @@ Medium-term:
 - Cuprite and full Salinas
 - satellite and wetland patch subsets
 - model comparison reports
+- topic stability and representation comparison reports
 
 Long-term:
 

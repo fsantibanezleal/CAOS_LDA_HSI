@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.models.schemas import (
+    AnalysisPayload,
     AppPayload,
     DatasetCatalog,
     DemoPayload,
@@ -14,6 +15,7 @@ from app.models.schemas import (
     SpectralLibraryPayload,
 )
 from app.services.content import (
+    get_analysis,
     get_app_payload,
     get_datasets,
     get_demo,
@@ -56,6 +58,11 @@ def field_samples() -> FieldScenesPayload:
 @router.get("/spectral-library", response_model=SpectralLibraryPayload)
 def spectral_library() -> SpectralLibraryPayload:
     return get_spectral_library()
+
+
+@router.get("/analysis", response_model=AnalysisPayload)
+def analysis() -> AnalysisPayload:
+    return get_analysis()
 
 
 @router.get("/demo", response_model=DemoPayload)

@@ -8,8 +8,10 @@ paths=(
   "/healthz"
   "/api/app-data"
   "/api/spectral-library"
+  "/api/analysis"
   "/generated/real/previews/cuprite-aviris-reflectance-rgb.png"
   "/generated/spectral/library_samples.json"
+  "/generated/analysis/analysis.json"
   "/"
 )
 

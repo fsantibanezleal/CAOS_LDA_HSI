@@ -47,6 +47,8 @@ Acceptance criteria:
 - The spectral-library navigator participates in the main search filter.
 - Scene topic matrices and nearest spectral-library reference comparisons
   are implemented locally.
+- Compact PCA/KMeans clustering diagnostics are implemented locally for
+  real-scene topic mixtures and spectral-library reference spectra.
 
 ## Phase 2: Dataset Expansion
 
@@ -80,6 +82,8 @@ Remaining immediate data work:
 - curated Sentinel-2 / EuroSAT patch subset
 - calibrated wavelength metadata where available
 - reusable smoke-test scripts: implemented for PowerShell and Bash
+- derived analysis payload: implemented through
+  `data-pipeline/build_analysis_payload.py`
 
 Acceptance criteria:
 
@@ -92,8 +96,8 @@ Acceptance criteria:
 
 ## Phase 3: Tokenization Engine
 
-Status: partially scaffolded through deterministic derived assets; the
-full tokenizer engine is still planned.
+Status: partially scaffolded through deterministic derived assets and
+topic-space diagnostics; the full tokenizer engine is still planned.
 
 Work:
 
@@ -109,6 +113,9 @@ Acceptance criteria:
 - token meaning can be inspected from JSON
 - generated corpora stay compact enough for Git or are excluded with a
   manifest-only workflow
+- derived diagnostics record the feature space, method, random seed
+  convention, cluster count, silhouette score, and PCA variance whenever
+  applicable
 
 ## Phase 4: Mineral/Clay Workflow
 
@@ -150,7 +157,7 @@ Acceptance criteria:
 
 ## Phase 6: Research Validation
 
-Status: planned.
+Status: first diagnostic layer implemented; full validation is planned.
 
 Work:
 
@@ -160,12 +167,16 @@ Work:
 - baseline model comparison
 - cross-scene train/test reports
 - documented failure cases
+- PCA/KMeans topic-space and spectral-library diagnostics for visual
+  inspection before formal validation
 
 Acceptance criteria:
 
 - validation outputs are reproducible
 - reports explain when LDA helps and when it does not
 - docs distinguish demo evidence from publishable evidence
+- cluster visualizations expose diagnostics such as silhouette score
+  instead of showing unlabeled decorative scatter plots
 
 ## Open Engineering Questions
 
@@ -176,3 +187,5 @@ Acceptance criteria:
 - Should the backend expose a future `/api/corpus/:id` endpoint or keep
   the existing single payload for simplicity?
 - Which topic stability metric is easiest to explain in the public app?
+- Should topic embeddings stay PCA-first for interpretability, or add
+  UMAP/t-SNE only after seed-stability and parameter-sensitivity checks?

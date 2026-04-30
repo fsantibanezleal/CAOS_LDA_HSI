@@ -17,6 +17,11 @@ The current pipeline downloads official public sources into `data/raw/`
 and creates compact app assets under `data/derived/`. Raw data is not
 tracked in Git.
 
+The deployed app is expected to load the compact derived assets, not the
+raw `.mat`, `.tif`, or `.zip` files. This means the web app remains usable
+without a browser-triggered dataset download. Raw downloads are required
+only when regenerating the derived assets from source.
+
 ### UPV/EHU HSI Scenes
 
 The following scenes are already represented in compact app summaries:
@@ -74,6 +79,20 @@ USGS Spectral Library Version 7 ASCII sensor subsets:
 
 The full USGS library is not committed. Only compact derived material
 samples are tracked.
+
+### Derived Analysis Payload
+
+The app also tracks `data/derived/analysis/analysis.json`, currently about
+166 KB. It contains:
+
+- topic-space PCA/KMeans diagnostics for real scenes with at least two
+  class or inferred-regime summaries
+- spectral-library PCA/KMeans diagnostics grouped by band count
+- silhouette scores, PCA variance ratios, cluster profiles, and nearest
+  pairs
+
+This file is generated from existing derived JSON assets. It does not
+need raw cubes at runtime.
 
 ## Under-100 MB Expansion Candidates
 
@@ -142,6 +161,8 @@ Dataset entries should use explicit status labels:
 
 - The app does not currently train LDA over every cataloged dataset.
 - Catalog entries are not the same as local app data.
+- PCA/KMeans clusters are diagnostics over derived summaries, not
+  validated mineral or class labels.
 - Wetland, Landsat, BigEarthNet, HySpecNet, WHU-Hi, and Houston are not
   local first-class demos yet.
 - Mineral/clay interpretation is not validated until Cuprite and curated
@@ -154,8 +175,8 @@ Dataset entries should use explicit status labels:
 
 1. Add calibrated band-center vectors where reliable metadata is
    available.
-2. Extend the new scene topic-matrix view into stronger clustering,
-   heatmap, and topic-map visualizations over the expanded real-scene
+2. Extend the new PCA/KMeans diagnostics into topic stability and
+   representation-comparison reports over the expanded real-scene
    payload.
 3. Add ECOSTRESS compact samples with transparent attribution if direct
    public access and licensing are verified.

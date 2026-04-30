@@ -29,6 +29,17 @@ selection, and theoretical framing.
   genetic diversity*.
   <https://www.nature.com/articles/srep22482>
 
+## Clustering And Diagnostics
+
+- scikit-learn. *LatentDirichletAllocation*.
+  <https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.LatentDirichletAllocation.html>
+- scikit-learn. *PCA*.
+  <https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html>
+- scikit-learn. *KMeans*.
+  <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>
+- scikit-learn. *silhouette_score*.
+  <https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html>
+
 ## Public Data Sources
 
 - UPV/EHU. *Hyperspectral Remote Sensing Scenes*.

@@ -12,3 +12,5 @@ Design rules:
   images
 - `spectral/` contains compact spectra extracted from public spectral
   libraries for material-reference workflows
+- `analysis/` contains compact PCA/KMeans diagnostics generated from the
+  derived scene and spectral-library summaries

@@ -21,6 +21,7 @@ Subcommands:
   build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes
   build-field Rebuild compact field MSI derived assets from downloaded raw scenes
   build-spectral Rebuild compact USGS spectral-library samples
+  build-analysis Rebuild compact PCA/KMeans diagnostics from derived assets
   smoke      Smoke test a running local app at http://127.0.0.1:8105
   clean       Remove build outputs and Python caches
   stop        Kill local Python and Node processes started from this repo
@@ -66,6 +67,9 @@ ensure_derived_if_missing() {
   fi
   if [[ -d data/raw/usgs_splib07 && ! -f data/derived/spectral/library_samples.json ]]; then
     .venv-pipeline/bin/python data-pipeline/build_spectral_library_samples.py >/dev/null
+  fi
+  if [[ -f data/derived/real/real_samples.json && -f data/derived/spectral/library_samples.json && ! -f data/derived/analysis/analysis.json ]]; then
+    .venv-pipeline/bin/python data-pipeline/build_analysis_payload.py >/dev/null
   fi
 }
 
@@ -146,6 +150,10 @@ case "$command_name" in
   build-spectral)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_spectral_library_samples.py
+    ;;
+  build-analysis)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_analysis_payload.py
     ;;
   smoke)
     scripts/smoke.sh "http://127.0.0.1:8105"

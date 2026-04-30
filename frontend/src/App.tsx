@@ -1,16 +1,18 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { BarStrip, LineChart, MixtureBars } from "./components/Charts";
+import { BarStrip, ClusterScatter, LineChart, MixtureBars } from "./components/Charts";
 import {
   api,
   pickText,
   type AppPayload,
+  type LibraryClusterDiagnostic,
   type DatasetEntry,
   type DemoSample,
   type FieldSceneSnapshot,
   type RealSceneSnapshot,
   type RepresentationVariant,
+  type SceneClusterDiagnostic,
   type SpectralLibrarySample,
   type TopicProfile
 } from "./lib/api";
@@ -18,7 +20,20 @@ import { useStore } from "./store/useStore";
 
 type Language = "en" | "es";
 
+const topicColors = [
+  "var(--accent-blue)",
+  "var(--accent-cyan)",
+  "var(--accent-purple)",
+  "var(--cluster-amber)",
+  "var(--cluster-rose)",
+  "var(--cluster-slate)"
+];
+
 const percent = (value: number) => `${Math.round(value * 100)}%`;
+
+function formatScore(value: number | null): string {
+  return value === null ? "n/a" : value.toFixed(2);
+}
 
 function formatShape(shape: number[] | null): string {
   if (!shape || shape.length === 0) {
@@ -517,6 +532,90 @@ function SceneWorkbench({
   );
 }
 
+function TopicClusterWorkbench({
+  scene,
+  diagnostic
+}: {
+  scene: RealSceneSnapshot;
+  diagnostic: SceneClusterDiagnostic | null;
+}) {
+  const { t } = useTranslation();
+
+  if (!diagnostic) {
+    return null;
+  }
+
+  const variance = diagnostic.explained_variance_ratio.reduce((total, value) => total + value, 0);
+
+  return (
+    <section className="workbench-card cluster-diagnostics-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("clusterDiagnostics")}</p>
+          <h3>{t("topicEmbedding")}</h3>
+          <p>{diagnostic.feature_space}</p>
+        </div>
+        <span className="status-pill">{scene.name}</span>
+      </div>
+
+      <div className="cluster-layout">
+        <div className="chart-card cluster-plot-card">
+          <div className="card-title-row tight">
+            <span>{t("pcaProjection")}</span>
+            <small>{diagnostic.points.length} {t("points")}</small>
+          </div>
+          <ClusterScatter points={diagnostic.points} />
+        </div>
+
+        <div className="cluster-side">
+          <dl className="metric-strip cluster-metrics">
+            <div>
+              <dt>{t("clusters")}</dt>
+              <dd>{diagnostic.cluster_count}</dd>
+            </div>
+            <div>
+              <dt>{t("silhouette")}</dt>
+              <dd>{formatScore(diagnostic.silhouette_score)}</dd>
+            </div>
+            <div>
+              <dt>{t("pcaVariance")}</dt>
+              <dd>{percent(variance)}</dd>
+            </div>
+          </dl>
+
+          <div className="cluster-profile-list">
+            {diagnostic.cluster_profiles.map((profile) => (
+              <div key={profile.cluster_id} className="cluster-profile-row">
+                <div className="cluster-profile-title">
+                  <span className="cluster-chip">C{profile.cluster_id + 1}</span>
+                  <strong>{t("dominantFeature", { index: profile.dominant_feature_index + 1 })}</strong>
+                  <em>{profile.support_count.toLocaleString()} px</em>
+                </div>
+                <MixtureBars values={profile.mean_vector} colors={topicColors} />
+                <small>{profile.top_labels.join(" / ")}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="nearest-pair-grid">
+        <div className="card-title-row tight">
+          <span>{t("nearestTopicPairs")}</span>
+          <small>{t("topicSpace")}</small>
+        </div>
+        {diagnostic.nearest_pairs.slice(0, 4).map((pair) => (
+          <div key={`${pair.a_label}-${pair.b_label}`} className="nearest-pair-row">
+            <span>{pair.a_label} / {pair.b_label}</span>
+            <strong>{pair.feature_distance.toFixed(3)}</strong>
+            {pair.spectral_distance !== null ? <em>{pair.spectral_distance.toFixed(3)} spectral</em> : null}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SpectralLibraryWorkbench({
   sample,
   samples,
@@ -593,6 +692,73 @@ function SpectralLibraryWorkbench({
               <b>{match.distance.toFixed(3)}</b>
             </button>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LibraryClusterWorkbench({
+  sample,
+  diagnostic
+}: {
+  sample: SpectralLibrarySample;
+  diagnostic: LibraryClusterDiagnostic | null;
+}) {
+  const { t } = useTranslation();
+
+  if (!diagnostic) {
+    return null;
+  }
+
+  const variance = diagnostic.explained_variance_ratio.reduce((total, value) => total + value, 0);
+  const samplePairs = diagnostic.nearest_pairs.filter((pair) => pair.a_label === sample.name || pair.b_label === sample.name);
+  const pairs = samplePairs.length > 0 ? samplePairs : diagnostic.nearest_pairs;
+
+  return (
+    <section className="workbench-card cluster-diagnostics-card library-cluster-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("libraryEmbedding")}</p>
+          <h3>{diagnostic.library_name}</h3>
+          <p>{diagnostic.feature_space}</p>
+        </div>
+        <span className="status-pill">{diagnostic.band_count} {t("bands")}</span>
+      </div>
+
+      <div className="cluster-layout library-layout">
+        <div className="chart-card cluster-plot-card">
+          <div className="card-title-row tight">
+            <span>{t("pcaProjection")}</span>
+            <small>{sample.name}</small>
+          </div>
+          <ClusterScatter points={diagnostic.points} selectedPointId={sample.id} />
+        </div>
+
+        <div className="cluster-side">
+          <dl className="metric-strip cluster-metrics">
+            <div>
+              <dt>{t("clusters")}</dt>
+              <dd>{diagnostic.cluster_count}</dd>
+            </div>
+            <div>
+              <dt>{t("silhouette")}</dt>
+              <dd>{formatScore(diagnostic.silhouette_score)}</dd>
+            </div>
+            <div>
+              <dt>{t("pcaVariance")}</dt>
+              <dd>{percent(variance)}</dd>
+            </div>
+          </dl>
+
+          <div className="nearest-pair-list compact">
+            {pairs.slice(0, 5).map((pair) => (
+              <div key={`${pair.a_label}-${pair.b_label}`} className="nearest-pair-row">
+                <span>{pair.a_label} / {pair.b_label}</span>
+                <strong>{pair.feature_distance.toFixed(3)}</strong>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -759,6 +925,7 @@ function HelpModal({ data, onClose }: { data: AppPayload; onClose: () => void })
               <li>{t("helpWorkbench")}</li>
               <li>{t("helpSpectralLibrary")}</li>
               <li>{t("helpSceneMatrix")}</li>
+              <li>{t("helpClusterDiagnostics")}</li>
               <li>{t("helpNoDeploy")}</li>
             </ul>
           </div>
@@ -776,6 +943,10 @@ function HelpModal({ data, onClose }: { data: AppPayload; onClose: () => void })
               <div>
                 <dt>{t("spectralLibrary")}</dt>
                 <dd>{data.spectral_library.samples.length}</dd>
+              </div>
+              <div>
+                <dt>{t("analysisScenes")}</dt>
+                <dd>{data.analysis.scene_diagnostics.length}</dd>
               </div>
             </dl>
           </div>
@@ -887,6 +1058,8 @@ export function App() {
   const field = data.field_samples.scenes.find((item) => item.id === selectedFieldId) ?? data.field_samples.scenes[0];
   const librarySample =
     data.spectral_library.samples.find((item) => item.id === selectedLibrarySampleId) ?? data.spectral_library.samples[0];
+  const sceneDiagnostic = data.analysis.scene_diagnostics.find((item) => item.scene_id === scene.id) ?? null;
+  const libraryDiagnostic = data.analysis.library_diagnostics.find((item) => item.band_count === librarySample.band_count) ?? null;
   const selectedTopic = getTopic(data.demo.topics, selectedTopicId ?? sample.dominant_topic_id);
   const representation =
     data.methodology.representations.find((item) => item.id === selectedRepresentation) ?? data.methodology.representations[0];
@@ -928,7 +1101,9 @@ export function App() {
 
           <SampleWorkbench sample={sample} topics={data.demo.topics} language={language} />
           <SceneWorkbench scene={scene} field={field} language={language} />
+          <TopicClusterWorkbench scene={scene} diagnostic={sceneDiagnostic} />
           <SpectralLibraryWorkbench sample={librarySample} samples={data.spectral_library.samples} onSelect={setSelectedLibrarySampleId} />
+          <LibraryClusterWorkbench sample={librarySample} diagnostic={libraryDiagnostic} />
           <DatasetStatusPanel datasets={data.datasets.datasets} language={language} />
         </section>
 

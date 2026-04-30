@@ -347,6 +347,92 @@ class SpectralLibraryPayload(BaseModel):
     samples: list[SpectralLibrarySample]
 
 
+class AnalysisMethod(BaseModel):
+    """Compact description of a derived analytical diagnostic."""
+
+    id: str
+    name: str
+    description: str
+
+
+class AnalysisPoint(BaseModel):
+    """Projected point used by clustering and embedding visualizations."""
+
+    id: str
+    label: str
+    group: str
+    item_count: int
+    cluster: int
+    x: float
+    y: float
+    size: float
+    dominant_feature_index: int
+    vector: list[float]
+
+
+class ClusterProfile(BaseModel):
+    """Cluster-level summary for topic or spectral-vector diagnostics."""
+
+    cluster_id: int
+    item_count: int
+    support_count: int
+    centroid: list[float]
+    mean_vector: list[float]
+    dominant_feature_index: int
+    top_labels: list[str]
+
+
+class NearestPair(BaseModel):
+    """Nearest pair in the diagnostic feature space."""
+
+    a_label: str
+    b_label: str
+    feature_distance: float
+    spectral_distance: float | None = None
+
+
+class SceneClusterDiagnostic(BaseModel):
+    """Clustering and projection diagnostic for one real HSI scene."""
+
+    scene_id: str
+    scene_name: str
+    feature_space: str
+    method_id: str
+    item_count: int
+    cluster_count: int
+    silhouette_score: float | None = None
+    explained_variance_ratio: list[float]
+    points: list[AnalysisPoint]
+    cluster_profiles: list[ClusterProfile]
+    nearest_pairs: list[NearestPair]
+
+
+class LibraryClusterDiagnostic(BaseModel):
+    """Clustering and projection diagnostic for one spectral-library band group."""
+
+    library_id: str
+    library_name: str
+    band_count: int
+    feature_space: str
+    method_id: str
+    item_count: int
+    cluster_count: int
+    silhouette_score: float | None = None
+    explained_variance_ratio: list[float]
+    points: list[AnalysisPoint]
+    cluster_profiles: list[ClusterProfile]
+    nearest_pairs: list[NearestPair]
+
+
+class AnalysisPayload(BaseModel):
+    """Derived analytical diagnostics served by the workbench."""
+
+    source: str
+    methods: list[AnalysisMethod]
+    scene_diagnostics: list[SceneClusterDiagnostic]
+    library_diagnostics: list[LibraryClusterDiagnostic]
+
+
 class AppPayload(BaseModel):
     """Single aggregated payload used by the SPA."""
 
@@ -355,6 +441,7 @@ class AppPayload(BaseModel):
     real_scenes: RealScenesPayload
     field_samples: FieldScenesPayload
     spectral_library: SpectralLibraryPayload
+    analysis: AnalysisPayload
     methodology: Methodology
     demo: DemoPayload
 

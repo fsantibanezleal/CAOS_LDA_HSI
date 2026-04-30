@@ -64,6 +64,10 @@ class Settings(BaseSettings):
         return self.data_path / "derived" / "spectral" / "library_samples.json"
 
     @property
+    def analysis_path(self) -> Path:
+        return self.data_path / "derived" / "analysis" / "analysis.json"
+
+    @property
     def derived_path(self) -> Path:
         return self.data_path / "derived"
 

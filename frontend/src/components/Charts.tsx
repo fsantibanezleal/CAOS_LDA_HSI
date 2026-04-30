@@ -90,3 +90,80 @@ export function MixtureBars({ values, colors }: MixtureBarsProps) {
     </div>
   );
 }
+
+export interface ClusterScatterPoint {
+  id: string;
+  label: string;
+  group: string;
+  cluster: number;
+  x: number;
+  y: number;
+  size: number;
+  item_count: number;
+}
+
+interface ClusterScatterProps {
+  points: ClusterScatterPoint[];
+  selectedPointId?: string | null;
+}
+
+const clusterColors = [
+  "var(--accent-blue)",
+  "var(--accent-cyan)",
+  "var(--accent-purple)",
+  "var(--cluster-amber)",
+  "var(--cluster-rose)",
+  "var(--cluster-slate)"
+];
+
+export function ClusterScatter({ points, selectedPointId = null }: ClusterScatterProps) {
+  if (points.length === 0) {
+    return null;
+  }
+
+  const width = 100;
+  const height = 64;
+  const pad = 7;
+  const xs = points.map((point) => point.x);
+  const ys = points.map((point) => point.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const rangeX = maxX - minX || 1;
+  const rangeY = maxY - minY || 1;
+
+  const scaleX = (value: number) => pad + ((value - minX) / rangeX) * (width - pad * 2);
+  const scaleY = (value: number) => height - pad - ((value - minY) / rangeY) * (height - pad * 2);
+  const grid = [0.25, 0.5, 0.75];
+
+  return (
+    <svg className="cluster-scatter" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Cluster projection">
+      <rect className="chart-frame" x="0.4" y="0.4" width="99.2" height="63.2" rx="2" />
+      {grid.map((ratio) => (
+        <line key={`x-${ratio}`} className="chart-grid vertical" x1={pad + ratio * (width - pad * 2)} x2={pad + ratio * (width - pad * 2)} y1={pad} y2={height - pad} />
+      ))}
+      {grid.map((ratio) => (
+        <line key={`y-${ratio}`} className="chart-grid" x1={pad} x2={width - pad} y1={pad + ratio * (height - pad * 2)} y2={pad + ratio * (height - pad * 2)} />
+      ))}
+      <line className="scatter-axis" x1={pad} x2={width - pad} y1={height - pad} y2={height - pad} />
+      <line className="scatter-axis" x1={pad} x2={pad} y1={pad} y2={height - pad} />
+      {points.map((point) => {
+        const isSelected = point.id === selectedPointId;
+        const radius = 1.7 + point.size * 2.3;
+        return (
+          <circle
+            key={point.id}
+            className={isSelected ? "scatter-point is-selected" : "scatter-point"}
+            cx={scaleX(point.x)}
+            cy={scaleY(point.y)}
+            r={isSelected ? radius + 1.2 : radius}
+            fill={clusterColors[point.cluster % clusterColors.length]}
+          >
+            <title>{`${point.label} / ${point.group} / cluster ${point.cluster + 1} / n=${point.item_count}`}</title>
+          </circle>
+        );
+      })}
+    </svg>
+  );
+}
