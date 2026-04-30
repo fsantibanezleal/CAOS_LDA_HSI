@@ -47,6 +47,115 @@ export function LineChart({ values, stroke = "currentColor", fill = "none" }: Li
   );
 }
 
+export interface SpectralSeries {
+  id: string;
+  label: string;
+  values: number[];
+  color: string;
+}
+
+interface SpectralProfileChartProps {
+  wavelengths: number[];
+  series: SpectralSeries[];
+  height?: number;
+  xLabel?: string;
+  yLabel?: string;
+}
+
+function niceTick(value: number): string {
+  if (Math.abs(value) >= 100) {
+    return `${Math.round(value)}`;
+  }
+  return value.toFixed(2);
+}
+
+export function SpectralProfileChart({
+  wavelengths,
+  series,
+  height = 260,
+  xLabel = "wavelength / band center",
+  yLabel = "normalized response"
+}: SpectralProfileChartProps) {
+  const usableSeries = series.filter((item) => item.values.length > 1);
+  if (usableSeries.length === 0) {
+    return null;
+  }
+
+  const width = 720;
+  const top = 18;
+  const right = 22;
+  const bottom = 42;
+  const left = 54;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  const xValues = wavelengths.length > 1 ? wavelengths : usableSeries[0].values.map((_, index) => index + 1);
+  const xMin = Math.min(...xValues);
+  const xMax = Math.max(...xValues);
+  const allValues = usableSeries.flatMap((item) => item.values);
+  const yMin = Math.min(...allValues);
+  const yMax = Math.max(...allValues);
+  const yPad = Math.max((yMax - yMin) * 0.08, 0.02);
+  const yLow = yMin - yPad;
+  const yHigh = yMax + yPad;
+  const xRange = xMax - xMin || 1;
+  const yRange = yHigh - yLow || 1;
+
+  const xScale = (value: number) => left + ((value - xMin) / xRange) * plotWidth;
+  const yScale = (value: number) => top + (1 - (value - yLow) / yRange) * plotHeight;
+  const xTicks = [xMin, xMin + xRange * 0.25, xMin + xRange * 0.5, xMin + xRange * 0.75, xMax];
+  const yTicks = [yLow, yLow + yRange * 0.25, yLow + yRange * 0.5, yLow + yRange * 0.75, yHigh];
+
+  const pathFor = (values: number[]) =>
+    values
+      .map((value, index) => {
+        const x = xScale(xValues[Math.min(index, xValues.length - 1)]);
+        const y = yScale(value);
+        return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+      })
+      .join(" ");
+
+  return (
+    <svg className="scientific-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Spectral profile chart">
+      <rect className="chart-frame" x="0.5" y="0.5" width={width - 1} height={height - 1} rx="2" />
+      {yTicks.map((tick) => {
+        const y = yScale(tick);
+        return (
+          <g key={`y-${tick}`}>
+            <line className="chart-grid" x1={left} x2={width - right} y1={y} y2={y} />
+            <text className="axis-label" x={left - 10} y={y + 4} textAnchor="end">
+              {niceTick(tick)}
+            </text>
+          </g>
+        );
+      })}
+      {xTicks.map((tick) => {
+        const x = xScale(tick);
+        return (
+          <g key={`x-${tick}`}>
+            <line className="chart-grid vertical" x1={x} x2={x} y1={top} y2={height - bottom} />
+            <text className="axis-label" x={x} y={height - 15} textAnchor="middle">
+              {niceTick(tick)}
+            </text>
+          </g>
+        );
+      })}
+      <line className="scatter-axis" x1={left} x2={width - right} y1={height - bottom} y2={height - bottom} />
+      <line className="scatter-axis" x1={left} x2={left} y1={top} y2={height - bottom} />
+      <text className="axis-title" x={left + plotWidth / 2} y={height - 3} textAnchor="middle">
+        {xLabel}
+      </text>
+      <text className="axis-title" transform={`translate(13 ${top + plotHeight / 2}) rotate(-90)`} textAnchor="middle">
+        {yLabel}
+      </text>
+      {usableSeries.map((item) => (
+        <path key={item.id} className="spectral-line" d={pathFor(item.values)} stroke={item.color}>
+          <title>{item.label}</title>
+        </path>
+      ))}
+    </svg>
+  );
+}
+
 interface BarStripProps {
   values: number[];
   color?: string;
