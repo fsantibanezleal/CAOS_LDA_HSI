@@ -43,6 +43,10 @@ Acceptance criteria:
 - Public repository link is visible.
 - Backend payload may grow only when the workbench needs a new data
   surface. The current local pass added `spectral_library`.
+- A compact help/status modal is available from the header.
+- The spectral-library navigator participates in the main search filter.
+- Scene topic matrices and nearest spectral-library reference comparisons
+  are implemented locally.
 
 ## Phase 2: Dataset Expansion
 
@@ -75,6 +79,7 @@ Remaining immediate data work:
 - verified Cuprite unmixing ROI
 - curated Sentinel-2 / EuroSAT patch subset
 - calibrated wavelength metadata where available
+- reusable smoke-test scripts: implemented for PowerShell and Bash
 
 Acceptance criteria:
 

@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "smoke", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -28,6 +28,7 @@ function Show-Help {
     Write-Host "  build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes"
     Write-Host "  build-field Rebuild compact field MSI derived assets from downloaded raw scenes"
     Write-Host "  build-spectral Rebuild compact USGS spectral-library samples"
+    Write-Host "  smoke       Smoke test a running local app at http://127.0.0.1:8105"
     Write-Host "  clean       Remove build outputs and Python caches"
     Write-Host "  stop        Kill local Python and Node processes started from this repo"
     Write-Host "  help        Show this message"
@@ -159,6 +160,10 @@ switch ($Command) {
     "build-spectral" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_library_samples.py
+    }
+
+    "smoke" {
+        & .\scripts\smoke.ps1 -BaseUrl "http://127.0.0.1:8105"
     }
 
     "clean" {

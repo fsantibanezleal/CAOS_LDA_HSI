@@ -154,8 +154,9 @@ Dataset entries should use explicit status labels:
 
 1. Add calibrated band-center vectors where reliable metadata is
    available.
-2. Add stronger clustering, heatmap, and topic-map visualizations over the
-   expanded real-scene payload.
+2. Extend the new scene topic-matrix view into stronger clustering,
+   heatmap, and topic-map visualizations over the expanded real-scene
+   payload.
 3. Add ECOSTRESS compact samples with transparent attribution if direct
    public access and licensing are verified.
 4. Add a tiny Sentinel-2 patch subset that includes urban, water,

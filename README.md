@@ -105,6 +105,7 @@ Useful commands:
 .\scripts\local.ps1 build-real
 .\scripts\local.ps1 build-field
 .\scripts\local.ps1 build-spectral
+.\scripts\local.ps1 smoke
 .\scripts\local.ps1 demo
 .\scripts\local.ps1 dev
 ```
@@ -118,6 +119,7 @@ Useful commands:
 ./scripts/local.sh build-real
 ./scripts/local.sh build-field
 ./scripts/local.sh build-spectral
+./scripts/local.sh smoke
 ./scripts/local.sh demo
 ./scripts/local.sh dev
 ```

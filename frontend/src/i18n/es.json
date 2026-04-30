@@ -97,5 +97,20 @@
   "modelReadout": "Lectura del modelo",
   "baselineDelta": "Objetivo - base",
   "referenceSpectrum": "Espectro de referencia",
-  "spectralWords": "Palabras espectrales"
+  "spectralWords": "Palabras espectrales",
+  "help": "Ayuda",
+  "close": "Cerrar",
+  "helpStatus": "Estado y alcance",
+  "helpTitle": "Estado del workbench",
+  "implementedNow": "Implementado ahora",
+  "helpWorkbench": "Workbench analitico de tres paneles con UI bilingue y temas claro/oscuro.",
+  "helpSpectralLibrary": "Referencias compactas de la libreria espectral USGS estan disponibles como activos derivados locales.",
+  "helpSceneMatrix": "Las escenas reales exponen matrices de mezcla de topicos y previews de estratos inferidos cuando no hay etiquetas.",
+  "helpNoDeploy": "Produccion no ha sido redesplegada desde esta rama.",
+  "dataState": "Estado de datos",
+  "sceneTopicMatrix": "Matriz de topicos de escena",
+  "largestRegimes": "regimenes mayores",
+  "nearestReferences": "Referencias cercanas",
+  "absorptionTokens": "tokens de absorcion",
+  "classOrRegime": "Clase / regimen"
 }

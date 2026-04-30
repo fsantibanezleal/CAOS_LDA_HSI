@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { BarStrip, LineChart, MixtureBars } from "./components/Charts";
@@ -46,14 +46,40 @@ function getTopic(topics: TopicProfile[], id: string | null | undefined): TopicP
   return topics.find((topic) => topic.id === id) ?? topics[0];
 }
 
+function spectralDistance(a: number[], b: number[]): number {
+  const length = Math.min(a.length, b.length);
+  if (length === 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+  let total = 0;
+  for (let index = 0; index < length; index += 1) {
+    const delta = a[index] - b[index];
+    total += delta * delta;
+  }
+  return Math.sqrt(total / length);
+}
+
+function nearestLibraryMatches(sample: SpectralLibrarySample, samples: SpectralLibrarySample[]) {
+  return samples
+    .filter((candidate) => candidate.id !== sample.id && candidate.band_count === sample.band_count)
+    .map((candidate) => ({
+      sample: candidate,
+      distance: spectralDistance(sample.spectrum, candidate.spectrum)
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 4);
+}
+
 function WorkbenchHeader({
   data,
   language,
-  onLanguageChange
+  onLanguageChange,
+  onHelp
 }: {
   data: AppPayload;
   language: Language;
   onLanguageChange: (language: Language) => void;
+  onHelp: () => void;
 }) {
   const { t } = useTranslation();
   const theme = useStore((state) => state.theme);
@@ -92,6 +118,9 @@ function WorkbenchHeader({
         <a className="icon-text-button" href={data.overview.repo.url} target="_blank" rel="noreferrer">
           {t("sourceCode")}
         </a>
+        <button className="icon-text-button" type="button" onClick={onHelp}>
+          {t("help")}
+        </button>
       </div>
     </header>
   );
@@ -145,6 +174,19 @@ function NavigatorPanel({
       return text.includes(normalized);
     });
   }, [data.datasets.datasets, language, query]);
+
+  const filteredLibrarySamples = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return data.spectral_library.samples;
+    }
+    return data.spectral_library.samples.filter((sample) =>
+      [sample.name, sample.group, sample.sensor, sample.source_file, sample.absorption_tokens.join(" ")]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalized)
+    );
+  }, [data.spectral_library.samples, query]);
 
   return (
     <aside className="left-panel">
@@ -227,10 +269,10 @@ function NavigatorPanel({
       <div className="nav-section">
         <div className="nav-section-header">
           <span>{t("spectralLibrary")}</span>
-          <strong>{data.spectral_library.samples.length}</strong>
+          <strong>{filteredLibrarySamples.length}</strong>
         </div>
         <div className="nav-list compact">
-          {data.spectral_library.samples.slice(0, 14).map((sample) => (
+          {filteredLibrarySamples.slice(0, 14).map((sample) => (
             <button
               key={sample.id}
               className={`nav-item ${selectedLibrarySample.id === sample.id ? "is-active" : ""}`}
@@ -337,6 +379,64 @@ function SampleWorkbench({
   );
 }
 
+function SceneTopicMatrix({ scene }: { scene: RealSceneSnapshot }) {
+  const { t } = useTranslation();
+  const rows = scene.class_summaries.slice(0, 6);
+
+  if (rows.length === 0 || scene.topics.length === 0) {
+    return null;
+  }
+
+  return (
+    <article className="workbench-card scene-topic-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("sceneTopicMatrix")}</p>
+          <h3>{scene.name}</h3>
+        </div>
+        <span className="status-pill">{t("largestRegimes")}</span>
+      </div>
+      <div className="topic-matrix" style={{ gridTemplateColumns: `minmax(112px, 1fr) repeat(${scene.topics.length}, minmax(46px, 64px))` }}>
+        <div className="topic-matrix-label topic-matrix-head">{t("classOrRegime")}</div>
+        {scene.topics.map((topic) => (
+          <div key={topic.id} className="topic-matrix-head" title={topic.name}>
+            {topic.name.replace("Topic ", "T")}
+          </div>
+        ))}
+        {rows.map((row) => (
+          <Fragment key={row.label_id}>
+            <div key={`${row.label_id}-label`} className="topic-matrix-label" title={row.name}>
+              <strong>{row.name}</strong>
+              <span>{row.count.toLocaleString()}</span>
+            </div>
+            {scene.topics.map((topic, index) => {
+              const value = row.mean_topic_mixture[index] ?? 0;
+              return (
+                <div
+                  key={`${row.label_id}-${topic.id}`}
+                  className="topic-matrix-cell"
+                  style={{ background: `rgba(59, 130, 246, ${0.12 + value * 0.78})` }}
+                  title={`${row.name} / ${topic.name}: ${percent(value)}`}
+                >
+                  {percent(value)}
+                </div>
+              );
+            })}
+          </Fragment>
+        ))}
+      </div>
+      <div className="scene-topic-words">
+        {scene.topics.slice(0, 4).map((topic) => (
+          <div key={topic.id}>
+            <strong>{topic.name}</strong>
+            <span>{topic.top_words.slice(0, 4).map((word) => word.token).join(" / ")}</span>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
 function SceneWorkbench({
   scene,
   field,
@@ -411,12 +511,23 @@ function SceneWorkbench({
           </div>
         </dl>
       </article>
+
+      <SceneTopicMatrix scene={scene} />
     </section>
   );
 }
 
-function SpectralLibraryWorkbench({ sample }: { sample: SpectralLibrarySample }) {
+function SpectralLibraryWorkbench({
+  sample,
+  samples,
+  onSelect
+}: {
+  sample: SpectralLibrarySample;
+  samples: SpectralLibrarySample[];
+  onSelect: (id: string) => void;
+}) {
   const { t } = useTranslation();
+  const matches = nearestLibraryMatches(sample, samples);
 
   return (
     <section className="workbench-card spectral-library-card">
@@ -442,7 +553,7 @@ function SpectralLibraryWorkbench({ sample }: { sample: SpectralLibrarySample })
         <div className="chart-card">
           <div className="card-title-row tight">
             <span>{t("spectralWords")}</span>
-            <small>{sample.absorption_tokens.length} {t("tokensTitle")}</small>
+            <small>{sample.absorption_tokens.length} {t("absorptionTokens")}</small>
           </div>
           <div className="token-cloud compact-cloud">
             {sample.absorption_tokens.map((token) => (
@@ -460,6 +571,29 @@ function SpectralLibraryWorkbench({ sample }: { sample: SpectralLibrarySample })
             {token}
           </span>
         ))}
+      </div>
+
+      <div className="nearest-reference-panel">
+        <div className="card-title-row tight">
+          <span>{t("nearestReferences")}</span>
+          <small>{sample.band_count} {t("bands")}</small>
+        </div>
+        <div className="nearest-reference-list">
+          {matches.map((match) => (
+            <button
+              key={match.sample.id}
+              type="button"
+              className="nearest-reference-row"
+              onClick={() => onSelect(match.sample.id)}
+            >
+              <span>
+                <strong>{match.sample.name}</strong>
+                <em>{match.sample.group}</em>
+              </span>
+              <b>{match.distance.toFixed(3)}</b>
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -603,6 +737,54 @@ function InspectorPanel({
   );
 }
 
+function HelpModal({ data, onClose }: { data: AppPayload; onClose: () => void }) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="modal-backdrop" role="presentation" onClick={onClose}>
+      <section className="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title" onClick={(event) => event.stopPropagation()}>
+        <div className="card-title-row">
+          <div>
+            <p className="panel-eyebrow">{t("helpStatus")}</p>
+            <h2 id="help-title">{t("helpTitle")}</h2>
+          </div>
+          <button className="icon-text-button" type="button" onClick={onClose}>
+            {t("close")}
+          </button>
+        </div>
+        <div className="help-grid">
+          <div>
+            <h3>{t("implementedNow")}</h3>
+            <ul>
+              <li>{t("helpWorkbench")}</li>
+              <li>{t("helpSpectralLibrary")}</li>
+              <li>{t("helpSceneMatrix")}</li>
+              <li>{t("helpNoDeploy")}</li>
+            </ul>
+          </div>
+          <div>
+            <h3>{t("dataState")}</h3>
+            <dl className="metric-strip help-metrics">
+              <div>
+                <dt>{t("datasetEntries")}</dt>
+                <dd>{data.datasets.datasets.length}</dd>
+              </div>
+              <div>
+                <dt>{t("realScenes")}</dt>
+                <dd>{data.real_scenes.scenes.length}</dd>
+              </div>
+              <div>
+                <dt>{t("spectralLibrary")}</dt>
+                <dd>{data.spectral_library.samples.length}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export function App() {
   const { t, i18n } = useTranslation();
   const [data, setData] = useState<AppPayload | null>(null);
@@ -611,6 +793,7 @@ export function App() {
   const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [selectedLibrarySampleId, setSelectedLibrarySampleId] = useState<string | null>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const selectedSampleId = useStore((state) => state.selectedSampleId);
   const setSelectedSampleId = useStore((state) => state.setSelectedSampleId);
@@ -710,7 +893,7 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <WorkbenchHeader data={data} language={language} onLanguageChange={(next) => void i18n.changeLanguage(next)} />
+      <WorkbenchHeader data={data} language={language} onLanguageChange={(next) => void i18n.changeLanguage(next)} onHelp={() => setIsHelpOpen(true)} />
 
       <main className="workbench-shell">
         <NavigatorPanel
@@ -745,12 +928,13 @@ export function App() {
 
           <SampleWorkbench sample={sample} topics={data.demo.topics} language={language} />
           <SceneWorkbench scene={scene} field={field} language={language} />
-          <SpectralLibraryWorkbench sample={librarySample} />
+          <SpectralLibraryWorkbench sample={librarySample} samples={data.spectral_library.samples} onSelect={setSelectedLibrarySampleId} />
           <DatasetStatusPanel datasets={data.datasets.datasets} language={language} />
         </section>
 
         <InspectorPanel data={data} sample={sample} selectedTopic={selectedTopic} representation={representation} language={language} />
       </main>
+      {isHelpOpen ? <HelpModal data={data} onClose={() => setIsHelpOpen(false)} /> : null}
     </div>
   );
 }

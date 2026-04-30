@@ -111,9 +111,11 @@ The redesign must preserve the existing backend payload shape:
 - `demo`
 - `real_scenes`
 - `field_samples`
+- `spectral_library`
 
-This allows the UI to be replaced without destabilizing the FastAPI
-service or deployment scripts.
+The first workbench pass preserved the original payloads and later added
+`spectral_library` as a dedicated material-reference surface. Future
+payload growth should remain deliberate and documented.
 
 ## Implemented Functional Surface
 
@@ -128,6 +130,9 @@ The current backend supports:
 - inference comparison summary
 - real HSI scene summaries and previews
 - field MSI sample summaries and previews
+- spectral-library material references and nearest-reference comparison
+- scene topic-mixture matrices over the current compact real-scene
+  summaries
 
 ## Missing Functional Surface
 
@@ -136,7 +141,7 @@ The app does not yet support:
 - user-uploaded cubes
 - runtime LDA training
 - server-side model jobs
-- spectral-library search
+- full spectral-library search across external sources
 - calibrated wavelength inspection for every source
 - geospatial map navigation
 - downloadable experiment reports
@@ -151,6 +156,7 @@ Short-term:
 - clear dataset status labels
 - mineral/clay first workflow
 - better use of existing real-scene and field-sample summaries
+- reusable smoke-test scripts for local or deployed URLs
 
 Medium-term:
 

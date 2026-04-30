@@ -21,6 +21,7 @@ Subcommands:
   build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes
   build-field Rebuild compact field MSI derived assets from downloaded raw scenes
   build-spectral Rebuild compact USGS spectral-library samples
+  smoke      Smoke test a running local app at http://127.0.0.1:8105
   clean       Remove build outputs and Python caches
   stop        Kill local Python and Node processes started from this repo
   help        Show this message
@@ -145,6 +146,9 @@ case "$command_name" in
   build-spectral)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_spectral_library_samples.py
+    ;;
+  smoke)
+    scripts/smoke.sh "http://127.0.0.1:8105"
     ;;
   clean)
     find . -type d -name "__pycache__" -prune -exec rm -rf {} +
