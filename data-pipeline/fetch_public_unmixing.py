@@ -1,8 +1,9 @@
-"""Download compact public HSI benchmark scenes from official source pages.
+"""Download compact public HSI unmixing examples from Borsoi et al.
 
-Raw files are stored under ``data/raw/`` and intentionally kept out of Git.
-The repository should track only compact derived assets generated from these
-raw scenes.
+These scenes are useful because they are small, familiar in the unmixing
+literature, and include spectral-library files for material-level workflows.
+Raw MATLAB files stay out of Git; derived products should be compact JSON and
+preview images.
 """
 from __future__ import annotations
 
@@ -14,109 +15,32 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = ROOT / "data" / "raw" / "upv_ehu"
-MANIFEST_PATH = ROOT / "data" / "raw" / "download_manifest.json"
+RAW_DIR = ROOT / "data" / "raw" / "borsoi_mua"
+MANIFEST_PATH = RAW_DIR / "download_manifest.json"
 MAX_PUBLIC_FILE_BYTES = 100 * 1024 * 1024
+SOURCE_URL = "https://github.com/ricardoborsoi/MUA_SparseUnmixing/tree/master/real_data"
+RAW_BASE = "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data"
 
 DATASETS = [
     {
-        "id": "indian-pines-corrected",
+        "id": "samson-unmixing-roi",
         "files": [
-            {
-                "name": "Indian_pines_corrected.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/6/67/Indian_pines_corrected.mat",
-                "kind": "cube",
-            },
-            {
-                "name": "Indian_pines_gt.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/c/c4/Indian_pines_gt.mat",
-                "kind": "ground_truth",
-            },
+            {"name": "samson_1.mat", "kind": "hsi_unmixing_scene"},
+            {"name": "spectral_library_samson.mat", "kind": "spectral_library"},
         ],
     },
     {
-        "id": "salinas-corrected",
+        "id": "jasper-ridge-unmixing-roi",
         "files": [
-            {
-                "name": "Salinas_corrected.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/a/a3/Salinas_corrected.mat",
-                "kind": "cube",
-            },
-            {
-                "name": "Salinas_gt.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/f/fa/Salinas_gt.mat",
-                "kind": "ground_truth",
-            },
+            {"name": "jasperRidge2_R198.mat", "kind": "hsi_unmixing_scene"},
+            {"name": "spectral_library_jasperRidge.mat", "kind": "spectral_library"},
         ],
     },
     {
-        "id": "salinas-a-corrected",
+        "id": "urban-unmixing-roi",
         "files": [
-            {
-                "name": "SalinasA_corrected.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/1/1a/SalinasA_corrected.mat",
-                "kind": "cube",
-            },
-            {
-                "name": "SalinasA_gt.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/a/aa/SalinasA_gt.mat",
-                "kind": "ground_truth",
-            },
-        ],
-    },
-    {
-        "id": "cuprite-aviris-reflectance",
-        "files": [
-            {
-                "name": "Cuprite_f970619t01p02_r02_sc03.a.rfl.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/7/7d/Cuprite_f970619t01p02_r02_sc03.a.rfl.mat",
-                "kind": "reflectance_cube",
-            },
-        ],
-    },
-    {
-        "id": "pavia-university",
-        "files": [
-            {
-                "name": "PaviaU.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/e/ee/PaviaU.mat",
-                "kind": "cube",
-            },
-            {
-                "name": "PaviaU_gt.mat",
-                "url": "https://www.ehu.eus/ccwintco/uploads/5/50/PaviaU_gt.mat",
-                "kind": "ground_truth",
-            },
-        ],
-    },
-    {
-        "id": "kennedy-space-center",
-        "files": [
-            {
-                "name": "KSC.mat",
-                "url": "https://www.ehu.es/ccwintco/uploads/2/26/KSC.mat",
-                "kind": "cube",
-            },
-            {
-                "name": "KSC_gt.mat",
-                "url": "https://www.ehu.es/ccwintco/uploads/a/a6/KSC_gt.mat",
-                "kind": "ground_truth",
-            },
-        ],
-    },
-    {
-        "id": "botswana",
-        "files": [
-            {
-                "name": "Botswana.mat",
-                "url": "https://www.ehu.es/ccwintco/uploads/7/72/Botswana.mat",
-                "kind": "cube",
-            },
-            {
-                "name": "Botswana_gt.mat",
-                "url": "https://www.ehu.es/ccwintco/uploads/5/58/Botswana_gt.mat",
-                "kind": "ground_truth",
-            },
+            {"name": "Urban_R162.mat", "kind": "hsi_unmixing_scene"},
+            {"name": "spectral_library_urban.mat", "kind": "spectral_library"},
         ],
     },
 ]
@@ -178,8 +102,8 @@ def download_file(url: str, destination: Path, expected_size: int | None = None,
 def main() -> None:
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     manifest: dict[str, object] = {
-        "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
-        "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
+        "source": "MUA_SparseUnmixing real_data",
+        "source_url": SOURCE_URL,
         "max_public_file_bytes": MAX_PUBLIC_FILE_BYTES,
         "datasets": [],
     }
@@ -187,8 +111,9 @@ def main() -> None:
     for dataset in DATASETS:
         dataset_entry = {"id": dataset["id"], "files": []}
         for entry in dataset["files"]:
+            url = f"{RAW_BASE}/{entry['name']}"
             destination = RAW_DIR / entry["name"]
-            expected_size = remote_size(entry["url"])
+            expected_size = remote_size(url)
             if expected_size is not None and expected_size > MAX_PUBLIC_FILE_BYTES:
                 raise RuntimeError(
                     f"{entry['name']} is {expected_size} bytes, above the "
@@ -196,10 +121,9 @@ def main() -> None:
                 )
 
             local_size = destination.stat().st_size if destination.exists() else None
-
             if not destination.exists() or (expected_size is not None and local_size != expected_size):
                 print(f"Downloading {entry['name']} ...")
-                download_file(entry["url"], destination, expected_size=expected_size)
+                download_file(url, destination, expected_size=expected_size)
             else:
                 print(f"Skipping existing {entry['name']}")
 
@@ -207,7 +131,7 @@ def main() -> None:
                 {
                     "name": entry["name"],
                     "kind": entry["kind"],
-                    "url": entry["url"],
+                    "url": url,
                     "size_bytes": destination.stat().st_size,
                     "expected_size_bytes": expected_size,
                     "sha256": sha256_of(destination),
@@ -215,7 +139,6 @@ def main() -> None:
             )
         manifest["datasets"].append(dataset_entry)
 
-    MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
     with MANIFEST_PATH.open("w", encoding="utf-8") as handle:
         json.dump(manifest, handle, indent=2)
     print(f"Wrote download manifest to {MANIFEST_PATH}")

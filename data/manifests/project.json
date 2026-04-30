@@ -37,10 +37,10 @@
         "en": "Downloaded public real assets",
         "es": "Activos reales publicos descargados"
       },
-      "value": "7",
+      "value": "38",
       "detail": {
-        "en": "Five official HSI scenes and two official MSI orthomosaics are stored locally outside Git and summarized for the app.",
-        "es": "Cinco escenas HSI oficiales y dos ortomosaicos MSI oficiales estan almacenados localmente fuera de Git y resumidos para la app."
+        "en": "Ten HSI / unmixing scenes, two MSI orthomosaics, and 26 spectral-library references are stored locally outside Git and summarized for the app.",
+        "es": "Diez escenas HSI / unmixing, dos ortomosaicos MSI y 26 referencias de libreria espectral estan almacenadas localmente fuera de Git y resumidas para la app."
       }
     },
     {
@@ -48,10 +48,10 @@
         "en": "Curated public data options",
         "es": "Opciones publicas curadas"
       },
-      "value": "10",
+      "value": "21",
       "detail": {
-        "en": "Scenes, field MSI samples, laboratory references, and spectral libraries selected for expansion.",
-        "es": "Escenas, muestras MSI de campo, referencias de laboratorio y librerias espectrales seleccionadas para expansion."
+        "en": "Scenes, field MSI samples, satellite patch sources, laboratory references, and spectral libraries selected for expansion.",
+        "es": "Escenas, muestras MSI de campo, fuentes de parches satelitales, referencias de laboratorio y librerias espectrales seleccionadas para expansion."
       }
     }
   ],

@@ -255,11 +255,107 @@ export interface FieldScenesPayload {
   scenes: FieldSceneSnapshot[];
 }
 
+export interface SpectralLibrarySample {
+  id: string;
+  name: string;
+  group: string;
+  sensor: string;
+  source_url: string;
+  source_file: string;
+  band_count: number;
+  wavelengths_nm: number[];
+  spectrum: number[];
+  quantized_levels: number[];
+  token_preview: string[];
+  absorption_tokens: string[];
+  notes: string;
+}
+
+export interface SpectralLibraryPayload {
+  source: string;
+  source_url: string;
+  samples: SpectralLibrarySample[];
+}
+
+export interface AnalysisMethod {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface AnalysisPoint {
+  id: string;
+  label: string;
+  group: string;
+  item_count: number;
+  cluster: number;
+  x: number;
+  y: number;
+  size: number;
+  dominant_feature_index: number;
+  vector: number[];
+}
+
+export interface ClusterProfile {
+  cluster_id: number;
+  item_count: number;
+  support_count: number;
+  centroid: number[];
+  mean_vector: number[];
+  dominant_feature_index: number;
+  top_labels: string[];
+}
+
+export interface NearestPair {
+  a_label: string;
+  b_label: string;
+  feature_distance: number;
+  spectral_distance: number | null;
+}
+
+export interface SceneClusterDiagnostic {
+  scene_id: string;
+  scene_name: string;
+  feature_space: string;
+  method_id: string;
+  item_count: number;
+  cluster_count: number;
+  silhouette_score: number | null;
+  explained_variance_ratio: number[];
+  points: AnalysisPoint[];
+  cluster_profiles: ClusterProfile[];
+  nearest_pairs: NearestPair[];
+}
+
+export interface LibraryClusterDiagnostic {
+  library_id: string;
+  library_name: string;
+  band_count: number;
+  feature_space: string;
+  method_id: string;
+  item_count: number;
+  cluster_count: number;
+  silhouette_score: number | null;
+  explained_variance_ratio: number[];
+  points: AnalysisPoint[];
+  cluster_profiles: ClusterProfile[];
+  nearest_pairs: NearestPair[];
+}
+
+export interface AnalysisPayload {
+  source: string;
+  methods: AnalysisMethod[];
+  scene_diagnostics: SceneClusterDiagnostic[];
+  library_diagnostics: LibraryClusterDiagnostic[];
+}
+
 export interface AppPayload {
   overview: ProjectOverview;
   datasets: DatasetCatalog;
   real_scenes: RealScenesPayload;
   field_samples: FieldScenesPayload;
+  spectral_library: SpectralLibraryPayload;
+  analysis: AnalysisPayload;
   methodology: Methodology;
   demo: DemoPayload;
 }
@@ -278,5 +374,7 @@ export function pickText(value: LocalizedText, language: string): string {
 
 export const api = {
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
+  getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
+  getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),
   getAppData: () => getJson<AppPayload>("/api/app-data")
 };

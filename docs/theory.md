@@ -1,77 +1,336 @@
-# Theory
+# Theoretical Framework
+
+This document defines the technical position behind CAOS LDA HSI. It is
+not a marketing summary. It states what the method can currently support,
+what remains a research hypothesis, and which assumptions must be tested
+before stronger claims are made.
 
 ## Core Hypothesis
 
-The standard habit of searching for one representative spectrum is often
-too restrictive. A sample does not speak through one perfect signature.
-It speaks through a population of related spectra with internal
-variability.
+Many spectral workflows reduce a sample, region, or scene object to one
+representative spectrum. That simplification is often practical, but it
+throws away the local distribution of spectra. In minerals, vegetation,
+wetlands, urban materials, and field imagery, that distribution can carry
+information about mixtures, moisture, illumination, alteration, texture,
+phenology, and acquisition geometry.
 
-This project therefore treats spectral data more like text:
+The working hypothesis is:
 
-- one spectrum, one patch population, or one local support becomes a
-  document
-- quantized values become words
-- a collection of spectra becomes a corpus
-- latent topic mixtures summarize recurring spectral regimes
+> A spectral object is often better represented by a distribution of
+> recurring spectral regimes than by one average signature.
 
-## Why LDA Is Relevant
+CAOS LDA HSI tests this hypothesis by converting spectra into
+document-like objects and applying probabilistic topic models to the
+resulting corpus.
 
-LDA assumes that each document is associated with a mixture of latent
-topics, and each topic is a distribution over words. Once spectra are
-encoded as tokens, this assumption becomes useful for MSI / HSI data:
+## LDA Model Used As Reference
 
-- one document can combine multiple coexisting physical regimes
-- topics can isolate recurring spectral structures without forcing one
-  pure endmember per document
-- topic mixtures offer a lower-dimensional and often more stable space
-  for comparison and inference
+Latent Dirichlet Allocation models a collection of discrete documents. In
+the original formulation:
 
-## Why Document Design Matters
+1. Each document `d` has a topic mixture:
+   `theta_d ~ Dirichlet(alpha)`.
+2. Each topic `k` has a word distribution:
+   `beta_k ~ Dirichlet(eta)`.
+3. For each token position `n` in document `d`:
+   - draw a latent topic `z_dn ~ Categorical(theta_d)`
+   - draw a word `w_dn ~ Categorical(beta_zdn)`
 
-The topic model only sees the document-term representation given to it.
-For HSI / MSI data, the critical design question is therefore not merely
-"which model should be used?" but also:
+The model does not understand spectra by itself. It only sees counts of
+discrete words. Therefore, the scientific value of this project depends
+heavily on the spectral tokenization design.
 
-- what is a document?
-- what is a word?
-- what structure must remain visible after quantization?
+## Spectral-To-Text Translation
 
-The three representations in this repo exist precisely to probe those
-choices.
+The translation layer has three responsibilities:
 
-## Topics Are Not Pure Materials
+- define what counts as a document
+- define what counts as a word
+- preserve enough physical structure after discretization
 
-In this project, a topic should not be read as a declaration that a
-single pure mineral or pure vegetation type was discovered. A topic is a
-distribution over recurring token patterns. That is a better fit when:
+The current app already exposes three representation families. They are
+not final claims; they are controlled probes for comparing how design
+choices change topic structure.
 
-- mixtures dominate the measurement
-- acquisition conditions vary across the sample
-- local heterogeneity is scientifically meaningful
-- the practical goal is robust inference, not only endmember purity
+### Spectrum-As-Document
 
-This is one reason topic models and PM-LDA-like ideas are relevant to
-spectral variability: they offer a probabilistic language for regimes,
-co-occurrence, and soft assignment.
+One pixel or one sampled spectrum becomes one document. Words encode band
+or band-intensity evidence.
 
-## Application Tracks
+Strengths:
 
-The current app and roadmap emphasize four application tracks:
+- simple to explain
+- useful for pixel-level or point-level comparisons
+- works with compact public HSI scenes
 
-- exploratory organization of spectral populations into latent regimes
-- topic-aware regression or classification through mixture features
-- topic-routed local models for segregated inference
-- retrieval and comparison in topic space when raw spectra are hard to
-  align directly
+Limitations:
 
-## Limits and Open Questions
+- weak spatial context
+- sensitive to quantization if documents are short
+- topics may reflect global band energy more than local material regimes
 
-- Quantization is necessary for classical LDA, but it can discard
-  information if the alphabet is too coarse.
-- Classical LDA ignores order inside a document, so any spatial or
-  spectral ordering must be injected through the document design itself.
-- Topic stability should be checked, not assumed.
-- Real mineral or laboratory workflows still need careful validation to
-  show when topic structure captures process-relevant variability rather
-  than acquisition artifacts.
+### Patch-As-Document
+
+A spatial patch, neighborhood, or sample support becomes one document.
+Words are aggregated from all spectra inside that support.
+
+Strengths:
+
+- preserves local heterogeneity
+- better aligned with field samples, drill-core windows, UAV patches, and
+  satellite tiles
+- useful for texture, mixture, and transition regimes
+
+Limitations:
+
+- document boundaries influence the result
+- patch size controls the scale of the learned topic
+- labels may become ambiguous when a patch mixes several classes
+
+### Band-Process Documents
+
+Documents are defined by reduced spectral intervals, derivatives,
+absorption regions, or band groups. Words represent behavior inside the
+selected spectral region.
+
+Strengths:
+
+- closer to mineral/clay absorption reasoning
+- allows targeted comparisons around known wavelength regions
+- can reduce noise from irrelevant bands
+
+Limitations:
+
+- requires calibrated band centers
+- risks encoding prior assumptions too strongly
+- not every public scene includes enough metadata for rigorous use
+
+## Word Design Options
+
+The current implementation uses compact encodings suitable for the public
+app. Future versions should compare the following word families.
+
+### Band Tokens
+
+Example: `b042`.
+
+The word indicates that a band contributed evidence but does not directly
+encode intensity. This can be useful for ranked-band or event-style
+representations, but it is weak when magnitude matters.
+
+### Quantized Intensity Tokens
+
+Example: `q03`.
+
+The word indicates reflectance or normalized response level. This captures
+histogram structure but loses wavelength identity unless combined with a
+band index.
+
+### Band-Intensity Tokens
+
+Example: `b042_q03`.
+
+This is the most direct classical LDA encoding. It preserves wavelength
+identity and discretized magnitude, but increases vocabulary size.
+
+### Spectral-Shape Tokens
+
+Examples: local slope, curvature, continuum-removed absorption depth, or
+ratio bins.
+
+These are not fully implemented yet. They are important because minerals,
+clays, water, and vegetation stress are often better characterized by
+shape and absorption behavior than by raw reflectance values.
+
+### Spatial Tokens
+
+Examples: patch strata, local texture bins, adjacency classes, or
+superpixel region IDs.
+
+These are not fully implemented yet. They are required if the method must
+distinguish a material signature from a spatial process such as shadow,
+soil exposure, wetland boundary transitions, or urban impervious surfaces.
+
+## Why Spectral Variability Matters
+
+Spectral variability can come from several sources:
+
+- material mixtures
+- mineral grain size and surface texture
+- clay, hydroxyl, oxide, carbonate, or water absorption behavior
+- vegetation species, stress, phenology, canopy geometry, and moisture
+- wetland water depth, turbidity, emergent vegetation, and soil-water
+  transitions
+- urban roofing, asphalt, concrete, shadows, and mixed pixels
+- illumination, sensor geometry, atmosphere, calibration, and noise
+
+The method must not assume that all variability is useful signal. The
+task is to separate structured variability from acquisition artifacts.
+Topic modeling is attractive because it can expose recurring regimes, but
+it does not prove physical causality by itself.
+
+## Minerals And Clays
+
+The first serious workflow should prioritize minerals and clays because
+that domain benefits directly from spectral variability analysis.
+
+Relevant interpretation patterns include:
+
+- VNIR iron oxide and ferric/ferrous behavior
+- SWIR hydroxyl and clay absorption regions
+- water-related absorption features
+- continuum shape, absorption depth, width, and asymmetry
+- mixed mineral assemblages rather than single pure signatures
+
+The app must avoid overclaiming. A topic is not automatically a mineral.
+It is a probability distribution over spectral tokens. A mineral
+interpretation becomes stronger only when topic behavior is compared with
+calibrated wavelengths, spectral libraries, known labels, or independent
+geochemical variables.
+
+## Vegetation, Wetlands, Cities, And Satellite Data
+
+The method should demonstrate transfer beyond geology.
+
+Vegetation:
+
+- canopy vigor, chlorophyll, water content, shadow, bare soil, stress
+- MSI indices such as NDVI are useful references but not the full method
+- topic mixtures can summarize patch-level variability across crop or
+  vegetation strata
+
+Wetlands:
+
+- water, emergent vegetation, saturated soil, and seasonal transitions
+- domain-shift is expected because wetlands vary strongly by scene and
+  acquisition condition
+- external wetland HSI archives are too large for Git, so curated patches
+  are required
+
+Urban scenes:
+
+- roofing, asphalt, concrete, grass, trees, soil, and shadow mixtures
+- multimodal data such as Houston 2013 HSI + LiDAR can test whether
+  spectral topics align with physical height or material structure
+
+Satellite patches:
+
+- Sentinel-2, Landsat, EnMAP, and BigEarthNet-style patch datasets allow
+  the method to be shown on city, vegetation, water, agricultural, and
+  seasonal surfaces
+- these sources should be subset-driven because full archives are large
+
+## Inference Modes
+
+The product should eventually compare several inference modes.
+
+### Topic Mixture Features
+
+Use `theta_d` as a feature vector for classification, regression, or
+retrieval. This is the simplest downstream use.
+
+Current status: partially demonstrated in the synthetic demo.
+
+### Topic-Routed Models
+
+Train specialized models for documents dominated by different topics.
+This is useful when one global model underfits heterogeneous regimes.
+
+Current status: conceptual and simulated only.
+
+### Topic-Stability Diagnostics
+
+Run repeated fits and compare whether topics remain stable under seeds,
+quantization choices, band subsets, and train/test scene splits.
+
+Current status: not implemented.
+
+### Cross-Scene Transfer
+
+Fit on one scene or source domain and evaluate topic behavior on another.
+This is essential for satellite, wetland, urban, and UAV data.
+
+Current status: cataloged as a roadmap item.
+
+### Spectral-Library Alignment
+
+Compare topic word distributions or reconstructed topic spectra against
+USGS, ECOSTRESS, HIDSAG, or curated mineral/clay references.
+
+Current status: partially scaffolded through nearest-reference comparison
+and spectral-library PCA/KMeans diagnostics. Full mineral interpretation
+still requires calibrated wavelength metadata and absorption-feature
+tokens.
+
+### Topic-Space Clustering Diagnostics
+
+After each scene has class or inferred-regime mean topic mixtures, those
+vectors can be treated as a compact geometry of spectral documents. PCA
+is used as the first projection because it is deterministic, simple to
+explain, and exposes how much variance the two displayed axes capture.
+KMeans is used as a first clustering baseline because it gives explicit
+cluster centers and a direct silhouette diagnostic.
+
+Current status: implemented as a derived payload, not as runtime model
+training. These clusters are diagnostic views over existing summaries.
+They are not ground-truth classes and should not be described as mineral
+identifications without external evidence.
+
+## What Is Implemented Today
+
+- FastAPI payload for project metadata, methodology, datasets, demo
+  samples, real-scene summaries, field MSI summaries, spectral-library
+  samples, and analysis diagnostics.
+- Synthetic compact LDA-style demo with topic mixtures and tokens.
+- Derived app assets from seven public UPV/EHU HSI scenes.
+- Derived app assets from three compact public unmixing ROIs.
+- Derived app assets from two MicaSense RedEdge orthomosaic examples.
+- Derived app assets from official USGS Spectral Library v7 AVIRIS and
+  Sentinel-2 compact archives.
+- Topic-space PCA/KMeans diagnostics for nine real scenes and
+  spectral-library PCA/KMeans diagnostics for two band-count groups.
+- Bilingual frontend, theme switching, and public repo link.
+- Dataset manifest with implemented, cataloged, external, and access-gated
+  sources.
+
+## What Is Not Implemented Yet
+
+- Real LDA training inside the app runtime.
+- Calibrated wavelength vectors for every scene.
+- Continuum removal and absorption-feature tokenization.
+- Full spectral-library alignment and mineral/clay interpretation
+  confidence.
+- Cross-scene topic stability experiments across seeds and tokenizers.
+- Download scripts for every cataloged source.
+- Curated patches from EuroSAT, BigEarthNet, HySpecNet-11k, WHU-Hi,
+  Landsat, or wetland archives.
+- Production-grade model comparison reports.
+
+## Technical Risks
+
+- Quantization can destroy subtle absorption behavior.
+- LDA ignores order unless the encoding injects order explicitly.
+- Topics can reflect sensor artifacts, illumination, or preprocessing
+  rather than material regimes.
+- The same material can appear in multiple topics because LDA topics are
+  statistical regimes, not pure endmembers.
+- Domain transfer can fail when band centers, atmospheric correction, or
+  spatial resolution differ strongly.
+- Strong public claims require real validation against labels, spectral
+  libraries, or independent response variables.
+
+## Improvement Focus
+
+The highest-value technical improvements are:
+
+1. Add calibrated wavelength metadata wherever available.
+2. Implement band-intensity, derivative, and absorption-feature token
+   families behind a stable representation interface.
+3. Add topic stability diagnostics across random seeds and tokenizers.
+4. Add curated ECOSTRESS and HIDSAG mineral/clay spectral-library slices
+   where licensing and file sizes permit.
+5. Improve calibrated Cuprite and Salinas wavelength handling under the
+   100 MB rule.
+6. Add curated satellite, wetland, and urban patch subsets.
+7. Compare topic mixtures against standard baselines and simple spectral
+   indices instead of showing topics alone.

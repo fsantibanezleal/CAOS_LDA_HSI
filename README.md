@@ -19,10 +19,14 @@ The repository now includes:
 - a React + Vite frontend with English / Spanish UI and dark / light
   theme support
 - a compact synthetic topic-modelling demo in `data/demo/demo.json`
-- compact derived summaries of five downloaded public HSI scenes in
+- compact derived summaries of ten downloaded public HSI / unmixing scenes in
   `data/derived/real/real_samples.json`
 - compact derived summaries of two downloaded official MicaSense MSI
   field orthomosaics in `data/derived/field/field_samples.json`
+- compact material spectra extracted from official USGS spectral-library
+  subsets in `data/derived/spectral/library_samples.json`
+- compact PCA/KMeans diagnostics for real-scene topic mixtures and
+  spectral-library reference spectra in `data/derived/analysis/analysis.json`
 - reproducible download and build scripts for raw public data under
   `data-pipeline/`
 - `legacy/` material preserved as historical reference for the early
@@ -31,10 +35,15 @@ The repository now includes:
 ## Product Surface
 
 - `Datasets`: curated MSI / HSI sources with GitHub-aware size strategy
-- `Real HSI scenes`: downloaded UPV/EHU benchmarks with topic summaries
-  and previews
+- `Real HSI scenes`: downloaded UPV/EHU benchmarks and unmixing ROIs with
+  topic summaries, official label previews where available, and inferred
+  topic-stratum previews for unlabeled scenes
 - `Field MSI samples`: downloaded MicaSense orthomosaics converted to
   patch corpora and topic summaries
+- `Spectral library`: compact material spectra for clay, mineral,
+  oxide, carbonate, urban, and vegetation references
+- `Clustering diagnostics`: topic-space PCA/KMeans views over real
+  scenes and spectral-library PCA/KMeans views over reference materials
 - `Representations`: alternative spectral-to-document encodings
 - `Topics`: topic-word and document-topic visualizations
 - `Inference`: topic-aware downstream modelling examples
@@ -54,6 +63,19 @@ The repository now includes:
 - `scripts/`: local development and maintenance scripts
 - `legacy/`: notebooks and reference papers retained for context
 
+## Technical Documentation
+
+- `docs/theory.md`: theoretical framing, implemented scope, risks, and
+  open research questions
+- `docs/spectral-tokenization.md`: document/word design, normalization,
+  quantization, vocabulary families, and metadata requirements
+- `docs/datasets.md`: current local data, under-100 MB expansion
+  candidates, external subset sources, and non-claims
+- `docs/functional-scope.md`: required workbench behavior and product
+  surface rules
+- `docs/technical-roadmap.md`: phased implementation and validation plan
+- `docs/sources.md`: research and data source references
+
 ## Conventions
 
 - Code, comments, docstrings, and documentation are written in English.
@@ -71,6 +93,8 @@ The app currently uses three data layers:
 - a compact synthetic demo in `data/demo/demo.json`
 - compact derived HSI scene assets in `data/derived/real/`
 - compact derived MSI field assets in `data/derived/field/`
+- compact derived spectral-library samples in `data/derived/spectral/`
+- compact derived clustering diagnostics in `data/derived/analysis/`
 
 Raw third-party files are downloaded into `data/raw/` and kept out of
 Git on purpose.
@@ -80,8 +104,14 @@ Useful commands:
 ```powershell
 .\scripts\local.ps1 fetch
 .\scripts\local.ps1 fetch-msi
+.\scripts\local.ps1 fetch-spectral
+.\scripts\local.ps1 fetch-unmixing
+.\scripts\local.ps1 fetch-all
 .\scripts\local.ps1 build-real
 .\scripts\local.ps1 build-field
+.\scripts\local.ps1 build-spectral
+.\scripts\local.ps1 build-analysis
+.\scripts\local.ps1 smoke
 .\scripts\local.ps1 demo
 .\scripts\local.ps1 dev
 ```
@@ -89,17 +119,29 @@ Useful commands:
 ```bash
 ./scripts/local.sh fetch
 ./scripts/local.sh fetch-msi
+./scripts/local.sh fetch-spectral
+./scripts/local.sh fetch-unmixing
+./scripts/local.sh fetch-all
 ./scripts/local.sh build-real
 ./scripts/local.sh build-field
+./scripts/local.sh build-spectral
+./scripts/local.sh build-analysis
+./scripts/local.sh smoke
 ./scripts/local.sh demo
 ./scripts/local.sh dev
 ```
 
 ## Immediate Next Steps
 
-- Add curated spectral-library subsets for mineral and clay workflows
+- Manually review the professional three-panel workbench and clustering
+  diagnostics before any production redeploy
+- Extend the new PCA/KMeans diagnostics into topic stability, seed
+  comparison, and representation-comparison reports
+- Add ECOSTRESS and satellite/UAV curated subsets after direct access,
+  size, and licensing checks
 - Replace approximate HSI wavelength axes with calibrated band-center
   vectors where available
 - Extend real-scene modelling to compare multiple document encodings on
   the downloaded public scenes, not only on the synthetic demo
-- Publish the repository and bind the first deployment target
+- Keep production deploys paused until local build, API smoke tests, and
+  visual checks pass

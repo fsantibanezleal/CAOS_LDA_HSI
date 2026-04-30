@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-all", "build-real", "build-field", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "smoke", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -22,9 +22,14 @@ function Show-Help {
     Write-Host "  demo        Rebuild the synthetic demo payload"
     Write-Host "  fetch       Download official compact public HSI raw scenes into data/raw"
     Write-Host "  fetch-msi   Download official MicaSense MSI sample data into data/raw"
-    Write-Host "  fetch-all   Download both HSI and MSI public raw sources"
+    Write-Host "  fetch-spectral Download compact USGS spectral-library archives"
+    Write-Host "  fetch-unmixing Download compact public HSI unmixing scenes and libraries"
+    Write-Host "  fetch-all   Download all public raw sources used by the local demo"
     Write-Host "  build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes"
     Write-Host "  build-field Rebuild compact field MSI derived assets from downloaded raw scenes"
+    Write-Host "  build-spectral Rebuild compact USGS spectral-library samples"
+    Write-Host "  build-analysis Rebuild compact PCA/KMeans diagnostics from derived assets"
+    Write-Host "  smoke       Smoke test a running local app at http://127.0.0.1:8105"
     Write-Host "  clean       Remove build outputs and Python caches"
     Write-Host "  stop        Kill local Python and Node processes started from this repo"
     Write-Host "  help        Show this message"
@@ -64,6 +69,12 @@ function Ensure-DerivedIfMissing {
     }
     if ((Test-Path "data\\raw\\micasense") -and -not (Test-Path "data\\derived\\field\\field_samples.json")) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_field_samples.py | Out-Null
+    }
+    if ((Test-Path "data\\raw\\usgs_splib07") -and -not (Test-Path "data\\derived\\spectral\\library_samples.json")) {
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_library_samples.py | Out-Null
+    }
+    if ((Test-Path "data\\derived\\real\\real_samples.json") -and (Test-Path "data\\derived\\spectral\\library_samples.json") -and -not (Test-Path "data\\derived\\analysis\\analysis.json")) {
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_analysis_payload.py | Out-Null
     }
 }
 
@@ -122,10 +133,22 @@ switch ($Command) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_msi.py
     }
 
+    "fetch-spectral" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_spectral_libraries.py
+    }
+
+    "fetch-unmixing" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_unmixing.py
+    }
+
     "fetch-all" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_hsi.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_msi.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_spectral_libraries.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_unmixing.py
     }
 
     "build-real" {
@@ -136,6 +159,20 @@ switch ($Command) {
     "build-field" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_field_samples.py
+    }
+
+    "build-spectral" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_library_samples.py
+    }
+
+    "build-analysis" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_analysis_payload.py
+    }
+
+    "smoke" {
+        & .\scripts\smoke.ps1 -BaseUrl "http://127.0.0.1:8105"
     }
 
     "clean" {

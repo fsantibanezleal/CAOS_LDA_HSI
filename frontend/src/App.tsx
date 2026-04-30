@@ -1,21 +1,976 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { DatasetCatalog } from "./components/DatasetCatalog";
-import { FieldSamplePanel } from "./components/FieldSamplePanel";
-import { Header } from "./components/Header";
-import { InferencePanel } from "./components/InferencePanel";
-import { RealScenePanel } from "./components/RealScenePanel";
-import { SectionNav } from "./components/SectionNav";
-import { SpectrumWorkbench } from "./components/SpectrumWorkbench";
-import { TheoryPanel } from "./components/TheoryPanel";
-import { TopicExplorer } from "./components/TopicExplorer";
-import { api, pickText, type AppPayload } from "./lib/api";
+import { BarStrip, ClusterScatter, LineChart, MixtureBars } from "./components/Charts";
+import {
+  api,
+  pickText,
+  type AppPayload,
+  type LibraryClusterDiagnostic,
+  type DatasetEntry,
+  type DemoSample,
+  type FieldSceneSnapshot,
+  type RealSceneSnapshot,
+  type RepresentationVariant,
+  type SceneClusterDiagnostic,
+  type SpectralLibrarySample,
+  type TopicProfile
+} from "./lib/api";
+import { useStore } from "./store/useStore";
+
+type Language = "en" | "es";
+
+const topicColors = [
+  "var(--accent-blue)",
+  "var(--accent-cyan)",
+  "var(--accent-purple)",
+  "var(--cluster-amber)",
+  "var(--cluster-rose)",
+  "var(--cluster-slate)"
+];
+
+const percent = (value: number) => `${Math.round(value * 100)}%`;
+
+function formatScore(value: number | null): string {
+  return value === null ? "n/a" : value.toFixed(2);
+}
+
+function formatShape(shape: number[] | null): string {
+  if (!shape || shape.length === 0) {
+    return "external";
+  }
+  return shape.join(" x ");
+}
+
+function formatSize(value: number | null): string {
+  if (value === null) {
+    return "external";
+  }
+  return `${value.toLocaleString(undefined, { maximumFractionDigits: 1 })} MB`;
+}
+
+function domainLabel(dataset: DatasetEntry): string {
+  return dataset.domains.slice(0, 3).join(" / ");
+}
+
+function getDatasetStatus(dataset: DatasetEntry, language: Language): string {
+  return pickText(dataset.local_status, language);
+}
+
+function getTopic(topics: TopicProfile[], id: string | null | undefined): TopicProfile {
+  return topics.find((topic) => topic.id === id) ?? topics[0];
+}
+
+function spectralDistance(a: number[], b: number[]): number {
+  const length = Math.min(a.length, b.length);
+  if (length === 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+  let total = 0;
+  for (let index = 0; index < length; index += 1) {
+    const delta = a[index] - b[index];
+    total += delta * delta;
+  }
+  return Math.sqrt(total / length);
+}
+
+function nearestLibraryMatches(sample: SpectralLibrarySample, samples: SpectralLibrarySample[]) {
+  return samples
+    .filter((candidate) => candidate.id !== sample.id && candidate.band_count === sample.band_count)
+    .map((candidate) => ({
+      sample: candidate,
+      distance: spectralDistance(sample.spectrum, candidate.spectrum)
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 4);
+}
+
+function WorkbenchHeader({
+  data,
+  language,
+  onLanguageChange,
+  onHelp
+}: {
+  data: AppPayload;
+  language: Language;
+  onLanguageChange: (language: Language) => void;
+  onHelp: () => void;
+}) {
+  const { t } = useTranslation();
+  const theme = useStore((state) => state.theme);
+  const toggleTheme = useStore((state) => state.toggleTheme);
+
+  return (
+    <header className="app-header">
+      <div className="brand-cluster">
+        <div className="brand-glyph" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <div>
+          <p className="app-kicker">{t("workflowFocus")}</p>
+          <h1>{data.overview.title}</h1>
+        </div>
+      </div>
+
+      <div className="header-summary">
+        <span>{pickText(data.overview.tagline, language)}</span>
+      </div>
+
+      <div className="header-actions" aria-label={t("headerActions")}>
+        <div className="segmented-control" aria-label={t("language")}>
+          <button className={language === "es" ? "is-active" : ""} type="button" onClick={() => onLanguageChange("es")}>
+            ES
+          </button>
+          <button className={language === "en" ? "is-active" : ""} type="button" onClick={() => onLanguageChange("en")}>
+            EN
+          </button>
+        </div>
+        <button className="icon-text-button" type="button" onClick={toggleTheme}>
+          {theme === "dark" ? t("themeLight") : t("themeDark")}
+        </button>
+        <a className="icon-text-button" href={data.overview.repo.url} target="_blank" rel="noreferrer">
+          {t("sourceCode")}
+        </a>
+        <button className="icon-text-button" type="button" onClick={onHelp}>
+          {t("help")}
+        </button>
+      </div>
+    </header>
+  );
+}
+
+function NavigatorPanel({
+  data,
+  language,
+  selectedSample,
+  selectedScene,
+  selectedField,
+  selectedLibrarySample,
+  query,
+  onQueryChange,
+  onSampleSelect,
+  onSceneSelect,
+  onFieldSelect,
+  onLibrarySampleSelect
+}: {
+  data: AppPayload;
+  language: Language;
+  selectedSample: DemoSample;
+  selectedScene: RealSceneSnapshot;
+  selectedField: FieldSceneSnapshot;
+  selectedLibrarySample: SpectralLibrarySample;
+  query: string;
+  onQueryChange: (value: string) => void;
+  onSampleSelect: (id: string) => void;
+  onSceneSelect: (id: string) => void;
+  onFieldSelect: (id: string) => void;
+  onLibrarySampleSelect: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+
+  const filteredDatasets = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return data.datasets.datasets;
+    }
+    return data.datasets.datasets.filter((dataset) => {
+      const text = [
+        dataset.name,
+        dataset.modality,
+        dataset.source,
+        dataset.fit_for_demo,
+        dataset.domains.join(" "),
+        pickText(dataset.local_status, language)
+      ]
+        .join(" ")
+        .toLowerCase();
+      return text.includes(normalized);
+    });
+  }, [data.datasets.datasets, language, query]);
+
+  const filteredLibrarySamples = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) {
+      return data.spectral_library.samples;
+    }
+    return data.spectral_library.samples.filter((sample) =>
+      [sample.name, sample.group, sample.sensor, sample.source_file, sample.absorption_tokens.join(" ")]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalized)
+    );
+  }, [data.spectral_library.samples, query]);
+
+  return (
+    <aside className="left-panel">
+      <div className="panel-block">
+        <p className="panel-eyebrow">{t("navigatorTitle")}</p>
+        <h2>{t("navigatorSubtitle")}</h2>
+        <input
+          className="workbench-search"
+          type="search"
+          value={query}
+          onChange={(event) => onQueryChange(event.target.value)}
+          placeholder={t("searchData")}
+        />
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("demoDocuments")}</span>
+          <strong>{data.demo.samples.length}</strong>
+        </div>
+        <div className="nav-list">
+          {data.demo.samples.slice(0, 10).map((sample) => (
+            <button
+              key={sample.id}
+              className={`nav-item ${selectedSample.id === sample.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onSampleSelect(sample.id)}
+            >
+              <span>{pickText(sample.label, language)}</span>
+              <small>{pickText(sample.source_group, language)}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("realScenes")}</span>
+          <strong>{data.real_scenes.scenes.length}</strong>
+        </div>
+        <div className="nav-list compact">
+          {data.real_scenes.scenes.map((scene) => (
+            <button
+              key={scene.id}
+              className={`nav-item ${selectedScene.id === scene.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onSceneSelect(scene.id)}
+            >
+              <span>{scene.name}</span>
+              <small>
+                {scene.cube_shape[2]} {t("bands")} / {scene.modality}
+              </small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("fieldSamples")}</span>
+          <strong>{data.field_samples.scenes.length}</strong>
+        </div>
+        <div className="nav-list compact">
+          {data.field_samples.scenes.map((scene) => (
+            <button
+              key={scene.id}
+              className={`nav-item ${selectedField.id === scene.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onFieldSelect(scene.id)}
+            >
+              <span>{scene.name}</span>
+              <small>
+                {scene.patch_count} {t("patchesUnit")} / {scene.sensor}
+              </small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section">
+        <div className="nav-section-header">
+          <span>{t("spectralLibrary")}</span>
+          <strong>{filteredLibrarySamples.length}</strong>
+        </div>
+        <div className="nav-list compact">
+          {filteredLibrarySamples.slice(0, 14).map((sample) => (
+            <button
+              key={sample.id}
+              className={`nav-item ${selectedLibrarySample.id === sample.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => onLibrarySampleSelect(sample.id)}
+            >
+              <span>{sample.name}</span>
+              <small>
+                {sample.group} / {sample.sensor}
+              </small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="nav-section catalog-section">
+        <div className="nav-section-header">
+          <span>{t("datasetCatalog")}</span>
+          <strong>{filteredDatasets.length}</strong>
+        </div>
+        <div className="catalog-list">
+          {filteredDatasets.slice(0, 8).map((dataset) => (
+            <a key={dataset.id} className="catalog-row" href={dataset.source_url} target="_blank" rel="noreferrer">
+              <span>{dataset.name}</span>
+              <small>{domainLabel(dataset)}</small>
+              <em>{getDatasetStatus(dataset, language)}</em>
+            </a>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function SampleWorkbench({
+  sample,
+  topics,
+  language
+}: {
+  sample: DemoSample;
+  topics: TopicProfile[];
+  language: Language;
+}) {
+  const { t } = useTranslation();
+  const setSelectedTopicId = useStore((state) => state.setSelectedTopicId);
+  const selectedTopicId = useStore((state) => state.selectedTopicId);
+  const topic = getTopic(topics, selectedTopicId ?? sample.dominant_topic_id);
+
+  return (
+    <section className="workbench-card primary-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("activeDocument")}</p>
+          <h2>{pickText(sample.label, language)}</h2>
+          <p>{pickText(sample.source_group, language)}</p>
+        </div>
+        <div className="status-pill">
+          <span className="status-dot ok" />
+          {t("localDemo")}
+        </div>
+      </div>
+
+      <div className="chart-stack">
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("spectrumTitle")}</span>
+            <small>{sample.spectrum.length} {t("bands")}</small>
+          </div>
+          <LineChart values={sample.spectrum} stroke="var(--accent-blue)" />
+        </div>
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("quantizedTitle")}</span>
+            <small>{t("levelsCount", { count: Math.max(...sample.quantized_levels) + 1 })}</small>
+          </div>
+          <BarStrip values={sample.quantized_levels} color="var(--accent-cyan)" />
+        </div>
+      </div>
+
+      <div className="topic-mixture-zone">
+        <div>
+          <div className="card-title-row tight">
+            <span>{t("inferredMixture")}</span>
+            <small>{t("dominantTopic")}: {pickText(topic.name, language)}</small>
+          </div>
+          <MixtureBars values={sample.inferred_topic_mixture} colors={topics.map((item) => item.color)} />
+        </div>
+        <div className="topic-grid-mini">
+          {topics.map((item, index) => (
+            <button
+              key={item.id}
+              className={`topic-button ${topic.id === item.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setSelectedTopicId(item.id)}
+            >
+              <span className="topic-dot" style={{ background: item.color }} />
+              <span>{pickText(item.name, language)}</span>
+              <strong>{percent(sample.inferred_topic_mixture[index] ?? 0)}</strong>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SceneTopicMatrix({ scene }: { scene: RealSceneSnapshot }) {
+  const { t } = useTranslation();
+  const rows = scene.class_summaries.slice(0, 6);
+
+  if (rows.length === 0 || scene.topics.length === 0) {
+    return null;
+  }
+
+  return (
+    <article className="workbench-card scene-topic-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("sceneTopicMatrix")}</p>
+          <h3>{scene.name}</h3>
+        </div>
+        <span className="status-pill">{t("largestRegimes")}</span>
+      </div>
+      <div className="topic-matrix" style={{ gridTemplateColumns: `minmax(112px, 1fr) repeat(${scene.topics.length}, minmax(46px, 64px))` }}>
+        <div className="topic-matrix-label topic-matrix-head">{t("classOrRegime")}</div>
+        {scene.topics.map((topic) => (
+          <div key={topic.id} className="topic-matrix-head" title={topic.name}>
+            {topic.name.replace("Topic ", "T")}
+          </div>
+        ))}
+        {rows.map((row) => (
+          <Fragment key={row.label_id}>
+            <div key={`${row.label_id}-label`} className="topic-matrix-label" title={row.name}>
+              <strong>{row.name}</strong>
+              <span>{row.count.toLocaleString()}</span>
+            </div>
+            {scene.topics.map((topic, index) => {
+              const value = row.mean_topic_mixture[index] ?? 0;
+              return (
+                <div
+                  key={`${row.label_id}-${topic.id}`}
+                  className="topic-matrix-cell"
+                  style={{ background: `rgba(59, 130, 246, ${0.12 + value * 0.78})` }}
+                  title={`${row.name} / ${topic.name}: ${percent(value)}`}
+                >
+                  {percent(value)}
+                </div>
+              );
+            })}
+          </Fragment>
+        ))}
+      </div>
+      <div className="scene-topic-words">
+        {scene.topics.slice(0, 4).map((topic) => (
+          <div key={topic.id}>
+            <strong>{topic.name}</strong>
+            <span>{topic.top_words.slice(0, 4).map((word) => word.token).join(" / ")}</span>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function SceneWorkbench({
+  scene,
+  field,
+  language
+}: {
+  scene: RealSceneSnapshot;
+  field: FieldSceneSnapshot;
+  language: Language;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <section className="scene-grid">
+      <article className="workbench-card">
+        <div className="card-title-row">
+          <div>
+            <p className="panel-eyebrow">{t("realScenes")}</p>
+            <h3>{scene.name}</h3>
+            <p>{scene.sensor}</p>
+          </div>
+          <a className="small-link" href={scene.source_url} target="_blank" rel="noreferrer">
+            {t("sourceShort")}
+          </a>
+        </div>
+        <div className="preview-grid">
+          {scene.rgb_preview_path ? <img src={scene.rgb_preview_path} alt={`${scene.name} RGB preview`} /> : null}
+          {scene.label_preview_path ? <img src={scene.label_preview_path} alt={`${scene.name} label preview`} /> : null}
+        </div>
+        <dl className="metric-strip">
+          <div>
+            <dt>{t("shape")}</dt>
+            <dd>{formatShape(scene.cube_shape)}</dd>
+          </div>
+          <div>
+            <dt>{t("labeledPixels")}</dt>
+            <dd>{scene.labeled_pixels.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>{t("topicsTitle")}</dt>
+            <dd>{scene.topics.length}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article className="workbench-card">
+        <div className="card-title-row">
+          <div>
+            <p className="panel-eyebrow">{t("fieldSamples")}</p>
+            <h3>{field.name}</h3>
+            <p>{field.sensor}</p>
+          </div>
+          <a className="small-link" href={field.source_url} target="_blank" rel="noreferrer">
+            {t("sourceShort")}
+          </a>
+        </div>
+        <div className="preview-grid">
+          <img src={field.rgb_preview_path} alt={`${field.name} RGB preview`} />
+          <img src={field.ndvi_preview_path} alt={`${field.name} NDVI preview`} />
+        </div>
+        <dl className="metric-strip">
+          <div>
+            <dt>{t("patchCount")}</dt>
+            <dd>{field.patch_count.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>{t("patchSize")}</dt>
+            <dd>{field.patch_size}px</dd>
+          </div>
+          <div>
+            <dt>{t("bands")}</dt>
+            <dd>{field.band_names.length}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <SceneTopicMatrix scene={scene} />
+    </section>
+  );
+}
+
+function TopicClusterWorkbench({
+  scene,
+  diagnostic
+}: {
+  scene: RealSceneSnapshot;
+  diagnostic: SceneClusterDiagnostic | null;
+}) {
+  const { t } = useTranslation();
+
+  if (!diagnostic) {
+    return null;
+  }
+
+  const variance = diagnostic.explained_variance_ratio.reduce((total, value) => total + value, 0);
+
+  return (
+    <section className="workbench-card cluster-diagnostics-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("clusterDiagnostics")}</p>
+          <h3>{t("topicEmbedding")}</h3>
+          <p>{diagnostic.feature_space}</p>
+        </div>
+        <span className="status-pill">{scene.name}</span>
+      </div>
+
+      <div className="cluster-layout">
+        <div className="chart-card cluster-plot-card">
+          <div className="card-title-row tight">
+            <span>{t("pcaProjection")}</span>
+            <small>{diagnostic.points.length} {t("points")}</small>
+          </div>
+          <ClusterScatter points={diagnostic.points} />
+        </div>
+
+        <div className="cluster-side">
+          <dl className="metric-strip cluster-metrics">
+            <div>
+              <dt>{t("clusters")}</dt>
+              <dd>{diagnostic.cluster_count}</dd>
+            </div>
+            <div>
+              <dt>{t("silhouette")}</dt>
+              <dd>{formatScore(diagnostic.silhouette_score)}</dd>
+            </div>
+            <div>
+              <dt>{t("pcaVariance")}</dt>
+              <dd>{percent(variance)}</dd>
+            </div>
+          </dl>
+
+          <div className="cluster-profile-list">
+            {diagnostic.cluster_profiles.map((profile) => (
+              <div key={profile.cluster_id} className="cluster-profile-row">
+                <div className="cluster-profile-title">
+                  <span className="cluster-chip">C{profile.cluster_id + 1}</span>
+                  <strong>{t("dominantFeature", { index: profile.dominant_feature_index + 1 })}</strong>
+                  <em>{profile.support_count.toLocaleString()} px</em>
+                </div>
+                <MixtureBars values={profile.mean_vector} colors={topicColors} />
+                <small>{profile.top_labels.join(" / ")}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="nearest-pair-grid">
+        <div className="card-title-row tight">
+          <span>{t("nearestTopicPairs")}</span>
+          <small>{t("topicSpace")}</small>
+        </div>
+        {diagnostic.nearest_pairs.slice(0, 4).map((pair) => (
+          <div key={`${pair.a_label}-${pair.b_label}`} className="nearest-pair-row">
+            <span>{pair.a_label} / {pair.b_label}</span>
+            <strong>{pair.feature_distance.toFixed(3)}</strong>
+            {pair.spectral_distance !== null ? <em>{pair.spectral_distance.toFixed(3)} spectral</em> : null}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SpectralLibraryWorkbench({
+  sample,
+  samples,
+  onSelect
+}: {
+  sample: SpectralLibrarySample;
+  samples: SpectralLibrarySample[];
+  onSelect: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+  const matches = nearestLibraryMatches(sample, samples);
+
+  return (
+    <section className="workbench-card spectral-library-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("spectralLibrary")}</p>
+          <h3>{sample.name}</h3>
+          <p>{sample.group} / {sample.sensor}</p>
+        </div>
+        <a className="small-link" href={sample.source_url} target="_blank" rel="noreferrer">
+          {t("sourceShort")}
+        </a>
+      </div>
+
+      <div className="chart-stack dense">
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("referenceSpectrum")}</span>
+            <small>{sample.band_count} {t("bands")}</small>
+          </div>
+          <LineChart values={sample.spectrum} stroke="var(--accent-blue)" />
+        </div>
+        <div className="chart-card">
+          <div className="card-title-row tight">
+            <span>{t("spectralWords")}</span>
+            <small>{sample.absorption_tokens.length} {t("absorptionTokens")}</small>
+          </div>
+          <div className="token-cloud compact-cloud">
+            {sample.absorption_tokens.map((token) => (
+              <span key={token} className="token-pill subtle">
+                {token}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="token-cloud library-token-cloud">
+        {sample.token_preview.slice(0, 18).map((token) => (
+          <span key={token} className="token-pill">
+            {token}
+          </span>
+        ))}
+      </div>
+
+      <div className="nearest-reference-panel">
+        <div className="card-title-row tight">
+          <span>{t("nearestReferences")}</span>
+          <small>{sample.band_count} {t("bands")}</small>
+        </div>
+        <div className="nearest-reference-list">
+          {matches.map((match) => (
+            <button
+              key={match.sample.id}
+              type="button"
+              className="nearest-reference-row"
+              onClick={() => onSelect(match.sample.id)}
+            >
+              <span>
+                <strong>{match.sample.name}</strong>
+                <em>{match.sample.group}</em>
+              </span>
+              <b>{match.distance.toFixed(3)}</b>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LibraryClusterWorkbench({
+  sample,
+  diagnostic
+}: {
+  sample: SpectralLibrarySample;
+  diagnostic: LibraryClusterDiagnostic | null;
+}) {
+  const { t } = useTranslation();
+
+  if (!diagnostic) {
+    return null;
+  }
+
+  const variance = diagnostic.explained_variance_ratio.reduce((total, value) => total + value, 0);
+  const samplePairs = diagnostic.nearest_pairs.filter((pair) => pair.a_label === sample.name || pair.b_label === sample.name);
+  const pairs = samplePairs.length > 0 ? samplePairs : diagnostic.nearest_pairs;
+
+  return (
+    <section className="workbench-card cluster-diagnostics-card library-cluster-card">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("libraryEmbedding")}</p>
+          <h3>{diagnostic.library_name}</h3>
+          <p>{diagnostic.feature_space}</p>
+        </div>
+        <span className="status-pill">{diagnostic.band_count} {t("bands")}</span>
+      </div>
+
+      <div className="cluster-layout library-layout">
+        <div className="chart-card cluster-plot-card">
+          <div className="card-title-row tight">
+            <span>{t("pcaProjection")}</span>
+            <small>{sample.name}</small>
+          </div>
+          <ClusterScatter points={diagnostic.points} selectedPointId={sample.id} />
+        </div>
+
+        <div className="cluster-side">
+          <dl className="metric-strip cluster-metrics">
+            <div>
+              <dt>{t("clusters")}</dt>
+              <dd>{diagnostic.cluster_count}</dd>
+            </div>
+            <div>
+              <dt>{t("silhouette")}</dt>
+              <dd>{formatScore(diagnostic.silhouette_score)}</dd>
+            </div>
+            <div>
+              <dt>{t("pcaVariance")}</dt>
+              <dd>{percent(variance)}</dd>
+            </div>
+          </dl>
+
+          <div className="nearest-pair-list compact">
+            {pairs.slice(0, 5).map((pair) => (
+              <div key={`${pair.a_label}-${pair.b_label}`} className="nearest-pair-row">
+                <span>{pair.a_label} / {pair.b_label}</span>
+                <strong>{pair.feature_distance.toFixed(3)}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DatasetStatusPanel({
+  datasets,
+  language
+}: {
+  datasets: DatasetEntry[];
+  language: Language;
+}) {
+  const { t } = useTranslation();
+  const priority = datasets.filter((dataset) =>
+    ["cuprite-upv-reflectance", "salinas-corrected", "cross-scene-wetland-hsi", "bigearthnet-v2", "hyspecnet-11k"].includes(dataset.id)
+  );
+
+  return (
+    <section className="workbench-card dataset-status-panel">
+      <div className="card-title-row">
+        <div>
+          <p className="panel-eyebrow">{t("datasetExpansion")}</p>
+          <h3>{t("availableData")}</h3>
+        </div>
+        <span className="status-pill">{datasets.length} {t("datasetEntries")}</span>
+      </div>
+      <div className="dataset-table">
+        {priority.map((dataset) => (
+          <div key={dataset.id} className="dataset-row">
+            <div>
+              <strong>{dataset.name}</strong>
+              <span>{dataset.modality}</span>
+            </div>
+            <div>{formatSize(dataset.file_size_mb)}</div>
+            <em>{getDatasetStatus(dataset, language)}</em>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function InspectorPanel({
+  data,
+  sample,
+  selectedTopic,
+  representation,
+  language
+}: {
+  data: AppPayload;
+  sample: DemoSample;
+  selectedTopic: TopicProfile;
+  representation: RepresentationVariant;
+  language: Language;
+}) {
+  const { t } = useTranslation();
+  const selectedRepresentation = useStore((state) => state.selectedRepresentation);
+  const setSelectedRepresentation = useStore((state) => state.setSelectedRepresentation);
+  const tokens = sample.tokens_by_representation[selectedRepresentation] ?? sample.tokens_by_representation[representation.id];
+  const baseline = sample.predictions.baseline ?? sample.target_value;
+  const predictions = Object.entries(sample.predictions);
+  const bestMetric = [...data.demo.model_metrics].sort((a, b) => a.rmse - b.rmse)[0];
+
+  return (
+    <aside className="right-panel">
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("methodInspector")}</p>
+        <h2>{t("selectRepresentation")}</h2>
+        <div className="representation-stack">
+          {data.methodology.representations.map((item) => (
+            <button
+              key={item.id}
+              className={`representation-button ${selectedRepresentation === item.id ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setSelectedRepresentation(item.id)}
+            >
+              <strong>{pickText(item.name, language)}</strong>
+              <span>{pickText(item.summary, language)}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("documentDefinition")}</p>
+        <p>{pickText(representation.document_definition, language)}</p>
+        <p className="soft-note">{pickText(representation.word_definition, language)}</p>
+      </section>
+
+      <section className="inspector-block">
+        <div className="card-title-row tight">
+          <span>{t("tokensTitle")}</span>
+          <small>{tokens.preview.length} / {tokens.total_tokens}</small>
+        </div>
+        <div className="token-cloud">
+          {tokens.preview.slice(0, 16).map((token) => (
+            <span key={token} className="token-pill">
+              {token}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("selectedTopicProfile")}</p>
+        <div className="topic-profile-title">
+          <span className="topic-dot large" style={{ background: selectedTopic.color }} />
+          <h3>{pickText(selectedTopic.name, language)}</h3>
+        </div>
+        <p>{pickText(selectedTopic.summary, language)}</p>
+        <LineChart values={selectedTopic.band_profile} stroke={selectedTopic.color} />
+        <div className="token-cloud">
+          {selectedTopic.top_words.slice(0, 8).map((word) => (
+            <span key={word.token} className="token-pill subtle">
+              {word.token} {word.weight.toFixed(2)}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="inspector-block">
+        <p className="panel-eyebrow">{t("modelReadout")}</p>
+        <div className="model-metric">
+          <span>{pickText(bestMetric.label, language)}</span>
+          <strong>{bestMetric.rmse.toFixed(2)} {t("rmse")}</strong>
+        </div>
+        <div className="prediction-list">
+          {predictions.map(([key, value]) => (
+            <div key={key}>
+              <span>{key}</span>
+              <strong>{value.toFixed(1)}</strong>
+            </div>
+          ))}
+          <div>
+            <span>{t("baselineDelta")}</span>
+            <strong>{(sample.target_value - baseline).toFixed(1)}</strong>
+          </div>
+        </div>
+      </section>
+    </aside>
+  );
+}
+
+function HelpModal({ data, onClose }: { data: AppPayload; onClose: () => void }) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="modal-backdrop" role="presentation" onClick={onClose}>
+      <section className="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title" onClick={(event) => event.stopPropagation()}>
+        <div className="card-title-row">
+          <div>
+            <p className="panel-eyebrow">{t("helpStatus")}</p>
+            <h2 id="help-title">{t("helpTitle")}</h2>
+          </div>
+          <button className="icon-text-button" type="button" onClick={onClose}>
+            {t("close")}
+          </button>
+        </div>
+        <div className="help-grid">
+          <div>
+            <h3>{t("implementedNow")}</h3>
+            <ul>
+              <li>{t("helpWorkbench")}</li>
+              <li>{t("helpSpectralLibrary")}</li>
+              <li>{t("helpSceneMatrix")}</li>
+              <li>{t("helpClusterDiagnostics")}</li>
+              <li>{t("helpNoDeploy")}</li>
+            </ul>
+          </div>
+          <div>
+            <h3>{t("dataState")}</h3>
+            <dl className="metric-strip help-metrics">
+              <div>
+                <dt>{t("datasetEntries")}</dt>
+                <dd>{data.datasets.datasets.length}</dd>
+              </div>
+              <div>
+                <dt>{t("realScenes")}</dt>
+                <dd>{data.real_scenes.scenes.length}</dd>
+              </div>
+              <div>
+                <dt>{t("spectralLibrary")}</dt>
+                <dd>{data.spectral_library.samples.length}</dd>
+              </div>
+              <div>
+                <dt>{t("analysisScenes")}</dt>
+                <dd>{data.analysis.scene_diagnostics.length}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
 
 export function App() {
   const { t, i18n } = useTranslation();
   const [data, setData] = useState<AppPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [selectedSceneId, setSelectedSceneId] = useState<string | null>(null);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [selectedLibrarySampleId, setSelectedLibrarySampleId] = useState<string | null>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+
+  const selectedSampleId = useStore((state) => state.selectedSampleId);
+  const setSelectedSampleId = useStore((state) => state.setSelectedSampleId);
+  const selectedTopicId = useStore((state) => state.selectedTopicId);
+  const setSelectedTopicId = useStore((state) => state.setSelectedTopicId);
+  const selectedRepresentation = useStore((state) => state.selectedRepresentation);
 
   useEffect(() => {
     let active = true;
@@ -35,13 +990,46 @@ export function App() {
     };
   }, []);
 
-  const language = i18n.resolvedLanguage?.startsWith("en") ? "en" : "es";
+  const language: Language = i18n.resolvedLanguage?.startsWith("en") ? "en" : "es";
 
   useEffect(() => {
-    if (data) {
-      document.title = `${data.overview.title} - ${pickText(data.overview.tagline, language)}`;
-    }
+    if (!data) return;
+    document.title = `${data.overview.title} - ${pickText(data.overview.tagline, language)}`;
   }, [data, language]);
+
+  useEffect(() => {
+    if (!data) return;
+    const firstSample = data.demo.samples[0];
+    const firstTopic = data.demo.topics[0];
+    const firstScene = data.real_scenes.scenes[0];
+    const firstField = data.field_samples.scenes[0];
+    const firstLibrarySample = data.spectral_library.samples[0];
+
+    if (firstSample && !selectedSampleId) {
+      setSelectedSampleId(firstSample.id);
+    }
+    if (firstTopic && !selectedTopicId) {
+      setSelectedTopicId(firstTopic.id);
+    }
+    if (firstScene && !selectedSceneId) {
+      setSelectedSceneId(firstScene.id);
+    }
+    if (firstField && !selectedFieldId) {
+      setSelectedFieldId(firstField.id);
+    }
+    if (firstLibrarySample && !selectedLibrarySampleId) {
+      setSelectedLibrarySampleId(firstLibrarySample.id);
+    }
+  }, [
+    data,
+    selectedFieldId,
+    selectedLibrarySampleId,
+    selectedSampleId,
+    selectedSceneId,
+    selectedTopicId,
+    setSelectedSampleId,
+    setSelectedTopicId
+  ]);
 
   if (error) {
     return (
@@ -65,47 +1053,63 @@ export function App() {
     );
   }
 
+  const sample = data.demo.samples.find((item) => item.id === selectedSampleId) ?? data.demo.samples[0];
+  const scene = data.real_scenes.scenes.find((item) => item.id === selectedSceneId) ?? data.real_scenes.scenes[0];
+  const field = data.field_samples.scenes.find((item) => item.id === selectedFieldId) ?? data.field_samples.scenes[0];
+  const librarySample =
+    data.spectral_library.samples.find((item) => item.id === selectedLibrarySampleId) ?? data.spectral_library.samples[0];
+  const sceneDiagnostic = data.analysis.scene_diagnostics.find((item) => item.scene_id === scene.id) ?? null;
+  const libraryDiagnostic = data.analysis.library_diagnostics.find((item) => item.band_count === librarySample.band_count) ?? null;
+  const selectedTopic = getTopic(data.demo.topics, selectedTopicId ?? sample.dominant_topic_id);
+  const representation =
+    data.methodology.representations.find((item) => item.id === selectedRepresentation) ?? data.methodology.representations[0];
+
   return (
     <div className="app-shell">
-      <Header overview={data.overview} language={language} />
+      <WorkbenchHeader data={data} language={language} onLanguageChange={(next) => void i18n.changeLanguage(next)} onHelp={() => setIsHelpOpen(true)} />
 
-      <main className="page-shell">
-        <section className="hero-panel">
-          <div className="hero-copy">
-            <p className="eyebrow">{t("heroKicker")}</p>
-            <h1>{data.overview.title}</h1>
-            <p className="hero-tagline">{pickText(data.overview.tagline, language)}</p>
-            <p className="hero-hypothesis">{pickText(data.overview.hypothesis, language)}</p>
+      <main className="workbench-shell">
+        <NavigatorPanel
+          data={data}
+          language={language}
+          selectedSample={sample}
+          selectedScene={scene}
+          selectedField={field}
+          selectedLibrarySample={librarySample}
+          query={query}
+          onQueryChange={setQuery}
+          onSampleSelect={(id) => {
+            setSelectedSampleId(id);
+            const nextSample = data.demo.samples.find((item) => item.id === id);
+            if (nextSample) {
+              setSelectedTopicId(nextSample.dominant_topic_id);
+            }
+          }}
+          onSceneSelect={setSelectedSceneId}
+          onFieldSelect={setSelectedFieldId}
+          onLibrarySampleSelect={setSelectedLibrarySampleId}
+        />
+
+        <section className="center-workbench">
+          <div className="workbench-intro">
+            <div>
+              <p className="panel-eyebrow">{t("workbenchMode")}</p>
+              <h2>{t("workbenchTitle")}</h2>
+            </div>
+            <p>{pickText(data.overview.hypothesis, language)}</p>
           </div>
 
-          <div className="hero-stats">
-            {data.overview.hero_stats.map((stat) => (
-              <article key={stat.label.en} className="card stat-card">
-                <p className="small-label">{pickText(stat.label, language)}</p>
-                <div className="stat-value">{stat.value}</div>
-                <p>{pickText(stat.detail, language)}</p>
-              </article>
-            ))}
-          </div>
+          <SampleWorkbench sample={sample} topics={data.demo.topics} language={language} />
+          <SceneWorkbench scene={scene} field={field} language={language} />
+          <TopicClusterWorkbench scene={scene} diagnostic={sceneDiagnostic} />
+          <SpectralLibraryWorkbench sample={librarySample} samples={data.spectral_library.samples} onSelect={setSelectedLibrarySampleId} />
+          <LibraryClusterWorkbench sample={librarySample} diagnostic={libraryDiagnostic} />
+          <DatasetStatusPanel datasets={data.datasets.datasets} language={language} />
         </section>
 
-        <SectionNav sections={data.overview.sections} language={language} />
-
-        <DatasetCatalog catalog={data.datasets} language={language} />
-        <RealScenePanel payload={data.real_scenes} />
-        <FieldSamplePanel payload={data.field_samples} />
-        <SpectrumWorkbench demo={data.demo} methodology={data.methodology} language={language} />
-        <TopicExplorer demo={data.demo} language={language} />
-        <InferencePanel demo={data.demo} language={language} />
-        <TheoryPanel overview={data.overview} methodology={data.methodology} language={language} />
+        <InspectorPanel data={data} sample={sample} selectedTopic={selectedTopic} representation={representation} language={language} />
       </main>
-
-      <footer className="site-footer">
-        <span>{t("footerNote")}</span>
-        <a href={data.overview.repo.url} target="_blank" rel="noreferrer">
-          {t("sourceCode")}
-        </a>
-      </footer>
+      {isHelpOpen ? <HelpModal data={data} onClose={() => setIsHelpOpen(false)} /> : null}
     </div>
   );
 }

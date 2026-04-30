@@ -51,7 +51,7 @@
         "en": "Broad continuum with hydroxyl-related absorptions around 1400 nm and 2200 nm.",
         "es": "Continuo amplio con absorciones asociadas a hidroxilos cerca de 1400 nm y 2200 nm."
       },
-      "color": "#c9824d",
+      "color": "#7c3aed",
       "top_words": [
         {
           "token": "0516nm",
@@ -121,7 +121,7 @@
         "en": "Visible to NIR slope with stronger response in the red and near infrared.",
         "es": "Pendiente visible a NIR con respuesta mas fuerte en el rojo y el infrarrojo cercano."
       },
-      "color": "#d84f3c",
+      "color": "#f85149",
       "top_words": [
         {
           "token": "0516nm",
@@ -191,7 +191,7 @@
         "en": "Low visible reflectance followed by a red-edge jump and high NIR plateau.",
         "es": "Baja reflectancia en visible seguida por un salto de borde rojo y una meseta alta en NIR."
       },
-      "color": "#4f8f5b",
+      "color": "#06b6d4",
       "top_words": [
         {
           "token": "0843nm",
@@ -261,7 +261,7 @@
         "en": "Lower overall reflectance with broad absorptions near water-sensitive regions.",
         "es": "Reflectancia general menor con absorciones amplias cerca de regiones sensibles al agua."
       },
-      "color": "#277da1",
+      "color": "#3b82f6",
       "top_words": [
         {
           "token": "0516nm",
