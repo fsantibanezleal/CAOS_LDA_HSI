@@ -32,13 +32,14 @@ The current local-core inventory is generated into:
 Current first-pass summary:
 
 - cataloged datasets: 21
-- datasets with local raw evidence: 9
-- local raw footprint currently indexed: about 0.323 GB
+- datasets with local raw evidence: 10
+- local raw footprint currently indexed: about 1.698 GB
 - current source groups with local evidence:
   - UPV/EHU scenes
   - Borsoi unmixing ROIs
   - MicaSense samples
   - USGS Spectral Library compact archives
+  - HIDSAG `MINERAL2`
 
 This file is now the authoritative high-level inventory of what is truly
 available for local validation.
@@ -107,6 +108,19 @@ data:
 - NMF/unmixing comparisons on Borsoi ROIs and Cuprite alignment probes
 - exploratory unlabeled clustering summaries
 - compact spectral-library grouping diagnostics
+- first supervised Family D runs over `HIDSAG MINERAL2`
+
+Current HIDSAG reading:
+
+- raw or PCA-compressed spectra are currently stronger than topic-only
+  features for balanced presence/absence classification tasks such as
+  pyrophyllite, orthoclase, alunite, and kaolin-group presence
+- topic-mixture linear regression is currently the least-bad model across
+  the selected mineral abundance targets, but only Quartz reaches a
+  slightly positive `R^2` in this first pass
+- topic-routed local regressors are unstable on `MINERAL2` because the
+  current sample-level topic model collapses to only 2 active topics out
+  of 4
 
 This is the correct direction: validate offline first, then decide what
 small subset deserves web publication.
@@ -119,7 +133,7 @@ their acquisition path is reproduced.
 | Source | Role | Constraint | Intended use |
 |---|---|---|---|
 | ECOSTRESS Spectral Library | Family A extension | public category metadata is reproducible, but bulk checkout currently routes to login | mineral, vegetation, soil, and man-made references |
-| HIDSAG | Family D anchor | MINERAL2 raw subset is local, but split design and export policy are still pending | regression/classification over measured regions |
+| HIDSAG | Family D anchor | MINERAL2 raw subset is local and first supervised benchmark exists, but broader splits/export policy are still pending | regression/classification over measured regions |
 | WHU-Hi | UAV labeled imagery | source/licensing verification pending | fine-grained crop and high-resolution UAV validation |
 | HyRANK | cross-scene HSI | canonical source and split reproduction pending | domain-transfer validation |
 | HySpecNet-11k | large HSI patch collection | license and subset policy needed | unsupervised transfer and patch workflows |
@@ -154,8 +168,8 @@ artifacts. A candidate asset is publishable only when:
 
 1. reproduce an ECOSTRESS session-backed or per-spectrum export path
    before claiming Family A expansion
-2. promote the versioned `MINERAL2` compact spectral subset into the
-   first HIDSAG response-variable training split
+2. expand beyond the first `MINERAL2` leave-one-out benchmark toward
+   broader HIDSAG splits, more samples, and hierarchical documents
 3. verify at least one cross-scene dataset for transfer experiments
 4. add calibrated wavelength vectors wherever they are reliable
 5. define publishable interactive subsets for the future web projection

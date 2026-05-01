@@ -378,6 +378,7 @@ class LocalCoreBenchmarksPayload(BaseModel):
     unlabeled_scene_runs: list[dict[str, Any]]
     unmixing_runs: list[dict[str, Any]]
     spectral_library_runs: list[dict[str, Any]]
+    measured_target_runs: list[dict[str, Any]]
 
 
 class HidsagSubsetInventoryPayload(BaseModel):

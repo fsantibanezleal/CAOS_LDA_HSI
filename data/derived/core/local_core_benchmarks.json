@@ -23,6 +23,19 @@
     "unmixing_baselines": [
       "nmf"
     ],
+    "measured_target_models": {
+      "classification": [
+        "raw_logistic_regression",
+        "pca_logistic_regression",
+        "topic_logistic_regression"
+      ],
+      "regression": [
+        "raw_ridge_regression",
+        "pls_regression",
+        "topic_mixture_linear_regression",
+        "topic_routed_linear_regression"
+      ]
+    },
     "stability_protocol": {
       "seeds": [
         42,
@@ -1035,8 +1048,8 @@
           "macro_f1": 0.9262
         },
         "topic_logistic_regression": {
-          "accuracy": 0.6547,
-          "macro_f1": 0.6191
+          "accuracy": 0.6562,
+          "macro_f1": 0.622
         }
       },
       "clustering": {
@@ -1443,8 +1456,8 @@
           "macro_f1": 0.8938
         },
         "topic_logistic_regression": {
-          "accuracy": 0.7278,
-          "macro_f1": 0.7203
+          "accuracy": 0.725,
+          "macro_f1": 0.717
         }
       },
       "clustering": {
@@ -1962,8 +1975,8 @@
           "macro_f1": 0.9208
         },
         "topic_logistic_regression": {
-          "accuracy": 0.7164,
-          "macro_f1": 0.6892
+          "accuracy": 0.7183,
+          "macro_f1": 0.6923
         }
       },
       "clustering": {
@@ -6496,6 +6509,4112 @@
           ]
         }
       ]
+    }
+  ],
+  "measured_target_runs": [
+    {
+      "dataset_id": "hidsag-geometallurgy",
+      "dataset_name": "HIDSAG geometallurgy database",
+      "subset_code": "MINERAL2",
+      "family_id": "regions-with-measurements",
+      "sample_count": 20,
+      "feature_layout": [
+        {
+          "modality": "swir_low",
+          "band_count": 268,
+          "source": "mean_spectrum"
+        },
+        {
+          "modality": "vnir_low",
+          "band_count": 942,
+          "source": "mean_spectrum"
+        },
+        {
+          "modality": "vnir_high",
+          "band_count": 942,
+          "source": "mean_spectrum"
+        }
+      ],
+      "representation": {
+        "id": "sample-mean-band-frequency",
+        "alphabet": "modality-specific band-position tokens",
+        "word": "modality band token repeated by normalized sample-mean intensity count",
+        "document": "one HIDSAG sample built from concatenated mean spectra across swir_low, vnir_low, and vnir_high cubes"
+      },
+      "split_protocol": {
+        "type": "leave-one-out",
+        "fold_count": 20,
+        "reason": "MINERAL2 has only 20 samples, so the first supervised Family D benchmark uses full leave-one-out evaluation instead of a single fragile holdout."
+      },
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 4,
+        "perplexity": 2158.0269,
+        "active_topic_count": 2,
+        "topic_activity_warning": "topic-collapse-detected",
+        "top_tokens": [
+          {
+            "topic_id": 1,
+            "tokens": [
+              {
+                "token": "vnir_high_b488",
+                "weight": 0.0006
+              },
+              {
+                "token": "swir_low_b113",
+                "weight": 0.0006
+              },
+              {
+                "token": "swir_low_b082",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_low_b568",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_high_b515",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_high_b740",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_high_b691",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_high_b621",
+                "weight": 0.0006
+              }
+            ]
+          },
+          {
+            "topic_id": 2,
+            "tokens": [
+              {
+                "token": "swir_low_b262",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b263",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b264",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b259",
+                "weight": 0.0005
+              },
+              {
+                "token": "vnir_high_b004",
+                "weight": 0.0005
+              },
+              {
+                "token": "vnir_low_b006",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b261",
+                "weight": 0.0005
+              },
+              {
+                "token": "vnir_high_b005",
+                "weight": 0.0005
+              }
+            ]
+          },
+          {
+            "topic_id": 3,
+            "tokens": [
+              {
+                "token": "vnir_low_b300",
+                "weight": 0.0007
+              },
+              {
+                "token": "vnir_high_b237",
+                "weight": 0.0007
+              },
+              {
+                "token": "vnir_low_b350",
+                "weight": 0.0007
+              },
+              {
+                "token": "vnir_high_b263",
+                "weight": 0.0007
+              },
+              {
+                "token": "vnir_high_b231",
+                "weight": 0.0007
+              },
+              {
+                "token": "vnir_high_b200",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_low_b277",
+                "weight": 0.0006
+              },
+              {
+                "token": "vnir_high_b458",
+                "weight": 0.0006
+              }
+            ]
+          },
+          {
+            "topic_id": 4,
+            "tokens": [
+              {
+                "token": "swir_low_b262",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b263",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b264",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b259",
+                "weight": 0.0005
+              },
+              {
+                "token": "vnir_high_b004",
+                "weight": 0.0005
+              },
+              {
+                "token": "vnir_low_b006",
+                "weight": 0.0005
+              },
+              {
+                "token": "swir_low_b261",
+                "weight": 0.0005
+              },
+              {
+                "token": "vnir_high_b005",
+                "weight": 0.0005
+              }
+            ]
+          }
+        ],
+        "dominant_topic_counts": [
+          {
+            "topic_id": 1,
+            "sample_count": 13
+          },
+          {
+            "topic_id": 2,
+            "sample_count": 0
+          },
+          {
+            "topic_id": 3,
+            "sample_count": 7
+          },
+          {
+            "topic_id": 4,
+            "sample_count": 0
+          }
+        ]
+      },
+      "target_summary": [
+        {
+          "target": "Phengite",
+          "mean": 10.7231,
+          "std": 7.5475,
+          "min": 0.0,
+          "max": 25.366,
+          "nonzero_samples": 19,
+          "threshold_1pct_positive": 19
+        },
+        {
+          "target": "Muscovite",
+          "mean": 7.8326,
+          "std": 6.6315,
+          "min": 1.444,
+          "max": 24.36,
+          "nonzero_samples": 20,
+          "threshold_1pct_positive": 20
+        },
+        {
+          "target": "Quartz",
+          "mean": 55.2423,
+          "std": 6.4736,
+          "min": 41.022,
+          "max": 71.084,
+          "nonzero_samples": 20,
+          "threshold_1pct_positive": 20
+        },
+        {
+          "target": "Pyrophyllite",
+          "mean": 3.1128,
+          "std": 5.1019,
+          "min": 0.0,
+          "max": 16.138,
+          "nonzero_samples": 11,
+          "threshold_1pct_positive": 7
+        },
+        {
+          "target": "Orthoclase",
+          "mean": 2.0805,
+          "std": 3.7279,
+          "min": 0.0,
+          "max": 17.622,
+          "nonzero_samples": 15,
+          "threshold_1pct_positive": 10
+        },
+        {
+          "target": "Illite",
+          "mean": 7.5906,
+          "std": 3.5513,
+          "min": 1.451,
+          "max": 19.926,
+          "nonzero_samples": 20,
+          "threshold_1pct_positive": 20
+        },
+        {
+          "target": "Alunite",
+          "mean": 1.8209,
+          "std": 3.5317,
+          "min": 0.0,
+          "max": 15.067,
+          "nonzero_samples": 8,
+          "threshold_1pct_positive": 8
+        },
+        {
+          "target": "Kaolin group",
+          "mean": 1.8101,
+          "std": 2.0747,
+          "min": 0.041,
+          "max": 7.542,
+          "nonzero_samples": 20,
+          "threshold_1pct_positive": 9
+        },
+        {
+          "target": "Pirit",
+          "mean": 3.0439,
+          "std": 1.7312,
+          "min": 0.0,
+          "max": 6.937,
+          "nonzero_samples": 19,
+          "threshold_1pct_positive": 18
+        },
+        {
+          "target": "Clinochlore",
+          "mean": 0.7781,
+          "std": 1.3506,
+          "min": 0.0,
+          "max": 4.366,
+          "nonzero_samples": 6,
+          "threshold_1pct_positive": 6
+        },
+        {
+          "target": "Plagioclase",
+          "mean": 1.2682,
+          "std": 1.3154,
+          "min": 0.0,
+          "max": 4.153,
+          "nonzero_samples": 13,
+          "threshold_1pct_positive": 10
+        },
+        {
+          "target": "Chalcopyrite",
+          "mean": 1.6308,
+          "std": 1.2588,
+          "min": 0.0,
+          "max": 4.937,
+          "nonzero_samples": 17,
+          "threshold_1pct_positive": 11
+        },
+        {
+          "target": "Calcite",
+          "mean": 0.3975,
+          "std": 1.2475,
+          "min": 0.0,
+          "max": 5.133,
+          "nonzero_samples": 2,
+          "threshold_1pct_positive": 2
+        },
+        {
+          "target": "Siderite",
+          "mean": 0.4864,
+          "std": 1.0681,
+          "min": 0.0,
+          "max": 4.145,
+          "nonzero_samples": 5,
+          "threshold_1pct_positive": 3
+        },
+        {
+          "target": "Chalcocite",
+          "mean": 0.5335,
+          "std": 0.7268,
+          "min": 0.0,
+          "max": 2.11,
+          "nonzero_samples": 9,
+          "threshold_1pct_positive": 5
+        },
+        {
+          "target": "Hematite",
+          "mean": 0.4415,
+          "std": 0.7146,
+          "min": 0.0,
+          "max": 2.975,
+          "nonzero_samples": 9,
+          "threshold_1pct_positive": 3
+        },
+        {
+          "target": "Enargite",
+          "mean": 0.2828,
+          "std": 0.5319,
+          "min": 0.0,
+          "max": 1.908,
+          "nonzero_samples": 6,
+          "threshold_1pct_positive": 2
+        },
+        {
+          "target": "Sphalerite",
+          "mean": 0.4113,
+          "std": 0.4192,
+          "min": 0.0,
+          "max": 1.516,
+          "nonzero_samples": 13,
+          "threshold_1pct_positive": 2
+        },
+        {
+          "target": "Apatite",
+          "mean": 0.0925,
+          "std": 0.4032,
+          "min": 0.0,
+          "max": 1.85,
+          "nonzero_samples": 1,
+          "threshold_1pct_positive": 1
+        },
+        {
+          "target": "Tenantite",
+          "mean": 0.2865,
+          "std": 0.3828,
+          "min": 0.0,
+          "max": 1.161,
+          "nonzero_samples": 9,
+          "threshold_1pct_positive": 1
+        },
+        {
+          "target": "Gypsum",
+          "mean": 0.0474,
+          "std": 0.1597,
+          "min": 0.0,
+          "max": 0.725,
+          "nonzero_samples": 3,
+          "threshold_1pct_positive": 0
+        },
+        {
+          "target": "Tetrahedrite",
+          "mean": 0.0281,
+          "std": 0.091,
+          "min": 0.0,
+          "max": 0.389,
+          "nonzero_samples": 2,
+          "threshold_1pct_positive": 0
+        },
+        {
+          "target": "Bornite",
+          "mean": 0.0181,
+          "std": 0.0791,
+          "min": 0.0,
+          "max": 0.363,
+          "nonzero_samples": 1,
+          "threshold_1pct_positive": 0
+        },
+        {
+          "target": "Molybdenite",
+          "mean": 0.0322,
+          "std": 0.0506,
+          "min": 0.0,
+          "max": 0.151,
+          "nonzero_samples": 8,
+          "threshold_1pct_positive": 0
+        },
+        {
+          "target": "Ankerite",
+          "mean": 0.0082,
+          "std": 0.036,
+          "min": 0.0,
+          "max": 0.165,
+          "nonzero_samples": 1,
+          "threshold_1pct_positive": 0
+        }
+      ],
+      "classification_tasks": [
+        {
+          "task_id": "secondary-regime-3class",
+          "label_definition": "Highest-abundance non-quartz mineral; labels outside {Phengite, Muscovite} collapse into other-secondary.",
+          "label_distribution": {
+            "Phengite": 10,
+            "other-secondary": 5,
+            "Muscovite": 5
+          },
+          "metrics": {
+            "raw_logistic_regression": {
+              "accuracy": 0.45,
+              "balanced_accuracy": 0.4333,
+              "macro_f1": 0.4162
+            },
+            "pca_logistic_regression": {
+              "accuracy": 0.45,
+              "balanced_accuracy": 0.4667,
+              "macro_f1": 0.4498
+            },
+            "topic_logistic_regression": {
+              "accuracy": 0.5,
+              "balanced_accuracy": 0.3333,
+              "macro_f1": 0.2222
+            }
+          },
+          "best_model": {
+            "model_id": "pca_logistic_regression",
+            "accuracy": 0.45,
+            "balanced_accuracy": 0.4667,
+            "macro_f1": 0.4498
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Muscovite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_label": "other-secondary",
+              "derived_secondary": "Illite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_label": "other-secondary",
+              "derived_secondary": "Alunite",
+              "predictions": {
+                "raw_logistic_regression": "Muscovite",
+                "pca_logistic_regression": "other-secondary",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_label": "Muscovite",
+              "derived_secondary": "Muscovite",
+              "predictions": {
+                "raw_logistic_regression": "Muscovite",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_label": "other-secondary",
+              "derived_secondary": "Orthoclase",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "other-secondary",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "other-secondary",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_label": "other-secondary",
+              "derived_secondary": "Pyrophyllite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "other-secondary",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_label": "other-secondary",
+              "derived_secondary": "Pyrophyllite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "other-secondary",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_label": "Muscovite",
+              "derived_secondary": "Muscovite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_label": "Muscovite",
+              "derived_secondary": "Muscovite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "other-secondary",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Muscovite",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_label": "Muscovite",
+              "derived_secondary": "Muscovite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Phengite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_label": "Phengite",
+              "derived_secondary": "Phengite",
+              "predictions": {
+                "raw_logistic_regression": "other-secondary",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_label": "Muscovite",
+              "derived_secondary": "Muscovite",
+              "predictions": {
+                "raw_logistic_regression": "Phengite",
+                "pca_logistic_regression": "Muscovite",
+                "topic_logistic_regression": "Phengite"
+              }
+            }
+          ]
+        },
+        {
+          "task_id": "pyrophyllite-present-1pct",
+          "label_definition": "Pyrophyllite >= 1.0 wt%",
+          "label_distribution": {
+            "absent": 13,
+            "present": 7
+          },
+          "metrics": {
+            "raw_logistic_regression": {
+              "accuracy": 0.9,
+              "balanced_accuracy": 0.8901,
+              "macro_f1": 0.8901
+            },
+            "pca_logistic_regression": {
+              "accuracy": 0.9,
+              "balanced_accuracy": 0.8901,
+              "macro_f1": 0.8901
+            },
+            "topic_logistic_regression": {
+              "accuracy": 0.65,
+              "balanced_accuracy": 0.5,
+              "macro_f1": 0.3939
+            }
+          },
+          "best_model": {
+            "model_id": "raw_logistic_regression",
+            "accuracy": 0.9,
+            "balanced_accuracy": 0.8901,
+            "macro_f1": 0.8901
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_label": "absent",
+              "target_value": 0.137,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_label": "absent",
+              "target_value": 0.008,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_label": "present",
+              "target_value": 12.461,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_label": "present",
+              "target_value": 7.077,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_label": "absent",
+              "target_value": 0.105,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_label": "present",
+              "target_value": 13.352,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_label": "present",
+              "target_value": 16.138,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_label": "present",
+              "target_value": 4.579,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_label": "present",
+              "target_value": 6.888,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_label": "absent",
+              "target_value": 0.155,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_label": "present",
+              "target_value": 1.357,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            }
+          ]
+        },
+        {
+          "task_id": "orthoclase-present-1pct",
+          "label_definition": "Orthoclase >= 1.0 wt%",
+          "label_distribution": {
+            "present": 10,
+            "absent": 10
+          },
+          "metrics": {
+            "raw_logistic_regression": {
+              "accuracy": 0.85,
+              "balanced_accuracy": 0.85,
+              "macro_f1": 0.8496
+            },
+            "pca_logistic_regression": {
+              "accuracy": 0.85,
+              "balanced_accuracy": 0.85,
+              "macro_f1": 0.8496
+            },
+            "topic_logistic_regression": {
+              "accuracy": 0.0,
+              "balanced_accuracy": 0.0,
+              "macro_f1": 0.0
+            }
+          },
+          "best_model": {
+            "model_id": "raw_logistic_regression",
+            "accuracy": 0.85,
+            "balanced_accuracy": 0.85,
+            "macro_f1": 0.8496
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_label": "present",
+              "target_value": 1.324,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_label": "present",
+              "target_value": 1.382,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_label": "absent",
+              "target_value": 0.813,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_label": "present",
+              "target_value": 1.695,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_label": "present",
+              "target_value": 17.622,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_label": "present",
+              "target_value": 2.57,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_label": "present",
+              "target_value": 3.603,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_label": "present",
+              "target_value": 2.979,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_label": "present",
+              "target_value": 2.648,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_label": "present",
+              "target_value": 2.706,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_label": "absent",
+              "target_value": 0.476,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_label": "absent",
+              "target_value": 0.681,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_label": "present",
+              "target_value": 1.244,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_label": "absent",
+              "target_value": 0.922,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_label": "absent",
+              "target_value": 0.944,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            }
+          ]
+        },
+        {
+          "task_id": "alunite-present-1pct",
+          "label_definition": "Alunite >= 1.0 wt%",
+          "label_distribution": {
+            "absent": 12,
+            "present": 8
+          },
+          "metrics": {
+            "raw_logistic_regression": {
+              "accuracy": 0.65,
+              "balanced_accuracy": 0.6458,
+              "macro_f1": 0.6419
+            },
+            "pca_logistic_regression": {
+              "accuracy": 0.6,
+              "balanced_accuracy": 0.5833,
+              "macro_f1": 0.5833
+            },
+            "topic_logistic_regression": {
+              "accuracy": 0.6,
+              "balanced_accuracy": 0.5,
+              "macro_f1": 0.375
+            }
+          },
+          "best_model": {
+            "model_id": "raw_logistic_regression",
+            "accuracy": 0.65,
+            "balanced_accuracy": 0.6458,
+            "macro_f1": 0.6419
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_label": "present",
+              "target_value": 1.76,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_label": "present",
+              "target_value": 15.067,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_label": "present",
+              "target_value": 1.556,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_label": "present",
+              "target_value": 3.663,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_label": "present",
+              "target_value": 5.608,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_label": "present",
+              "target_value": 1.661,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_label": "present",
+              "target_value": 5.831,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_label": "absent",
+              "target_value": 0.0,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_label": "present",
+              "target_value": 1.272,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            }
+          ]
+        },
+        {
+          "task_id": "kaolin-group-present-1pct",
+          "label_definition": "Kaolin group >= 1.0 wt%",
+          "label_distribution": {
+            "absent": 11,
+            "present": 9
+          },
+          "metrics": {
+            "raw_logistic_regression": {
+              "accuracy": 0.8,
+              "balanced_accuracy": 0.7879,
+              "macro_f1": 0.7917
+            },
+            "pca_logistic_regression": {
+              "accuracy": 0.8,
+              "balanced_accuracy": 0.798,
+              "macro_f1": 0.798
+            },
+            "topic_logistic_regression": {
+              "accuracy": 0.45,
+              "balanced_accuracy": 0.4091,
+              "macro_f1": 0.3103
+            }
+          },
+          "best_model": {
+            "model_id": "pca_logistic_regression",
+            "accuracy": 0.8,
+            "balanced_accuracy": 0.798,
+            "macro_f1": 0.798
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_label": "absent",
+              "target_value": 0.085,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_label": "present",
+              "target_value": 7.542,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_label": "present",
+              "target_value": 3.943,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_label": "present",
+              "target_value": 2.957,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_label": "absent",
+              "target_value": 0.041,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_label": "absent",
+              "target_value": 0.44,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_label": "absent",
+              "target_value": 0.234,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_label": "absent",
+              "target_value": 0.257,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_label": "absent",
+              "target_value": 0.481,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "present"
+              }
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_label": "present",
+              "target_value": 4.199,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_label": "present",
+              "target_value": 3.033,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_label": "absent",
+              "target_value": 0.389,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_label": "present",
+              "target_value": 1.211,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_label": "present",
+              "target_value": 4.7,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_label": "absent",
+              "target_value": 0.338,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_label": "absent",
+              "target_value": 0.084,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_label": "present",
+              "target_value": 3.41,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_label": "absent",
+              "target_value": 0.053,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_label": "present",
+              "target_value": 2.755,
+              "predictions": {
+                "raw_logistic_regression": "present",
+                "pca_logistic_regression": "present",
+                "topic_logistic_regression": "absent"
+              }
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_label": "absent",
+              "target_value": 0.049,
+              "predictions": {
+                "raw_logistic_regression": "absent",
+                "pca_logistic_regression": "absent",
+                "topic_logistic_regression": "absent"
+              }
+            }
+          ]
+        }
+      ],
+      "regression_tasks": [
+        {
+          "target": "Phengite",
+          "summary": {
+            "target": "Phengite",
+            "mean": 10.7231,
+            "std": 7.5475,
+            "min": 0.0,
+            "max": 25.366,
+            "nonzero_samples": 19,
+            "threshold_1pct_positive": 19
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 10.8806,
+              "mae": 9.1532,
+              "r2": -1.0783,
+              "pearson_r": 0.4359,
+              "bias": -0.2643
+            },
+            "pls_regression": {
+              "rmse": 13.9174,
+              "mae": 11.4774,
+              "r2": -2.4003,
+              "pearson_r": 0.2286,
+              "bias": -0.6435
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 9.3636,
+              "mae": 7.413,
+              "r2": -0.5392,
+              "pearson_r": -0.2573,
+              "bias": 0.5263
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 25.806,
+              "mae": 18.2804,
+              "r2": -10.6906,
+              "pearson_r": 0.1645,
+              "bias": 0.4266
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 9.3636,
+            "mae": 7.413,
+            "r2": -0.5392,
+            "pearson_r": -0.2573,
+            "bias": 0.5263
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 19.165,
+              "predictions": {
+                "raw_ridge_regression": 34.0864,
+                "pls_regression": 23.4433,
+                "topic_mixture_linear_regression": 10.8118,
+                "topic_routed_linear_regression": 23.4104
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 11.523,
+              "predictions": {
+                "raw_ridge_regression": 3.0753,
+                "pls_regression": -0.7505,
+                "topic_mixture_linear_regression": 9.396,
+                "topic_routed_linear_regression": -10.3204
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 2.867,
+              "predictions": {
+                "raw_ridge_regression": -12.5669,
+                "pls_regression": -1.8216,
+                "topic_mixture_linear_regression": 9.1403,
+                "topic_routed_linear_regression": -14.7694
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -16.8854,
+                "pls_regression": -36.5356,
+                "topic_mixture_linear_regression": 11.9759,
+                "topic_routed_linear_regression": -61.5554
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 1.257,
+              "predictions": {
+                "raw_ridge_regression": 5.3097,
+                "pls_regression": 6.2785,
+                "topic_mixture_linear_regression": 9.3875,
+                "topic_routed_linear_regression": 28.5786
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 13.561,
+              "predictions": {
+                "raw_ridge_regression": 16.6073,
+                "pls_regression": 19.5544,
+                "topic_mixture_linear_regression": 10.4521,
+                "topic_routed_linear_regression": 13.9675
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 13.871,
+              "predictions": {
+                "raw_ridge_regression": 33.6587,
+                "pls_regression": 25.1786,
+                "topic_mixture_linear_regression": 14.62,
+                "topic_routed_linear_regression": 72.0757
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 18.336,
+              "predictions": {
+                "raw_ridge_regression": 13.8331,
+                "pls_regression": 14.0217,
+                "topic_mixture_linear_regression": 10.3609,
+                "topic_routed_linear_regression": 14.963
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 25.366,
+              "predictions": {
+                "raw_ridge_regression": 10.8563,
+                "pls_regression": 10.7314,
+                "topic_mixture_linear_regression": 8.848,
+                "topic_routed_linear_regression": -0.5117
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 1.74,
+              "predictions": {
+                "raw_ridge_regression": 17.2515,
+                "pls_regression": 19.2418,
+                "topic_mixture_linear_regression": 9.7762,
+                "topic_routed_linear_regression": 49.3609
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 10.553,
+              "predictions": {
+                "raw_ridge_regression": 9.1092,
+                "pls_regression": 13.5302,
+                "topic_mixture_linear_regression": 9.3494,
+                "topic_routed_linear_regression": 17.9569
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 2.369,
+              "predictions": {
+                "raw_ridge_regression": 15.3278,
+                "pls_regression": 15.8433,
+                "topic_mixture_linear_regression": 10.0858,
+                "topic_routed_linear_regression": 22.4903
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 8.679,
+              "predictions": {
+                "raw_ridge_regression": 15.5492,
+                "pls_regression": 23.6431,
+                "topic_mixture_linear_regression": 8.993,
+                "topic_routed_linear_regression": 14.9994
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 9.654,
+              "predictions": {
+                "raw_ridge_regression": 5.0537,
+                "pls_regression": 2.8994,
+                "topic_mixture_linear_regression": 8.4791,
+                "topic_routed_linear_regression": -14.9268
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 19.309,
+              "predictions": {
+                "raw_ridge_regression": 4.4184,
+                "pls_regression": 8.5685,
+                "topic_mixture_linear_regression": 10.0979,
+                "topic_routed_linear_regression": 16.8979
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 16.547,
+              "predictions": {
+                "raw_ridge_regression": 16.8725,
+                "pls_regression": 15.1122,
+                "topic_mixture_linear_regression": 9.9613,
+                "topic_routed_linear_regression": 19.3406
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 2.059,
+              "predictions": {
+                "raw_ridge_regression": 3.8833,
+                "pls_regression": 13.0365,
+                "topic_mixture_linear_regression": 13.5594,
+                "topic_routed_linear_regression": 4.8062
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 18.357,
+              "predictions": {
+                "raw_ridge_regression": 14.423,
+                "pls_regression": 3.3831,
+                "topic_mixture_linear_regression": 10.2192,
+                "topic_routed_linear_regression": 17.5203
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 17.091,
+              "predictions": {
+                "raw_ridge_regression": 7.5648,
+                "pls_regression": 2.2316,
+                "topic_mixture_linear_regression": 12.6188,
+                "topic_routed_linear_regression": -3.3326
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 2.157,
+              "predictions": {
+                "raw_ridge_regression": 11.7473,
+                "pls_regression": 24.0003,
+                "topic_mixture_linear_regression": 26.8538,
+                "topic_routed_linear_regression": 12.0425
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Muscovite",
+          "summary": {
+            "target": "Muscovite",
+            "mean": 7.8326,
+            "std": 6.6315,
+            "min": 1.444,
+            "max": 24.36,
+            "nonzero_samples": 20,
+            "threshold_1pct_positive": 20
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 12.5319,
+              "mae": 9.5607,
+              "r2": -2.5712,
+              "pearson_r": 0.0848,
+              "bias": 0.8472
+            },
+            "pls_regression": {
+              "rmse": 10.7242,
+              "mae": 7.9776,
+              "r2": -1.6152,
+              "pearson_r": -0.0157,
+              "bias": 0.5376
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 7.2782,
+              "mae": 5.8784,
+              "r2": -0.2046,
+              "pearson_r": -0.3864,
+              "bias": -0.1861
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 26.3297,
+              "mae": 19.0016,
+              "r2": -14.7641,
+              "pearson_r": -0.2217,
+              "bias": -0.1239
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 7.2782,
+            "mae": 5.8784,
+            "r2": -0.2046,
+            "pearson_r": -0.3864,
+            "bias": -0.1861
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 2.689,
+              "predictions": {
+                "raw_ridge_regression": -8.8088,
+                "pls_regression": 3.0919,
+                "topic_mixture_linear_regression": 8.4063,
+                "topic_routed_linear_regression": 3.8
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 1.729,
+              "predictions": {
+                "raw_ridge_regression": 19.3849,
+                "pls_regression": 16.986,
+                "topic_mixture_linear_regression": 7.7916,
+                "topic_routed_linear_regression": 28.3378
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 1.444,
+              "predictions": {
+                "raw_ridge_regression": -1.483,
+                "pls_regression": 2.3169,
+                "topic_mixture_linear_regression": 6.9925,
+                "topic_routed_linear_regression": 17.7273
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 2.054,
+              "predictions": {
+                "raw_ridge_regression": 35.5401,
+                "pls_regression": 31.2871,
+                "topic_mixture_linear_regression": 6.739,
+                "topic_routed_linear_regression": 65.0269
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 19.273,
+              "predictions": {
+                "raw_ridge_regression": 7.93,
+                "pls_regression": 8.1967,
+                "topic_mixture_linear_regression": 4.5301,
+                "topic_routed_linear_regression": -10.2322
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 3.088,
+              "predictions": {
+                "raw_ridge_regression": 1.1125,
+                "pls_regression": 1.7322,
+                "topic_mixture_linear_regression": 8.8197,
+                "topic_routed_linear_regression": 5.1058
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 8.608,
+              "predictions": {
+                "raw_ridge_regression": 9.5391,
+                "pls_regression": 10.8753,
+                "topic_mixture_linear_regression": 6.0152,
+                "topic_routed_linear_regression": -44.6586
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 3.283,
+              "predictions": {
+                "raw_ridge_regression": 7.1155,
+                "pls_regression": 6.5437,
+                "topic_mixture_linear_regression": 9.9837,
+                "topic_routed_linear_regression": 6.4544
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 4.071,
+              "predictions": {
+                "raw_ridge_regression": 7.8525,
+                "pls_regression": 9.85,
+                "topic_mixture_linear_regression": 7.0381,
+                "topic_routed_linear_regression": 30.8382
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 3.212,
+              "predictions": {
+                "raw_ridge_regression": -2.2687,
+                "pls_regression": -5.9016,
+                "topic_mixture_linear_regression": 7.7135,
+                "topic_routed_linear_regression": -47.6204
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 2.505,
+              "predictions": {
+                "raw_ridge_regression": -0.8634,
+                "pls_regression": -0.2737,
+                "topic_mixture_linear_regression": 6.8755,
+                "topic_routed_linear_regression": 0.0298
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 24.36,
+              "predictions": {
+                "raw_ridge_regression": 8.8643,
+                "pls_regression": 10.4855,
+                "topic_mixture_linear_regression": 6.1188,
+                "topic_routed_linear_regression": -0.2568
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 16.544,
+              "predictions": {
+                "raw_ridge_regression": 22.5623,
+                "pls_regression": 5.5725,
+                "topic_mixture_linear_regression": 5.7786,
+                "topic_routed_linear_regression": 3.7752
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 2.467,
+              "predictions": {
+                "raw_ridge_regression": 9.9374,
+                "pls_regression": 10.2338,
+                "topic_mixture_linear_regression": 7.5964,
+                "topic_routed_linear_regression": 28.9957
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 6.349,
+              "predictions": {
+                "raw_ridge_regression": 24.4961,
+                "pls_regression": 15.9742,
+                "topic_mixture_linear_regression": 8.6889,
+                "topic_routed_linear_regression": 4.1301
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 6.613,
+              "predictions": {
+                "raw_ridge_regression": 12.1705,
+                "pls_regression": 11.6959,
+                "topic_mixture_linear_regression": 8.5581,
+                "topic_routed_linear_regression": 2.9615
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 15.183,
+              "predictions": {
+                "raw_ridge_regression": 22.3809,
+                "pls_regression": 16.792,
+                "topic_mixture_linear_regression": 8.0473,
+                "topic_routed_linear_regression": 22.308
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 9.738,
+              "predictions": {
+                "raw_ridge_regression": -1.6012,
+                "pls_regression": 13.7329,
+                "topic_mixture_linear_regression": 10.1928,
+                "topic_routed_linear_regression": 11.4491
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 7.621,
+              "predictions": {
+                "raw_ridge_regression": 6.0045,
+                "pls_regression": 2.7171,
+                "topic_mixture_linear_regression": 8.3898,
+                "topic_routed_linear_regression": 22.1005
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 15.821,
+              "predictions": {
+                "raw_ridge_regression": -6.2701,
+                "pls_regression": -4.5044,
+                "topic_mixture_linear_regression": 8.654,
+                "topic_routed_linear_regression": 3.9009
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Quartz",
+          "summary": {
+            "target": "Quartz",
+            "mean": 55.2423,
+            "std": 6.4736,
+            "min": 41.022,
+            "max": 71.084,
+            "nonzero_samples": 20,
+            "threshold_1pct_positive": 20
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 15.3528,
+              "mae": 11.1558,
+              "r2": -4.6246,
+              "pearson_r": 0.0186,
+              "bias": 2.2568
+            },
+            "pls_regression": {
+              "rmse": 8.8472,
+              "mae": 7.3579,
+              "r2": -0.8678,
+              "pearson_r": 0.1252,
+              "bias": 0.7444
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 6.3761,
+              "mae": 4.8454,
+              "r2": 0.0299,
+              "pearson_r": 0.2826,
+              "bias": -0.0802
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 14.7715,
+              "mae": 11.6735,
+              "r2": -4.2067,
+              "pearson_r": -0.414,
+              "bias": -2.18
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 6.3761,
+            "mae": 4.8454,
+            "r2": 0.0299,
+            "pearson_r": 0.2826,
+            "bias": -0.0802
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 56.64,
+              "predictions": {
+                "raw_ridge_regression": 40.7876,
+                "pls_regression": 48.831,
+                "topic_mixture_linear_regression": 55.8428,
+                "topic_routed_linear_regression": 41.6541
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 54.806,
+              "predictions": {
+                "raw_ridge_regression": 56.9048,
+                "pls_regression": 61.9612,
+                "topic_mixture_linear_regression": 54.0833,
+                "topic_routed_linear_regression": 63.6853
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 44.329,
+              "predictions": {
+                "raw_ridge_regression": 76.6971,
+                "pls_regression": 62.4099,
+                "topic_mixture_linear_regression": 52.4368,
+                "topic_routed_linear_regression": 60.5704
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 56.831,
+              "predictions": {
+                "raw_ridge_regression": 102.8219,
+                "pls_regression": 73.1217,
+                "topic_mixture_linear_regression": 49.3688,
+                "topic_routed_linear_regression": 58.8936
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 62.739,
+              "predictions": {
+                "raw_ridge_regression": 50.2974,
+                "pls_regression": 56.448,
+                "topic_mixture_linear_regression": 50.1331,
+                "topic_routed_linear_regression": 52.5666
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 48.255,
+              "predictions": {
+                "raw_ridge_regression": 59.7589,
+                "pls_regression": 57.5255,
+                "topic_mixture_linear_regression": 57.3887,
+                "topic_routed_linear_regression": 64.7372
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 51.67,
+              "predictions": {
+                "raw_ridge_regression": 51.8977,
+                "pls_regression": 58.4444,
+                "topic_mixture_linear_regression": 56.0585,
+                "topic_routed_linear_regression": 49.3031
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 58.468,
+              "predictions": {
+                "raw_ridge_regression": 53.8684,
+                "pls_regression": 60.2555,
+                "topic_mixture_linear_regression": 58.8177,
+                "topic_routed_linear_regression": 51.9449
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 48.876,
+              "predictions": {
+                "raw_ridge_regression": 52.1492,
+                "pls_regression": 52.3597,
+                "topic_mixture_linear_regression": 52.7858,
+                "topic_routed_linear_regression": 55.7954
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 60.24,
+              "predictions": {
+                "raw_ridge_regression": 47.9947,
+                "pls_regression": 47.2082,
+                "topic_mixture_linear_regression": 53.2904,
+                "topic_routed_linear_regression": 45.8426
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 52.126,
+              "predictions": {
+                "raw_ridge_regression": 43.4911,
+                "pls_regression": 42.8467,
+                "topic_mixture_linear_regression": 51.7961,
+                "topic_routed_linear_regression": 45.1597
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 53.782,
+              "predictions": {
+                "raw_ridge_regression": 59.97,
+                "pls_regression": 57.1609,
+                "topic_mixture_linear_regression": 54.2709,
+                "topic_routed_linear_regression": 49.9279
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 41.022,
+              "predictions": {
+                "raw_ridge_regression": 36.5994,
+                "pls_regression": 43.872,
+                "topic_mixture_linear_regression": 53.8237,
+                "topic_routed_linear_regression": 45.9702
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 56.009,
+              "predictions": {
+                "raw_ridge_regression": 65.3454,
+                "pls_regression": 59.3594,
+                "topic_mixture_linear_regression": 52.9417,
+                "topic_routed_linear_regression": 63.0329
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 57.393,
+              "predictions": {
+                "raw_ridge_regression": 54.4711,
+                "pls_regression": 53.4042,
+                "topic_mixture_linear_regression": 56.9669,
+                "topic_routed_linear_regression": 44.7144
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 60.486,
+              "predictions": {
+                "raw_ridge_regression": 52.785,
+                "pls_regression": 53.8914,
+                "topic_mixture_linear_regression": 56.4209,
+                "topic_routed_linear_regression": 46.3212
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 59.927,
+              "predictions": {
+                "raw_ridge_regression": 54.9329,
+                "pls_regression": 57.9741,
+                "topic_mixture_linear_regression": 57.0922,
+                "topic_routed_linear_regression": 51.8551
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 54.394,
+              "predictions": {
+                "raw_ridge_regression": 68.8117,
+                "pls_regression": 62.9953,
+                "topic_mixture_linear_regression": 62.5703,
+                "topic_routed_linear_regression": 76.0072
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 55.769,
+              "predictions": {
+                "raw_ridge_regression": 64.4903,
+                "pls_regression": 54.3376,
+                "topic_mixture_linear_regression": 56.065,
+                "topic_routed_linear_regression": 66.5343
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 71.084,
+              "predictions": {
+                "raw_ridge_regression": 55.9071,
+                "pls_regression": 55.3273,
+                "topic_mixture_linear_regression": 61.0887,
+                "topic_routed_linear_regression": 26.7302
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Pyrophyllite",
+          "summary": {
+            "target": "Pyrophyllite",
+            "mean": 3.1128,
+            "std": 5.1019,
+            "min": 0.0,
+            "max": 16.138,
+            "nonzero_samples": 11,
+            "threshold_1pct_positive": 7
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 9.5166,
+              "mae": 6.663,
+              "r2": -2.4794,
+              "pearson_r": 0.4341,
+              "bias": 1.8857
+            },
+            "pls_regression": {
+              "rmse": 6.0121,
+              "mae": 4.0943,
+              "r2": -0.3886,
+              "pearson_r": 0.4243,
+              "bias": 0.0886
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 5.309,
+              "mae": 4.3254,
+              "r2": -0.0829,
+              "pearson_r": 0.1733,
+              "bias": -0.0689
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 10.9656,
+              "mae": 6.9798,
+              "r2": -3.6196,
+              "pearson_r": 0.1743,
+              "bias": 0.5917
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 5.309,
+            "mae": 4.3254,
+            "r2": -0.0829,
+            "pearson_r": 0.1733,
+            "bias": -0.0689
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 0.137,
+              "predictions": {
+                "raw_ridge_regression": -2.2569,
+                "pls_regression": -0.6124,
+                "topic_mixture_linear_regression": 2.749,
+                "topic_routed_linear_regression": -11.0159
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 0.008,
+              "predictions": {
+                "raw_ridge_regression": 7.0263,
+                "pls_regression": 1.3025,
+                "topic_mixture_linear_regression": 4.4019,
+                "topic_routed_linear_regression": 12.3344
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 12.461,
+              "predictions": {
+                "raw_ridge_regression": 22.5212,
+                "pls_regression": 14.4117,
+                "topic_mixture_linear_regression": 4.7532,
+                "topic_routed_linear_regression": 20.6043
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 7.077,
+              "predictions": {
+                "raw_ridge_regression": 34.0617,
+                "pls_regression": 6.448,
+                "topic_mixture_linear_regression": 4.9281,
+                "topic_routed_linear_regression": 13.3611
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 0.105,
+              "predictions": {
+                "raw_ridge_regression": -3.5515,
+                "pls_regression": 1.2705,
+                "topic_mixture_linear_regression": 6.4077,
+                "topic_routed_linear_regression": 3.118
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 4.6145,
+                "pls_regression": 3.1453,
+                "topic_mixture_linear_regression": 2.7092,
+                "topic_routed_linear_regression": -0.0982
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 0.4695,
+                "pls_regression": -1.2229,
+                "topic_mixture_linear_regression": 4.2193,
+                "topic_routed_linear_regression": -1.1154
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -3.5097,
+                "pls_regression": -0.7201,
+                "topic_mixture_linear_regression": 1.6114,
+                "topic_routed_linear_regression": 0.0695
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -0.7964,
+                "pls_regression": 0.7597,
+                "topic_mixture_linear_regression": 4.8493,
+                "topic_routed_linear_regression": -0.1425
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 13.352,
+              "predictions": {
+                "raw_ridge_regression": 11.7102,
+                "pls_regression": 9.5792,
+                "topic_mixture_linear_regression": 3.468,
+                "topic_routed_linear_regression": 11.7138
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 16.138,
+              "predictions": {
+                "raw_ridge_regression": 4.748,
+                "pls_regression": 4.7775,
+                "topic_mixture_linear_regression": 3.9186,
+                "topic_routed_linear_regression": -0.3741
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 0.5515,
+                "pls_regression": -2.9072,
+                "topic_mixture_linear_regression": 4.3658,
+                "topic_routed_linear_regression": -4.8974
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 6.7686,
+                "pls_regression": 9.7232,
+                "topic_mixture_linear_regression": 5.4736,
+                "topic_routed_linear_regression": 20.6889
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 4.579,
+              "predictions": {
+                "raw_ridge_regression": 8.5671,
+                "pls_regression": 7.0458,
+                "topic_mixture_linear_regression": 4.8988,
+                "topic_routed_linear_regression": 7.3704
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 1.1969,
+                "pls_regression": -0.4062,
+                "topic_mixture_linear_regression": 2.5621,
+                "topic_routed_linear_regression": 0.0778
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -0.1782,
+                "pls_regression": 0.068,
+                "topic_mixture_linear_regression": 2.835,
+                "topic_routed_linear_regression": 0.0728
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 6.888,
+              "predictions": {
+                "raw_ridge_regression": -7.6422,
+                "pls_regression": -3.9206,
+                "topic_mixture_linear_regression": 0.8958,
+                "topic_routed_linear_regression": -21.282
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 0.155,
+              "predictions": {
+                "raw_ridge_regression": 5.2021,
+                "pls_regression": 5.713,
+                "topic_mixture_linear_regression": 0.3235,
+                "topic_routed_linear_regression": 0.0
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 1.357,
+              "predictions": {
+                "raw_ridge_regression": 20.1446,
+                "pls_regression": 17.0542,
+                "topic_mixture_linear_regression": 1.4994,
+                "topic_routed_linear_regression": 23.3481
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -9.6759,
+                "pls_regression": -7.4808,
+                "topic_mixture_linear_regression": -5.9911,
+                "topic_routed_linear_regression": 0.2569
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Orthoclase",
+          "summary": {
+            "target": "Orthoclase",
+            "mean": 2.0805,
+            "std": 3.7279,
+            "min": 0.0,
+            "max": 17.622,
+            "nonzero_samples": 15,
+            "threshold_1pct_positive": 10
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 12.1637,
+              "mae": 8.6358,
+              "r2": -9.6465,
+              "pearson_r": 0.1369,
+              "bias": -1.6453
+            },
+            "pls_regression": {
+              "rmse": 5.7143,
+              "mae": 4.6584,
+              "r2": -1.3496,
+              "pearson_r": -0.0106,
+              "bias": 0.2604
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 4.1492,
+              "mae": 2.4157,
+              "r2": -0.2388,
+              "pearson_r": -0.3694,
+              "bias": 0.0865
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 10.8477,
+              "mae": 6.6157,
+              "r2": -7.4674,
+              "pearson_r": -0.0785,
+              "bias": 1.4079
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 4.1492,
+            "mae": 2.4157,
+            "r2": -0.2388,
+            "pearson_r": -0.3694,
+            "bias": 0.0865
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 1.324,
+              "predictions": {
+                "raw_ridge_regression": 16.8109,
+                "pls_regression": 7.6127,
+                "topic_mixture_linear_regression": 2.1046,
+                "topic_routed_linear_regression": 3.3865
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 1.382,
+              "predictions": {
+                "raw_ridge_regression": 3.3485,
+                "pls_regression": 3.9981,
+                "topic_mixture_linear_regression": 2.2179,
+                "topic_routed_linear_regression": 1.1019
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 0.813,
+              "predictions": {
+                "raw_ridge_regression": -13.7753,
+                "pls_regression": -5.8193,
+                "topic_mixture_linear_regression": 2.2306,
+                "topic_routed_linear_regression": -0.6617
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -40.9223,
+                "pls_regression": 7.77,
+                "topic_mixture_linear_regression": 1.965,
+                "topic_routed_linear_regression": 3.2878
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 1.695,
+              "predictions": {
+                "raw_ridge_regression": 8.3967,
+                "pls_regression": 0.2361,
+                "topic_mixture_linear_regression": 2.1259,
+                "topic_routed_linear_regression": 0.823
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 17.622,
+              "predictions": {
+                "raw_ridge_regression": 2.6439,
+                "pls_regression": 2.1499,
+                "topic_mixture_linear_regression": 1.161,
+                "topic_routed_linear_regression": 2.0137
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 2.57,
+              "predictions": {
+                "raw_ridge_regression": 0.4046,
+                "pls_regression": -3.5892,
+                "topic_mixture_linear_regression": -0.2656,
+                "topic_routed_linear_regression": -6.7711
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 3.603,
+              "predictions": {
+                "raw_ridge_regression": 12.4212,
+                "pls_regression": 8.5031,
+                "topic_mixture_linear_regression": 2.2918,
+                "topic_routed_linear_regression": 9.879
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 2.979,
+              "predictions": {
+                "raw_ridge_regression": 2.4649,
+                "pls_regression": 5.0025,
+                "topic_mixture_linear_regression": 1.5087,
+                "topic_routed_linear_regression": 3.7104
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 9.2059,
+                "pls_regression": 7.4217,
+                "topic_mixture_linear_regression": 2.4748,
+                "topic_routed_linear_regression": -1.3753
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 6.6611,
+                "pls_regression": 3.9163,
+                "topic_mixture_linear_regression": 2.0466,
+                "topic_routed_linear_regression": 1.7765
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 2.648,
+              "predictions": {
+                "raw_ridge_regression": -3.7641,
+                "pls_regression": 3.2182,
+                "topic_mixture_linear_regression": 2.1374,
+                "topic_routed_linear_regression": 1.9643
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 2.706,
+              "predictions": {
+                "raw_ridge_regression": 10.8273,
+                "pls_regression": -3.095,
+                "topic_mixture_linear_regression": 2.0031,
+                "topic_routed_linear_regression": 0.2004
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 0.476,
+              "predictions": {
+                "raw_ridge_regression": -7.2791,
+                "pls_regression": -2.433,
+                "topic_mixture_linear_regression": 2.4485,
+                "topic_routed_linear_regression": 1.1061
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 0.681,
+              "predictions": {
+                "raw_ridge_regression": 2.2358,
+                "pls_regression": 1.1071,
+                "topic_mixture_linear_regression": 2.4374,
+                "topic_routed_linear_regression": 15.7757
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 1.244,
+              "predictions": {
+                "raw_ridge_regression": 4.8636,
+                "pls_regression": 6.5796,
+                "topic_mixture_linear_regression": 2.424,
+                "topic_routed_linear_regression": 12.7463
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 4.5233,
+                "pls_regression": -1.2224,
+                "topic_mixture_linear_regression": 2.2286,
+                "topic_routed_linear_regression": 3.5153
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 0.922,
+              "predictions": {
+                "raw_ridge_regression": -9.4007,
+                "pls_regression": -3.4033,
+                "topic_mixture_linear_regression": 3.0549,
+                "topic_routed_linear_regression": -17.1346
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 0.944,
+              "predictions": {
+                "raw_ridge_regression": -4.2085,
+                "pls_regression": 3.9863,
+                "topic_mixture_linear_regression": 1.8077,
+                "topic_routed_linear_regression": -0.9357
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 3.2458,
+                "pls_regression": 4.8774,
+                "topic_mixture_linear_regression": 4.9361,
+                "topic_routed_linear_regression": 35.3595
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Illite",
+          "summary": {
+            "target": "Illite",
+            "mean": 7.5906,
+            "std": 3.5513,
+            "min": 1.451,
+            "max": 19.926,
+            "nonzero_samples": 20,
+            "threshold_1pct_positive": 20
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 4.654,
+              "mae": 3.3974,
+              "r2": -0.7174,
+              "pearson_r": 0.0659,
+              "bias": -0.7298
+            },
+            "pls_regression": {
+              "rmse": 4.5779,
+              "mae": 3.3318,
+              "r2": -0.6617,
+              "pearson_r": -0.1171,
+              "bias": -0.3706
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 4.1148,
+              "mae": 2.8957,
+              "r2": -0.3425,
+              "pearson_r": -0.2108,
+              "bias": -0.0141
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 9.1174,
+              "mae": 5.1414,
+              "r2": -5.591,
+              "pearson_r": -0.3809,
+              "bias": 0.7009
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 4.1148,
+            "mae": 2.8957,
+            "r2": -0.3425,
+            "pearson_r": -0.2108,
+            "bias": -0.0141
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 8.653,
+              "predictions": {
+                "raw_ridge_regression": 6.0082,
+                "pls_regression": 9.3746,
+                "topic_mixture_linear_regression": 7.2223,
+                "topic_routed_linear_regression": 8.9381
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 8.666,
+              "predictions": {
+                "raw_ridge_regression": 5.1549,
+                "pls_regression": 4.514,
+                "topic_mixture_linear_regression": 8.2171,
+                "topic_routed_linear_regression": 6.8744
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 19.926,
+              "predictions": {
+                "raw_ridge_regression": 5.5042,
+                "pls_regression": 4.3532,
+                "topic_mixture_linear_regression": 7.1359,
+                "topic_routed_linear_regression": 2.8908
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 1.451,
+              "predictions": {
+                "raw_ridge_regression": 0.8641,
+                "pls_regression": 4.1334,
+                "topic_mixture_linear_regression": 8.9174,
+                "topic_routed_linear_regression": 35.5262
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 7.349,
+              "predictions": {
+                "raw_ridge_regression": 9.1538,
+                "pls_regression": 11.4287,
+                "topic_mixture_linear_regression": 9.0392,
+                "topic_routed_linear_regression": 4.4204
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 6.367,
+              "predictions": {
+                "raw_ridge_regression": 6.6536,
+                "pls_regression": 6.5401,
+                "topic_mixture_linear_regression": 7.8311,
+                "topic_routed_linear_regression": 8.4507
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 7.753,
+              "predictions": {
+                "raw_ridge_regression": 4.4496,
+                "pls_regression": 5.3674,
+                "topic_mixture_linear_regression": 2.5326,
+                "topic_routed_linear_regression": 4.4483
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 8.899,
+              "predictions": {
+                "raw_ridge_regression": 8.2311,
+                "pls_regression": 6.0363,
+                "topic_mixture_linear_regression": 7.3112,
+                "topic_routed_linear_regression": 6.8195
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 6.278,
+              "predictions": {
+                "raw_ridge_regression": 8.3613,
+                "pls_regression": 6.2186,
+                "topic_mixture_linear_regression": 7.5129,
+                "topic_routed_linear_regression": 9.2738
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 5.226,
+              "predictions": {
+                "raw_ridge_regression": 3.8509,
+                "pls_regression": 7.963,
+                "topic_mixture_linear_regression": 8.9241,
+                "topic_routed_linear_regression": 2.6176
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 4.048,
+              "predictions": {
+                "raw_ridge_regression": 8.0047,
+                "pls_regression": 8.6328,
+                "topic_mixture_linear_regression": 8.5656,
+                "topic_routed_linear_regression": 7.403
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 10.896,
+              "predictions": {
+                "raw_ridge_regression": 9.0963,
+                "pls_regression": 7.996,
+                "topic_mixture_linear_regression": 8.058,
+                "topic_routed_linear_regression": 8.5382
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 7.478,
+              "predictions": {
+                "raw_ridge_regression": 3.011,
+                "pls_regression": 5.0328,
+                "topic_mixture_linear_regression": 8.6118,
+                "topic_routed_linear_regression": 3.7083
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 6.442,
+              "predictions": {
+                "raw_ridge_regression": 7.597,
+                "pls_regression": 9.908,
+                "topic_mixture_linear_regression": 9.0694,
+                "topic_routed_linear_regression": 10.3012
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 8.661,
+              "predictions": {
+                "raw_ridge_regression": 10.5925,
+                "pls_regression": 11.777,
+                "topic_mixture_linear_regression": 7.6153,
+                "topic_routed_linear_regression": 7.0105
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 9.036,
+              "predictions": {
+                "raw_ridge_regression": 10.9373,
+                "pls_regression": 8.9442,
+                "topic_mixture_linear_regression": 7.7622,
+                "topic_routed_linear_regression": 8.0933
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 7.097,
+              "predictions": {
+                "raw_ridge_regression": 11.9464,
+                "pls_regression": 10.0339,
+                "topic_mixture_linear_regression": 6.5822,
+                "topic_routed_linear_regression": 16.4609
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 7.589,
+              "predictions": {
+                "raw_ridge_regression": 4.2502,
+                "pls_regression": 4.6345,
+                "topic_mixture_linear_regression": 7.2082,
+                "topic_routed_linear_regression": 9.9947
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 6.969,
+              "predictions": {
+                "raw_ridge_regression": 1.8134,
+                "pls_regression": 3.3683,
+                "topic_mixture_linear_regression": 5.4017,
+                "topic_routed_linear_regression": 2.7066
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 3.028,
+              "predictions": {
+                "raw_ridge_regression": 11.736,
+                "pls_regression": 8.1428,
+                "topic_mixture_linear_regression": 8.0119,
+                "topic_routed_linear_regression": 1.354
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Alunite",
+          "summary": {
+            "target": "Alunite",
+            "mean": 1.8209,
+            "std": 3.5317,
+            "min": 0.0,
+            "max": 15.067,
+            "nonzero_samples": 8,
+            "threshold_1pct_positive": 8
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 4.6124,
+              "mae": 2.9799,
+              "r2": -0.7056,
+              "pearson_r": -0.0485,
+              "bias": -0.2025
+            },
+            "pls_regression": {
+              "rmse": 4.4899,
+              "mae": 3.0288,
+              "r2": -0.6162,
+              "pearson_r": -0.0271,
+              "bias": -0.0503
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 4.0883,
+              "mae": 2.813,
+              "r2": -0.34,
+              "pearson_r": 0.0198,
+              "bias": -0.079
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 6.9478,
+              "mae": 4.1739,
+              "r2": -2.87,
+              "pearson_r": -0.3473,
+              "bias": -0.5228
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 4.0883,
+            "mae": 2.813,
+            "r2": -0.34,
+            "pearson_r": 0.0198,
+            "bias": -0.079
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -0.0744,
+                "pls_regression": -2.2955,
+                "topic_mixture_linear_regression": 1.6359,
+                "topic_routed_linear_regression": 1.2384
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 1.76,
+              "predictions": {
+                "raw_ridge_regression": 4.4685,
+                "pls_regression": 3.9584,
+                "topic_mixture_linear_regression": 2.3423,
+                "topic_routed_linear_regression": 4.2426
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 7.6825,
+                "pls_regression": 8.5209,
+                "topic_mixture_linear_regression": 3.9534,
+                "topic_routed_linear_regression": 10.2665
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 15.067,
+              "predictions": {
+                "raw_ridge_regression": -1.1974,
+                "pls_regression": 0.5859,
+                "topic_mixture_linear_regression": 1.486,
+                "topic_routed_linear_regression": -9.566
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 1.556,
+              "predictions": {
+                "raw_ridge_regression": 4.4564,
+                "pls_regression": 4.1238,
+                "topic_mixture_linear_regression": 3.5351,
+                "topic_routed_linear_regression": 6.414
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -0.6343,
+                "pls_regression": 1.6617,
+                "topic_mixture_linear_regression": 1.3221,
+                "topic_routed_linear_regression": 0.2785
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -0.1273,
+                "pls_regression": -1.0129,
+                "topic_mixture_linear_regression": 4.7438,
+                "topic_routed_linear_regression": 0.3899
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 1.0559,
+                "pls_regression": 1.7174,
+                "topic_mixture_linear_regression": 0.4844,
+                "topic_routed_linear_regression": 0.0401
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -0.3826,
+                "pls_regression": 1.2244,
+                "topic_mixture_linear_regression": 3.3376,
+                "topic_routed_linear_regression": -3.1773
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 3.663,
+              "predictions": {
+                "raw_ridge_regression": 5.2059,
+                "pls_regression": 3.8172,
+                "topic_mixture_linear_regression": 2.2592,
+                "topic_routed_linear_regression": 8.0884
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 5.608,
+              "predictions": {
+                "raw_ridge_regression": 3.9623,
+                "pls_regression": 1.9977,
+                "topic_mixture_linear_regression": 2.9547,
+                "topic_routed_linear_regression": 1.4289
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 1.661,
+              "predictions": {
+                "raw_ridge_regression": 0.0511,
+                "pls_regression": 0.2633,
+                "topic_mixture_linear_regression": 2.3071,
+                "topic_routed_linear_regression": 2.1957
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 4.6873,
+                "pls_regression": 6.197,
+                "topic_mixture_linear_regression": 3.1998,
+                "topic_routed_linear_regression": 6.2617
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 5.831,
+              "predictions": {
+                "raw_ridge_regression": 2.3479,
+                "pls_regression": 1.3995,
+                "topic_mixture_linear_regression": 2.2634,
+                "topic_routed_linear_regression": 2.3103
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 2.3965,
+                "pls_regression": -0.3838,
+                "topic_mixture_linear_regression": 1.2229,
+                "topic_routed_linear_regression": -0.2384
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -1.9136,
+                "pls_regression": -0.8061,
+                "topic_mixture_linear_regression": 1.3531,
+                "topic_routed_linear_regression": -0.3316
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": -2.4896,
+                "pls_regression": -1.2998,
+                "topic_mixture_linear_regression": 1.0187,
+                "topic_routed_linear_regression": -9.6154
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 0.7631,
+                "pls_regression": -1.0722,
+                "topic_mixture_linear_regression": -0.5648,
+                "topic_routed_linear_regression": 0.4187
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 0.0,
+              "predictions": {
+                "raw_ridge_regression": 4.0371,
+                "pls_regression": 4.1662,
+                "topic_mixture_linear_regression": 1.8608,
+                "topic_routed_linear_regression": 5.3169
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 1.272,
+              "predictions": {
+                "raw_ridge_regression": -1.9271,
+                "pls_regression": 2.6487,
+                "topic_mixture_linear_regression": -5.8774,
+                "topic_routed_linear_regression": 0.0
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        },
+        {
+          "target": "Kaolin group",
+          "summary": {
+            "target": "Kaolin group",
+            "mean": 1.8101,
+            "std": 2.0747,
+            "min": 0.041,
+            "max": 7.542,
+            "nonzero_samples": 20,
+            "threshold_1pct_positive": 9
+          },
+          "metrics": {
+            "raw_ridge_regression": {
+              "rmse": 4.5031,
+              "mae": 3.287,
+              "r2": -3.7112,
+              "pearson_r": 0.0632,
+              "bias": -0.6498
+            },
+            "pls_regression": {
+              "rmse": 2.9486,
+              "mae": 2.0309,
+              "r2": -1.02,
+              "pearson_r": 0.1781,
+              "bias": -0.3652
+            },
+            "topic_mixture_linear_regression": {
+              "rmse": 2.149,
+              "mae": 1.8397,
+              "r2": -0.0729,
+              "pearson_r": 0.148,
+              "bias": 0.0047
+            },
+            "topic_routed_linear_regression": {
+              "rmse": 5.2226,
+              "mae": 3.9264,
+              "r2": -5.3368,
+              "pearson_r": -0.0443,
+              "bias": -0.0623
+            }
+          },
+          "best_model": {
+            "model_id": "topic_mixture_linear_regression",
+            "rmse": 2.149,
+            "mae": 1.8397,
+            "r2": -0.0729,
+            "pearson_r": 0.148,
+            "bias": 0.0047
+          },
+          "sample_predictions": [
+            {
+              "sample_name": "M2-0001",
+              "true_value": 0.085,
+              "predictions": {
+                "raw_ridge_regression": 0.6124,
+                "pls_regression": -0.8485,
+                "topic_mixture_linear_regression": 1.6948,
+                "topic_routed_linear_regression": 5.1923
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0002",
+              "true_value": 7.542,
+              "predictions": {
+                "raw_ridge_regression": 1.0266,
+                "pls_regression": 0.8595,
+                "topic_mixture_linear_regression": 1.8105,
+                "topic_routed_linear_regression": -0.5878
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0003",
+              "true_value": 3.943,
+              "predictions": {
+                "raw_ridge_regression": 5.6277,
+                "pls_regression": 3.4012,
+                "topic_mixture_linear_regression": 2.6922,
+                "topic_routed_linear_regression": -0.5193
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0004",
+              "true_value": 2.957,
+              "predictions": {
+                "raw_ridge_regression": -10.1619,
+                "pls_regression": -4.9673,
+                "topic_mixture_linear_regression": 2.5477,
+                "topic_routed_linear_regression": -8.1637
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0005",
+              "true_value": 0.041,
+              "predictions": {
+                "raw_ridge_regression": 5.0711,
+                "pls_regression": 5.5868,
+                "topic_mixture_linear_regression": 3.1929,
+                "topic_routed_linear_regression": 6.0595
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0006",
+              "true_value": 0.44,
+              "predictions": {
+                "raw_ridge_regression": 0.4635,
+                "pls_regression": 1.3023,
+                "topic_mixture_linear_regression": 1.6985,
+                "topic_routed_linear_regression": 0.2577
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0007",
+              "true_value": 0.234,
+              "predictions": {
+                "raw_ridge_regression": -4.3417,
+                "pls_regression": -0.4514,
+                "topic_mixture_linear_regression": 2.2879,
+                "topic_routed_linear_regression": 7.9726
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 16,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0008",
+              "true_value": 0.257,
+              "predictions": {
+                "raw_ridge_regression": 0.2436,
+                "pls_regression": 0.6517,
+                "topic_mixture_linear_regression": 1.3231,
+                "topic_routed_linear_regression": 0.2273
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0009",
+              "true_value": 0.481,
+              "predictions": {
+                "raw_ridge_regression": 2.1279,
+                "pls_regression": 0.7327,
+                "topic_mixture_linear_regression": 2.4356,
+                "topic_routed_linear_regression": -4.3046
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0010",
+              "true_value": 4.199,
+              "predictions": {
+                "raw_ridge_regression": 1.9645,
+                "pls_regression": 3.2489,
+                "topic_mixture_linear_regression": 2.1525,
+                "topic_routed_linear_regression": 14.1364
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0011",
+              "true_value": 3.033,
+              "predictions": {
+                "raw_ridge_regression": 7.0739,
+                "pls_regression": 5.9787,
+                "topic_mixture_linear_regression": 2.4969,
+                "topic_routed_linear_regression": 5.4928
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0012",
+              "true_value": 0.389,
+              "predictions": {
+                "raw_ridge_regression": 2.2296,
+                "pls_regression": 1.4799,
+                "topic_mixture_linear_regression": 2.335,
+                "topic_routed_linear_regression": 5.8385
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0013",
+              "true_value": 1.211,
+              "predictions": {
+                "raw_ridge_regression": -3.6745,
+                "pls_regression": 0.2375,
+                "topic_mixture_linear_regression": 2.6742,
+                "topic_routed_linear_regression": 0.6126
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0014",
+              "true_value": 4.7,
+              "predictions": {
+                "raw_ridge_regression": 2.3948,
+                "pls_regression": 3.4338,
+                "topic_mixture_linear_regression": 2.2436,
+                "topic_routed_linear_regression": -0.9219
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0015",
+              "true_value": 0.338,
+              "predictions": {
+                "raw_ridge_regression": -2.6169,
+                "pls_regression": -0.9388,
+                "topic_mixture_linear_regression": 1.6535,
+                "topic_routed_linear_regression": 0.3554
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0016",
+              "true_value": 0.084,
+              "predictions": {
+                "raw_ridge_regression": -1.4113,
+                "pls_regression": 0.1266,
+                "topic_mixture_linear_regression": 1.7874,
+                "topic_routed_linear_regression": 0.3409
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0017",
+              "true_value": 3.41,
+              "predictions": {
+                "raw_ridge_regression": 2.7882,
+                "pls_regression": 0.6838,
+                "topic_mixture_linear_regression": 0.9149,
+                "topic_routed_linear_regression": 4.4722
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0018",
+              "true_value": 0.053,
+              "predictions": {
+                "raw_ridge_regression": 4.0741,
+                "pls_regression": 1.3101,
+                "topic_mixture_linear_regression": 0.9739,
+                "topic_routed_linear_regression": -0.1431
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0019",
+              "true_value": 2.755,
+              "predictions": {
+                "raw_ridge_regression": 2.1077,
+                "pls_regression": 4.7904,
+                "topic_mixture_linear_regression": 0.5477,
+                "topic_routed_linear_regression": -2.0049
+              },
+              "test_topic_id": 1,
+              "local_training_samples": 13,
+              "routed_scope": "topic-local"
+            },
+            {
+              "sample_name": "M2-0020",
+              "true_value": 0.049,
+              "predictions": {
+                "raw_ridge_regression": 7.606,
+                "pls_regression": 2.2798,
+                "topic_mixture_linear_regression": -1.1675,
+                "topic_routed_linear_regression": 0.6426
+              },
+              "test_topic_id": 3,
+              "local_training_samples": 5,
+              "routed_scope": "topic-local"
+            }
+          ]
+        }
+      ],
+      "caveat": "This is the first supervised Family D benchmark over a compact local subset. It validates feasibility, not production-ready mineral regression claims."
     }
   ]
 }

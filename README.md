@@ -86,6 +86,9 @@ Current first-pass local-core evidence now includes:
   acquisition-mode summaries
 - HIDSAG curated spectral subset with per-cube mean and standard
   deviation spectra for `MINERAL2`
+- first supervised Family D benchmark on `HIDSAG MINERAL2`, including
+  leave-one-out classification/regression baselines and topic-mixture
+  comparisons
 
 Useful commands:
 

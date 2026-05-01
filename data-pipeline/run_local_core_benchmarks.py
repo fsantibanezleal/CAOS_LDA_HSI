@@ -3,16 +3,27 @@ from __future__ import annotations
 
 import json
 import sys
+from collections import Counter
 from datetime import date
 from pathlib import Path
 
 import numpy as np
 from sklearn.cluster import AgglomerativeClustering, KMeans
 from sklearn.decomposition import LatentDirichletAllocation, NMF, PCA
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, adjusted_rand_score, f1_score, normalized_mutual_info_score
+from sklearn.cross_decomposition import PLSRegression
+from sklearn.linear_model import LinearRegression, LogisticRegression, Ridge
+from sklearn.metrics import (
+    accuracy_score,
+    adjusted_rand_score,
+    balanced_accuracy_score,
+    f1_score,
+    mean_absolute_error,
+    mean_squared_error,
+    normalized_mutual_info_score,
+    r2_score,
+)
 from sklearn.mixture import GaussianMixture
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import LeaveOneOut, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -37,6 +48,7 @@ from research_core.unmixing import (
 
 
 OUTPUT_PATH = CORE_DERIVED_DIR / "local_core_benchmarks.json"
+HIDSAG_CURATED_PATH = CORE_DERIVED_DIR / "hidsag_curated_subset.json"
 LIBRARY_PATH = DERIVED_DIR / "spectral" / "library_samples.json"
 RANDOM_STATE = 42
 LABELED_SCENES = [
@@ -54,6 +66,11 @@ UNMIXING_SCENES = [
     "urban-unmixing-roi",
 ]
 TOPIC_STABILITY_SEEDS = [42, 7, 19, 99]
+HIDSAG_MODALITY_ORDER = ["swir_low", "vnir_low", "vnir_high"]
+HIDSAG_REGIME_FOCUS = {"Phengite", "Muscovite"}
+HIDSAG_BINARY_THRESHOLD = 1.0
+HIDSAG_REGRESSION_MIN_STD = 2.0
+HIDSAG_REGRESSION_MIN_NONZERO = 8
 
 
 def load_json(path: Path) -> dict:
@@ -92,6 +109,18 @@ def top_band_tokens(weights: np.ndarray, wavelengths: np.ndarray, limit: int = 8
     ]
 
 
+def top_named_tokens(weights: np.ndarray, token_names: list[str], limit: int = 8) -> list[dict[str, float | str]]:
+    indices = np.argsort(weights)[::-1][:limit]
+    total = float(weights.sum()) if float(weights.sum()) > 0 else 1.0
+    return [
+        {
+            "token": token_names[int(index)],
+            "weight": round(float(weights[int(index)] / total), 4),
+        }
+        for index in indices
+    ]
+
+
 def top_index_set(weights: np.ndarray, limit: int = 12) -> set[int]:
     indices = np.argsort(weights)[::-1][:limit]
     return {int(index) for index in indices}
@@ -105,12 +134,37 @@ def safe_pca_components(sample_count: int, feature_count: int) -> int:
     return max(2, min(24, sample_count - 1, feature_count))
 
 
+def safe_compact_pca_components(sample_count: int, feature_count: int) -> int:
+    return max(2, min(8, sample_count - 1, feature_count))
+
+
 def classification_metrics(model, x_train, x_test, y_train, y_test) -> dict[str, float]:
     model.fit(x_train, y_train)
     prediction = model.predict(x_test)
     return {
         "accuracy": round(float(accuracy_score(y_test, prediction)), 4),
         "macro_f1": round(float(f1_score(y_test, prediction, average="macro")), 4),
+    }
+
+
+def classification_metrics_from_predictions(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
+    return {
+        "accuracy": round(float(accuracy_score(y_true, y_pred)), 4),
+        "balanced_accuracy": round(float(balanced_accuracy_score(y_true, y_pred)), 4),
+        "macro_f1": round(float(f1_score(y_true, y_pred, average="macro")), 4),
+    }
+
+
+def regression_metrics_from_predictions(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
+    correlation = 0.0
+    if float(np.std(y_true)) > 1e-8 and float(np.std(y_pred)) > 1e-8:
+        correlation = float(np.corrcoef(y_true, y_pred)[0, 1])
+    return {
+        "rmse": round(float(np.sqrt(mean_squared_error(y_true, y_pred))), 4),
+        "mae": round(float(mean_absolute_error(y_true, y_pred)), 4),
+        "r2": round(float(r2_score(y_true, y_pred)), 4),
+        "pearson_r": round(float(correlation), 4),
+        "bias": round(float(np.mean(y_pred - y_true)), 4),
     }
 
 
@@ -191,6 +245,251 @@ def make_logreg() -> LogisticRegression:
         solver="saga",
         tol=1e-3,
     )
+
+
+def load_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
+    payload = load_json(HIDSAG_CURATED_PATH)
+    for subset in payload.get("subsets", []):
+        if str(subset.get("subset_code")) == subset_code:
+            return subset
+    raise KeyError(f"HIDSAG subset {subset_code} not found in {HIDSAG_CURATED_PATH}")
+
+
+def hidsag_feature_rows(subset: dict[str, object]) -> tuple[np.ndarray, list[str], list[dict[str, object]], list[str]]:
+    samples = subset.get("samples", [])
+    matrix = []
+    sample_names = []
+    feature_layout = []
+    token_names = []
+
+    if not samples:
+        raise ValueError("HIDSAG curated subset has no samples.")
+
+    first_cubes = {cube["modality"]: cube for cube in samples[0]["cubes"]}
+    for modality in HIDSAG_MODALITY_ORDER:
+        cube = first_cubes[modality]
+        band_count = int(cube["spectral_band_count"])
+        feature_layout.append(
+            {
+                "modality": modality,
+                "band_count": band_count,
+                "source": "mean_spectrum",
+            }
+        )
+        token_names.extend([f"{modality}_b{band_index + 1:03d}" for band_index in range(band_count)])
+
+    for sample in samples:
+        cubes = {cube["modality"]: cube for cube in sample["cubes"]}
+        vectors = []
+        for modality in HIDSAG_MODALITY_ORDER:
+            mean_spectrum = np.asarray(cubes[modality]["mean_spectrum"], dtype=np.float32)
+            vectors.append(normalize_rows01(mean_spectrum[None, :])[0])
+        matrix.append(np.concatenate(vectors))
+        sample_names.append(str(sample["sample_name"]))
+
+    return np.asarray(matrix, dtype=np.float32), sample_names, feature_layout, token_names
+
+
+def hidsag_target_summary(subset: dict[str, object]) -> list[dict[str, object]]:
+    samples = subset.get("samples", [])
+    summaries = []
+    for target_name in subset.get("variable_names", []):
+        values = np.asarray([sample["targets"][target_name] for sample in samples], dtype=np.float32)
+        summaries.append(
+            {
+                "target": target_name,
+                "mean": round(float(np.mean(values)), 4),
+                "std": round(float(np.std(values)), 4),
+                "min": round(float(np.min(values)), 4),
+                "max": round(float(np.max(values)), 4),
+                "nonzero_samples": int(np.sum(values > 0)),
+                "threshold_1pct_positive": int(np.sum(values >= HIDSAG_BINARY_THRESHOLD)),
+            }
+        )
+    summaries.sort(key=lambda row: float(row["std"]), reverse=True)
+    return summaries
+
+
+def hidsag_secondary_regime_labels(subset: dict[str, object]) -> tuple[np.ndarray, list[dict[str, object]]]:
+    labels = []
+    top_secondary = []
+    for sample in subset.get("samples", []):
+        candidates = [(name, float(value)) for name, value in sample["targets"].items() if name != "Quartz"]
+        best_name, best_value = max(candidates, key=lambda item: item[1])
+        label = best_name if best_name in HIDSAG_REGIME_FOCUS else "other-secondary"
+        labels.append(label)
+        top_secondary.append(
+            {
+                "sample_name": sample["sample_name"],
+                "secondary_mineral": best_name,
+                "secondary_value": round(best_value, 4),
+                "derived_regime_label": label,
+            }
+        )
+    return np.asarray(labels), top_secondary
+
+
+def hidsag_binary_tasks(target_summary: list[dict[str, object]]) -> list[dict[str, object]]:
+    candidates = []
+    for row in target_summary:
+        positive = int(row["threshold_1pct_positive"])
+        negative = 20 - positive
+        if min(positive, negative) < 5:
+            continue
+        candidates.append(
+            {
+                "task_id": f"{str(row['target']).lower().replace(' ', '-').replace('/', '-')}-present-1pct",
+                "target": row["target"],
+                "threshold": HIDSAG_BINARY_THRESHOLD,
+                "positive_samples": positive,
+                "negative_samples": negative,
+                "std": row["std"],
+            }
+        )
+    candidates.sort(key=lambda row: float(row["std"]), reverse=True)
+    return candidates[:4]
+
+
+def hidsag_regression_targets(target_summary: list[dict[str, object]]) -> list[str]:
+    selected = [
+        str(row["target"])
+        for row in target_summary
+        if float(row["std"]) >= HIDSAG_REGRESSION_MIN_STD and int(row["nonzero_samples"]) >= HIDSAG_REGRESSION_MIN_NONZERO
+    ]
+    return selected[:8]
+
+
+def loo_hidsag_classification(
+    features: np.ndarray,
+    labels: np.ndarray,
+    n_topics: int,
+) -> tuple[dict[str, np.ndarray], list[dict[str, object]]]:
+    loo = LeaveOneOut()
+    predictions = {
+        "raw_logistic_regression": [],
+        "pca_logistic_regression": [],
+        "topic_logistic_regression": [],
+    }
+    fold_rows = []
+
+    for fold_index, (train_idx, test_idx) in enumerate(loo.split(features), start=1):
+        x_train, x_test = features[train_idx], features[test_idx]
+        y_train = labels[train_idx]
+        true_label = str(labels[test_idx[0]])
+        sample_name = int(test_idx[0])
+
+        raw_model = Pipeline(
+            [
+                ("scale", StandardScaler()),
+                ("clf", make_logreg()),
+            ]
+        )
+        pca_model = Pipeline(
+            [
+                ("scale", StandardScaler()),
+                ("pca", PCA(n_components=safe_compact_pca_components(x_train.shape[0], x_train.shape[1]), random_state=RANDOM_STATE)),
+                ("clf", make_logreg()),
+            ]
+        )
+        counts_train = band_frequency_counts(x_train)
+        counts_test = band_frequency_counts(x_test)
+        lda, topic_train = fit_lda(counts_train, n_topics=n_topics, seed=RANDOM_STATE, max_iter=20)
+        topic_test = lda.transform(counts_test)
+        topic_model = make_logreg()
+
+        raw_pred = str(raw_model.fit(x_train, y_train).predict(x_test)[0])
+        pca_pred = str(pca_model.fit(x_train, y_train).predict(x_test)[0])
+        topic_pred = str(topic_model.fit(topic_train, y_train).predict(topic_test)[0])
+
+        predictions["raw_logistic_regression"].append(raw_pred)
+        predictions["pca_logistic_regression"].append(pca_pred)
+        predictions["topic_logistic_regression"].append(topic_pred)
+        fold_rows.append(
+            {
+                "fold": fold_index,
+                "sample_index": sample_name,
+                "true_label": true_label,
+                "predictions": {
+                    "raw_logistic_regression": raw_pred,
+                    "pca_logistic_regression": pca_pred,
+                    "topic_logistic_regression": topic_pred,
+                },
+            }
+        )
+
+    return {key: np.asarray(values) for key, values in predictions.items()}, fold_rows
+
+
+def loo_hidsag_regression(
+    features: np.ndarray,
+    target: np.ndarray,
+    n_topics: int,
+) -> tuple[dict[str, np.ndarray], list[dict[str, object]]]:
+    loo = LeaveOneOut()
+    predictions = {
+        "raw_ridge_regression": [],
+        "pls_regression": [],
+        "topic_mixture_linear_regression": [],
+        "topic_routed_linear_regression": [],
+    }
+    fold_rows = []
+
+    for fold_index, (train_idx, test_idx) in enumerate(loo.split(features), start=1):
+        x_train, x_test = features[train_idx], features[test_idx]
+        y_train = target[train_idx]
+        y_true = float(target[test_idx[0]])
+
+        raw_model = Pipeline(
+            [
+                ("scale", StandardScaler()),
+                ("reg", Ridge(alpha=1.0)),
+            ]
+        )
+        raw_pred = float(raw_model.fit(x_train, y_train).predict(x_test)[0])
+
+        pls_components = max(2, min(6, x_train.shape[0] - 1, x_train.shape[1]))
+        pls_model = PLSRegression(n_components=pls_components, scale=True)
+        pls_pred = float(pls_model.fit(x_train, y_train).predict(x_test).ravel()[0])
+
+        counts_train = band_frequency_counts(x_train)
+        counts_test = band_frequency_counts(x_test)
+        lda, topic_train = fit_lda(counts_train, n_topics=n_topics, seed=RANDOM_STATE, max_iter=20)
+        topic_test = lda.transform(counts_test)
+        topic_linear = LinearRegression().fit(topic_train, y_train)
+        topic_pred = float(topic_linear.predict(topic_test)[0])
+
+        train_dominant = np.argmax(topic_train, axis=1)
+        test_topic = int(np.argmax(topic_test[0]))
+        local_mask = train_dominant == test_topic
+        if int(np.sum(local_mask)) >= 4:
+            routed_model = LinearRegression().fit(x_train[local_mask], y_train[local_mask])
+            routed_scope = "topic-local"
+        else:
+            routed_model = LinearRegression().fit(x_train, y_train)
+            routed_scope = "global-fallback"
+        routed_pred = float(routed_model.predict(x_test)[0])
+
+        predictions["raw_ridge_regression"].append(raw_pred)
+        predictions["pls_regression"].append(pls_pred)
+        predictions["topic_mixture_linear_regression"].append(topic_pred)
+        predictions["topic_routed_linear_regression"].append(routed_pred)
+        fold_rows.append(
+            {
+                "fold": fold_index,
+                "true_value": round(y_true, 4),
+                "test_topic_id": int(test_topic + 1),
+                "local_training_samples": int(np.sum(local_mask)),
+                "routed_scope": routed_scope,
+                "predictions": {
+                    "raw_ridge_regression": round(raw_pred, 4),
+                    "pls_regression": round(pls_pred, 4),
+                    "topic_mixture_linear_regression": round(topic_pred, 4),
+                    "topic_routed_linear_regression": round(routed_pred, 4),
+                },
+            }
+        )
+
+    return {key: np.asarray(values, dtype=np.float32) for key, values in predictions.items()}, fold_rows
 
 
 def cluster_size_summary(prediction: np.ndarray) -> list[dict[str, int]]:
@@ -632,6 +931,160 @@ def benchmark_unmixing_scene(dataset_id: str) -> dict[str, object]:
     }
 
 
+def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
+    subset = load_hidsag_subset(subset_code)
+    features, sample_names, feature_layout, token_names = hidsag_feature_rows(subset)
+    counts = band_frequency_counts(features)
+    topic_count = 4
+    lda, mixtures = fit_lda(counts, n_topics=topic_count, seed=RANDOM_STATE, max_iter=20)
+    dominant_topic_counts = np.bincount(np.argmax(mixtures, axis=1), minlength=topic_count)
+    target_summary = hidsag_target_summary(subset)
+    regression_targets = hidsag_regression_targets(target_summary)
+    secondary_labels, top_secondary = hidsag_secondary_regime_labels(subset)
+
+    classification_tasks = []
+    secondary_predictions, secondary_folds = loo_hidsag_classification(features, secondary_labels, n_topics=topic_count)
+    classification_tasks.append(
+        {
+            "task_id": "secondary-regime-3class",
+            "label_definition": "Highest-abundance non-quartz mineral; labels outside {Phengite, Muscovite} collapse into other-secondary.",
+            "label_distribution": dict(Counter(secondary_labels.tolist())),
+            "metrics": {
+                model_id: classification_metrics_from_predictions(secondary_labels, prediction)
+                for model_id, prediction in secondary_predictions.items()
+            },
+            "best_model": max(
+                (
+                    {"model_id": model_id, **metrics}
+                    for model_id, metrics in {
+                        model_id: classification_metrics_from_predictions(secondary_labels, prediction)
+                        for model_id, prediction in secondary_predictions.items()
+                    }.items()
+                ),
+                key=lambda row: (float(row["macro_f1"]), float(row["balanced_accuracy"])),
+            ),
+            "sample_predictions": [
+                {
+                    "sample_name": sample_names[row["sample_index"]],
+                    "true_label": row["true_label"],
+                    "derived_secondary": top_secondary[row["sample_index"]]["secondary_mineral"],
+                    "predictions": row["predictions"],
+                }
+                for row in secondary_folds
+            ],
+        }
+    )
+
+    for task in hidsag_binary_tasks(target_summary):
+        values = np.asarray(
+            [sample["targets"][str(task["target"])] for sample in subset.get("samples", [])],
+            dtype=np.float32,
+        )
+        labels = np.where(values >= float(task["threshold"]), "present", "absent")
+        predictions, fold_rows = loo_hidsag_classification(features, labels, n_topics=topic_count)
+        task_metrics = {
+            model_id: classification_metrics_from_predictions(labels, prediction)
+            for model_id, prediction in predictions.items()
+        }
+        classification_tasks.append(
+            {
+                "task_id": task["task_id"],
+                "label_definition": f"{task['target']} >= {task['threshold']} wt%",
+                "label_distribution": dict(Counter(labels.tolist())),
+                "metrics": task_metrics,
+                "best_model": max(
+                    ({"model_id": model_id, **metrics} for model_id, metrics in task_metrics.items()),
+                    key=lambda row: (float(row["macro_f1"]), float(row["balanced_accuracy"])),
+                ),
+                "sample_predictions": [
+                    {
+                        "sample_name": sample_names[row["sample_index"]],
+                        "true_label": row["true_label"],
+                        "target_value": round(float(values[row["sample_index"]]), 4),
+                        "predictions": row["predictions"],
+                    }
+                    for row in fold_rows
+                ],
+            }
+        )
+
+    regression_tasks = []
+    for target_name in regression_targets:
+        target = np.asarray([sample["targets"][target_name] for sample in subset.get("samples", [])], dtype=np.float32)
+        predictions, fold_rows = loo_hidsag_regression(features, target, n_topics=topic_count)
+        task_metrics = {
+            model_id: regression_metrics_from_predictions(target, prediction)
+            for model_id, prediction in predictions.items()
+        }
+        regression_tasks.append(
+            {
+                "target": target_name,
+                "summary": next(row for row in target_summary if str(row["target"]) == target_name),
+                "metrics": task_metrics,
+                "best_model": min(
+                    ({"model_id": model_id, **metrics} for model_id, metrics in task_metrics.items()),
+                    key=lambda row: (float(row["rmse"]), float(row["mae"])),
+                ),
+                "sample_predictions": [
+                    {
+                        "sample_name": sample_names[index],
+                        "true_value": round(float(target[index]), 4),
+                        "predictions": row["predictions"],
+                        "test_topic_id": row["test_topic_id"],
+                        "local_training_samples": row["local_training_samples"],
+                        "routed_scope": row["routed_scope"],
+                    }
+                    for index, row in enumerate(fold_rows)
+                ],
+            }
+        )
+
+    return {
+        "dataset_id": "hidsag-geometallurgy",
+        "dataset_name": "HIDSAG geometallurgy database",
+        "subset_code": subset_code,
+        "family_id": "regions-with-measurements",
+        "sample_count": int(subset["sample_count"]),
+        "feature_layout": feature_layout,
+        "representation": {
+            "id": "sample-mean-band-frequency",
+            "alphabet": "modality-specific band-position tokens",
+            "word": "modality band token repeated by normalized sample-mean intensity count",
+            "document": "one HIDSAG sample built from concatenated mean spectra across swir_low, vnir_low, and vnir_high cubes",
+        },
+        "split_protocol": {
+            "type": "leave-one-out",
+            "fold_count": int(features.shape[0]),
+            "reason": "MINERAL2 has only 20 samples, so the first supervised Family D benchmark uses full leave-one-out evaluation instead of a single fragile holdout.",
+        },
+        "topic_model": {
+            "method": "sklearn-lda",
+            "topic_count": topic_count,
+            "perplexity": round(float(lda.perplexity(counts)), 4),
+            "active_topic_count": int(np.sum(dominant_topic_counts > 0)),
+            "topic_activity_warning": "topic-collapse-detected" if int(np.sum(dominant_topic_counts > 0)) < topic_count else "all-topics-active",
+            "top_tokens": [
+                {
+                    "topic_id": topic_index + 1,
+                    "tokens": top_named_tokens(component, token_names),
+                }
+                for topic_index, component in enumerate(lda.components_)
+            ],
+            "dominant_topic_counts": [
+                {
+                    "topic_id": int(topic_id + 1),
+                    "sample_count": int(count),
+                }
+                for topic_id, count in enumerate(dominant_topic_counts)
+            ],
+        },
+        "target_summary": target_summary,
+        "classification_tasks": classification_tasks,
+        "regression_tasks": regression_tasks,
+        "caveat": "This is the first supervised Family D benchmark over a compact local subset. It validates feasibility, not production-ready mineral regression claims.",
+    }
+
+
 def main() -> None:
     payload = {
         "source": "Local-first PTM/LDA, clustering, stability, and unmixing benchmarks over real spectral datasets",
@@ -658,6 +1111,19 @@ def main() -> None:
             "unmixing_baselines": [
                 "nmf",
             ],
+            "measured_target_models": {
+                "classification": [
+                    "raw_logistic_regression",
+                    "pca_logistic_regression",
+                    "topic_logistic_regression",
+                ],
+                "regression": [
+                    "raw_ridge_regression",
+                    "pls_regression",
+                    "topic_mixture_linear_regression",
+                    "topic_routed_linear_regression",
+                ],
+            },
             "stability_protocol": {
                 "seeds": TOPIC_STABILITY_SEEDS,
                 "comparison_metric": "aligned topic cosine similarity plus top-token jaccard",
@@ -668,6 +1134,7 @@ def main() -> None:
         "unlabeled_scene_runs": [benchmark_unlabeled_scene(dataset_id) for dataset_id in UNLABELED_SCENES],
         "unmixing_runs": [benchmark_unmixing_scene(dataset_id) for dataset_id in UNMIXING_SCENES],
         "spectral_library_runs": [benchmark_spectral_library()],
+        "measured_target_runs": [benchmark_hidsag_subset("MINERAL2")],
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:

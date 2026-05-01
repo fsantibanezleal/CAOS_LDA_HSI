@@ -306,6 +306,7 @@ export interface LocalCoreBenchmarksPayload {
   unlabeled_scene_runs: Array<Record<string, unknown>>;
   unmixing_runs: Array<Record<string, unknown>>;
   spectral_library_runs: Array<Record<string, unknown>>;
+  measured_target_runs: Array<Record<string, unknown>>;
 }
 
 export interface HidsagSubsetInventoryPayload {

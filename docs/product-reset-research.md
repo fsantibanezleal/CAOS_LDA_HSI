@@ -200,6 +200,19 @@ Actionable rule:
 - HIDSAG should enter only as a curated subset with model cards, response
   variables, train/test splits, and explicit licensing/provenance notes
 
+Current local benchmark reading:
+
+- the first `MINERAL2` leave-one-out benchmark is now implemented in the
+  local core
+- topic-mixture linear regression is currently the least-bad model for
+  the selected mineral abundance targets and reaches a slightly positive
+  `R^2` only for Quartz in this first pass
+- raw or PCA-compressed spectra are still stronger for balanced binary
+  mineral-presence tasks
+- topic-routed local models are not yet defendable on `MINERAL2` because
+  the current sample-level topic fit collapses to 2 active topics out of
+  4
+
 Source:
 
 - <https://www.nature.com/articles/s41597-023-02061-x>
@@ -417,7 +430,7 @@ Rejected for now:
 |---|---|---|---|---|---|
 | USGS Spectral Library v7 | A | compact local subset | USGS data release | public USGS data release | expand curated mineral/clay/soil/vegetation slices |
 | ECOSTRESS Spectral Library | A | public metadata reproduced; raw export still blocked | JPL spectral library | bulk checkout currently login-gated | build session-backed or per-spectrum export proof of concept |
-| HIDSAG | D | first raw subset downloaded locally and compact spectral export versioned | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | design train/test split from MINERAL2 and move to first supervised run |
+| HIDSAG | D | first raw subset downloaded locally, compact spectral export versioned, and first supervised benchmark running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | expand beyond MINERAL2 leave-one-out and test hierarchical documents |
 | Indian Pines | B | local derived | UPV/EHU | public benchmark attribution | use for pixel/class recipe experiments |
 | Salinas / Salinas-A | B | local derived | UPV/EHU | public benchmark attribution | use for first label-topic validation |
 | Pavia University | B | local derived | UPV/EHU | public benchmark attribution | use for urban material comparison |

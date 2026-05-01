@@ -66,8 +66,8 @@ Next work:
 
 - reproduce a session-backed ECOSTRESS export path beyond the current
   public metadata manifest
-- turn the downloaded HIDSAG MINERAL2 package into the first curated
-  measured-target subset
+- expand the first HIDSAG MINERAL2 supervised benchmark into broader
+  measured-target splits and sample hierarchies
 - reproduce at least one cross-scene transfer dataset
 - keep raw-local, git-public, and web-public policies clearly separated
 
@@ -116,7 +116,7 @@ Current limitation:
 
 ## Phase 5: Measured-Target Training And Validation
 
-Status: planned.
+Status: first pass delivered.
 
 Scope:
 
@@ -125,6 +125,24 @@ Scope:
 - topic-routed and hierarchical models
 - split definitions, model cards, residual/error analysis
 - topic stability and sensitivity studies
+
+Delivered:
+
+- first supervised Family D benchmark over `HIDSAG MINERAL2`
+- leave-one-out classification tasks for secondary regime and balanced
+  mineral-presence targets
+- leave-one-out regression tasks for selected mineral abundances
+- explicit evidence that current sample-level topic mixtures collapse to
+  2 active topics out of 4 on `MINERAL2`
+
+Next work:
+
+- move from leave-one-out to broader split designs as more HIDSAG
+  subsets enter local validation
+- test cube/region hierarchical documents instead of sample-only topic
+  documents
+- add model cards and failure-case summaries before any web-facing
+  narrative
 
 Acceptance:
 
