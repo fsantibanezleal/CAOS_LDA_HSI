@@ -66,8 +66,8 @@ Next work:
 
 - reproduce a session-backed ECOSTRESS export path beyond the current
   public metadata manifest
-- expand the first HIDSAG MINERAL2 supervised benchmark into broader
-  measured-target splits and sample hierarchies
+- expand the current HIDSAG `GEOMET` + `MINERAL2` supervised benchmarks
+  into broader measured-target splits and richer sample hierarchies
 - reproduce at least one cross-scene transfer dataset
 - keep raw-local, git-public, and web-public policies clearly separated
 
@@ -121,7 +121,7 @@ Status: first pass delivered.
 Scope:
 
 - regression and classification over measured datasets such as HIDSAG,
-  starting from MINERAL2 mineral-abundance targets
+  starting from `GEOMET` and `MINERAL2`
 - topic-routed and hierarchical models
 - split definitions, model cards, residual/error analysis
 - topic stability and sensitivity studies
@@ -129,11 +129,13 @@ Scope:
 Delivered:
 
 - first supervised Family D benchmark over `HIDSAG MINERAL2`
-- leave-one-out classification tasks for secondary regime and balanced
-  mineral-presence targets
-- leave-one-out regression tasks for selected mineral abundances
-- explicit evidence that current sample-level topic mixtures collapse to
-  2 active topics out of 4 on `MINERAL2`
+- second supervised Family D benchmark over `HIDSAG GEOMET`
+- leave-one-out classification/regression tasks for `MINERAL2`
+- five-fold classification/regression tasks for `GEOMET`
+- sample-level and cube-aggregated topic-mixture comparisons for both
+  subsets
+- explicit evidence that current Family D topic documents still collapse
+  to too few active topics under the current formulation
 
 Next work:
 

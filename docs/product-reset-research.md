@@ -189,11 +189,14 @@ HIDSAG is the strongest candidate for Family D because it provides
 sample-level geometallurgical response variables alongside VNIR/SWIR
 spectral data. Its role is not "another spectral library"; it is the
 first serious route to supervised regression/classification over region
-or sample documents. The first local raw subset is now downloaded:
-`MINERAL2.zip`, with 20 samples, 25 mineral abundance variables, 60 HSI
-cubes, and per-sample metadata JSON files. A compact derived export is
-now versioned with mean and standard-deviation spectra per cube so the
-repo can inspect real HIDSAG signals without shipping the raw ZIP.
+or sample documents. Local raw coverage now includes:
+
+- `GEOMET.zip`: 146 samples, 5 geometallurgical variables, 438 HSI cubes
+- `MINERAL2.zip`: 20 samples, 25 mineral abundance variables, 60 HSI cubes
+
+A compact derived export is now versioned with mean and
+standard-deviation spectra per cube so the repo can inspect real HIDSAG
+signals without shipping the raw ZIPs.
 
 Actionable rule:
 
@@ -202,16 +205,19 @@ Actionable rule:
 
 Current local benchmark reading:
 
-- the first `MINERAL2` leave-one-out benchmark is now implemented in the
-  local core
+- the first local supervised HIDSAG benchmarks are now implemented in
+  the local core for both `MINERAL2` and `GEOMET`
 - topic-mixture linear regression is currently the least-bad model for
-  the selected mineral abundance targets and reaches a slightly positive
-  `R^2` only for Quartz in this first pass
+  several `MINERAL2` abundance targets and reaches slightly positive
+  `R^2` for Quartz and Pyrophyllite in the current pass
+- `GEOMET` is already strong enough to show positive `R^2` across all
+  five measured targets with raw/PLS baselines, so it is the current
+  best Family D supervision anchor
 - raw or PCA-compressed spectra are still stronger for balanced binary
   mineral-presence tasks
-- topic-routed local models are not yet defendable on `MINERAL2` because
-  the current sample-level topic fit collapses to 2 active topics out of
-  4
+- topic-routed and cube-topic local models are not yet defendable as a
+  finished method because both subsets still show topic-collapse
+  behavior under the current Family D document design
 
 Source:
 
@@ -430,7 +436,7 @@ Rejected for now:
 |---|---|---|---|---|---|
 | USGS Spectral Library v7 | A | compact local subset | USGS data release | public USGS data release | expand curated mineral/clay/soil/vegetation slices |
 | ECOSTRESS Spectral Library | A | public metadata reproduced; raw export still blocked | JPL spectral library | bulk checkout currently login-gated | build session-backed or per-spectrum export proof of concept |
-| HIDSAG | D | first raw subset downloaded locally, compact spectral export versioned, and first supervised benchmark running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | expand beyond MINERAL2 leave-one-out and test hierarchical documents |
+| HIDSAG | D | GEOMET and MINERAL2 downloaded locally, compact spectral exports versioned, and first supervised benchmarks running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | add more subsets and test richer hierarchical documents |
 | Indian Pines | B | local derived | UPV/EHU | public benchmark attribution | use for pixel/class recipe experiments |
 | Salinas / Salinas-A | B | local derived | UPV/EHU | public benchmark attribution | use for first label-topic validation |
 | Pavia University | B | local derived | UPV/EHU | public benchmark attribution | use for urban material comparison |

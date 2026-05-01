@@ -85,10 +85,10 @@ Current first-pass local-core evidence now includes:
 - HIDSAG raw-subset metadata with sample-level mineral targets and
   acquisition-mode summaries
 - HIDSAG curated spectral subset with per-cube mean and standard
-  deviation spectra for `MINERAL2`
-- first supervised Family D benchmark on `HIDSAG MINERAL2`, including
-  leave-one-out classification/regression baselines and topic-mixture
-  comparisons
+  deviation spectra for `GEOMET` and `MINERAL2`
+- first supervised Family D benchmarks on `HIDSAG GEOMET` and
+  `MINERAL2`, including cross-validated classification/regression
+  baselines and topic-mixture comparisons at sample and cube levels
 
 Useful commands:
 

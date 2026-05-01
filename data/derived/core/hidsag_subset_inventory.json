@@ -3,6 +3,424 @@
   "generated_at": "2026-05-01",
   "subsets": [
     {
+      "zip_name": "GEOMET.zip",
+      "subset_code": "GEOMET",
+      "size_bytes": 3264279514,
+      "file_count": 1023,
+      "suffix_counts": {
+        ".h5": 438,
+        ".png": 438,
+        ".json": 147
+      },
+      "top_level_entries": {
+        "GEOMET": 1023
+      },
+      "header_examples": [],
+      "metadata_json_count": 147,
+      "sample_count": 146,
+      "crop_count": 146,
+      "cube_file_count": 438,
+      "rgb_preview_count": 438,
+      "metadata_keys": [
+        "crops",
+        "datarecord",
+        "sample_name",
+        "vars"
+      ],
+      "variable_count": 5,
+      "variable_names": [
+        "Cu rec",
+        "Lime cons",
+        "Mo rec",
+        "PH",
+        "WI"
+      ],
+      "composition_sum_stats": {
+        "min": 92.46,
+        "median": 176.36,
+        "max": 205.61,
+        "mean": 167.9001
+      },
+      "nonzero_variable_count_stats": {
+        "min": 5.0,
+        "median": 5.0,
+        "max": 5.0,
+        "mean": 5.0
+      },
+      "dominant_variables_by_mean": [
+        {
+          "name": "Cu rec",
+          "mean": 88.7767,
+          "max": 95.2,
+          "nonzero_samples": 146
+        },
+        {
+          "name": "Mo rec",
+          "mean": 56.9699,
+          "max": 89.7,
+          "nonzero_samples": 146
+        },
+        {
+          "name": "WI",
+          "mean": 14.6185,
+          "max": 21.8,
+          "nonzero_samples": 146
+        },
+        {
+          "name": "PH",
+          "mean": 7.3116,
+          "max": 9.2,
+          "nonzero_samples": 146
+        },
+        {
+          "name": "Lime cons",
+          "mean": 0.2234,
+          "max": 0.88,
+          "nonzero_samples": 146
+        }
+      ],
+      "modality_summary": {
+        "swir_low": {
+          "cube_count": 146,
+          "image_width_stats": {
+            "min": 100.0,
+            "median": 142.0,
+            "max": 149.0,
+            "mean": 140.726
+          },
+          "image_height_stats": {
+            "min": 69.0,
+            "median": 79.0,
+            "max": 90.0,
+            "mean": 79.4315
+          },
+          "real_width_stats": {
+            "min": 62.0,
+            "median": 88.0,
+            "max": 92.3,
+            "mean": 87.2178
+          },
+          "real_height_stats": {
+            "min": 56.2,
+            "median": 64.4,
+            "max": 73.4,
+            "mean": 64.7452
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            1.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            4.0
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_low": {
+          "cube_count": 146,
+          "image_width_stats": {
+            "min": 100.0,
+            "median": 142.0,
+            "max": 149.0,
+            "mean": 140.726
+          },
+          "image_height_stats": {
+            "min": 69.0,
+            "median": 79.0,
+            "max": 90.0,
+            "mean": 79.4315
+          },
+          "real_width_stats": {
+            "min": 62.0,
+            "median": 88.0,
+            "max": 92.3,
+            "mean": 87.2178
+          },
+          "real_height_stats": {
+            "min": 56.2,
+            "median": 64.4,
+            "max": 73.4,
+            "mean": 64.7452
+          },
+          "spectral_binning_values": [
+            2.0
+          ],
+          "spatial_binning_values": [
+            4.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_high": {
+          "cube_count": 146,
+          "image_width_stats": {
+            "min": 111.0,
+            "median": 156.0,
+            "max": 165.0,
+            "mean": 155.089
+          },
+          "image_height_stats": {
+            "min": 71.0,
+            "median": 82.0,
+            "max": 93.0,
+            "mean": 81.8493
+          },
+          "real_width_stats": {
+            "min": 30.7,
+            "median": 43.2,
+            "max": 45.7,
+            "mean": 42.9137
+          },
+          "real_height_stats": {
+            "min": 57.9,
+            "median": 66.8,
+            "max": 75.8,
+            "mean": 66.7164
+          },
+          "spectral_binning_values": [
+            2.0
+          ],
+          "spatial_binning_values": [
+            4.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        }
+      },
+      "sample_previews": [
+        {
+          "sample_name": "GMET-0001",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 171.32,
+          "nonzero_variable_count": 5,
+          "dominant_variables": [
+            {
+              "name": "Cu rec",
+              "value": 85.5
+            },
+            {
+              "name": "Mo rec",
+              "value": 63.5
+            },
+            {
+              "name": "WI",
+              "value": 14.5
+            },
+            {
+              "name": "PH",
+              "value": 7.7
+            },
+            {
+              "name": "Lime cons",
+              "value": 0.12
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0002",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 155.26,
+          "nonzero_variable_count": 5,
+          "dominant_variables": [
+            {
+              "name": "Cu rec",
+              "value": 86.6
+            },
+            {
+              "name": "Mo rec",
+              "value": 43.8
+            },
+            {
+              "name": "WI",
+              "value": 16.0
+            },
+            {
+              "name": "PH",
+              "value": 8.7
+            },
+            {
+              "name": "Lime cons",
+              "value": 0.16
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0003",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 121.51,
+          "nonzero_variable_count": 5,
+          "dominant_variables": [
+            {
+              "name": "Cu rec",
+              "value": 87.8
+            },
+            {
+              "name": "WI",
+              "value": 15.7
+            },
+            {
+              "name": "Mo rec",
+              "value": 9.0
+            },
+            {
+              "name": "PH",
+              "value": 8.9
+            },
+            {
+              "name": "Lime cons",
+              "value": 0.11
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0004",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 153.37,
+          "nonzero_variable_count": 5,
+          "dominant_variables": [
+            {
+              "name": "Cu rec",
+              "value": 84.6
+            },
+            {
+              "name": "Mo rec",
+              "value": 49.3
+            },
+            {
+              "name": "WI",
+              "value": 12.1
+            },
+            {
+              "name": "PH",
+              "value": 7.2
+            },
+            {
+              "name": "Lime cons",
+              "value": 0.17
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0005",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 169.21,
+          "nonzero_variable_count": 5,
+          "dominant_variables": [
+            {
+              "name": "Cu rec",
+              "value": 89.9
+            },
+            {
+              "name": "Mo rec",
+              "value": 57.3
+            },
+            {
+              "name": "WI",
+              "value": 13.5
+            },
+            {
+              "name": "PH",
+              "value": 8.4
+            },
+            {
+              "name": "Lime cons",
+              "value": 0.11
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0006",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 167.71,
+          "nonzero_variable_count": 5,
+          "dominant_variables": [
+            {
+              "name": "Cu rec",
+              "value": 91.0
+            },
+            {
+              "name": "Mo rec",
+              "value": 57.6
+            },
+            {
+              "name": "WI",
+              "value": 11.8
+            },
+            {
+              "name": "PH",
+              "value": 7.2
+            },
+            {
+              "name": "Lime cons",
+              "value": 0.11
+            }
+          ]
+        }
+      ]
+    },
+    {
       "zip_name": "MINERAL2.zip",
       "subset_code": "MINERAL2",
       "size_bytes": 1476840683,

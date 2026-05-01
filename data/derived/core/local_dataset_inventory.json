@@ -4,14 +4,14 @@
   "summary": {
     "cataloged_dataset_count": 21,
     "datasets_with_local_raw": 10,
-    "raw_total_size_bytes": 1823229204,
-    "raw_total_size_gb": 1.698,
+    "raw_total_size_bytes": 5087508718,
+    "raw_total_size_gb": 4.7381,
     "source_group_counts": {
       "upv_ehu": 6,
       "borsoi_mua": 3,
       "micasense": 3,
       "usgs_splib07": 2,
-      "hidsag": 1
+      "hidsag": 2
     }
   },
   "family_views": [
@@ -1381,15 +1381,15 @@
         "sample_ids_candidate",
         "hierarchical_regions_candidate"
       ],
-      "label_scope": "sample ids and mineralogical abundance targets are already visible in MINERAL2 metadata, but train/test partition design is still pending",
-      "measurement_scope": "mineralogical abundances are locally verified in MINERAL2; broader geochemical and geometallurgical targets remain pending additional subsets",
-      "supervision_caveat": "This is now a real local raw source, but no model claim is acceptable until a curated subset, split, metrics, and model card exist.",
+      "label_scope": "sample ids and response targets are locally visible in GEOMET and MINERAL2 metadata, with first supervised subset benchmarks already running",
+      "measurement_scope": "geometallurgical responses are locally verified in GEOMET and mineralogical abundances in MINERAL2; broader multi-subset model design is still pending",
+      "supervision_caveat": "This is now a real local multi-subset source, but no product claim is acceptable until broader splits, richer documents, metrics, and model cards exist.",
       "acquisition_status": "local-raw-subset",
       "access": "public Figshare collection API and direct download URLs",
       "direct_download": true,
       "license_note": "The article is CC BY 4.0 and the current Figshare subset metadata reports CC0; keep full ZIPs local and publish only compact derived metadata or explicitly approved exports.",
       "checksum_status": "upstream-md5-and-local-sha256",
-      "raw_asset_policy": "Keep ZIPs local; version only manifests and compact derived metadata. MINERAL2 is the first downloaded subset.",
+      "raw_asset_policy": "Keep ZIPs local; version only manifests and compact derived metadata. GEOMET and MINERAL2 are the current downloaded subsets.",
       "last_verified": "2026-05-01",
       "local_raw_available": true,
       "raw_dataset_ids": [
@@ -1399,11 +1399,21 @@
         "hidsag-mineral1",
         "hidsag-mineral2"
       ],
-      "raw_file_count": 1,
-      "raw_total_size_bytes": 1476840683,
-      "raw_total_size_gb": 1.3754,
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 4741120197,
+      "raw_total_size_gb": 4.4155,
       "sha256_complete": true,
       "raw_files": [
+        {
+          "raw_dataset_id": "hidsag-geomet",
+          "source_group": "hidsag",
+          "source": "HIDSAG Figshare collection",
+          "name": "GEOMET.zip",
+          "kind": "hidsag_zip",
+          "url": "https://ndownloader.figshare.com/files/38652824",
+          "size_bytes": 3264279514,
+          "sha256": "c22cd3e44946ec2d9cfd5a78f3ca4f127d42166440c568068bfe0961db7f5fc0"
+        },
         {
           "raw_dataset_id": "hidsag-mineral2",
           "source_group": "hidsag",

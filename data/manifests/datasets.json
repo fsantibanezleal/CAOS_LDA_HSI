@@ -815,24 +815,24 @@
       "source": "HIDSAG: Hyperspectral Image Database for Supervised Analysis in Geometallurgy",
       "source_url": "https://www.nature.com/articles/s41597-023-02061-x",
       "local_status": {
-        "en": "First raw subset downloaded locally",
-        "es": "Primer subconjunto crudo descargado localmente"
+        "en": "Multiple raw subsets downloaded locally",
+        "es": "Multiples subconjuntos crudos descargados localmente"
       },
       "repository_strategy": {
-        "en": "Keep full Figshare ZIPs local, version only compact derived metadata, and promote selected subset exports only after split design and model-card definitions.",
-        "es": "Mantener los ZIP completos de Figshare solo en local, versionar solo metadata derivada compacta y promover exportaciones de subconjuntos solo despues de definir splits y model cards."
+        "en": "Keep full Figshare ZIPs local, version only compact derived metadata and curated spectral exports, and promote selected subset views only after split design and model-card definitions.",
+        "es": "Mantener los ZIP completos de Figshare solo en local, versionar solo metadata derivada compacta y exportaciones espectrales curadas, y promover vistas de subconjuntos solo despues de definir splits y model cards."
       },
       "notes": {
-        "en": "Highest-priority Family D source. The first local raw subset is MINERAL2: 20 samples, 25 mineral abundance variables, and 60 HSI cubes with per-sample metadata.",
-        "es": "Fuente Family D de mayor prioridad. El primer subconjunto crudo local es MINERAL2: 20 muestras, 25 variables de abundancia mineral y 60 cubos HSI con metadata por muestra."
+        "en": "Highest-priority Family D source. Local raw coverage now includes GEOMET (146 samples, 5 geometallurgical variables) and MINERAL2 (20 samples, 25 mineral abundance variables), plus compact derived spectral exports and first supervised local benchmarks.",
+        "es": "Fuente Family D de mayor prioridad. La cobertura cruda local ahora incluye GEOMET (146 muestras, 5 variables geometalurgicas) y MINERAL2 (20 muestras, 25 variables de abundancia mineral), ademas de exportaciones espectrales compactas derivadas y primeros benchmarks supervisados locales."
       },
       "fit_for_demo": "geometallurgy-reference",
       "supervision": {
         "family_id": "regions-with-measurements",
         "states": ["response_measurements_candidate", "sample_ids_candidate", "hierarchical_regions_candidate"],
-        "label_scope": "sample ids and mineralogical abundance targets are already visible in MINERAL2 metadata, but train/test partition design is still pending",
-        "measurement_scope": "mineralogical abundances are locally verified in MINERAL2; broader geochemical and geometallurgical targets remain pending additional subsets",
-        "caveat": "This is now a real local raw source, but no model claim is acceptable until a curated subset, split, metrics, and model card exist."
+        "label_scope": "sample ids and response targets are locally visible in GEOMET and MINERAL2 metadata, with first supervised subset benchmarks already running",
+        "measurement_scope": "geometallurgical responses are locally verified in GEOMET and mineralogical abundances in MINERAL2; broader multi-subset model design is still pending",
+        "caveat": "This is now a real local multi-subset source, but no product claim is acceptable until broader splits, richer documents, metrics, and model cards exist."
       },
       "acquisition": {
         "status": "local-raw-subset",
@@ -840,7 +840,7 @@
         "direct_download": true,
         "license_note": "The article is CC BY 4.0 and the current Figshare subset metadata reports CC0; keep full ZIPs local and publish only compact derived metadata or explicitly approved exports.",
         "checksum_status": "upstream-md5-and-local-sha256",
-        "raw_asset_policy": "Keep ZIPs local; version only manifests and compact derived metadata. MINERAL2 is the first downloaded subset.",
+        "raw_asset_policy": "Keep ZIPs local; version only manifests and compact derived metadata. GEOMET and MINERAL2 are the current downloaded subsets.",
         "last_verified": "2026-05-01"
       }
     }
