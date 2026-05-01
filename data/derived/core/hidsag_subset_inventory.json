@@ -48,6 +48,30 @@
         "Zn",
         "Zr"
       ],
+      "numeric_variable_count": 18,
+      "numeric_variable_names": [
+        "Al",
+        "As",
+        "Ca",
+        "Cu",
+        "Fe",
+        "K",
+        "Mo",
+        "Nb",
+        "P",
+        "Pb",
+        "Rb",
+        "S",
+        "Si",
+        "Sr",
+        "Ti",
+        "Y",
+        "Zn",
+        "Zr"
+      ],
+      "categorical_variable_count": 0,
+      "categorical_variable_names": [],
+      "categorical_value_counts": {},
       "composition_sum_stats": {
         "min": 32.4808,
         "median": 34.5921,
@@ -122,6 +146,23 @@
           "nonzero_samples": 28
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
       "modality_summary": {
         "swir_low": {
           "cube_count": 106,
@@ -259,6 +300,10 @@
             "03",
             "04"
           ],
+          "measurement_tags": [
+            "coarse",
+            "fine"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -266,6 +311,7 @@
           ],
           "composition_sum": 34.8933,
           "nonzero_variable_count": 17,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Si",
@@ -297,6 +343,10 @@
             "03",
             "04"
           ],
+          "measurement_tags": [
+            "coarse",
+            "fine"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -304,6 +354,7 @@
           ],
           "composition_sum": 34.6678,
           "nonzero_variable_count": 17,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Si",
@@ -335,6 +386,10 @@
             "03",
             "04"
           ],
+          "measurement_tags": [
+            "coarse",
+            "fine"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -342,6 +397,7 @@
           ],
           "composition_sum": 33.9775,
           "nonzero_variable_count": 18,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Si",
@@ -373,6 +429,10 @@
             "03",
             "04"
           ],
+          "measurement_tags": [
+            "coarse",
+            "fine"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -380,6 +440,7 @@
           ],
           "composition_sum": 33.8445,
           "nonzero_variable_count": 18,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Si",
@@ -411,6 +472,10 @@
             "03",
             "04"
           ],
+          "measurement_tags": [
+            "coarse",
+            "fine"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -418,6 +483,7 @@
           ],
           "composition_sum": 34.7499,
           "nonzero_variable_count": 17,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Si",
@@ -449,6 +515,10 @@
             "03",
             "04"
           ],
+          "measurement_tags": [
+            "coarse",
+            "fine"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -456,6 +526,7 @@
           ],
           "composition_sum": 34.6376,
           "nonzero_variable_count": 16,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Si",
@@ -514,6 +585,17 @@
         "PH",
         "WI"
       ],
+      "numeric_variable_count": 5,
+      "numeric_variable_names": [
+        "Cu rec",
+        "Lime cons",
+        "Mo rec",
+        "PH",
+        "WI"
+      ],
+      "categorical_variable_count": 0,
+      "categorical_variable_names": [],
+      "categorical_value_counts": {},
       "composition_sum_stats": {
         "min": 92.46,
         "median": 176.36,
@@ -558,6 +640,23 @@
           "nonzero_samples": 146
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_high": {
+          "band_count": 471,
+          "start": 400.42,
+          "stop": 999.06
+        },
+        "vnir_low": {
+          "band_count": 471,
+          "start": 400.42,
+          "stop": 999.06
+        }
+      },
       "modality_summary": {
         "swir_low": {
           "cube_count": 146,
@@ -692,6 +791,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -699,6 +799,7 @@
           ],
           "composition_sum": 171.32,
           "nonzero_variable_count": 5,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Cu rec",
@@ -727,6 +828,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -734,6 +836,7 @@
           ],
           "composition_sum": 155.26,
           "nonzero_variable_count": 5,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Cu rec",
@@ -762,6 +865,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -769,6 +873,7 @@
           ],
           "composition_sum": 121.51,
           "nonzero_variable_count": 5,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Cu rec",
@@ -797,6 +902,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -804,6 +910,7 @@
           ],
           "composition_sum": 153.37,
           "nonzero_variable_count": 5,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Cu rec",
@@ -832,6 +939,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -839,6 +947,7 @@
           ],
           "composition_sum": 169.21,
           "nonzero_variable_count": 5,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Cu rec",
@@ -867,6 +976,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -874,6 +984,7 @@
           ],
           "composition_sum": 167.71,
           "nonzero_variable_count": 5,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Cu rec",
@@ -960,6 +1071,45 @@
         "Siderite",
         "Tourmaline"
       ],
+      "numeric_variable_count": 33,
+      "numeric_variable_names": [
+        "Actinolite",
+        "Albite",
+        "Andesina_An40",
+        "Anhydrite/Gypsum",
+        "Anorthite",
+        "Apatite",
+        "Biotite",
+        "Bornite",
+        "Bytownite_An80",
+        "Calcite",
+        "Chalcopyrite",
+        "Chalcosite/Digenite",
+        "Chlorite",
+        "Covelite",
+        "Epidote",
+        "Fe Oxides",
+        "Fe-Clays",
+        "K-Feldspar",
+        "Kaolinite",
+        "Labradorite_An60",
+        "Molybdenite",
+        "Muscovite/Sericite",
+        "Oligoclasa_An20",
+        "Other Amphibole",
+        "Others",
+        "Others Carbonates",
+        "Others Ti Minerals",
+        "Pyrite",
+        "Pyroxene",
+        "Quartz",
+        "Rutile",
+        "Siderite",
+        "Tourmaline"
+      ],
+      "categorical_variable_count": 0,
+      "categorical_variable_names": [],
+      "categorical_value_counts": {},
       "composition_sum_stats": {
         "min": 100.0,
         "median": 100.0,
@@ -1034,6 +1184,23 @@
           "nonzero_samples": 99
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
       "modality_summary": {
         "swir_low": {
           "cube_count": 99,
@@ -1168,6 +1335,11 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [
+            "P1",
+            "S1",
+            "coarse"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1175,6 +1347,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 31,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1203,6 +1376,11 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [
+            "P2",
+            "S1",
+            "coarse"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1210,6 +1388,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 30,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1238,6 +1417,11 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [
+            "P3",
+            "S1",
+            "coarse"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1245,6 +1429,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 31,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1273,6 +1458,11 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [
+            "P1",
+            "S2",
+            "coarse"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1280,6 +1470,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 31,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1308,6 +1499,11 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [
+            "P2",
+            "S2",
+            "coarse"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1315,6 +1511,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 32,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1343,6 +1540,11 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [
+            "P3",
+            "S2",
+            "coarse"
+          ],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1350,6 +1552,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 31,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1428,6 +1631,37 @@
         "Tenantite",
         "Tetrahedrite"
       ],
+      "numeric_variable_count": 25,
+      "numeric_variable_names": [
+        "Alunite",
+        "Ankerite",
+        "Apatite",
+        "Bornite",
+        "Calcite",
+        "Chalcocite",
+        "Chalcopyrite",
+        "Clinochlore",
+        "Enargite",
+        "Gypsum",
+        "Hematite",
+        "Illite",
+        "Kaolin group",
+        "Molybdenite",
+        "Muscovite",
+        "Orthoclase",
+        "Phengite",
+        "Pirit",
+        "Plagioclase",
+        "Pyrophyllite",
+        "Quartz",
+        "Siderite",
+        "Sphalerite",
+        "Tenantite",
+        "Tetrahedrite"
+      ],
+      "categorical_variable_count": 0,
+      "categorical_variable_names": [],
+      "categorical_value_counts": {},
       "composition_sum_stats": {
         "min": 99.998,
         "median": 100.0,
@@ -1502,6 +1736,23 @@
           "nonzero_samples": 17
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
       "modality_summary": {
         "swir_low": {
           "cube_count": 20,
@@ -1636,6 +1887,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1643,6 +1895,7 @@
           ],
           "composition_sum": 99.998,
           "nonzero_variable_count": 14,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1671,6 +1924,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1678,6 +1932,7 @@
           ],
           "composition_sum": 99.998,
           "nonzero_variable_count": 16,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1706,6 +1961,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1713,6 +1969,7 @@
           ],
           "composition_sum": 99.999,
           "nonzero_variable_count": 13,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1741,6 +1998,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1748,6 +2006,7 @@
           ],
           "composition_sum": 100.0,
           "nonzero_variable_count": 12,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1776,6 +2035,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1783,6 +2043,7 @@
           ],
           "composition_sum": 100.001,
           "nonzero_variable_count": 14,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1811,6 +2072,7 @@
           "crop_ids": [
             "01"
           ],
+          "measurement_tags": [],
           "modalities": [
             "swir_low",
             "vnir_high",
@@ -1818,6 +2080,7 @@
           ],
           "composition_sum": 100.001,
           "nonzero_variable_count": 12,
+          "categorical_variables": {},
           "dominant_variables": [
             {
               "name": "Quartz",
@@ -1838,6 +2101,572 @@
             {
               "name": "Clinochlore",
               "value": 3.466
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "zip_name": "PORPHYRY.zip",
+      "subset_code": "PORPHYRY",
+      "size_bytes": 17957837367,
+      "file_count": 365,
+      "suffix_counts": {
+        ".h5": 168,
+        ".png": 168,
+        ".json": 29
+      },
+      "top_level_entries": {
+        "PORPHYRY": 365
+      },
+      "header_examples": [],
+      "metadata_json_count": 29,
+      "sample_count": 28,
+      "crop_count": 56,
+      "cube_file_count": 168,
+      "rgb_preview_count": 168,
+      "metadata_keys": [
+        "crops",
+        "datarecord",
+        "sample_name",
+        "vars"
+      ],
+      "variable_count": 11,
+      "variable_names": [
+        "Bt (%)",
+        "Cal (%)",
+        "Esp (%)",
+        "Hem (%)",
+        "Kao (%)",
+        "Mb (%)",
+        "Mgt (%)",
+        "Py (%)",
+        "Qz (%)",
+        "[Cpy + Py + Bo] (%)",
+        "group"
+      ],
+      "numeric_variable_count": 10,
+      "numeric_variable_names": [
+        "Bt (%)",
+        "Cal (%)",
+        "Esp (%)",
+        "Hem (%)",
+        "Kao (%)",
+        "Mb (%)",
+        "Mgt (%)",
+        "Py (%)",
+        "Qz (%)",
+        "[Cpy + Py + Bo] (%)"
+      ],
+      "categorical_variable_count": 1,
+      "categorical_variable_names": [
+        "group"
+      ],
+      "categorical_value_counts": {
+        "group": [
+          {
+            "value": "Q2",
+            "count": 6
+          },
+          {
+            "value": "Q1",
+            "count": 4
+          },
+          {
+            "value": "Q3",
+            "count": 4
+          },
+          {
+            "value": "Q4",
+            "count": 4
+          },
+          {
+            "value": "Q6",
+            "count": 3
+          },
+          {
+            "value": "Q7",
+            "count": 3
+          },
+          {
+            "value": "Q8",
+            "count": 3
+          },
+          {
+            "value": "Q5",
+            "count": 1
+          }
+        ]
+      },
+      "composition_sum_stats": {
+        "min": 99.9,
+        "median": 100.0,
+        "max": 100.1,
+        "mean": 100.0286
+      },
+      "nonzero_variable_count_stats": {
+        "min": 2.0,
+        "median": 3.0,
+        "max": 6.0,
+        "mean": 3.1786
+      },
+      "dominant_variables_by_mean": [
+        {
+          "name": "Qz (%)",
+          "mean": 48.7536,
+          "max": 95.2,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Mb (%)",
+          "mean": 20.575,
+          "max": 55.6,
+          "nonzero_samples": 17
+        },
+        {
+          "name": "Bt (%)",
+          "mean": 9.7571,
+          "max": 84.6,
+          "nonzero_samples": 12
+        },
+        {
+          "name": "Kao (%)",
+          "mean": 5.0071,
+          "max": 33.3,
+          "nonzero_samples": 7
+        },
+        {
+          "name": "Py (%)",
+          "mean": 4.1214,
+          "max": 22.7,
+          "nonzero_samples": 9
+        },
+        {
+          "name": "Mgt (%)",
+          "mean": 3.9321,
+          "max": 28.6,
+          "nonzero_samples": 6
+        },
+        {
+          "name": "Hem (%)",
+          "mean": 3.1214,
+          "max": 45.5,
+          "nonzero_samples": 3
+        },
+        {
+          "name": "Esp (%)",
+          "mean": 2.8893,
+          "max": 28.6,
+          "nonzero_samples": 4
+        },
+        {
+          "name": "[Cpy + Py + Bo] (%)",
+          "mean": 1.3857,
+          "max": 26.3,
+          "nonzero_samples": 2
+        },
+        {
+          "name": "Cal (%)",
+          "mean": 0.4857,
+          "max": 13.6,
+          "nonzero_samples": 1
+        }
+      ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
+      "modality_summary": {
+        "swir_low": {
+          "cube_count": 56,
+          "image_width_stats": {
+            "min": 125.0,
+            "median": 229.5,
+            "max": 303.0,
+            "mean": 223.4464
+          },
+          "image_height_stats": {
+            "min": 125.0,
+            "median": 258.5,
+            "max": 314.0,
+            "mean": 252.5536
+          },
+          "real_width_stats": {
+            "min": 77.5,
+            "median": 142.25,
+            "max": 187.8,
+            "mean": 138.4982
+          },
+          "real_height_stats": {
+            "min": 101.9,
+            "median": 210.7,
+            "max": 255.9,
+            "mean": 205.8482
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            1.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            4.0
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_low": {
+          "cube_count": 56,
+          "image_width_stats": {
+            "min": 125.0,
+            "median": 229.5,
+            "max": 303.0,
+            "mean": 223.4464
+          },
+          "image_height_stats": {
+            "min": 125.0,
+            "median": 258.5,
+            "max": 314.0,
+            "mean": 252.5536
+          },
+          "real_width_stats": {
+            "min": 77.5,
+            "median": 142.25,
+            "max": 187.8,
+            "mean": 138.4982
+          },
+          "real_height_stats": {
+            "min": 101.9,
+            "median": 210.7,
+            "max": 255.9,
+            "mean": 205.8482
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_high": {
+          "cube_count": 56,
+          "image_width_stats": {
+            "min": 275.0,
+            "median": 503.0,
+            "max": 666.0,
+            "mean": 490.5714
+          },
+          "image_height_stats": {
+            "min": 128.0,
+            "median": 260.0,
+            "max": 318.0,
+            "mean": 255.3036
+          },
+          "real_width_stats": {
+            "min": 76.1,
+            "median": 139.2,
+            "max": 184.3,
+            "mean": 135.7643
+          },
+          "real_height_stats": {
+            "min": 104.3,
+            "median": 211.9,
+            "max": 259.2,
+            "mean": 208.0839
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        }
+      },
+      "sample_previews": [
+        {
+          "sample_name": "POR-0001",
+          "crop_ids": [
+            "01",
+            "02"
+          ],
+          "measurement_tags": [
+            "fine"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 2,
+          "categorical_variables": {
+            "group": "Q1"
+          },
+          "dominant_variables": [
+            {
+              "name": "Qz (%)",
+              "value": 80.0
+            },
+            {
+              "name": "Mb (%)",
+              "value": 20.0
+            },
+            {
+              "name": "Bt (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Kao (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Py (%)",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0002",
+          "crop_ids": [
+            "01",
+            "02"
+          ],
+          "measurement_tags": [
+            "fine"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 2,
+          "categorical_variables": {
+            "group": "Q1"
+          },
+          "dominant_variables": [
+            {
+              "name": "Qz (%)",
+              "value": 57.1
+            },
+            {
+              "name": "Mb (%)",
+              "value": 42.9
+            },
+            {
+              "name": "Bt (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Kao (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Py (%)",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0003",
+          "crop_ids": [
+            "01",
+            "02"
+          ],
+          "measurement_tags": [
+            "fine"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 2,
+          "categorical_variables": {
+            "group": "Q1"
+          },
+          "dominant_variables": [
+            {
+              "name": "Mb (%)",
+              "value": 55.6
+            },
+            {
+              "name": "Qz (%)",
+              "value": 44.4
+            },
+            {
+              "name": "Bt (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Kao (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Py (%)",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0004",
+          "crop_ids": [
+            "01",
+            "02"
+          ],
+          "measurement_tags": [
+            "fine"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 3,
+          "categorical_variables": {
+            "group": "Q1"
+          },
+          "dominant_variables": [
+            {
+              "name": "Mb (%)",
+              "value": 50.0
+            },
+            {
+              "name": "Qz (%)",
+              "value": 40.0
+            },
+            {
+              "name": "Bt (%)",
+              "value": 10.0
+            },
+            {
+              "name": "Kao (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Py (%)",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0005",
+          "crop_ids": [
+            "01",
+            "02"
+          ],
+          "measurement_tags": [
+            "fine"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 2,
+          "categorical_variables": {
+            "group": "Q2"
+          },
+          "dominant_variables": [
+            {
+              "name": "Qz (%)",
+              "value": 95.2
+            },
+            {
+              "name": "Kao (%)",
+              "value": 4.8
+            },
+            {
+              "name": "Bt (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Mb (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Py (%)",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0006",
+          "crop_ids": [
+            "01",
+            "02"
+          ],
+          "measurement_tags": [
+            "fine"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 2,
+          "categorical_variables": {
+            "group": "Q2"
+          },
+          "dominant_variables": [
+            {
+              "name": "Qz (%)",
+              "value": 90.9
+            },
+            {
+              "name": "Kao (%)",
+              "value": 9.1
+            },
+            {
+              "name": "Bt (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Mb (%)",
+              "value": 0.0
+            },
+            {
+              "name": "Py (%)",
+              "value": 0.0
             }
           ]
         }

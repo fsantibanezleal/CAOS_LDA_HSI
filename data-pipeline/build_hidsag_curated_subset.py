@@ -32,13 +32,28 @@ def summarize_global(array: np.ndarray) -> dict[str, float]:
     }
 
 
-def load_h5_array(archive: zipfile.ZipFile, member_name: str) -> np.ndarray:
+def split_targets(payload_vars: dict[str, object]) -> tuple[dict[str, float], dict[str, str]]:
+    numeric_targets: dict[str, float] = {}
+    categorical_targets: dict[str, str] = {}
+    for key, value in payload_vars.items():
+        name = str(key)
+        if isinstance(value, (int, float)):
+            numeric_targets[name] = float(value)
+        else:
+            categorical_targets[name] = str(value)
+    return numeric_targets, categorical_targets
+
+
+def load_h5_cube(archive: zipfile.ZipFile, member_name: str) -> tuple[np.ndarray, np.ndarray | None]:
     with tempfile.NamedTemporaryFile(suffix=".h5", delete=False) as handle:
         handle.write(archive.read(member_name))
         temp_path = handle.name
     try:
         with h5py.File(temp_path, "r") as h5:
-            return np.asarray(h5["hsi_data"], dtype=np.float32)
+            dataset = h5["hsi_data"]
+            wavelengths = dataset.attrs.get("wavelengths")
+            wavelength_array = np.asarray(wavelengths, dtype=np.float32) if wavelengths is not None else None
+            return np.asarray(dataset, dtype=np.float32), wavelength_array
     finally:
         os.unlink(temp_path)
 
@@ -49,11 +64,20 @@ def build_cube_entry(
     crop_id: str,
     modality: str,
     modality_payload: dict[str, object],
+    modality_wavelengths: dict[str, np.ndarray],
 ) -> dict[str, object]:
     cube_path = f"{cube_root}/{modality_payload['path_hsi']}"
-    cube = load_h5_array(archive, cube_path)
+    cube, wavelengths = load_h5_cube(archive, cube_path)
+    if wavelengths is not None and modality not in modality_wavelengths:
+        modality_wavelengths[modality] = wavelengths
     mean_spectrum = np.mean(cube, axis=(0, 1))
     std_spectrum = np.std(cube, axis=(0, 1))
+    wavelength_range_nm = None
+    if wavelengths is not None and wavelengths.size:
+        wavelength_range_nm = {
+            "start": round(float(wavelengths[0]), 4),
+            "stop": round(float(wavelengths[-1]), 4),
+        }
     return {
         "crop_id": crop_id,
         "modality": modality,
@@ -68,6 +92,7 @@ def build_cube_entry(
         "sample_frequency": modality_payload.get("sample_frequency"),
         "integration_time": modality_payload.get("integrations_time"),
         "dolly_speed": modality_payload.get("dolly_speed"),
+        "wavelength_range_nm": wavelength_range_nm,
         "global_intensity": summarize_global(cube),
         "mean_spectrum": rounded_list(mean_spectrum),
         "std_spectrum": rounded_list(std_spectrum),
@@ -78,6 +103,7 @@ def build_measurement_entry(
     archive: zipfile.ZipFile,
     cube_root: str,
     crop: dict[str, object],
+    modality_wavelengths: dict[str, np.ndarray],
 ) -> dict[str, object]:
     tags = [str(tag) for tag in crop.get("tags", [])]
     for crop_id, crop_payload in crop.items():
@@ -89,7 +115,7 @@ def build_measurement_entry(
             modality_payload = crop_payload.get(modality)
             if not isinstance(modality_payload, dict):
                 continue
-            cubes.append(build_cube_entry(archive, cube_root, crop_id, modality, modality_payload))
+            cubes.append(build_cube_entry(archive, cube_root, crop_id, modality, modality_payload, modality_wavelengths))
             modalities.append(modality)
         return {
             "crop_id": crop_id,
@@ -106,21 +132,32 @@ def build_subset(path: Path) -> dict[str, object]:
         metadata_names = sorted(name for name in archive.namelist() if name.endswith("metadata.json"))
         samples: list[dict[str, object]] = []
         variable_names: set[str] = set()
+        numeric_variable_names: set[str] = set()
+        categorical_variable_names: set[str] = set()
         dominant_tracker: dict[str, list[float]] = {}
+        categorical_values: dict[str, Counter[str]] = {}
         measurement_counts: list[int] = []
         tag_counter: Counter[str] = Counter()
+        modality_wavelengths: dict[str, np.ndarray] = {}
 
         for metadata_name in metadata_names:
             payload = json.loads(archive.read(metadata_name))
             sample_name = str(payload["sample_name"])
-            variables = {str(key): float(value) for key, value in payload.get("vars", {}).items()}
-            for name, value in variables.items():
+            numeric_targets, categorical_targets = split_targets(payload.get("vars", {}))
+            for name, value in numeric_targets.items():
                 variable_names.add(name)
+                numeric_variable_names.add(name)
                 dominant_tracker.setdefault(name, []).append(value)
+            for name, value in categorical_targets.items():
+                variable_names.add(name)
+                categorical_variable_names.add(name)
+                categorical_values.setdefault(name, Counter()).update([value])
 
-            dominant_targets = sorted(variables.items(), key=lambda item: item[1], reverse=True)[:5]
+            dominant_targets = sorted(numeric_targets.items(), key=lambda item: item[1], reverse=True)[:5]
             cube_root = metadata_name.rsplit("/", 1)[0]
-            measurements = [build_measurement_entry(archive, cube_root, crop) for crop in payload.get("crops", [])]
+            measurements = [
+                build_measurement_entry(archive, cube_root, crop, modality_wavelengths) for crop in payload.get("crops", [])
+            ]
             measurement_counts.append(len(measurements))
             crop_ids = [str(measurement["crop_id"]) for measurement in measurements]
             sample_tag_counter = Counter(tag for measurement in measurements for tag in measurement.get("tags", []))
@@ -133,8 +170,9 @@ def build_subset(path: Path) -> dict[str, object]:
                     "crop_ids": crop_ids,
                     "measurement_count": len(measurements),
                     "measurement_tag_summary": dict(sorted(sample_tag_counter.items())),
-                    "target_sum": round(sum(variables.values()), 4),
-                    "targets": variables,
+                    "target_sum": round(sum(numeric_targets.values()), 4),
+                    "targets": numeric_targets,
+                    "categorical_targets": categorical_targets,
                     "dominant_targets": [
                         {"name": name, "value": round(value, 4)} for name, value in dominant_targets
                     ],
@@ -153,6 +191,19 @@ def build_subset(path: Path) -> dict[str, object]:
             if values
         ]
         dominant_targets_by_mean.sort(key=lambda item: item["mean"], reverse=True)
+        modality_wavelength_rows = {
+            modality: rounded_list(wavelengths, decimals=2)
+            for modality, wavelengths in modality_wavelengths.items()
+        }
+        modality_wavelength_ranges = {
+            modality: {
+                "band_count": int(wavelengths.shape[0]),
+                "start": round(float(wavelengths[0]), 4),
+                "stop": round(float(wavelengths[-1]), 4),
+            }
+            for modality, wavelengths in modality_wavelengths.items()
+            if wavelengths.size
+        }
 
         return {
             "subset_code": path.stem,
@@ -168,15 +219,26 @@ def build_subset(path: Path) -> dict[str, object]:
             },
             "variable_count": len(variable_names),
             "variable_names": sorted(variable_names),
+            "numeric_variable_count": len(numeric_variable_names),
+            "numeric_variable_names": sorted(numeric_variable_names),
+            "categorical_variable_count": len(categorical_variable_names),
+            "categorical_variable_names": sorted(categorical_variable_names),
+            "categorical_value_counts": {
+                name: [{"value": value, "count": int(count)} for value, count in counter.most_common(12)]
+                for name, counter in sorted(categorical_values.items())
+            },
             "measurement_tags_top": [
                 {"tag": tag, "count": int(count)}
                 for tag, count in tag_counter.most_common(12)
             ],
+            "modality_wavelength_ranges_nm": modality_wavelength_ranges,
+            "modality_wavelengths_nm": modality_wavelength_rows,
             "dominant_targets_by_mean": dominant_targets_by_mean[:10],
             "samples": samples,
             "caveats": [
                 "Cube values are stored as raw local HIDSAG intensities, not cross-dataset calibrated reflectance.",
-                "No wavelengths are shipped yet in this compact export; current spectra are indexed by band position.",
+                "Wavelength vectors are preserved from HIDSAG h5 attributes when available.",
+                "HIDSAG does not provide an explicit bad-band mask in the current local export.",
                 "This artifact is intended for local validation and future interactive inspection, not final modeling claims.",
             ],
         }

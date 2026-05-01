@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import json
+import os
 import statistics
+import tempfile
 import zipfile
 from datetime import date
 from pathlib import Path
 from typing import cast
+
+import h5py
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +29,33 @@ def summarize_numeric(values: list[float | int]) -> dict[str, float] | None:
     }
 
 
+def split_targets(payload_vars: dict[str, object]) -> tuple[dict[str, float], dict[str, str]]:
+    numeric_targets: dict[str, float] = {}
+    categorical_targets: dict[str, str] = {}
+    for key, value in payload_vars.items():
+        name = str(key)
+        if isinstance(value, (int, float)):
+            numeric_targets[name] = float(value)
+        else:
+            categorical_targets[name] = str(value)
+    return numeric_targets, categorical_targets
+
+
+def load_wavelengths(archive: zipfile.ZipFile, member_name: str) -> list[float] | None:
+    with tempfile.NamedTemporaryFile(suffix=".h5", delete=False) as handle:
+        handle.write(archive.read(member_name))
+        temp_path = handle.name
+    try:
+        with h5py.File(temp_path, "r") as h5:
+            dataset = h5["hsi_data"]
+            wavelengths = dataset.attrs.get("wavelengths")
+            if wavelengths is None:
+                return None
+            return [round(float(value), 2) for value in wavelengths.tolist()]
+    finally:
+        os.unlink(temp_path)
+
+
 def summarize_zip(path: Path) -> dict[str, object]:
     with zipfile.ZipFile(path) as archive:
         file_infos = [info for info in archive.infolist() if not info.is_dir()]
@@ -33,9 +64,13 @@ def summarize_zip(path: Path) -> dict[str, object]:
         header_examples: list[dict[str, object]] = []
         metadata_keys: set[str] = set()
         variable_names: set[str] = set()
+        numeric_variable_names: set[str] = set()
+        categorical_variable_names: set[str] = set()
         variable_values: dict[str, list[float]] = {}
+        categorical_value_counts: dict[str, dict[str, int]] = {}
         sample_rows: list[dict[str, object]] = []
         modality_stats: dict[str, dict[str, list[float] | set[float] | int]] = {}
+        modality_wavelengths: dict[str, list[float]] = {}
         crop_count = 0
 
         for info in file_infos:
@@ -56,18 +91,26 @@ def summarize_zip(path: Path) -> dict[str, object]:
             if info.filename.endswith("metadata.json"):
                 payload = json.loads(archive.read(info.filename))
                 metadata_keys.update(payload.keys())
-                variables = {str(key): float(value) for key, value in payload.get("vars", {}).items()}
-                for name, value in variables.items():
+                numeric_targets, categorical_targets = split_targets(payload.get("vars", {}))
+                for name, value in numeric_targets.items():
                     variable_names.add(name)
+                    numeric_variable_names.add(name)
                     variable_values.setdefault(name, []).append(value)
+                for name, value in categorical_targets.items():
+                    variable_names.add(name)
+                    categorical_variable_names.add(name)
+                    counts = categorical_value_counts.setdefault(name, {})
+                    counts[value] = counts.get(value, 0) + 1
 
-                top_variables = sorted(variables.items(), key=lambda item: item[1], reverse=True)[:5]
-                nonzero_variables = [name for name, value in variables.items() if value > 0]
-                composition_sum = round(sum(variables.values()), 4)
+                top_variables = sorted(numeric_targets.items(), key=lambda item: item[1], reverse=True)[:5]
+                nonzero_variables = [name for name, value in numeric_targets.items() if value > 0]
+                composition_sum = round(sum(numeric_targets.values()), 4)
                 crop_ids: list[str] = []
                 modalities_seen: set[str] = set()
+                sample_tags: set[str] = set()
 
                 for crop in payload.get("crops", []):
+                    sample_tags.update(str(tag) for tag in crop.get("tags", []))
                     for crop_id, crop_payload in crop.items():
                         if crop_id == "tags":
                             continue
@@ -77,6 +120,11 @@ def summarize_zip(path: Path) -> dict[str, object]:
                             continue
                         for modality, modality_payload in crop_payload.items():
                             modalities_seen.add(modality)
+                            if modality not in modality_wavelengths and isinstance(modality_payload, dict):
+                                member_name = f"{path.stem}/{payload['sample_name']}/{crop_id}/{modality}.h5"
+                                wavelengths = load_wavelengths(archive, member_name)
+                                if wavelengths:
+                                    modality_wavelengths[modality] = wavelengths
                             stats = modality_stats.setdefault(
                                 modality,
                                 {
@@ -118,9 +166,11 @@ def summarize_zip(path: Path) -> dict[str, object]:
                     {
                         "sample_name": payload.get("sample_name"),
                         "crop_ids": crop_ids,
+                        "measurement_tags": sorted(sample_tags),
                         "modalities": sorted(modalities_seen),
                         "composition_sum": composition_sum,
                         "nonzero_variable_count": len(nonzero_variables),
+                        "categorical_variables": categorical_targets,
                         "dominant_variables": [
                             {"name": name, "value": round(value, 4)} for name, value in top_variables
                         ],
@@ -170,9 +220,25 @@ def summarize_zip(path: Path) -> dict[str, object]:
             "metadata_keys": sorted(metadata_keys),
             "variable_count": len(variable_names),
             "variable_names": sorted(variable_names),
+            "numeric_variable_count": len(numeric_variable_names),
+            "numeric_variable_names": sorted(numeric_variable_names),
+            "categorical_variable_count": len(categorical_variable_names),
+            "categorical_variable_names": sorted(categorical_variable_names),
+            "categorical_value_counts": {
+                name: [{"value": value, "count": count} for value, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))]
+                for name, counts in sorted(categorical_value_counts.items())
+            },
             "composition_sum_stats": summarize_numeric([row["composition_sum"] for row in sample_rows]),
             "nonzero_variable_count_stats": summarize_numeric([row["nonzero_variable_count"] for row in sample_rows]),
             "dominant_variables_by_mean": dominant_variables_by_mean[:10],
+            "modality_wavelength_ranges_nm": {
+                modality: {
+                    "band_count": len(wavelengths),
+                    "start": wavelengths[0],
+                    "stop": wavelengths[-1],
+                }
+                for modality, wavelengths in sorted(modality_wavelengths.items())
+            },
             "modality_summary": modality_summary,
             "sample_previews": sample_rows[:6],
         }

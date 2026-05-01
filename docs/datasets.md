@@ -33,13 +33,13 @@ Current first-pass summary:
 
 - cataloged datasets: 21
 - datasets with local raw evidence: 10
-- local raw footprint currently indexed: about 14.871 GB
+- local raw footprint currently indexed: about 31.595 GB
 - current source groups with local evidence:
   - UPV/EHU scenes
   - Borsoi unmixing ROIs
   - MicaSense samples
   - USGS Spectral Library compact archives
-  - HIDSAG `GEOMET`, `MINERAL1`, `MINERAL2`, and `GEOCHEM`
+  - HIDSAG `GEOMET`, `MINERAL1`, `MINERAL2`, `GEOCHEM`, and `PORPHYRY`
 
 This file is now the authoritative high-level inventory of what is truly
 available for local validation.
@@ -109,17 +109,17 @@ data:
 - exploratory unlabeled clustering summaries
 - compact spectral-library grouping diagnostics
 - first supervised Family D runs over `HIDSAG MINERAL1`, `MINERAL2`,
-  `GEOMET`, and `GEOCHEM`
+  `GEOMET`, `GEOCHEM`, and `PORPHYRY`
 - patch-level HIDSAG region-document export with `3 x 3` fixed-grid
   supports per measurement
+- wavelength metadata preserved directly from HIDSAG HDF5 attributes
 
 Current HIDSAG reading:
 
-- `MINERAL1` is now the strongest mineralogical Family D subset for
-  classic supervised baselines: raw ridge regression reaches roughly
-  `R^2 0.78-0.93` on Quartz, Muscovite/Sericite, Biotite, and
-  Anhydrite/Gypsum, while raw logistic classification reaches about
-  `0.89-0.99` on the current binary mineral-presence tasks
+- `MINERAL1` is now a good example of why stronger split design matters:
+  under process-aware `P1/P2/P3` group splits, several earlier
+  optimistic scores collapse, and only a few tasks remain clearly above
+  trivial baselines
 - raw or PCA-compressed spectra are currently stronger than topic-only
   features for balanced presence/absence classification tasks such as
   pyrophyllite, orthoclase, alunite, and kaolin-group presence
@@ -135,6 +135,10 @@ Current HIDSAG reading:
   measurement supports across `28` samples, `954` patch-region
   documents, and positive `R^2` on targets such as Fe, Ca, S, and Cu
   for routed or region-topic regressors
+- `PORPHYRY` is now local and benchmarked with group-aware validation:
+  `56` measurement supports across `28` samples and `504` patch-region
+  documents, but the current mineral-regression results are still weak
+  and mostly negative under ore-group splits
 - topic-routed, cube-topic, and region-topic variants still show
   collapse or inconsistent gains on several subsets, so hierarchical
   Family D topic documents remain an open research item rather than a
@@ -151,7 +155,7 @@ their acquisition path is reproduced.
 | Source | Role | Constraint | Intended use |
 |---|---|---|---|
 | ECOSTRESS Spectral Library | Family A extension | public category metadata is reproducible, but bulk checkout currently routes to login | mineral, vegetation, soil, and man-made references |
-| HIDSAG | Family D anchor | GEOMET, MINERAL1, MINERAL2, and GEOCHEM are local and benchmarked, with patch-region exports now versioned; PORPHYRY, wavelengths, and stronger split design are still pending | regression/classification over measured regions |
+| HIDSAG | Family D anchor | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY are local and benchmarked, with patch-region exports and wavelength metadata now versioned; stronger split design and bad-band handling are still pending | regression/classification over measured regions |
 | WHU-Hi | UAV labeled imagery | source/licensing verification pending | fine-grained crop and high-resolution UAV validation |
 | HyRANK | cross-scene HSI | canonical source and split reproduction pending | domain-transfer validation |
 | HySpecNet-11k | large HSI patch collection | license and subset policy needed | unsupervised transfer and patch workflows |
@@ -186,8 +190,9 @@ artifacts. A candidate asset is publishable only when:
 
 1. reproduce an ECOSTRESS session-backed or per-spectrum export path
    before claiming Family A expansion
-2. expand beyond the current four local HIDSAG subsets toward PORPHYRY,
-   richer wavelength-aware region documents, and more defendible splits
+2. strengthen the current five local HIDSAG subsets with bad-band
+   handling, richer wavelength-aware region documents, and more
+   defendible split design
 3. verify at least one cross-scene dataset for transfer experiments
 4. add calibrated wavelength vectors wherever they are reliable
 5. define publishable interactive subsets for the future web projection

@@ -16,19 +16,51 @@
         {
           "modality": "swir_low",
           "band_count": 268,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 268,
+            "start": 1000.21,
+            "stop": 2499.26
+          }
         },
         {
           "modality": "vnir_low",
           "band_count": 942,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
         },
         {
           "modality": "vnir_high",
           "band_count": 942,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
       "patch_grid": {
         "rows": 3,
         "cols": 3
@@ -329,7 +361,7 @@
       ],
       "caveats": [
         "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
-        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is preserved separately at modality level.",
         "These features are intended for local validation and future interactive subsets, not direct publication claims."
       ]
     },
@@ -342,19 +374,51 @@
         {
           "modality": "swir_low",
           "band_count": 268,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 268,
+            "start": 1000.21,
+            "stop": 2499.26
+          }
         },
         {
           "modality": "vnir_low",
           "band_count": 471,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 471,
+            "start": 400.42,
+            "stop": 999.06
+          }
         },
         {
           "modality": "vnir_high",
           "band_count": 471,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 471,
+            "start": 400.42,
+            "stop": 999.06
+          }
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_low": {
+          "band_count": 471,
+          "start": 400.42,
+          "stop": 999.06
+        },
+        "vnir_high": {
+          "band_count": 471,
+          "start": 400.42,
+          "stop": 999.06
+        }
+      },
       "patch_grid": {
         "rows": 3,
         "cols": 3
@@ -519,7 +583,7 @@
       ],
       "caveats": [
         "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
-        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is preserved separately at modality level.",
         "These features are intended for local validation and future interactive subsets, not direct publication claims."
       ]
     },
@@ -532,19 +596,51 @@
         {
           "modality": "swir_low",
           "band_count": 268,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 268,
+            "start": 1000.21,
+            "stop": 2499.26
+          }
         },
         {
           "modality": "vnir_low",
           "band_count": 942,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
         },
         {
           "modality": "vnir_high",
           "band_count": 942,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
       "patch_grid": {
         "rows": 3,
         "cols": 3
@@ -773,7 +869,7 @@
       ],
       "caveats": [
         "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
-        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is preserved separately at modality level.",
         "These features are intended for local validation and future interactive subsets, not direct publication claims."
       ]
     },
@@ -786,19 +882,51 @@
         {
           "modality": "swir_low",
           "band_count": 268,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 268,
+            "start": 1000.21,
+            "stop": 2499.26
+          }
         },
         {
           "modality": "vnir_low",
           "band_count": 942,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
         },
         {
           "modality": "vnir_high",
           "band_count": 942,
-          "source": "patch_mean_spectrum"
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
         }
       ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
       "patch_grid": {
         "rows": 3,
         "cols": 3
@@ -963,7 +1091,357 @@
       ],
       "caveats": [
         "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
-        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is preserved separately at modality level.",
+        "These features are intended for local validation and future interactive subsets, not direct publication claims."
+      ]
+    },
+    {
+      "subset_code": "PORPHYRY",
+      "sample_count": 28,
+      "measurement_count_total": 56,
+      "region_document_count": 504,
+      "feature_layout": [
+        {
+          "modality": "swir_low",
+          "band_count": 268,
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 268,
+            "start": 1000.21,
+            "stop": 2499.26
+          }
+        },
+        {
+          "modality": "vnir_low",
+          "band_count": 942,
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
+        },
+        {
+          "modality": "vnir_high",
+          "band_count": 942,
+          "source": "patch_mean_spectrum",
+          "wavelength_range_nm": {
+            "band_count": 942,
+            "start": 400.11,
+            "stop": 999.39
+          }
+        }
+      ],
+      "modality_wavelength_ranges_nm": {
+        "swir_low": {
+          "band_count": 268,
+          "start": 1000.21,
+          "stop": 2499.26
+        },
+        "vnir_low": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        },
+        "vnir_high": {
+          "band_count": 942,
+          "start": 400.11,
+          "stop": 999.39
+        }
+      },
+      "patch_grid": {
+        "rows": 3,
+        "cols": 3
+      },
+      "documents_per_measurement_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "documents_per_sample_stats": {
+        "min": 18.0,
+        "median": 18.0,
+        "max": 18.0,
+        "mean": 18.0
+      },
+      "sample_previews": [
+        {
+          "sample_name": "POR-0001",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0001:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0001:01:patch-r1c1",
+                "POR-0001:01:patch-r1c2",
+                "POR-0001:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0001:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0001:02:patch-r1c1",
+                "POR-0001:02:patch-r1c2",
+                "POR-0001:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0002",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0002:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0002:01:patch-r1c1",
+                "POR-0002:01:patch-r1c2",
+                "POR-0002:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0002:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0002:02:patch-r1c1",
+                "POR-0002:02:patch-r1c2",
+                "POR-0002:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0003",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0003:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0003:01:patch-r1c1",
+                "POR-0003:01:patch-r1c2",
+                "POR-0003:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0003:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0003:02:patch-r1c1",
+                "POR-0003:02:patch-r1c2",
+                "POR-0003:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0004",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0004:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0004:01:patch-r1c1",
+                "POR-0004:01:patch-r1c2",
+                "POR-0004:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0004:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0004:02:patch-r1c1",
+                "POR-0004:02:patch-r1c2",
+                "POR-0004:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0005",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0005:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0005:01:patch-r1c1",
+                "POR-0005:01:patch-r1c2",
+                "POR-0005:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0005:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0005:02:patch-r1c1",
+                "POR-0005:02:patch-r1c2",
+                "POR-0005:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0006",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0006:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0006:01:patch-r1c1",
+                "POR-0006:01:patch-r1c2",
+                "POR-0006:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0006:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0006:02:patch-r1c1",
+                "POR-0006:02:patch-r1c2",
+                "POR-0006:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0007",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0007:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0007:01:patch-r1c1",
+                "POR-0007:01:patch-r1c2",
+                "POR-0007:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0007:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0007:02:patch-r1c1",
+                "POR-0007:02:patch-r1c2",
+                "POR-0007:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "POR-0008",
+          "measurement_count": 2,
+          "measurement_tag_summary": {
+            "fine": 2
+          },
+          "region_document_count": 18,
+          "measurement_previews": [
+            {
+              "measurement_name": "POR-0008:01",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0008:01:patch-r1c1",
+                "POR-0008:01:patch-r1c2",
+                "POR-0008:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "POR-0008:02",
+              "tags": [
+                "fine"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "POR-0008:02:patch-r1c1",
+                "POR-0008:02:patch-r1c2",
+                "POR-0008:02:patch-r1c3"
+              ]
+            }
+          ]
+        }
+      ],
+      "caveats": [
+        "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is preserved separately at modality level.",
         "These features are intended for local validation and future interactive subsets, not direct publication claims."
       ]
     }

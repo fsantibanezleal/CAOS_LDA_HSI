@@ -23,7 +23,7 @@ from sklearn.metrics import (
     r2_score,
 )
 from sklearn.mixture import GaussianMixture
-from sklearn.model_selection import KFold, LeaveOneOut, StratifiedKFold, train_test_split
+from sklearn.model_selection import GroupKFold, KFold, LeaveOneOut, StratifiedKFold, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -78,18 +78,21 @@ HIDSAG_SUBSET_TOPIC_COUNTS = {
     "MINERAL2": 4,
     "GEOMET": 6,
     "GEOCHEM": 5,
+    "PORPHYRY": 6,
 }
 HIDSAG_SUBSET_DOC_TOPIC_COUNTS = {
     "MINERAL1": 6,
     "MINERAL2": 6,
     "GEOMET": 3,
     "GEOCHEM": 5,
+    "PORPHYRY": 6,
 }
 HIDSAG_SUBSET_REGION_TOPIC_COUNTS = {
     "MINERAL1": 8,
     "MINERAL2": 6,
     "GEOMET": 6,
     "GEOCHEM": 6,
+    "PORPHYRY": 6,
 }
 
 
@@ -271,6 +274,17 @@ def make_logreg() -> LogisticRegression:
     )
 
 
+def predict_constant_label(y_train: np.ndarray, size: int) -> np.ndarray:
+    label = str(y_train[0]) if y_train.size else "unknown"
+    return np.asarray([label] * size, dtype=object)
+
+
+def safe_classifier_predict(model, x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarray) -> np.ndarray:
+    if np.unique(y_train).size < 2:
+        return predict_constant_label(y_train, int(x_test.shape[0]))
+    return np.asarray(model.fit(x_train, y_train).predict(x_test), dtype=object)
+
+
 def load_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
     payload = load_json(HIDSAG_CURATED_PATH)
     for subset in payload.get("subsets", []):
@@ -321,6 +335,60 @@ def hidsag_sample_cubes(sample: dict[str, object]) -> list[dict[str, object]]:
     return cubes
 
 
+def hidsag_numeric_target_names(subset: dict[str, object]) -> list[str]:
+    names = subset.get("numeric_variable_names")
+    if isinstance(names, list) and names:
+        return [str(name) for name in names]
+    return [str(name) for name in subset.get("variable_names", [])]
+
+
+def hidsag_wavelength_token_names(subset: dict[str, object], modality: str, band_count: int) -> list[str]:
+    modality_map = subset.get("modality_wavelengths_nm", {})
+    wavelengths = modality_map.get(modality) if isinstance(modality_map, dict) else None
+    if isinstance(wavelengths, list) and len(wavelengths) == band_count:
+        return [f"{modality}_{float(wavelength):07.2f}nm" for wavelength in wavelengths]
+    return [f"{modality}_b{band_index + 1:03d}" for band_index in range(band_count)]
+
+
+def hidsag_primary_tag(sample: dict[str, object], prefix: str) -> str | None:
+    summary = sample.get("measurement_tag_summary", {})
+    if isinstance(summary, dict):
+        matches = sorted(str(tag) for tag in summary.keys() if str(tag).startswith(prefix))
+        if matches:
+            return matches[0]
+    return None
+
+
+def hidsag_group_split_info(subset_code: str, subset: dict[str, object]) -> dict[str, object] | None:
+    samples = subset.get("samples", [])
+    if subset_code == "MINERAL1":
+        groups = np.asarray([hidsag_primary_tag(sample, "P") or "unknown-process" for sample in samples], dtype=object)
+        unique = sorted(set(groups.tolist()))
+        if len(unique) >= 3:
+            return {
+                "group_name": "process_tag",
+                "groups": groups,
+                "unique_group_count": len(unique),
+                "groups_preview": unique,
+                "reason": "Process tags P1/P2/P3 define the first process-aware Family D split for MINERAL1.",
+            }
+    if subset_code == "PORPHYRY":
+        groups = np.asarray(
+            [str(sample.get("categorical_targets", {}).get("group", "unknown-group")) for sample in samples],
+            dtype=object,
+        )
+        unique = sorted(set(groups.tolist()))
+        if len(unique) >= 4:
+            return {
+                "group_name": "porphyry_group",
+                "groups": groups,
+                "unique_group_count": len(unique),
+                "groups_preview": unique,
+                "reason": "The PORPHYRY subset ships a categorical `group` label that supports group-aware measured-target validation.",
+            }
+    return None
+
+
 def hidsag_feature_layout_and_tokens(subset: dict[str, object]) -> tuple[list[dict[str, object]], list[str]]:
     samples = subset.get("samples", [])
     if not samples:
@@ -338,9 +406,10 @@ def hidsag_feature_layout_and_tokens(subset: dict[str, object]) -> tuple[list[di
                 "modality": modality,
                 "band_count": band_count,
                 "source": "mean_spectrum",
+                "wavelength_range_nm": cube.get("wavelength_range_nm"),
             }
         )
-        token_names.extend([f"{modality}_b{band_index + 1:03d}" for band_index in range(band_count)])
+        token_names.extend(hidsag_wavelength_token_names(subset, modality, band_count))
     return feature_layout, token_names
 
 
@@ -408,7 +477,7 @@ def hidsag_region_document_rows(subset_code: str) -> tuple[dict[str, object], np
 def hidsag_target_summary(subset: dict[str, object]) -> list[dict[str, object]]:
     samples = subset.get("samples", [])
     summaries = []
-    for target_name in subset.get("variable_names", []):
+    for target_name in hidsag_numeric_target_names(subset):
         values = np.asarray([sample["targets"][target_name] for sample in samples], dtype=np.float32)
         summaries.append(
             {
@@ -577,7 +646,12 @@ def hidsag_classification_task_defs(
         return tasks
 
     binary_min_std = 0.15 if subset_code == "GEOCHEM" else 0.5
-    binary_min_class_size = 8 if subset_code == "GEOCHEM" else 20
+    if subset_code == "GEOCHEM":
+        binary_min_class_size = 8
+    elif subset_code == "PORPHYRY":
+        binary_min_class_size = 6
+    else:
+        binary_min_class_size = 20
     for task in continuous_binary_tasks(subset, target_summary, binary_min_std, binary_min_class_size):
         tasks.append(
             {
@@ -596,12 +670,29 @@ def hidsag_classification_task_defs(
     return tasks
 
 
-def hidsag_protocol_definition(subset_code: str, task_type: str, sample_count: int) -> dict[str, object]:
+def hidsag_protocol_definition(
+    subset_code: str,
+    task_type: str,
+    sample_count: int,
+    split_info: dict[str, object] | None = None,
+) -> dict[str, object]:
     if sample_count <= 20:
         return {
             "type": "leave-one-out",
             "fold_count": sample_count,
             "reason": "Subset is too small for a single stable holdout, so every sample is evaluated once as test.",
+        }
+    if split_info is not None:
+        group_count = int(split_info["unique_group_count"])
+        fold_count = min(5, group_count)
+        return {
+            "type": "group-k-fold",
+            "fold_count": fold_count,
+            "group_name": split_info["group_name"],
+            "group_count": group_count,
+            "groups_preview": split_info["groups_preview"],
+            "reason": split_info["reason"],
+            "task_type": task_type,
         }
     return {
         "type": "5-fold",
@@ -611,15 +702,32 @@ def hidsag_protocol_definition(subset_code: str, task_type: str, sample_count: i
     }
 
 
-def hidsag_classification_splits(subset_code: str, labels: np.ndarray, sample_count: int):
+def hidsag_classification_splits(
+    subset_code: str,
+    labels: np.ndarray,
+    sample_count: int,
+    split_info: dict[str, object] | None = None,
+):
     if sample_count <= 20:
         return LeaveOneOut().split(np.arange(sample_count))
+    if split_info is not None:
+        groups = np.asarray(split_info["groups"], dtype=object)
+        n_splits = min(5, int(split_info["unique_group_count"]))
+        return GroupKFold(n_splits=n_splits).split(np.arange(sample_count), labels, groups)
     return StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE).split(np.arange(sample_count), labels)
 
 
-def hidsag_regression_splits(subset_code: str, sample_count: int):
+def hidsag_regression_splits(
+    subset_code: str,
+    sample_count: int,
+    split_info: dict[str, object] | None = None,
+):
     if sample_count <= 20:
         return LeaveOneOut().split(np.arange(sample_count))
+    if split_info is not None:
+        groups = np.asarray(split_info["groups"], dtype=object)
+        n_splits = min(5, int(split_info["unique_group_count"]))
+        return GroupKFold(n_splits=n_splits).split(np.arange(sample_count), None, groups)
     return KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE).split(np.arange(sample_count))
 
 
@@ -642,9 +750,10 @@ def crossval_hidsag_classification(
     n_topics: int,
     doc_topic_count: int,
     region_topic_count: int,
+    split_info: dict[str, object] | None = None,
 ) -> tuple[dict[str, object], dict[str, np.ndarray], list[dict[str, object]]]:
     sample_count = int(features.shape[0])
-    protocol = hidsag_protocol_definition(subset_code, "classification", sample_count)
+    protocol = hidsag_protocol_definition(subset_code, "classification", sample_count, split_info)
     predictions = {
         "raw_logistic_regression": np.empty(sample_count, dtype=object),
         "pca_logistic_regression": np.empty(sample_count, dtype=object),
@@ -654,7 +763,10 @@ def crossval_hidsag_classification(
     }
     fold_rows = []
 
-    for fold_index, (train_idx, test_idx) in enumerate(hidsag_classification_splits(subset_code, labels, sample_count), start=1):
+    for fold_index, (train_idx, test_idx) in enumerate(
+        hidsag_classification_splits(subset_code, labels, sample_count, split_info),
+        start=1,
+    ):
         x_train, x_test = features[train_idx], features[test_idx]
         y_train = labels[train_idx]
         raw_model = Pipeline([("scale", StandardScaler()), ("clf", make_logreg())])
@@ -697,11 +809,11 @@ def crossval_hidsag_classification(
         region_topic_test = aggregate_doc_mixtures(region_topic_test_docs, region_doc_owners[test_region_mask], test_idx)
         region_topic_model = make_logreg()
 
-        raw_pred = raw_model.fit(x_train, y_train).predict(x_test)
-        pca_pred = pca_model.fit(x_train, y_train).predict(x_test)
-        topic_pred = topic_model.fit(topic_train, y_train).predict(topic_test)
-        cube_topic_pred = cube_topic_model.fit(cube_topic_train, y_train).predict(cube_topic_test)
-        region_topic_pred = region_topic_model.fit(region_topic_train, y_train).predict(region_topic_test)
+        raw_pred = safe_classifier_predict(raw_model, x_train, y_train, x_test)
+        pca_pred = safe_classifier_predict(pca_model, x_train, y_train, x_test)
+        topic_pred = safe_classifier_predict(topic_model, topic_train, y_train, topic_test)
+        cube_topic_pred = safe_classifier_predict(cube_topic_model, cube_topic_train, y_train, cube_topic_test)
+        region_topic_pred = safe_classifier_predict(region_topic_model, region_topic_train, y_train, region_topic_test)
 
         predictions["raw_logistic_regression"][test_idx] = raw_pred
         predictions["pca_logistic_regression"][test_idx] = pca_pred
@@ -739,9 +851,10 @@ def crossval_hidsag_regression(
     n_topics: int,
     doc_topic_count: int,
     region_topic_count: int,
+    split_info: dict[str, object] | None = None,
 ) -> tuple[dict[str, object], dict[str, np.ndarray], list[dict[str, object]]]:
     sample_count = int(features.shape[0])
-    protocol = hidsag_protocol_definition(subset_code, "regression", sample_count)
+    protocol = hidsag_protocol_definition(subset_code, "regression", sample_count, split_info)
     predictions = {
         "raw_ridge_regression": np.zeros(sample_count, dtype=np.float32),
         "pls_regression": np.zeros(sample_count, dtype=np.float32),
@@ -752,7 +865,10 @@ def crossval_hidsag_regression(
     }
     fold_rows = []
 
-    for fold_index, (train_idx, test_idx) in enumerate(hidsag_regression_splits(subset_code, sample_count), start=1):
+    for fold_index, (train_idx, test_idx) in enumerate(
+        hidsag_regression_splits(subset_code, sample_count, split_info),
+        start=1,
+    ):
         x_train, x_test = features[train_idx], features[test_idx]
         y_train = target[train_idx]
 
@@ -1440,6 +1556,7 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
     )
     target_summary = hidsag_target_summary(subset)
     regression_targets = hidsag_regression_targets_for_subset(subset_code, target_summary)
+    split_info = hidsag_group_split_info(subset_code, subset)
 
     classification_tasks = []
     for task in hidsag_classification_task_defs(subset_code, subset, target_summary):
@@ -1455,6 +1572,7 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
             n_topics=topic_count,
             doc_topic_count=doc_topic_count,
             region_topic_count=region_topic_count,
+            split_info=split_info,
         )
         task_metrics = {
             model_id: classification_metrics_from_predictions(labels, prediction)
@@ -1519,6 +1637,7 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
             n_topics=topic_count,
             doc_topic_count=doc_topic_count,
             region_topic_count=region_topic_count,
+            split_info=split_info,
         )
         task_metrics = {
             model_id: regression_metrics_from_predictions(target, prediction)
@@ -1557,24 +1676,26 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
         "measurement_count_total": int(subset.get("measurement_count_total", subset["sample_count"])),
         "cube_document_count": int(cube_doc_features.shape[0]),
         "region_document_count": int(region_doc_features.shape[0]),
+        "numeric_variable_count": int(subset.get("numeric_variable_count", len(hidsag_numeric_target_names(subset)))),
+        "categorical_variable_count": int(subset.get("categorical_variable_count", 0)),
         "feature_layout": feature_layout,
         "representation": {
             "id": "sample-mean-band-frequency",
             "alphabet": "modality-specific band-position tokens",
-            "word": "modality band token repeated by normalized sample-mean intensity count",
+            "word": "wavelength-aware modality band token repeated by normalized sample-mean intensity count",
             "document": "one HIDSAG sample built from concatenated per-modality averages across all available measurement supports",
         },
         "hierarchical_representation": {
             "id": "cube-topic-aggregation",
             "alphabet": "modality-specific band-position tokens",
-            "word": "modality band token repeated by normalized cube-mean intensity count",
+            "word": "wavelength-aware modality band token repeated by normalized cube-mean intensity count",
             "document": "one cube mean spectrum per crop and modality",
             "aggregation": "sample-level mean of cube topic mixtures",
         },
         "regional_representation": {
             "id": "patch-topic-aggregation",
             "alphabet": "modality-specific band-position tokens",
-            "word": "modality band token repeated by normalized fixed-grid patch intensity count",
+            "word": "wavelength-aware modality band token repeated by normalized fixed-grid patch intensity count",
             "document": "one fixed-grid patch mean per crop and modality cube",
             "aggregation": "sample-level mean of patch topic mixtures",
             "patch_grid": region_manifest["patch_grid"],
@@ -1643,6 +1764,15 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
             ],
         },
         "measurement_tags_top": subset.get("measurement_tags_top", []),
+        "categorical_value_counts": subset.get("categorical_value_counts", {}),
+        "group_split_definition": None
+        if split_info is None
+        else {
+            "group_name": split_info["group_name"],
+            "group_count": int(split_info["unique_group_count"]),
+            "groups_preview": split_info["groups_preview"],
+            "reason": split_info["reason"],
+        },
         "measurement_count_stats": subset.get("measurement_count_stats", {}),
         "target_summary": target_summary,
         "classification_tasks": classification_tasks,
@@ -1713,6 +1843,7 @@ def main() -> None:
             benchmark_hidsag_subset("MINERAL2"),
             benchmark_hidsag_subset("GEOMET"),
             benchmark_hidsag_subset("GEOCHEM"),
+            benchmark_hidsag_subset("PORPHYRY"),
         ],
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

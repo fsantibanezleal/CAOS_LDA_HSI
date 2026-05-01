@@ -815,24 +815,24 @@
       "source": "HIDSAG: Hyperspectral Image Database for Supervised Analysis in Geometallurgy",
       "source_url": "https://www.nature.com/articles/s41597-023-02061-x",
       "local_status": {
-        "en": "Four raw subsets downloaded locally",
-        "es": "Cuatro subconjuntos crudos descargados localmente"
+        "en": "Five raw subsets downloaded locally",
+        "es": "Cinco subconjuntos crudos descargados localmente"
       },
       "repository_strategy": {
         "en": "Keep full Figshare ZIPs local, version only compact derived metadata and curated spectral exports, and promote selected subset views only after split design and model-card definitions.",
         "es": "Mantener los ZIP completos de Figshare solo en local, versionar solo metadata derivada compacta y exportaciones espectrales curadas, y promover vistas de subconjuntos solo despues de definir splits y model cards."
       },
       "notes": {
-        "en": "Highest-priority Family D source. Local raw coverage now includes GEOMET, MINERAL1, MINERAL2, and GEOCHEM, plus compact derived spectral exports, patch-region documents, and supervised local benchmarks at sample, cube, and region levels.",
-        "es": "Fuente Family D de mayor prioridad. La cobertura cruda local ahora incluye GEOMET, MINERAL1, MINERAL2 y GEOCHEM, ademas de exportaciones espectrales compactas derivadas, documentos regionales por patches y benchmarks supervisados locales a nivel de muestra, cubo y region."
+        "en": "Highest-priority Family D source. Local raw coverage now includes GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY, plus compact derived spectral exports, wavelength metadata, patch-region documents, and supervised local benchmarks at sample, cube, and region levels.",
+        "es": "Fuente Family D de mayor prioridad. La cobertura cruda local ahora incluye GEOMET, MINERAL1, MINERAL2, GEOCHEM y PORPHYRY, ademas de exportaciones espectrales compactas derivadas, metadata de longitudes de onda, documentos regionales por patches y benchmarks supervisados locales a nivel de muestra, cubo y region."
       },
       "fit_for_demo": "geometallurgy-reference",
       "supervision": {
         "family_id": "regions-with-measurements",
         "states": ["response_measurements_candidate", "sample_ids_candidate", "hierarchical_regions_candidate"],
-        "label_scope": "sample ids and response targets are locally visible across GEOMET, MINERAL1, MINERAL2, and GEOCHEM metadata, with supervised subset benchmarks already running",
-        "measurement_scope": "geometallurgical, mineralogical, and geochemical responses are locally verified across four subsets; repeated-measurement support now exists for GEOCHEM",
-        "caveat": "This is now a real local multi-subset source, but no product claim is acceptable until wavelength handling, broader splits, richer documents, metrics, and model cards exist."
+        "label_scope": "sample ids and response targets are locally visible across GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY metadata, with supervised subset benchmarks already running",
+        "measurement_scope": "geometallurgical, mineralogical, and geochemical responses are locally verified across five subsets; repeated-measurement support now exists for GEOCHEM and PORPHYRY",
+        "caveat": "This is now a real local multi-subset source, but no product claim is acceptable until bad-band handling, broader splits, richer documents, metrics, and model cards exist."
       },
       "acquisition": {
         "status": "local-raw-subset",
@@ -840,7 +840,7 @@
         "direct_download": true,
         "license_note": "The article is CC BY 4.0 and the current Figshare subset metadata reports CC0; keep full ZIPs local and publish only compact derived metadata or explicitly approved exports.",
         "checksum_status": "upstream-md5-and-local-sha256",
-        "raw_asset_policy": "Keep ZIPs local; version only manifests, compact derived metadata, and patch-region summaries. GEOMET, MINERAL1, MINERAL2, and GEOCHEM are the current downloaded subsets.",
+        "raw_asset_policy": "Keep ZIPs local; version only manifests, compact derived metadata, wavelength-aware summaries, and patch-region exports. GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY are the current downloaded subsets.",
         "last_verified": "2026-05-01"
       }
     }

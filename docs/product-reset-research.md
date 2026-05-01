@@ -196,12 +196,16 @@ or sample documents. Local raw coverage now includes:
 - `MINERAL2.zip`: 20 samples, 25 mineral abundance variables, 60 HSI cubes
 - `GEOCHEM.zip`: 28 samples, 18 geochemical variables, 106 measurement
   supports, 318 HSI cubes
+- `PORPHYRY.zip`: 28 samples, 10 mineral abundance variables plus one
+  categorical ore-group field, 56 measurement supports, 168 HSI cubes
 
 A compact derived export is now versioned with mean and
 standard-deviation spectra per cube so the repo can inspect real HIDSAG
 signals without shipping the raw ZIPs. A second compact artifact now
 stores `3 x 3` fixed-grid patch-region documents per measurement
-support for local hierarchical validation.
+support for local hierarchical validation. The curated export now also
+preserves per-modality wavelength vectors directly from the HIDSAG HDF5
+attributes.
 
 Actionable rule:
 
@@ -210,11 +214,11 @@ Actionable rule:
 
 Current local benchmark reading:
 
-- the local core now benchmarks `MINERAL1`, `MINERAL2`, `GEOMET`, and
-  `GEOCHEM`
-- `MINERAL1` is now the strongest mineralogical supervision anchor for
-  classic baselines: raw ridge regression reaches roughly
-  `R^2 0.78-0.93` on the current top targets
+- the local core now benchmarks `MINERAL1`, `MINERAL2`, `GEOMET`,
+  `GEOCHEM`, and `PORPHYRY`
+- `MINERAL1` now demonstrates why naive five-fold validation was too
+  optimistic: under process-aware `P1/P2/P3` group splits, several
+  earlier strong scores collapse materially
 - `MINERAL2` remains sample-poor, but patch-region topic mixtures now
   produce slightly better results than the older topic pass for targets
   such as Phengite and Quartz
@@ -223,6 +227,9 @@ Current local benchmark reading:
   completely
 - `GEOCHEM` validates the multi-measurement case: routed or region-topic
   regressors already reach positive `R^2` on Fe, Ca, S, and Cu
+- `PORPHYRY` is now local and benchmarked under ore-group-aware splits,
+  but its current mineral regression signal is still weak and mostly
+  negative
 - raw or PCA-compressed spectra are still stronger for most balanced
   binary classification tasks
 - topic-routed, cube-topic, and region-topic local models are not yet
@@ -446,7 +453,7 @@ Rejected for now:
 |---|---|---|---|---|---|
 | USGS Spectral Library v7 | A | compact local subset | USGS data release | public USGS data release | expand curated mineral/clay/soil/vegetation slices |
 | ECOSTRESS Spectral Library | A | public metadata reproduced; raw export still blocked | JPL spectral library | bulk checkout currently login-gated | build session-backed or per-spectrum export proof of concept |
-| HIDSAG | D | GEOMET, MINERAL1, MINERAL2, and GEOCHEM downloaded locally; compact spectral exports and patch-region documents versioned; supervised benchmarks running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | add PORPHYRY, wavelengths, and stronger hierarchical split design |
+| HIDSAG | D | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY downloaded locally; compact spectral exports, wavelength metadata, and patch-region documents versioned; supervised benchmarks running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | add bad-band handling and stronger hierarchical split design |
 | Indian Pines | B | local derived | UPV/EHU | public benchmark attribution | use for pixel/class recipe experiments |
 | Salinas / Salinas-A | B | local derived | UPV/EHU | public benchmark attribution | use for first label-topic validation |
 | Pavia University | B | local derived | UPV/EHU | public benchmark attribution | use for urban material comparison |

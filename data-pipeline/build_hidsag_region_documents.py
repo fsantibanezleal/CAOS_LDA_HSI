@@ -69,6 +69,7 @@ def feature_layout(subset: dict[str, object]) -> tuple[list[dict[str, object]], 
     first_sample = samples[0]
     first_measurement = first_sample["measurements"][0]
     cubes_by_modality = {cube["modality"]: cube for cube in first_measurement["cubes"]}
+    wavelength_ranges = subset.get("modality_wavelength_ranges_nm", {})
     layout = []
     modality_offsets: dict[str, int] = {}
     offset = 0
@@ -82,6 +83,7 @@ def feature_layout(subset: dict[str, object]) -> tuple[list[dict[str, object]], 
                 "modality": modality,
                 "band_count": band_count,
                 "source": "patch_mean_spectrum",
+                "wavelength_range_nm": wavelength_ranges.get(modality) if isinstance(wavelength_ranges, dict) else None,
             }
         )
     return layout, modality_offsets, offset
@@ -206,13 +208,14 @@ def build_subset_region_docs(subset: dict[str, object]) -> tuple[dict[str, objec
         "measurement_count_total": int(subset.get("measurement_count_total", len(measurement_names))),
         "region_document_count": int(len(doc_ids)),
         "feature_layout": layout,
+        "modality_wavelength_ranges_nm": subset.get("modality_wavelength_ranges_nm", {}),
         "patch_grid": {"rows": PATCH_GRID_ROWS, "cols": PATCH_GRID_COLS},
         "documents_per_measurement_stats": stats(docs_per_measurement),
         "documents_per_sample_stats": stats(measurement_docs_per_sample),
         "sample_previews": sample_previews,
         "caveats": [
             "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
-            "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+            "Patch coordinates are stored in pixel space only; wavelength metadata is preserved separately at modality level.",
             "These features are intended for local validation and future interactive subsets, not direct publication claims.",
         ],
     }
