@@ -380,6 +380,14 @@ class LocalCoreBenchmarksPayload(BaseModel):
     spectral_library_runs: list[dict[str, Any]]
 
 
+class HidsagSubsetInventoryPayload(BaseModel):
+    """Versioned metadata summary for downloaded HIDSAG subsets."""
+
+    source: str
+    generated_at: str
+    subsets: list[dict[str, Any]]
+
+
 class WorkflowStep(BaseModel):
     """Ordered methodology step."""
 

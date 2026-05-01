@@ -12,6 +12,7 @@ from app.models.schemas import (
     DatasetCatalog,
     DemoPayload,
     FieldScenesPayload,
+    HidsagSubsetInventoryPayload,
     LocalCoreBenchmarksPayload,
     LocalDatasetInventoryPayload,
     LocalValidationMatrixPayload,
@@ -30,6 +31,7 @@ from app.services.content import (
     get_datasets,
     get_demo,
     get_field_samples,
+    get_hidsag_subset_inventory,
     get_local_core_benchmarks,
     get_local_dataset_inventory,
     get_local_validation_matrix,
@@ -87,6 +89,11 @@ def local_dataset_inventory() -> LocalDatasetInventoryPayload:
 @router.get("/local-core-benchmarks", response_model=LocalCoreBenchmarksPayload)
 def local_core_benchmarks() -> LocalCoreBenchmarksPayload:
     return get_local_core_benchmarks()
+
+
+@router.get("/hidsag-subset-inventory", response_model=HidsagSubsetInventoryPayload)
+def hidsag_subset_inventory() -> HidsagSubsetInventoryPayload:
+    return get_hidsag_subset_inventory()
 
 
 @router.get("/methodology", response_model=Methodology)

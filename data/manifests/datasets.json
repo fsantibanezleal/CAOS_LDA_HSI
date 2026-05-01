@@ -792,16 +792,16 @@
         "states": ["material_labels_candidate"],
         "label_scope": "material labels are expected but not yet represented in local derived assets",
         "measurement_scope": "none",
-        "caveat": "No app-visible sample until export path, license, and selected material slices are verified."
+        "caveat": "Local metadata now reproduces visible category counts, but no app-visible sample should exist until a session-backed export path and subset redistribution policy are verified."
       },
       "acquisition": {
-        "status": "external-library",
-        "access": "official JPL web library",
+        "status": "metadata-verified-login-gated",
+        "access": "public JPL category metadata plus login-gated bulk checkout",
         "direct_download": false,
-        "license_note": "Verify ECOSTRESS/JPL export terms, citation, and subset redistribution before ingestion.",
-        "checksum_status": "not-recorded",
+        "license_note": "Public category metadata is reproducible, but bulk export currently routes through a login form; verify export terms, citation, and subset redistribution before ingestion.",
+        "checksum_status": "metadata-only",
         "raw_asset_policy": "Keep full library external; publish only compact representative slices.",
-        "last_verified": "2026-04-30"
+        "last_verified": "2026-05-01"
       }
     },
     {
@@ -815,33 +815,33 @@
       "source": "HIDSAG: Hyperspectral Image Database for Supervised Analysis in Geometallurgy",
       "source_url": "https://www.nature.com/articles/s41597-023-02061-x",
       "local_status": {
-        "en": "External geometallurgy reference",
-        "es": "Referencia externa de geometalurgia"
+        "en": "First raw subset downloaded locally",
+        "es": "Primer subconjunto crudo descargado localmente"
       },
       "repository_strategy": {
-        "en": "Use only curated metadata and tiny derived examples until Figshare package sizes, redistribution rules, and selected subsets are verified.",
-        "es": "Usar solo metadata curada y ejemplos derivados pequenos hasta verificar tamanos de paquetes Figshare, reglas de redistribucion y subconjuntos seleccionados."
+        "en": "Keep full Figshare ZIPs local, version only compact derived metadata, and promote selected subset exports only after split design and model-card definitions.",
+        "es": "Mantener los ZIP completos de Figshare solo en local, versionar solo metadata derivada compacta y promover exportaciones de subconjuntos solo despues de definir splits y model cards."
       },
       "notes": {
-        "en": "High-priority research reference for mineral workflows because it provides supervised VNIR/SWIR hyperspectral images and geometallurgical response variables.",
-        "es": "Referencia de investigacion prioritaria para flujos minerales porque provee imagenes hiperespectrales VNIR/SWIR supervisadas y variables de respuesta geometalurgicas."
+        "en": "Highest-priority Family D source. The first local raw subset is MINERAL2: 20 samples, 25 mineral abundance variables, and 60 HSI cubes with per-sample metadata.",
+        "es": "Fuente Family D de mayor prioridad. El primer subconjunto crudo local es MINERAL2: 20 muestras, 25 variables de abundancia mineral y 60 cubos HSI con metadata por muestra."
       },
       "fit_for_demo": "geometallurgy-reference",
       "supervision": {
         "family_id": "regions-with-measurements",
         "states": ["response_measurements_candidate", "sample_ids_candidate", "hierarchical_regions_candidate"],
-        "label_scope": "sample and mineralogical labels require curated subset design",
-        "measurement_scope": "geochemical, mineralogical, and geometallurgical response variables are the target supervision",
-        "caveat": "Highest-value inference source, but no model claim until a subset, split, metrics, and model card exist."
+        "label_scope": "sample ids and mineralogical abundance targets are already visible in MINERAL2 metadata, but train/test partition design is still pending",
+        "measurement_scope": "mineralogical abundances are locally verified in MINERAL2; broader geochemical and geometallurgical targets remain pending additional subsets",
+        "caveat": "This is now a real local raw source, but no model claim is acceptable until a curated subset, split, metrics, and model card exist."
       },
       "acquisition": {
-        "status": "external-reference",
-        "access": "article and linked data packages",
-        "direct_download": false,
-        "license_note": "Article is CC BY 4.0; selected data package terms, sizes, and redistribution still need verification.",
-        "checksum_status": "not-recorded",
-        "raw_asset_policy": "Keep as research/candidate data until a small response-variable subset is curated.",
-        "last_verified": "2026-04-30"
+        "status": "local-raw-subset",
+        "access": "public Figshare collection API and direct download URLs",
+        "direct_download": true,
+        "license_note": "The article is CC BY 4.0 and the current Figshare subset metadata reports CC0; keep full ZIPs local and publish only compact derived metadata or explicitly approved exports.",
+        "checksum_status": "upstream-md5-and-local-sha256",
+        "raw_asset_policy": "Keep ZIPs local; version only manifests and compact derived metadata. MINERAL2 is the first downloaded subset.",
+        "last_verified": "2026-05-01"
       }
     }
   ],

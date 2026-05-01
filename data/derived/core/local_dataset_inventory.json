@@ -1,16 +1,17 @@
 {
   "source": "Unified local inventory for the CAOS LDA HSI validation backend",
-  "generated_at": "2026-04-30",
+  "generated_at": "2026-05-01",
   "summary": {
     "cataloged_dataset_count": 21,
-    "datasets_with_local_raw": 9,
-    "raw_total_size_bytes": 346388521,
-    "raw_total_size_gb": 0.3226,
+    "datasets_with_local_raw": 10,
+    "raw_total_size_bytes": 1823229204,
+    "raw_total_size_gb": 1.698,
     "source_group_counts": {
       "upv_ehu": 6,
       "borsoi_mua": 3,
       "micasense": 3,
-      "usgs_splib07": 2
+      "usgs_splib07": 2,
+      "hidsag": 1
     }
   },
   "family_views": [
@@ -30,7 +31,7 @@
       "family_id": "regions-with-measurements",
       "family_title": "Regions with measurements or external variables",
       "cataloged_count": 1,
-      "local_raw_count": 0
+      "local_raw_count": 1
     },
     {
       "family_id": "unlabeled-spectral-image",
@@ -1344,14 +1345,14 @@
       ],
       "label_scope": "material labels are expected but not yet represented in local derived assets",
       "measurement_scope": "none",
-      "supervision_caveat": "No app-visible sample until export path, license, and selected material slices are verified.",
-      "acquisition_status": "external-library",
-      "access": "official JPL web library",
+      "supervision_caveat": "Local metadata now reproduces visible category counts, but no app-visible sample should exist until a session-backed export path and subset redistribution policy are verified.",
+      "acquisition_status": "metadata-verified-login-gated",
+      "access": "public JPL category metadata plus login-gated bulk checkout",
       "direct_download": false,
-      "license_note": "Verify ECOSTRESS/JPL export terms, citation, and subset redistribution before ingestion.",
-      "checksum_status": "not-recorded",
+      "license_note": "Public category metadata is reproducible, but bulk export currently routes through a login form; verify export terms, citation, and subset redistribution before ingestion.",
+      "checksum_status": "metadata-only",
       "raw_asset_policy": "Keep full library external; publish only compact representative slices.",
-      "last_verified": "2026-04-30",
+      "last_verified": "2026-05-01",
       "local_raw_available": false,
       "raw_dataset_ids": [],
       "raw_file_count": 0,
@@ -1380,24 +1381,41 @@
         "sample_ids_candidate",
         "hierarchical_regions_candidate"
       ],
-      "label_scope": "sample and mineralogical labels require curated subset design",
-      "measurement_scope": "geochemical, mineralogical, and geometallurgical response variables are the target supervision",
-      "supervision_caveat": "Highest-value inference source, but no model claim until a subset, split, metrics, and model card exist.",
-      "acquisition_status": "external-reference",
-      "access": "article and linked data packages",
-      "direct_download": false,
-      "license_note": "Article is CC BY 4.0; selected data package terms, sizes, and redistribution still need verification.",
-      "checksum_status": "not-recorded",
-      "raw_asset_policy": "Keep as research/candidate data until a small response-variable subset is curated.",
-      "last_verified": "2026-04-30",
-      "local_raw_available": false,
-      "raw_dataset_ids": [],
-      "raw_file_count": 0,
-      "raw_total_size_bytes": 0,
-      "raw_total_size_gb": 0.0,
-      "sha256_complete": false,
-      "raw_files": [],
-      "ready_for_local_validation": false
+      "label_scope": "sample ids and mineralogical abundance targets are already visible in MINERAL2 metadata, but train/test partition design is still pending",
+      "measurement_scope": "mineralogical abundances are locally verified in MINERAL2; broader geochemical and geometallurgical targets remain pending additional subsets",
+      "supervision_caveat": "This is now a real local raw source, but no model claim is acceptable until a curated subset, split, metrics, and model card exist.",
+      "acquisition_status": "local-raw-subset",
+      "access": "public Figshare collection API and direct download URLs",
+      "direct_download": true,
+      "license_note": "The article is CC BY 4.0 and the current Figshare subset metadata reports CC0; keep full ZIPs local and publish only compact derived metadata or explicitly approved exports.",
+      "checksum_status": "upstream-md5-and-local-sha256",
+      "raw_asset_policy": "Keep ZIPs local; version only manifests and compact derived metadata. MINERAL2 is the first downloaded subset.",
+      "last_verified": "2026-05-01",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "hidsag-geomet",
+        "hidsag-porphyry",
+        "hidsag-geochem",
+        "hidsag-mineral1",
+        "hidsag-mineral2"
+      ],
+      "raw_file_count": 1,
+      "raw_total_size_bytes": 1476840683,
+      "raw_total_size_gb": 1.3754,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "hidsag-mineral2",
+          "source_group": "hidsag",
+          "source": "HIDSAG Figshare collection",
+          "name": "MINERAL2.zip",
+          "kind": "hidsag_zip",
+          "url": "https://ndownloader.figshare.com/files/38652797",
+          "size_bytes": 1476840683,
+          "sha256": "4bf0ac4f41403aa9fafc05749ef5ca5755076aec31e86bdfb95b1d7304d2125d"
+        }
+      ],
+      "ready_for_local_validation": true
     }
   ]
 }

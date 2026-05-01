@@ -60,6 +60,7 @@ The repository now includes:
 
 - `data/derived/core/local_dataset_inventory.json`
 - `data/derived/core/local_core_benchmarks.json`
+- `data/derived/core/hidsag_subset_inventory.json`
 - `data/derived/corpus/corpus_previews.json`
 - `data/derived/baselines/segmentation_baselines.json`
 - `data/derived/real/real_samples.json`
@@ -80,6 +81,8 @@ Current first-pass local-core evidence now includes:
 - NMF/unmixing baselines over Borsoi ROIs
 - Cuprite reference-alignment experiments against compact USGS 224-band
   group centroids
+- HIDSAG raw-subset metadata with sample-level mineral targets and
+  acquisition-mode summaries
 
 Useful commands:
 
@@ -88,6 +91,8 @@ Useful commands:
 .\scripts\local.ps1 fetch-msi
 .\scripts\local.ps1 fetch-spectral
 .\scripts\local.ps1 fetch-unmixing
+.\scripts\local.ps1 fetch-hidsag
+.\scripts\local.ps1 fetch-ecostress
 .\scripts\local.ps1 fetch-all
 .\scripts\local.ps1 build-real
 .\scripts\local.ps1 build-field
@@ -96,6 +101,7 @@ Useful commands:
 .\scripts\local.ps1 build-corpus
 .\scripts\local.ps1 build-baselines
 .\scripts\local.ps1 build-inventory
+.\scripts\local.ps1 inspect-hidsag
 .\scripts\local.ps1 run-core
 .\scripts\local.ps1 build-local-core
 .\scripts\local.ps1 smoke
@@ -108,6 +114,8 @@ Useful commands:
 ./scripts/local.sh fetch-msi
 ./scripts/local.sh fetch-spectral
 ./scripts/local.sh fetch-unmixing
+./scripts/local.sh fetch-hidsag
+./scripts/local.sh fetch-ecostress
 ./scripts/local.sh fetch-all
 ./scripts/local.sh build-real
 ./scripts/local.sh build-field
@@ -116,6 +124,7 @@ Useful commands:
 ./scripts/local.sh build-corpus
 ./scripts/local.sh build-baselines
 ./scripts/local.sh build-inventory
+./scripts/local.sh inspect-hidsag
 ./scripts/local.sh run-core
 ./scripts/local.sh build-local-core
 ./scripts/local.sh smoke

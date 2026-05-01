@@ -17,6 +17,8 @@ Subcommands:
   fetch-msi   Download official MicaSense MSI sample data into data/raw
   fetch-spectral Download compact USGS spectral-library archives
   fetch-unmixing Download compact public HSI unmixing scenes and libraries
+  fetch-hidsag Fetch HIDSAG collection metadata and optionally selected subsets
+  fetch-ecostress Record ECOSTRESS public category metadata and access blocker
   fetch-all   Download all public raw sources used by the local demo
   build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes
   build-field Rebuild compact field MSI derived assets from downloaded raw scenes
@@ -25,6 +27,7 @@ Subcommands:
   build-corpus Rebuild static corpus previews from derived assets
   build-baselines Rebuild static SLIC segmentation baselines from raw scenes
   build-inventory Build unified local dataset/raw inventory for the validation backend
+  inspect-hidsag Inspect downloaded HIDSAG ZIP subsets without full extraction
   run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks
   build-local-core Run inventory + full local-core benchmarks
   smoke      Smoke test a running local app at http://127.0.0.1:8105
@@ -146,12 +149,22 @@ case "$command_name" in
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/fetch_public_unmixing.py
     ;;
+  fetch-hidsag)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/fetch_hidsag.py
+    ;;
+  fetch-ecostress)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/fetch_ecostress_metadata.py
+    ;;
   fetch-all)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/fetch_public_hsi.py
     .venv-pipeline/bin/python data-pipeline/fetch_public_msi.py
     .venv-pipeline/bin/python data-pipeline/fetch_public_spectral_libraries.py
     .venv-pipeline/bin/python data-pipeline/fetch_public_unmixing.py
+    .venv-pipeline/bin/python data-pipeline/fetch_hidsag.py
+    .venv-pipeline/bin/python data-pipeline/fetch_ecostress_metadata.py
     ;;
   build-real)
     ensure_pipeline_venv
@@ -180,6 +193,10 @@ case "$command_name" in
   build-inventory)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_local_inventory.py
+    ;;
+  inspect-hidsag)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/inspect_hidsag_zip.py
     ;;
   run-core)
     ensure_pipeline_venv

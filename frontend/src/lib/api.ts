@@ -308,6 +308,12 @@ export interface LocalCoreBenchmarksPayload {
   spectral_library_runs: Array<Record<string, unknown>>;
 }
 
+export interface HidsagSubsetInventoryPayload {
+  source: string;
+  generated_at: string;
+  subsets: Array<Record<string, unknown>>;
+}
+
 export interface WorkflowStep {
   order: number;
   title: LocalizedText;
@@ -612,6 +618,7 @@ export const api = {
   getLocalValidationMatrix: () => getJson<LocalValidationMatrixPayload>("/api/local-validation-matrix"),
   getLocalDatasetInventory: () => getJson<LocalDatasetInventoryPayload>("/api/local-dataset-inventory"),
   getLocalCoreBenchmarks: () => getJson<LocalCoreBenchmarksPayload>("/api/local-core-benchmarks"),
+  getHidsagSubsetInventory: () => getJson<HidsagSubsetInventoryPayload>("/api/hidsag-subset-inventory"),
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
   getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
   getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),

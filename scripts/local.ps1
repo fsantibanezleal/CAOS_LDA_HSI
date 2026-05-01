@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "run-core", "build-local-core", "smoke", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-hidsag", "fetch-ecostress", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "inspect-hidsag", "run-core", "build-local-core", "smoke", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -24,6 +24,8 @@ function Show-Help {
     Write-Host "  fetch-msi   Download official MicaSense MSI sample data into data/raw"
     Write-Host "  fetch-spectral Download compact USGS spectral-library archives"
     Write-Host "  fetch-unmixing Download compact public HSI unmixing scenes and libraries"
+    Write-Host "  fetch-hidsag Fetch HIDSAG collection metadata and optionally selected subsets"
+    Write-Host "  fetch-ecostress Record ECOSTRESS public category metadata and access blocker"
     Write-Host "  fetch-all   Download all public raw sources used by the local demo"
     Write-Host "  build-real  Rebuild compact real-scene HSI derived assets from downloaded raw scenes"
     Write-Host "  build-field Rebuild compact field MSI derived assets from downloaded raw scenes"
@@ -32,6 +34,7 @@ function Show-Help {
     Write-Host "  build-corpus Rebuild static corpus previews from derived assets"
     Write-Host "  build-baselines Rebuild static SLIC segmentation baselines from raw scenes"
     Write-Host "  build-inventory Build unified local dataset/raw inventory for the validation backend"
+    Write-Host "  inspect-hidsag Inspect downloaded HIDSAG ZIP subsets without full extraction"
     Write-Host "  run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks"
     Write-Host "  build-local-core Run inventory + full local-core benchmarks"
     Write-Host "  smoke       Smoke test a running local app at http://127.0.0.1:8105"
@@ -157,12 +160,24 @@ switch ($Command) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_unmixing.py
     }
 
+    "fetch-hidsag" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_hidsag.py
+    }
+
+    "fetch-ecostress" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_ecostress_metadata.py
+    }
+
     "fetch-all" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_hsi.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_msi.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_spectral_libraries.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_public_unmixing.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_hidsag.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\fetch_ecostress_metadata.py
     }
 
     "build-real" {
@@ -198,6 +213,11 @@ switch ($Command) {
     "build-inventory" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_local_inventory.py
+    }
+
+    "inspect-hidsag" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\inspect_hidsag_zip.py
     }
 
     "run-core" {

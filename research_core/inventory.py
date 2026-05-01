@@ -12,6 +12,7 @@ from research_core.paths import MANIFESTS_DIR, RAW_DIR
 DOWNLOAD_MANIFESTS = [
     RAW_DIR / "download_manifest.json",
     RAW_DIR / "borsoi_mua" / "download_manifest.json",
+    RAW_DIR / "hidsag" / "download_manifest.json",
     RAW_DIR / "micasense" / "download_manifest.json",
     RAW_DIR / "usgs_splib07" / "download_manifest.json",
 ]
@@ -30,6 +31,13 @@ RAW_DATASET_ALIASES = {
     "usgs-splib07": [
         "usgs-splib07-aviris-1997",
         "usgs-splib07-sentinel2",
+    ],
+    "hidsag-geometallurgy": [
+        "hidsag-geomet",
+        "hidsag-porphyry",
+        "hidsag-geochem",
+        "hidsag-mineral1",
+        "hidsag-mineral2",
     ],
 }
 
@@ -90,6 +98,8 @@ def build_local_inventory() -> dict[str, Any]:
         raw_files: list[dict[str, Any]] = []
         for record in records:
             for file_entry in record.get("files", []):
+                if not bool(file_entry.get("downloaded", True)):
+                    continue
                 raw_files.append(
                     {
                         "raw_dataset_id": record["id"],
@@ -117,6 +127,9 @@ def build_local_inventory() -> dict[str, Any]:
             domain_groups.setdefault(str(domain), []).append(dataset_id)
 
         for record in records:
+            downloaded_here = any(bool(file_entry.get("downloaded", True)) for file_entry in record.get("files", []))
+            if not downloaded_here:
+                continue
             source_totals[record["source_group"]] = source_totals.get(record["source_group"], 0) + 1
 
         family_summary = family_totals.setdefault(family_id, {"cataloged": 0, "local_raw": 0})
@@ -188,4 +201,3 @@ def build_local_inventory() -> dict[str, Any]:
         "theme_groups": theme_groups,
         "datasets": inventory_rows,
     }
-

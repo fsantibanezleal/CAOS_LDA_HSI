@@ -14,6 +14,7 @@ from app.models.schemas import (
     DatasetCatalog,
     DemoPayload,
     FieldScenesPayload,
+    HidsagSubsetInventoryPayload,
     LocalCoreBenchmarksPayload,
     LocalDatasetInventoryPayload,
     LocalValidationMatrixPayload,
@@ -91,6 +92,13 @@ def get_local_core_benchmarks() -> LocalCoreBenchmarksPayload:
     settings = get_settings()
     data = _load_json(str(settings.local_core_benchmarks_path))
     return LocalCoreBenchmarksPayload.model_validate(data)
+
+
+@lru_cache
+def get_hidsag_subset_inventory() -> HidsagSubsetInventoryPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.hidsag_subset_inventory_path))
+    return HidsagSubsetInventoryPayload.model_validate(data)
 
 
 @lru_cache

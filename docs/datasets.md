@@ -118,8 +118,8 @@ their acquisition path is reproduced.
 
 | Source | Role | Constraint | Intended use |
 |---|---|---|---|
-| ECOSTRESS Spectral Library | Family A extension | export/licensing workflow still needs verification | mineral, vegetation, soil, and man-made references |
-| HIDSAG | Family D anchor | subset design, access, and measurement curation needed | regression/classification over measured regions |
+| ECOSTRESS Spectral Library | Family A extension | public category metadata is reproducible, but bulk checkout currently routes to login | mineral, vegetation, soil, and man-made references |
+| HIDSAG | Family D anchor | MINERAL2 raw subset is local, but split design and export policy are still pending | regression/classification over measured regions |
 | WHU-Hi | UAV labeled imagery | source/licensing verification pending | fine-grained crop and high-resolution UAV validation |
 | HyRANK | cross-scene HSI | canonical source and split reproduction pending | domain-transfer validation |
 | HySpecNet-11k | large HSI patch collection | license and subset policy needed | unsupervised transfer and patch workflows |
@@ -152,9 +152,10 @@ artifacts. A candidate asset is publishable only when:
 
 ## Near-Term Data Work
 
-1. expand spectral-library coverage with ECOSTRESS if export terms are
-   validated
-2. curate the first HIDSAG response-variable subset
+1. reproduce an ECOSTRESS session-backed or per-spectrum export path
+   before claiming Family A expansion
+2. curate the first HIDSAG response-variable subset from the downloaded
+   MINERAL2 package
 3. verify at least one cross-scene dataset for transfer experiments
 4. add calibrated wavelength vectors wherever they are reliable
 5. define publishable interactive subsets for the future web projection

@@ -1,0 +1,474 @@
+{
+  "source": "HIDSAG ZIP inspection",
+  "generated_at": "2026-05-01",
+  "subsets": [
+    {
+      "zip_name": "MINERAL2.zip",
+      "subset_code": "MINERAL2",
+      "size_bytes": 1476840683,
+      "file_count": 141,
+      "suffix_counts": {
+        ".h5": 60,
+        ".png": 60,
+        ".json": 21
+      },
+      "top_level_entries": {
+        "MINERAL2": 141
+      },
+      "header_examples": [],
+      "metadata_json_count": 21,
+      "sample_count": 20,
+      "crop_count": 20,
+      "cube_file_count": 60,
+      "rgb_preview_count": 60,
+      "metadata_keys": [
+        "crops",
+        "datarecord",
+        "sample_name",
+        "vars"
+      ],
+      "variable_count": 25,
+      "variable_names": [
+        "Alunite",
+        "Ankerite",
+        "Apatite",
+        "Bornite",
+        "Calcite",
+        "Chalcocite",
+        "Chalcopyrite",
+        "Clinochlore",
+        "Enargite",
+        "Gypsum",
+        "Hematite",
+        "Illite",
+        "Kaolin group",
+        "Molybdenite",
+        "Muscovite",
+        "Orthoclase",
+        "Phengite",
+        "Pirit",
+        "Plagioclase",
+        "Pyrophyllite",
+        "Quartz",
+        "Siderite",
+        "Sphalerite",
+        "Tenantite",
+        "Tetrahedrite"
+      ],
+      "composition_sum_stats": {
+        "min": 99.998,
+        "median": 100.0,
+        "max": 100.001,
+        "mean": 99.9998
+      },
+      "nonzero_variable_count_stats": {
+        "min": 10.0,
+        "median": 13.0,
+        "max": 16.0,
+        "mean": 12.85
+      },
+      "dominant_variables_by_mean": [
+        {
+          "name": "Quartz",
+          "mean": 55.2423,
+          "max": 71.084,
+          "nonzero_samples": 20
+        },
+        {
+          "name": "Phengite",
+          "mean": 10.7231,
+          "max": 25.366,
+          "nonzero_samples": 19
+        },
+        {
+          "name": "Muscovite",
+          "mean": 7.8326,
+          "max": 24.36,
+          "nonzero_samples": 20
+        },
+        {
+          "name": "Illite",
+          "mean": 7.5906,
+          "max": 19.926,
+          "nonzero_samples": 20
+        },
+        {
+          "name": "Pyrophyllite",
+          "mean": 3.1128,
+          "max": 16.138,
+          "nonzero_samples": 11
+        },
+        {
+          "name": "Pirit",
+          "mean": 3.0438,
+          "max": 6.937,
+          "nonzero_samples": 19
+        },
+        {
+          "name": "Orthoclase",
+          "mean": 2.0804,
+          "max": 17.622,
+          "nonzero_samples": 15
+        },
+        {
+          "name": "Alunite",
+          "mean": 1.8209,
+          "max": 15.067,
+          "nonzero_samples": 8
+        },
+        {
+          "name": "Kaolin group",
+          "mean": 1.81,
+          "max": 7.542,
+          "nonzero_samples": 20
+        },
+        {
+          "name": "Chalcopyrite",
+          "mean": 1.6308,
+          "max": 4.937,
+          "nonzero_samples": 17
+        }
+      ],
+      "modality_summary": {
+        "swir_low": {
+          "cube_count": 20,
+          "image_width_stats": {
+            "min": 106.0,
+            "median": 113.5,
+            "max": 124.0,
+            "mean": 114.75
+          },
+          "image_height_stats": {
+            "min": 108.0,
+            "median": 113.0,
+            "max": 119.0,
+            "mean": 113.45
+          },
+          "real_width_stats": {
+            "min": 65.7,
+            "median": 70.35,
+            "max": 76.9,
+            "mean": 71.12
+          },
+          "real_height_stats": {
+            "min": 88.0,
+            "median": 92.1,
+            "max": 97.0,
+            "mean": 92.47
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            1.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            4.0
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_low": {
+          "cube_count": 20,
+          "image_width_stats": {
+            "min": 106.0,
+            "median": 113.5,
+            "max": 124.0,
+            "mean": 114.75
+          },
+          "image_height_stats": {
+            "min": 108.0,
+            "median": 113.0,
+            "max": 119.0,
+            "mean": 113.45
+          },
+          "real_width_stats": {
+            "min": 65.7,
+            "median": 70.35,
+            "max": 76.9,
+            "mean": 71.12
+          },
+          "real_height_stats": {
+            "min": 88.0,
+            "median": 92.1,
+            "max": 97.0,
+            "mean": 92.47
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_high": {
+          "cube_count": 20,
+          "image_width_stats": {
+            "min": 237.0,
+            "median": 254.0,
+            "max": 278.0,
+            "mean": 257.5
+          },
+          "image_height_stats": {
+            "min": 111.0,
+            "median": 115.0,
+            "max": 122.0,
+            "mean": 115.6
+          },
+          "real_width_stats": {
+            "min": 65.6,
+            "median": 70.3,
+            "max": 76.9,
+            "mean": 71.265
+          },
+          "real_height_stats": {
+            "min": 90.5,
+            "median": 93.7,
+            "max": 99.4,
+            "mean": 94.22
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        }
+      },
+      "sample_previews": [
+        {
+          "sample_name": "M2-0001",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 99.998,
+          "nonzero_variable_count": 14,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 56.64
+            },
+            {
+              "name": "Phengite",
+              "value": 19.165
+            },
+            {
+              "name": "Illite",
+              "value": 8.653
+            },
+            {
+              "name": "Chalcopyrite",
+              "value": 4.937
+            },
+            {
+              "name": "Muscovite",
+              "value": 2.689
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0002",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 99.998,
+          "nonzero_variable_count": 16,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 54.806
+            },
+            {
+              "name": "Phengite",
+              "value": 11.523
+            },
+            {
+              "name": "Illite",
+              "value": 8.666
+            },
+            {
+              "name": "Kaolin group",
+              "value": 7.542
+            },
+            {
+              "name": "Plagioclase",
+              "value": 3.514
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0003",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 99.999,
+          "nonzero_variable_count": 13,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 44.329
+            },
+            {
+              "name": "Illite",
+              "value": 19.926
+            },
+            {
+              "name": "Pyrophyllite",
+              "value": 12.461
+            },
+            {
+              "name": "Pirit",
+              "value": 6.937
+            },
+            {
+              "name": "Kaolin group",
+              "value": 3.943
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0004",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 12,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 56.831
+            },
+            {
+              "name": "Alunite",
+              "value": 15.067
+            },
+            {
+              "name": "Pyrophyllite",
+              "value": 7.077
+            },
+            {
+              "name": "Pirit",
+              "value": 6.174
+            },
+            {
+              "name": "Kaolin group",
+              "value": 2.957
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0005",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.001,
+          "nonzero_variable_count": 14,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 62.739
+            },
+            {
+              "name": "Muscovite",
+              "value": 19.273
+            },
+            {
+              "name": "Illite",
+              "value": 7.349
+            },
+            {
+              "name": "Pirit",
+              "value": 3.552
+            },
+            {
+              "name": "Orthoclase",
+              "value": 1.695
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0006",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.001,
+          "nonzero_variable_count": 12,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 48.255
+            },
+            {
+              "name": "Orthoclase",
+              "value": 17.622
+            },
+            {
+              "name": "Phengite",
+              "value": 13.561
+            },
+            {
+              "name": "Illite",
+              "value": 6.367
+            },
+            {
+              "name": "Clinochlore",
+              "value": 3.466
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -172,8 +172,11 @@ appropriate for Family A individual spectra and for spectral-reference
 alignment, but only compact curated slices should be committed.
 
 ECOSTRESS/JPL is a high-value extension for mineral, vegetation, soil,
-water, and man-made materials, but access and export workflow must be
-verified before product claims.
+water, and man-made materials. The public download surface is
+reproducible and exposes category counts, but the current bulk checkout
+flow resolves to a login form. That means the repo can now version
+access metadata, but still cannot claim a reproducible anonymous export
+path for compact slices.
 
 Sources:
 
@@ -186,7 +189,9 @@ HIDSAG is the strongest candidate for Family D because it provides
 sample-level geometallurgical response variables alongside VNIR/SWIR
 spectral data. Its role is not "another spectral library"; it is the
 first serious route to supervised regression/classification over region
-or sample documents.
+or sample documents. The first local raw subset is now downloaded:
+`MINERAL2.zip`, with 20 samples, 25 mineral abundance variables, 60 HSI
+cubes, and per-sample metadata JSON files.
 
 Actionable rule:
 
@@ -213,13 +218,13 @@ Current local assets:
 | Dataset | Current status | Supervision | Product role | Decision |
 |---|---|---|---|---|
 | USGS Spectral Library v7 compact samples | local compact derived assets | material/group labels | material-reference workflows and nearest spectra | keep, expand curated slices |
-| ECOSTRESS Spectral Library | cataloged only | material labels | additional material coverage | evaluate export/API path before adding |
+| ECOSTRESS Spectral Library | local access metadata reproduced | material labels | additional material coverage | keep external until session-backed export is reproduced |
 
 Planned assets:
 
 | Dataset | Supervision | Main blocker | Decision |
 |---|---|---|---|
-| ECOSTRESS compact samples | material labels | direct subset export and license/provenance workflow | high priority after fetch verification |
+| ECOSTRESS compact samples | material labels | session-backed export and license/provenance workflow | high priority after access proof is reproduced |
 | 2D mineral reflectance library | material/mineral context | size and redistribution review | research-only until file policy is clear |
 
 Valid recipes:
@@ -409,8 +414,8 @@ Rejected for now:
 | Dataset/source | Family | Current status | Direct source | License/access note | Next action |
 |---|---|---|---|---|---|
 | USGS Spectral Library v7 | A | compact local subset | USGS data release | public USGS data release | expand curated mineral/clay/soil/vegetation slices |
-| ECOSTRESS Spectral Library | A | catalog only | JPL spectral library | verify export terms and citation | build fetch/export proof of concept |
-| HIDSAG | D | catalog only | Nature/Figshare/GitHub helper | CC BY 4.0 article; subset files need size review | design small response-variable subset |
+| ECOSTRESS Spectral Library | A | public metadata reproduced; raw export still blocked | JPL spectral library | bulk checkout currently login-gated | build session-backed or per-spectrum export proof of concept |
+| HIDSAG | D | first raw subset downloaded locally | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | design small response-variable subset from MINERAL2 |
 | Indian Pines | B | local derived | UPV/EHU | public benchmark attribution | use for pixel/class recipe experiments |
 | Salinas / Salinas-A | B | local derived | UPV/EHU | public benchmark attribution | use for first label-topic validation |
 | Pavia University | B | local derived | UPV/EHU | public benchmark attribution | use for urban material comparison |

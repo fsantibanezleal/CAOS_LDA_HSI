@@ -64,7 +64,10 @@ Delivered:
 
 Next work:
 
-- expand high-value real sources such as ECOSTRESS and HIDSAG
+- reproduce a session-backed ECOSTRESS export path beyond the current
+  public metadata manifest
+- turn the downloaded HIDSAG MINERAL2 package into the first curated
+  measured-target subset
 - reproduce at least one cross-scene transfer dataset
 - keep raw-local, git-public, and web-public policies clearly separated
 
@@ -117,7 +120,8 @@ Status: planned.
 
 Scope:
 
-- regression and classification over measured datasets such as HIDSAG
+- regression and classification over measured datasets such as HIDSAG,
+  starting from MINERAL2 mineral-abundance targets
 - topic-routed and hierarchical models
 - split definitions, model cards, residual/error analysis
 - topic stability and sensitivity studies

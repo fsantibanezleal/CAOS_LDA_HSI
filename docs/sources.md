@@ -88,10 +88,14 @@ selection, and theoretical framing.
   <https://www.sciencebase.gov/catalog/item/586e8c88e4b0f5ce109fccae>
 - NASA/JPL. *ECOSTRESS Spectral Library v1.0*.
   <https://speclib.jpl.nasa.gov/>
-- NASA/JPL. *ECOSTRESS Spectral Library search/download surface*.
-  <https://speclib.jpl.nasa.gov/library>
+- NASA/JPL. *ECOSTRESS Spectral Library public download surface*.
+  <https://speclib.jpl.nasa.gov/download>
+- NASA/JPL. *ECOSTRESS Spectral Library checkout surface*.
+  <https://speclib.jpl.nasa.gov/download/checkout-form>
 - Ehrenfeld et al. *HIDSAG: Hyperspectral Image Database for Supervised
   Analysis in Geometallurgy*.
   <https://www.nature.com/articles/s41597-023-02061-x>
 - HIDSAG dataset collection DOI cited by the article.
   <https://doi.org/10.6084/m9.figshare.c.5983921.v1>
+- Figshare collection API for HIDSAG article/package discovery.
+  <https://api.figshare.com/v2/collections/5983921/articles?page_size=20>
