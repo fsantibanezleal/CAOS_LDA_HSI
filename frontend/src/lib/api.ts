@@ -314,6 +314,12 @@ export interface HidsagSubsetInventoryPayload {
   subsets: Array<Record<string, unknown>>;
 }
 
+export interface HidsagCuratedSubsetPayload {
+  source: string;
+  generated_at: string;
+  subsets: Array<Record<string, unknown>>;
+}
+
 export interface WorkflowStep {
   order: number;
   title: LocalizedText;
@@ -619,6 +625,7 @@ export const api = {
   getLocalDatasetInventory: () => getJson<LocalDatasetInventoryPayload>("/api/local-dataset-inventory"),
   getLocalCoreBenchmarks: () => getJson<LocalCoreBenchmarksPayload>("/api/local-core-benchmarks"),
   getHidsagSubsetInventory: () => getJson<HidsagSubsetInventoryPayload>("/api/hidsag-subset-inventory"),
+  getHidsagCuratedSubset: () => getJson<HidsagCuratedSubsetPayload>("/api/hidsag-curated-subset"),
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
   getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
   getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),

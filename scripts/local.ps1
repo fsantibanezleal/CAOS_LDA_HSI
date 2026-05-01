@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-hidsag", "fetch-ecostress", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "inspect-hidsag", "run-core", "build-local-core", "smoke", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-hidsag", "fetch-ecostress", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "inspect-hidsag", "build-hidsag", "run-core", "build-local-core", "smoke", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -35,6 +35,7 @@ function Show-Help {
     Write-Host "  build-baselines Rebuild static SLIC segmentation baselines from raw scenes"
     Write-Host "  build-inventory Build unified local dataset/raw inventory for the validation backend"
     Write-Host "  inspect-hidsag Inspect downloaded HIDSAG ZIP subsets without full extraction"
+    Write-Host "  build-hidsag Build compact HIDSAG spectral subset from downloaded ZIP archives"
     Write-Host "  run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks"
     Write-Host "  build-local-core Run inventory + full local-core benchmarks"
     Write-Host "  smoke       Smoke test a running local app at http://127.0.0.1:8105"
@@ -218,6 +219,11 @@ switch ($Command) {
     "inspect-hidsag" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\inspect_hidsag_zip.py
+    }
+
+    "build-hidsag" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_curated_subset.py
     }
 
     "run-core" {

@@ -388,6 +388,14 @@ class HidsagSubsetInventoryPayload(BaseModel):
     subsets: list[dict[str, Any]]
 
 
+class HidsagCuratedSubsetPayload(BaseModel):
+    """Compact spectral subset extracted from local HIDSAG raw archives."""
+
+    source: str
+    generated_at: str
+    subsets: list[dict[str, Any]]
+
+
 class WorkflowStep(BaseModel):
     """Ordered methodology step."""
 

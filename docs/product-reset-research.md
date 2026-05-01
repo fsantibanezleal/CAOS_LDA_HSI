@@ -191,7 +191,9 @@ spectral data. Its role is not "another spectral library"; it is the
 first serious route to supervised regression/classification over region
 or sample documents. The first local raw subset is now downloaded:
 `MINERAL2.zip`, with 20 samples, 25 mineral abundance variables, 60 HSI
-cubes, and per-sample metadata JSON files.
+cubes, and per-sample metadata JSON files. A compact derived export is
+now versioned with mean and standard-deviation spectra per cube so the
+repo can inspect real HIDSAG signals without shipping the raw ZIP.
 
 Actionable rule:
 
@@ -415,7 +417,7 @@ Rejected for now:
 |---|---|---|---|---|---|
 | USGS Spectral Library v7 | A | compact local subset | USGS data release | public USGS data release | expand curated mineral/clay/soil/vegetation slices |
 | ECOSTRESS Spectral Library | A | public metadata reproduced; raw export still blocked | JPL spectral library | bulk checkout currently login-gated | build session-backed or per-spectrum export proof of concept |
-| HIDSAG | D | first raw subset downloaded locally | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | design small response-variable subset from MINERAL2 |
+| HIDSAG | D | first raw subset downloaded locally and compact spectral export versioned | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | design train/test split from MINERAL2 and move to first supervised run |
 | Indian Pines | B | local derived | UPV/EHU | public benchmark attribution | use for pixel/class recipe experiments |
 | Salinas / Salinas-A | B | local derived | UPV/EHU | public benchmark attribution | use for first label-topic validation |
 | Pavia University | B | local derived | UPV/EHU | public benchmark attribution | use for urban material comparison |

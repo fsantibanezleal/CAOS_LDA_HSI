@@ -14,6 +14,7 @@ from app.models.schemas import (
     DatasetCatalog,
     DemoPayload,
     FieldScenesPayload,
+    HidsagCuratedSubsetPayload,
     HidsagSubsetInventoryPayload,
     LocalCoreBenchmarksPayload,
     LocalDatasetInventoryPayload,
@@ -99,6 +100,13 @@ def get_hidsag_subset_inventory() -> HidsagSubsetInventoryPayload:
     settings = get_settings()
     data = _load_json(str(settings.hidsag_subset_inventory_path))
     return HidsagSubsetInventoryPayload.model_validate(data)
+
+
+@lru_cache
+def get_hidsag_curated_subset() -> HidsagCuratedSubsetPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.hidsag_curated_subset_path))
+    return HidsagCuratedSubsetPayload.model_validate(data)
 
 
 @lru_cache

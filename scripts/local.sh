@@ -28,6 +28,7 @@ Subcommands:
   build-baselines Rebuild static SLIC segmentation baselines from raw scenes
   build-inventory Build unified local dataset/raw inventory for the validation backend
   inspect-hidsag Inspect downloaded HIDSAG ZIP subsets without full extraction
+  build-hidsag Build compact HIDSAG spectral subset from downloaded ZIP archives
   run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks
   build-local-core Run inventory + full local-core benchmarks
   smoke      Smoke test a running local app at http://127.0.0.1:8105
@@ -197,6 +198,10 @@ case "$command_name" in
   inspect-hidsag)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/inspect_hidsag_zip.py
+    ;;
+  build-hidsag)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_hidsag_curated_subset.py
     ;;
   run-core)
     ensure_pipeline_venv

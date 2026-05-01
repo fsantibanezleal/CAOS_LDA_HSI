@@ -61,6 +61,7 @@ The repository now includes:
 - `data/derived/core/local_dataset_inventory.json`
 - `data/derived/core/local_core_benchmarks.json`
 - `data/derived/core/hidsag_subset_inventory.json`
+- `data/derived/core/hidsag_curated_subset.json`
 - `data/derived/corpus/corpus_previews.json`
 - `data/derived/baselines/segmentation_baselines.json`
 - `data/derived/real/real_samples.json`
@@ -83,6 +84,8 @@ Current first-pass local-core evidence now includes:
   group centroids
 - HIDSAG raw-subset metadata with sample-level mineral targets and
   acquisition-mode summaries
+- HIDSAG curated spectral subset with per-cube mean and standard
+  deviation spectra for `MINERAL2`
 
 Useful commands:
 
@@ -102,6 +105,7 @@ Useful commands:
 .\scripts\local.ps1 build-baselines
 .\scripts\local.ps1 build-inventory
 .\scripts\local.ps1 inspect-hidsag
+.\scripts\local.ps1 build-hidsag
 .\scripts\local.ps1 run-core
 .\scripts\local.ps1 build-local-core
 .\scripts\local.ps1 smoke
@@ -125,6 +129,7 @@ Useful commands:
 ./scripts/local.sh build-baselines
 ./scripts/local.sh build-inventory
 ./scripts/local.sh inspect-hidsag
+./scripts/local.sh build-hidsag
 ./scripts/local.sh run-core
 ./scripts/local.sh build-local-core
 ./scripts/local.sh smoke

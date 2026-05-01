@@ -154,8 +154,8 @@ artifacts. A candidate asset is publishable only when:
 
 1. reproduce an ECOSTRESS session-backed or per-spectrum export path
    before claiming Family A expansion
-2. curate the first HIDSAG response-variable subset from the downloaded
-   MINERAL2 package
+2. promote the versioned `MINERAL2` compact spectral subset into the
+   first HIDSAG response-variable training split
 3. verify at least one cross-scene dataset for transfer experiments
 4. add calibrated wavelength vectors wherever they are reliable
 5. define publishable interactive subsets for the future web projection
