@@ -13,6 +13,9 @@ selection, and theoretical framing.
 - Zou and Zare. *Hyperspectral Unmixing with Endmember Variability using
   Partial Membership Latent Dirichlet Allocation*.
   <https://arxiv.org/abs/1609.03500>
+- Zou and Zare. *Hyperspectral Unmixing with Endmember Variability using
+  Semi-supervised Partial Membership Latent Dirichlet Allocation*.
+  <https://arxiv.org/abs/1703.06151>
 
 ## Spectral Variability
 
@@ -37,8 +40,20 @@ selection, and theoretical framing.
   <https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html>
 - scikit-learn. *KMeans*.
   <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>
+- scikit-learn. *GaussianMixture*.
+  <https://sklearn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html>
+- scikit-learn. *Clustering user guide*.
+  <https://sklearn.org/stable/modules/clustering.html>
+- scikit-learn. *metrics API*.
+  <https://scikit-learn.org/stable/api/sklearn.metrics.html>
 - scikit-learn. *silhouette_score*.
   <https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html>
+- scikit-image. *SLIC segmentation API*.
+  <https://scikit-image.org/docs/stable/api/skimage.segmentation.html>
+- Achanta et al. *SLIC Superpixels*.
+  <https://www.iro.umontreal.ca/~mignotte/IFT6150/Articles/SLIC_Superpixels.pdf>
+- NMF review for hyperspectral unmixing.
+  <https://arxiv.org/abs/2205.09933>
 
 ## Public Data Sources
 
@@ -55,6 +70,8 @@ selection, and theoretical framing.
   <https://arxiv.org/abs/2012.13920>
 - HySpecNet-11k. *A Large-Scale Hyperspectral Benchmark Dataset*.
   <https://hyspecnet.rsim.berlin/>
+- HyRANK benchmark summary in ISPRS reporting.
+  <https://www.isprs.org/society/si/SI-2017/ISPRS-SI2017-TC3_WG4_Karantzalos_Report.pdf>
 - IEEE GRSS. *2013 Data Fusion Contest: Hyperspectral and LiDAR Data*.
   <https://machinelearning.ee.uh.edu/2013-ieee-grss-data-fusion-contest/>
 - Zenodo. *Cross-Scene Hyperspectral Remote Sensing Wetland image data*.
@@ -71,6 +88,10 @@ selection, and theoretical framing.
   <https://www.sciencebase.gov/catalog/item/586e8c88e4b0f5ce109fccae>
 - NASA/JPL. *ECOSTRESS Spectral Library v1.0*.
   <https://speclib.jpl.nasa.gov/>
+- NASA/JPL. *ECOSTRESS Spectral Library search/download surface*.
+  <https://speclib.jpl.nasa.gov/library>
 - Ehrenfeld et al. *HIDSAG: Hyperspectral Image Database for Supervised
   Analysis in Geometallurgy*.
   <https://www.nature.com/articles/s41597-023-02061-x>
+- HIDSAG dataset collection DOI cited by the article.
+  <https://doi.org/10.6084/m9.figshare.c.5983921.v1>

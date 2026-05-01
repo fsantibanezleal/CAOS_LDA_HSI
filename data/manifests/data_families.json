@@ -1,0 +1,199 @@
+{
+  "source": "Product reset data taxonomy",
+  "families": [
+    {
+      "id": "individual-spectra",
+      "code": "A",
+      "title": {
+        "en": "Individual spectra with labels or measurements",
+        "es": "Espectros individuales con etiquetas o mediciones"
+      },
+      "definition": {
+        "en": "Each item is one spectrum or averaged spectrum with a material label, class label, sample id, or response variable.",
+        "es": "Cada item es un espectro o espectro promedio con etiqueta de material, clase, ID de muestra o variable de respuesta."
+      },
+      "supervision_states": ["material_labels", "sample_ids", "response_measurements_optional"],
+      "current_dataset_ids": ["usgs-splib07"],
+      "candidate_dataset_ids": ["ecostress-spectral-library"],
+      "valid_recipe_ids": ["magnitude-phrase", "band-frequency", "band-magnitude", "absorption-shape"],
+      "valid_baseline_ids": ["sam-reference", "raw-spectra-model", "pca-feature-model", "nmf-unmixing"],
+      "valid_outputs": [
+        {
+          "en": "topic profiles as spectral vocabularies",
+          "es": "perfiles de topicos como vocabularios espectrales"
+        },
+        {
+          "en": "material-label alignment and nearest-reference comparisons",
+          "es": "alineamiento con etiquetas de material y referencias cercanas"
+        },
+        {
+          "en": "supervised classification or regression only when labels or measurements exist",
+          "es": "clasificacion o regresion supervisada solo cuando existan etiquetas o mediciones"
+        }
+      ],
+      "caveats": [
+        {
+          "en": "Nearest spectral reference is not an identification claim.",
+          "es": "La referencia espectral cercana no es una identificacion."
+        },
+        {
+          "en": "Full library dumps should remain external; publish curated compact slices.",
+          "es": "Las librerias completas deben quedar externas; publicar cortes compactos curados."
+        }
+      ]
+    },
+    {
+      "id": "labeled-spectral-image",
+      "code": "B",
+      "title": {
+        "en": "Spectral images with pixel labels",
+        "es": "Imagenes espectrales con etiquetas por pixel"
+      },
+      "definition": {
+        "en": "Each dataset is an HSI/MSI cube with pixel, class, or region labels suitable for label-topic association and supervised comparisons.",
+        "es": "Cada dataset es un cubo HSI/MSI con etiquetas por pixel, clase o region aptas para asociacion etiqueta-topico y comparaciones supervisadas."
+      },
+      "supervision_states": ["pixel_class_labels", "class_regions"],
+      "current_dataset_ids": [
+        "indian-pines-corrected",
+        "salinas-corrected",
+        "salinas-a-corrected",
+        "pavia-university",
+        "kennedy-space-center",
+        "botswana"
+      ],
+      "candidate_dataset_ids": [
+        "eurosat",
+        "bigearthnet-v2",
+        "whu-hi-uav-scenes",
+        "hyrank-cross-scene",
+        "houston-2013-hsi-lidar"
+      ],
+      "valid_recipe_ids": ["magnitude-phrase", "band-frequency", "band-magnitude", "region-documents"],
+      "valid_baseline_ids": [
+        "raw-spectra-model",
+        "pca-feature-model",
+        "kmeans-clustering",
+        "gmm-clustering",
+        "hierarchical-clustering",
+        "slic-superpixels",
+        "sam-reference",
+        "nmf-unmixing"
+      ],
+      "valid_outputs": [
+        {
+          "en": "RGB or false-color image and label map",
+          "es": "imagen RGB o falso color y mapa de etiquetas"
+        },
+        {
+          "en": "spectral distributions by class or region",
+          "es": "distribuciones espectrales por clase o region"
+        },
+        {
+          "en": "label-topic association matrix and supervised model metrics",
+          "es": "matriz etiqueta-topico y metricas de modelos supervisados"
+        }
+      ],
+      "caveats": [
+        {
+          "en": "Topic maps must state whether labels were used or only used for evaluation.",
+          "es": "Los mapas de topicos deben indicar si las etiquetas se usaron o solo se evaluaron."
+        },
+        {
+          "en": "PCA and scatter plots are diagnostics, not product conclusions.",
+          "es": "PCA y scatter plots son diagnosticos, no conclusiones del producto."
+        }
+      ]
+    },
+    {
+      "id": "unlabeled-spectral-image",
+      "code": "C",
+      "title": {
+        "en": "Spectral images without reliable labels",
+        "es": "Imagenes espectrales sin etiquetas confiables"
+      },
+      "definition": {
+        "en": "Each dataset is an HSI/MSI image or ROI with no reliable ground truth in the app; outputs are exploratory and must carry caveats.",
+        "es": "Cada dataset es una imagen o ROI HSI/MSI sin ground truth confiable en la app; las salidas son exploratorias y deben llevar advertencias."
+      },
+      "supervision_states": ["none", "heuristic_strata", "provisional_topic_regions"],
+      "current_dataset_ids": [
+        "cuprite-upv-reflectance",
+        "unmixing-roi-suite",
+        "micasense-rededge-samples"
+      ],
+      "candidate_dataset_ids": [
+        "cross-scene-wetland-hsi",
+        "hyspecnet-11k",
+        "landsat-c2-l2",
+        "cave-multispectral"
+      ],
+      "valid_recipe_ids": ["magnitude-phrase", "band-frequency", "band-magnitude", "region-documents", "absorption-shape"],
+      "valid_baseline_ids": [
+        "kmeans-clustering",
+        "gmm-clustering",
+        "hierarchical-clustering",
+        "slic-superpixels",
+        "sam-reference",
+        "nmf-unmixing"
+      ],
+      "valid_outputs": [
+        {
+          "en": "image preview, topic map, cluster map, and spectral-library neighborhoods",
+          "es": "preview de imagen, mapa de topicos, mapa de clusters y vecindarios de libreria espectral"
+        },
+        {
+          "en": "spatial coherence and spectral-distance diagnostics",
+          "es": "diagnosticos de coherencia espacial y distancia espectral"
+        }
+      ],
+      "caveats": [
+        {
+          "en": "Inferred topic strata are not ground truth.",
+          "es": "Los estratos inferidos por topicos no son ground truth."
+        },
+        {
+          "en": "Mineral/clay labels require calibrated wavelength metadata and external validation.",
+          "es": "Las etiquetas mineral/arcilla requieren metadatos calibrados de longitud de onda y validacion externa."
+        }
+      ]
+    },
+    {
+      "id": "regions-with-measurements",
+      "code": "D",
+      "title": {
+        "en": "Regions with measurements or external variables",
+        "es": "Regiones con mediciones o variables externas"
+      },
+      "definition": {
+        "en": "Each document is a sample support, region, field plot, or lab object that contains multiple spectra and has one or more response variables.",
+        "es": "Cada documento es un soporte de muestra, region, parcela o objeto de laboratorio con multiples espectros y una o mas variables de respuesta."
+      },
+      "supervision_states": ["response_measurements", "sample_ids", "hierarchical_regions"],
+      "current_dataset_ids": [],
+      "candidate_dataset_ids": ["hidsag-geometallurgy"],
+      "valid_recipe_ids": ["region-documents", "absorption-shape", "hierarchical-documents"],
+      "valid_baseline_ids": ["raw-spectra-model", "pca-feature-model", "topic-mixture-model", "topic-routed-model"],
+      "valid_outputs": [
+        {
+          "en": "response-variable distributions and topic mixtures per sample or region",
+          "es": "distribuciones de variables de respuesta y mezclas de topicos por muestra o region"
+        },
+        {
+          "en": "topic-routed regression or classification with model cards",
+          "es": "regresion o clasificacion enrutada por topicos con model cards"
+        }
+      ],
+      "caveats": [
+        {
+          "en": "Inference is hidden unless measurements and train/test splits exist.",
+          "es": "La inferencia se oculta salvo que existan mediciones y splits train/test."
+        },
+        {
+          "en": "Model artifacts must not ship without metrics and failure cases.",
+          "es": "Los artefactos de modelo no deben publicarse sin metricas y casos de falla."
+        }
+      ]
+    }
+  ]
+}

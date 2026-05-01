@@ -11,6 +11,11 @@ cannot recover physical structure that was destroyed before the model saw
 the data. Tokenization must therefore preserve enough spectral, spatial,
 and acquisition context while still producing a compact vocabulary.
 
+The product reset treats tokenization as a first-class workflow step.
+Users must see the selected alphabet, word definition, document
+definition, corpus size, vocabulary size, and caveats before PTM/LDA
+topics are displayed.
+
 ## Data Model
 
 The canonical internal objects should be:
@@ -215,4 +220,6 @@ The next tokenizer implementation should expose:
 - Patch-level tokens for wetlands, urban scenes, and satellite data are
   not implemented.
 - Absorption-feature tokens for minerals and clays are not implemented.
-- There is no automated topic stability report yet.
+- Topic stability now has a first automated multi-seed component report
+  in the local core, but there is still no full sensitivity layer across
+  preprocessing, tokenizers, and scene splits.

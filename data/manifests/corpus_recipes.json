@@ -1,0 +1,339 @@
+{
+  "source": "Product reset corpus and baseline method taxonomy",
+  "recipes": [
+    {
+      "id": "magnitude-phrase",
+      "title": {
+        "en": "Magnitude alphabet, spectrum phrase",
+        "es": "Alfabeto de magnitud, frase espectral"
+      },
+      "summary": {
+        "en": "Each band emits one discretized magnitude token; a spectrum becomes an ordered phrase.",
+        "es": "Cada banda emite un token de magnitud discretizada; un espectro se vuelve una frase ordenada."
+      },
+      "alphabet_definition": {
+        "en": "Finite set of magnitude bins such as q00, q01, ..., q15.",
+        "es": "Conjunto finito de bins de magnitud como q00, q01, ..., q15."
+      },
+      "word_definition": {
+        "en": "One quantized magnitude level emitted by one band position.",
+        "es": "Un nivel de magnitud cuantizado emitido por una posicion de banda."
+      },
+      "document_definition": {
+        "en": "One spectrum, ordered by band position; region documents aggregate multiple phrases only when order metadata is retained.",
+        "es": "Un espectro ordenado por posicion de banda; documentos de region agregan varias frases solo si se conserva la metadata de orden."
+      },
+      "valid_family_ids": ["individual-spectra", "labeled-spectral-image", "unlabeled-spectral-image"],
+      "required_metadata": ["band_count", "band_order", "normalization", "quantization_method", "bin_count"],
+      "first_dataset_ids": ["usgs-splib07", "salinas-a-corrected"],
+      "risks": [
+        {
+          "en": "Wavelength identity is weak unless position or band-group metadata is preserved.",
+          "es": "La identidad de longitud de onda es debil salvo que se preserve posicion o grupo de bandas."
+        }
+      ],
+      "validation_gates": ["document_length_distribution", "quantization_sensitivity", "label_alignment_if_available"]
+    },
+    {
+      "id": "band-frequency",
+      "title": {
+        "en": "Band alphabet, magnitude frequency",
+        "es": "Alfabeto de bandas, frecuencia de magnitud"
+      },
+      "summary": {
+        "en": "Each band is a word; its magnitude becomes a count or weight.",
+        "es": "Cada banda es una palabra; su magnitud se vuelve conteo o peso."
+      },
+      "alphabet_definition": {
+        "en": "Band or wavelength identifiers such as b042 or 2200nm.",
+        "es": "Identificadores de banda o longitud de onda como b042 o 2200nm."
+      },
+      "word_definition": {
+        "en": "One band token repeated or weighted by transformed magnitude.",
+        "es": "Un token de banda repetido o ponderado por magnitud transformada."
+      },
+      "document_definition": {
+        "en": "One spectrum or region represented as a band-frequency histogram.",
+        "es": "Un espectro o region representado como histograma de frecuencias por banda."
+      },
+      "valid_family_ids": ["individual-spectra", "labeled-spectral-image", "unlabeled-spectral-image"],
+      "required_metadata": ["band_centers", "wavelength_units", "normalization", "count_transform"],
+      "first_dataset_ids": ["usgs-splib07", "indian-pines-corrected"],
+      "risks": [
+        {
+          "en": "High albedo or high-response bands can dominate unless normalized.",
+          "es": "Bandas de alto albedo o respuesta alta pueden dominar salvo que se normalicen."
+        }
+      ],
+      "validation_gates": ["band_dominance_report", "topic_stability", "baseline_comparison"]
+    },
+    {
+      "id": "band-magnitude",
+      "title": {
+        "en": "Band-magnitude words",
+        "es": "Palabras banda-magnitud"
+      },
+      "summary": {
+        "en": "Each word joins band or wavelength group with a quantized magnitude.",
+        "es": "Cada palabra une banda o grupo de longitud de onda con magnitud cuantizada."
+      },
+      "alphabet_definition": {
+        "en": "Joint band and magnitude tokens such as b042_q07, 2200nm_q03, or swir2_abs_high.",
+        "es": "Tokens conjuntos de banda y magnitud como b042_q07, 2200nm_q03 o swir2_abs_high."
+      },
+      "word_definition": {
+        "en": "One spectral event combining location and response level.",
+        "es": "Un evento espectral que combina ubicacion y nivel de respuesta."
+      },
+      "document_definition": {
+        "en": "One spectrum, patch, ROI, class, superpixel, or sample support encoded as a bag of spectral events.",
+        "es": "Un espectro, parche, ROI, clase, superpixel o soporte de muestra codificado como bolsa de eventos espectrales."
+      },
+      "valid_family_ids": ["individual-spectra", "labeled-spectral-image", "unlabeled-spectral-image"],
+      "required_metadata": ["band_centers", "quantization_method", "bin_count", "vocabulary_manifest", "bad_band_mask"],
+      "first_dataset_ids": ["salinas-a-corrected", "cuprite-upv-reflectance", "usgs-splib07"],
+      "risks": [
+        {
+          "en": "Vocabulary grows quickly and can become too sparse.",
+          "es": "El vocabulario crece rapido y puede volverse demasiado disperso."
+        }
+      ],
+      "validation_gates": ["vocabulary_size", "sparsity_report", "topic_stability", "label_or_library_alignment"]
+    },
+    {
+      "id": "region-documents",
+      "title": {
+        "en": "Region documents",
+        "es": "Documentos de region"
+      },
+      "summary": {
+        "en": "A patch, ROI, class, SLIC superpixel, or measurement support aggregates words from multiple spectra.",
+        "es": "Un parche, ROI, clase, superpixel SLIC o soporte de medicion agrega palabras de multiples espectros."
+      },
+      "alphabet_definition": {
+        "en": "Any selected spectral alphabet, aggregated over a spatial or sample support.",
+        "es": "Cualquier alfabeto espectral seleccionado, agregado sobre un soporte espacial o de muestra."
+      },
+      "word_definition": {
+        "en": "One spectral event emitted by one spectrum inside the region.",
+        "es": "Un evento espectral emitido por un espectro dentro de la region."
+      },
+      "document_definition": {
+        "en": "One patch, ROI, label class, superpixel, or sample support.",
+        "es": "Un parche, ROI, clase etiquetada, superpixel o soporte de muestra."
+      },
+      "valid_family_ids": ["labeled-spectral-image", "unlabeled-spectral-image", "regions-with-measurements"],
+      "required_metadata": ["geometry_type", "region_id", "spectra_count", "document_area", "label_or_measurement_link"],
+      "first_dataset_ids": ["salinas-corrected", "pavia-university", "micasense-rededge-samples"],
+      "risks": [
+        {
+          "en": "Document boundaries define topic semantics and must be compared.",
+          "es": "Los limites del documento definen la semantica del topico y deben compararse."
+        }
+      ],
+      "validation_gates": ["region_size_distribution", "label_purity_if_available", "spatial_coherence", "document_definition_sensitivity"]
+    },
+    {
+      "id": "absorption-shape",
+      "title": {
+        "en": "Absorption and shape words",
+        "es": "Palabras de absorcion y forma"
+      },
+      "summary": {
+        "en": "Words encode slopes, curvature, continuum-removed absorption depth, center, width, and asymmetry.",
+        "es": "Las palabras codifican pendientes, curvatura, profundidad de absorcion con continuo removido, centro, ancho y asimetria."
+      },
+      "alphabet_definition": {
+        "en": "Spectral-shape and absorption-feature bins tied to calibrated wavelength regions.",
+        "es": "Bins de forma espectral y rasgos de absorcion ligados a regiones de longitud de onda calibradas."
+      },
+      "word_definition": {
+        "en": "One shape or absorption event, not a mineral label.",
+        "es": "Un evento de forma o absorcion, no una etiqueta mineral."
+      },
+      "document_definition": {
+        "en": "One spectrum or region with reliable wavelength metadata and bad-band handling.",
+        "es": "Un espectro o region con metadata confiable de longitud de onda y manejo de bandas malas."
+      },
+      "valid_family_ids": ["individual-spectra", "unlabeled-spectral-image", "regions-with-measurements"],
+      "required_metadata": ["calibrated_wavelengths", "wavelength_units", "bad_band_mask", "continuum_method", "feature_window"],
+      "first_dataset_ids": ["usgs-splib07", "cuprite-upv-reflectance", "hidsag-geometallurgy"],
+      "risks": [
+        {
+          "en": "Approximate wavelength axes are not enough for mineral/clay absorption claims.",
+          "es": "Ejes aproximados de longitud de onda no bastan para afirmaciones de absorcion mineral/arcilla."
+        }
+      ],
+      "validation_gates": ["calibration_check", "library_alignment", "bad_band_sensitivity", "expert_caveat"]
+    },
+    {
+      "id": "hierarchical-documents",
+      "title": {
+        "en": "Hierarchical sample documents",
+        "es": "Documentos jerarquicos de muestra"
+      },
+      "summary": {
+        "en": "Documents link sample, region, and spectrum levels for measured sample supports.",
+        "es": "Los documentos enlazan niveles de muestra, region y espectro para soportes medidos."
+      },
+      "alphabet_definition": {
+        "en": "Any selected spectral alphabet plus hierarchy identifiers.",
+        "es": "Cualquier alfabeto espectral seleccionado mas identificadores jerarquicos."
+      },
+      "word_definition": {
+        "en": "One spectral or region event associated with a sample hierarchy.",
+        "es": "Un evento espectral o regional asociado a una jerarquia de muestra."
+      },
+      "document_definition": {
+        "en": "Sample -> region -> spectrum hierarchy where top-level samples have response variables.",
+        "es": "Jerarquia muestra -> region -> espectro donde las muestras superiores tienen variables de respuesta."
+      },
+      "valid_family_ids": ["regions-with-measurements"],
+      "required_metadata": ["sample_id", "region_id", "response_variables", "split_id", "hierarchy_links"],
+      "first_dataset_ids": ["hidsag-geometallurgy"],
+      "risks": [
+        {
+          "en": "Should wait until a curated Family D subset exists.",
+          "es": "Debe esperar hasta que exista un subconjunto curado de Familia D."
+        }
+      ],
+      "validation_gates": ["train_test_split", "model_card", "per_topic_error_analysis"]
+    }
+  ],
+  "baselines": [
+    {
+      "id": "raw-spectra-model",
+      "name": "Raw spectra model",
+      "purpose": "Minimum supervised classifier or regressor baseline.",
+      "valid_family_ids": ["individual-spectra", "labeled-spectral-image", "regions-with-measurements"],
+      "feature_space": "reflectance vectors or region aggregates",
+      "metrics": ["accuracy", "macro_f1", "rmse", "r2"],
+      "caveat": "Requires labels or response measurements."
+    },
+    {
+      "id": "pca-feature-model",
+      "name": "PCA feature model",
+      "purpose": "Dimensionality-reduced supervised or diagnostic baseline.",
+      "valid_family_ids": ["individual-spectra", "labeled-spectral-image", "regions-with-measurements"],
+      "feature_space": "principal components from spectra or region aggregates",
+      "metrics": ["explained_variance_ratio", "accuracy", "macro_f1", "rmse", "r2"],
+      "caveat": "Projection is not interpretation."
+    },
+    {
+      "id": "kmeans-clustering",
+      "name": "KMeans clustering",
+      "purpose": "Simple spectral grouping baseline.",
+      "valid_family_ids": ["labeled-spectral-image", "unlabeled-spectral-image"],
+      "feature_space": "spectra, topic mixtures, or region features",
+      "metrics": ["silhouette", "ari_if_labels", "nmi_if_labels"],
+      "caveat": "Assumes compact roughly spherical clusters."
+    },
+    {
+      "id": "gmm-clustering",
+      "name": "Gaussian mixture clustering",
+      "purpose": "Soft clustering baseline with probabilistic assignments.",
+      "valid_family_ids": ["labeled-spectral-image", "unlabeled-spectral-image"],
+      "feature_space": "spectra, topic mixtures, or region features",
+      "metrics": ["bic", "aic", "ari_if_labels", "nmi_if_labels"],
+      "caveat": "Gaussian assumptions may fail for spectral mixtures."
+    },
+    {
+      "id": "hierarchical-clustering",
+      "name": "Hierarchical clustering",
+      "purpose": "Multiscale grouping baseline.",
+      "valid_family_ids": ["labeled-spectral-image", "unlabeled-spectral-image"],
+      "feature_space": "spectra, topic mixtures, or region features",
+      "metrics": ["dendrogram_stability", "ari_if_labels", "nmi_if_labels"],
+      "caveat": "Can be expensive on many pixels."
+    },
+    {
+      "id": "slic-superpixels",
+      "name": "SLIC superpixels",
+      "purpose": "Spatial boundary baseline and region-document generator.",
+      "valid_family_ids": ["labeled-spectral-image", "unlabeled-spectral-image"],
+      "feature_space": "spectral-spatial image features",
+      "metrics": ["compactness", "boundary_adherence", "label_purity_if_labels"],
+      "caveat": "Standard SLIC must be adapted carefully for hyperspectral cubes."
+    },
+    {
+      "id": "sam-reference",
+      "name": "Spectral angle / reference matching",
+      "purpose": "Reference-similarity baseline against spectral-library materials.",
+      "valid_family_ids": ["individual-spectra", "unlabeled-spectral-image"],
+      "feature_space": "normalized spectra and reference spectra",
+      "metrics": ["angle", "top_k_label_match_if_labels"],
+      "caveat": "A close reference is not a material identification claim."
+    },
+    {
+      "id": "nmf-unmixing",
+      "name": "NMF / unmixing baseline",
+      "purpose": "Mixture-oriented comparison for endmember-style data.",
+      "valid_family_ids": ["individual-spectra", "unlabeled-spectral-image"],
+      "feature_space": "nonnegative spectral matrix",
+      "metrics": ["reconstruction_error", "abundance_sanity", "library_alignment"],
+      "caveat": "Requires component count and nonnegativity assumptions."
+    },
+    {
+      "id": "topic-mixture-model",
+      "name": "Topic-mixture model",
+      "purpose": "Supervised model from document-topic mixtures.",
+      "valid_family_ids": ["labeled-spectral-image", "regions-with-measurements"],
+      "feature_space": "topic mixture vectors",
+      "metrics": ["accuracy", "macro_f1", "rmse", "r2", "per_topic_error"],
+      "caveat": "Only valid with documented labels or measurements."
+    },
+    {
+      "id": "topic-routed-model",
+      "name": "Topic-routed model",
+      "purpose": "Specialist classifier or regressor selected by dominant topic or topic group.",
+      "valid_family_ids": ["regions-with-measurements"],
+      "feature_space": "topic mixture gates plus local spectral or topic features",
+      "metrics": ["accuracy", "macro_f1", "rmse", "r2", "per_topic_error"],
+      "caveat": "Requires enough samples per topic group."
+    }
+  ],
+  "validation_blocks": [
+    {
+      "id": "corpus-integrity",
+      "title": "Corpus integrity",
+      "question": "Can the generated corpus be inspected and reproduced?",
+      "metrics": ["document_count", "vocabulary_size", "document_length_distribution", "zero_token_documents"],
+      "failure_conditions": ["missing_token_manifest", "missing_document_geometry", "non_deterministic_output"]
+    },
+    {
+      "id": "topic-stability",
+      "title": "Topic stability",
+      "question": "Do topics remain comparable across random seeds and topic counts?",
+      "metrics": ["matched_topic_similarity", "topic_mixture_variance", "unstable_topic_count"],
+      "failure_conditions": ["seed_specific_interpretation", "topic_collapse", "unmatched_topics"]
+    },
+    {
+      "id": "quantization-sensitivity",
+      "title": "Quantization sensitivity",
+      "question": "Does the interpretation survive bin-count and binning-policy changes?",
+      "metrics": ["vocabulary_size_delta", "topic_similarity_delta", "label_alignment_delta"],
+      "failure_conditions": ["minor_bin_change_reverses_claim", "physical_claim_from_scene_quantile_bins"]
+    },
+    {
+      "id": "document-definition-sensitivity",
+      "title": "Document-definition sensitivity",
+      "question": "How do pixel, patch, ROI, superpixel, and sample documents change the result?",
+      "metrics": ["label_purity", "spatial_coherence", "topic_boundary_behavior", "spectra_count_distribution"],
+      "failure_conditions": ["region_method_not_reported", "incompatible_documents_compared"]
+    },
+    {
+      "id": "supervision-association",
+      "title": "Label or measurement association",
+      "question": "Do topic mixtures explain labels or response measurements better than baselines?",
+      "metrics": ["ari", "nmi", "accuracy", "macro_f1", "rmse", "r2", "per_topic_error"],
+      "failure_conditions": ["no_split_reported", "inference_visible_without_targets"]
+    },
+    {
+      "id": "spectral-library-alignment",
+      "title": "Spectral-library alignment",
+      "question": "Do topic or region profiles align with known reference spectra?",
+      "metrics": ["sam_angle", "cosine_similarity", "top_k_reference_consistency"],
+      "failure_conditions": ["nearest_reference_called_identification", "absorption_claim_from_approximate_wavelengths"]
+    }
+  ]
+}

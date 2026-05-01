@@ -1,0 +1,1403 @@
+{
+  "source": "Unified local inventory for the CAOS LDA HSI validation backend",
+  "generated_at": "2026-04-30",
+  "summary": {
+    "cataloged_dataset_count": 21,
+    "datasets_with_local_raw": 9,
+    "raw_total_size_bytes": 346388521,
+    "raw_total_size_gb": 0.3226,
+    "source_group_counts": {
+      "upv_ehu": 6,
+      "borsoi_mua": 3,
+      "micasense": 3,
+      "usgs_splib07": 2
+    }
+  },
+  "family_views": [
+    {
+      "family_id": "individual-spectra",
+      "family_title": "Individual spectra with labels or measurements",
+      "cataloged_count": 2,
+      "local_raw_count": 1
+    },
+    {
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "cataloged_count": 11,
+      "local_raw_count": 6
+    },
+    {
+      "family_id": "regions-with-measurements",
+      "family_title": "Regions with measurements or external variables",
+      "cataloged_count": 1,
+      "local_raw_count": 0
+    },
+    {
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "cataloged_count": 7,
+      "local_raw_count": 2
+    }
+  ],
+  "theme_groups": [
+    {
+      "domain": "agriculture",
+      "dataset_ids": [
+        "bigearthnet-v2",
+        "eurosat",
+        "hyrank-cross-scene",
+        "indian-pines-corrected",
+        "micasense-rededge-samples",
+        "salinas-a-corrected",
+        "salinas-corrected",
+        "whu-hi-uav-scenes"
+      ],
+      "count": 8
+    },
+    {
+      "domain": "built-environment",
+      "dataset_ids": [
+        "pavia-university"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "campus",
+      "dataset_ids": [
+        "houston-2013-hsi-lidar"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "classification",
+      "dataset_ids": [
+        "hidsag-geometallurgy",
+        "houston-2013-hsi-lidar"
+      ],
+      "count": 2
+    },
+    {
+      "domain": "clays",
+      "dataset_ids": [
+        "cuprite-upv-reflectance"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "coastal",
+      "dataset_ids": [
+        "hyrank-cross-scene"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "compression",
+      "dataset_ids": [
+        "hyspecnet-11k"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "domain-adaptation",
+      "dataset_ids": [
+        "cross-scene-wetland-hsi"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "drought",
+      "dataset_ids": [
+        "landsat-c2-l2"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "food",
+      "dataset_ids": [
+        "cave-multispectral"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "forest",
+      "dataset_ids": [
+        "bigearthnet-v2",
+        "hyrank-cross-scene"
+      ],
+      "count": 2
+    },
+    {
+      "domain": "geology",
+      "dataset_ids": [
+        "cuprite-upv-reflectance"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "geometallurgy",
+      "dataset_ids": [
+        "hidsag-geometallurgy"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "humidity",
+      "dataset_ids": [
+        "landsat-c2-l2"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "laboratory",
+      "dataset_ids": [
+        "cave-multispectral"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "land-cover",
+      "dataset_ids": [
+        "bigearthnet-v2",
+        "eurosat",
+        "hyspecnet-11k"
+      ],
+      "count": 3
+    },
+    {
+      "domain": "lidar",
+      "dataset_ids": [
+        "houston-2013-hsi-lidar"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "man-made materials",
+      "dataset_ids": [
+        "ecostress-spectral-library"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "minerals",
+      "dataset_ids": [
+        "cuprite-upv-reflectance",
+        "ecostress-spectral-library",
+        "hidsag-geometallurgy",
+        "unmixing-roi-suite",
+        "usgs-splib07"
+      ],
+      "count": 5
+    },
+    {
+      "domain": "multimodal",
+      "dataset_ids": [
+        "houston-2013-hsi-lidar"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "non-photosynthetic vegetation",
+      "dataset_ids": [
+        "ecostress-spectral-library"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "objects",
+      "dataset_ids": [
+        "cave-multispectral"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "reflectance",
+      "dataset_ids": [
+        "cave-multispectral",
+        "micasense-rededge-samples"
+      ],
+      "count": 2
+    },
+    {
+      "domain": "regression",
+      "dataset_ids": [
+        "hidsag-geometallurgy"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "rocks",
+      "dataset_ids": [
+        "hyrank-cross-scene",
+        "usgs-splib07"
+      ],
+      "count": 2
+    },
+    {
+      "domain": "satellite",
+      "dataset_ids": [
+        "bigearthnet-v2",
+        "hyspecnet-11k",
+        "landsat-c2-l2"
+      ],
+      "count": 3
+    },
+    {
+      "domain": "shadows",
+      "dataset_ids": [
+        "whu-hi-uav-scenes"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "soil",
+      "dataset_ids": [
+        "botswana",
+        "salinas-corrected",
+        "usgs-splib07"
+      ],
+      "count": 3
+    },
+    {
+      "domain": "thermal",
+      "dataset_ids": [
+        "landsat-c2-l2"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "uav",
+      "dataset_ids": [
+        "micasense-rededge-samples"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "unmixing",
+      "dataset_ids": [
+        "cuprite-upv-reflectance",
+        "unmixing-roi-suite"
+      ],
+      "count": 2
+    },
+    {
+      "domain": "unsupervised-learning",
+      "dataset_ids": [
+        "hyspecnet-11k"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "urban",
+      "dataset_ids": [
+        "bigearthnet-v2",
+        "eurosat",
+        "houston-2013-hsi-lidar",
+        "hyrank-cross-scene",
+        "pavia-university",
+        "unmixing-roi-suite"
+      ],
+      "count": 6
+    },
+    {
+      "domain": "urban-fringe",
+      "dataset_ids": [
+        "whu-hi-uav-scenes"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "vegetation",
+      "dataset_ids": [
+        "botswana",
+        "cross-scene-wetland-hsi",
+        "ecostress-spectral-library",
+        "indian-pines-corrected",
+        "kennedy-space-center",
+        "landsat-c2-l2",
+        "micasense-rededge-samples",
+        "salinas-a-corrected",
+        "salinas-corrected",
+        "unmixing-roi-suite",
+        "usgs-splib07",
+        "whu-hi-uav-scenes"
+      ],
+      "count": 12
+    },
+    {
+      "domain": "vineyards",
+      "dataset_ids": [
+        "salinas-corrected"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "vnirswir",
+      "dataset_ids": [
+        "hidsag-geometallurgy"
+      ],
+      "count": 1
+    },
+    {
+      "domain": "water",
+      "dataset_ids": [
+        "bigearthnet-v2",
+        "cross-scene-wetland-hsi",
+        "eurosat",
+        "hyrank-cross-scene",
+        "kennedy-space-center",
+        "landsat-c2-l2",
+        "unmixing-roi-suite",
+        "whu-hi-uav-scenes"
+      ],
+      "count": 8
+    },
+    {
+      "domain": "wetlands",
+      "dataset_ids": [
+        "botswana",
+        "cross-scene-wetland-hsi",
+        "kennedy-space-center"
+      ],
+      "count": 3
+    }
+  ],
+  "datasets": [
+    {
+      "id": "indian-pines-corrected",
+      "name": "Indian Pines corrected",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "HSI scene",
+      "domains": [
+        "agriculture",
+        "vegetation"
+      ],
+      "fit_for_demo": "good-first-demo",
+      "supervision_states": [
+        "pixel_class_labels",
+        "class_regions"
+      ],
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Labels support class/topic validation, not mineral or response-variable claims.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "indian-pines-corrected"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 5954652,
+      "raw_total_size_gb": 0.0055,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "indian-pines-corrected",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Indian_pines_corrected.mat",
+          "kind": "cube",
+          "url": "https://www.ehu.eus/ccwintco/uploads/6/67/Indian_pines_corrected.mat",
+          "size_bytes": 5953527,
+          "sha256": "ec2f8808710919d566f70f0d4aa885aae1ddfd42b734aba71c5e12ca65450939"
+        },
+        {
+          "raw_dataset_id": "indian-pines-corrected",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Indian_pines_gt.mat",
+          "kind": "ground_truth",
+          "url": "https://www.ehu.eus/ccwintco/uploads/c/c4/Indian_pines_gt.mat",
+          "size_bytes": 1125,
+          "sha256": "65c4687a8ab04f6da4789799bc3bc4f6e88bccac3ed6a2e6ae367e5e6b9e429c"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "salinas-a-corrected",
+      "name": "Salinas-A corrected",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "HSI scene",
+      "domains": [
+        "agriculture",
+        "vegetation"
+      ],
+      "fit_for_demo": "best-size-footprint",
+      "supervision_states": [
+        "pixel_class_labels",
+        "class_regions"
+      ],
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Tiny footprint makes it ideal for validation experiments, but labels remain crop classes only.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "salinas-a-corrected"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 1539673,
+      "raw_total_size_gb": 0.0014,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "salinas-a-corrected",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "SalinasA_corrected.mat",
+          "kind": "cube",
+          "url": "https://www.ehu.eus/ccwintco/uploads/1/1a/SalinasA_corrected.mat",
+          "size_bytes": 1539086,
+          "sha256": "d75684ed3ab71a1024cee0f9db9061f50a3523a92ff5edfbbb1eed976b9f1721"
+        },
+        {
+          "raw_dataset_id": "salinas-a-corrected",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "SalinasA_gt.mat",
+          "kind": "ground_truth",
+          "url": "https://www.ehu.eus/ccwintco/uploads/a/aa/SalinasA_gt.mat",
+          "size_bytes": 587,
+          "sha256": "17814c1d3296c0e29b27f320f2c4174d2a68adb87e376abe78f02923e2c2e454"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "pavia-university",
+      "name": "Pavia University",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "HSI scene",
+      "domains": [
+        "urban",
+        "built-environment"
+      ],
+      "fit_for_demo": "good-second-scene",
+      "supervision_states": [
+        "pixel_class_labels",
+        "class_regions"
+      ],
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Urban classes support spatial/material comparison, but they are not laboratory material measurements.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "pavia-university"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 34817922,
+      "raw_total_size_gb": 0.0324,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "pavia-university",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "PaviaU.mat",
+          "kind": "cube",
+          "url": "https://www.ehu.eus/ccwintco/uploads/e/ee/PaviaU.mat",
+          "size_bytes": 34806917,
+          "sha256": "28447fa87f7a5797845e9a189c0da85e23b1d06a4ba7361e5ff44efbf834d2fb"
+        },
+        {
+          "raw_dataset_id": "pavia-university",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "PaviaU_gt.mat",
+          "kind": "ground_truth",
+          "url": "https://www.ehu.eus/ccwintco/uploads/5/50/PaviaU_gt.mat",
+          "size_bytes": 11005,
+          "sha256": "23f6a426928f9b32984adffe659e29f554f9fb6c93b5a107528d308d5087a829"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "kennedy-space-center",
+      "name": "Kennedy Space Center",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "HSI scene",
+      "domains": [
+        "wetlands",
+        "vegetation",
+        "water"
+      ],
+      "fit_for_demo": "optional-raw-scene",
+      "supervision_states": [
+        "pixel_class_labels",
+        "class_regions"
+      ],
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Wetland classes enable label alignment; ecological or biophysical responses are not included.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "kennedy-space-center"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 56827864,
+      "raw_total_size_gb": 0.0529,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "kennedy-space-center",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "KSC.mat",
+          "kind": "cube",
+          "url": "https://www.ehu.es/ccwintco/uploads/2/26/KSC.mat",
+          "size_bytes": 56824624,
+          "sha256": "b1ad011cfdb65c853e4f9f6108ca4774467d87f90a5c23b74ff3a2984a3b4786"
+        },
+        {
+          "raw_dataset_id": "kennedy-space-center",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "KSC_gt.mat",
+          "kind": "ground_truth",
+          "url": "https://www.ehu.es/ccwintco/uploads/a/a6/KSC_gt.mat",
+          "size_bytes": 3240,
+          "sha256": "a1d6ab9293691006bd4d9742d1a1e1c141b1aaa5fbc5fa128b33c1d09038510b"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "botswana",
+      "name": "Botswana",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "HSI scene",
+      "domains": [
+        "wetlands",
+        "vegetation",
+        "soil"
+      ],
+      "fit_for_demo": "borderline-raw-scene",
+      "supervision_states": [
+        "pixel_class_labels",
+        "class_regions"
+      ],
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Labels support validation, but the raw file is close enough to the size policy to prefer derived assets.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw files stay local by default; compact derived JSON and previews are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "botswana"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 78915172,
+      "raw_total_size_gb": 0.0735,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "botswana",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Botswana.mat",
+          "kind": "cube",
+          "url": "https://www.ehu.es/ccwintco/uploads/7/72/Botswana.mat",
+          "size_bytes": 78911133,
+          "sha256": "f1603903c844cdc2980550b0180688e8e1a72d4292595d1120e1dec2a80a91c7"
+        },
+        {
+          "raw_dataset_id": "botswana",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Botswana_gt.mat",
+          "kind": "ground_truth",
+          "url": "https://www.ehu.es/ccwintco/uploads/5/58/Botswana_gt.mat",
+          "size_bytes": 4039,
+          "sha256": "668394905e10e629c16584bfd02b0f533b96d6ba18a63274a94ff3a77126a887"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "salinas-corrected",
+      "name": "Salinas corrected",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "HSI scene",
+      "domains": [
+        "agriculture",
+        "vegetation",
+        "soil",
+        "vineyards"
+      ],
+      "fit_for_demo": "under-100mb-expansion",
+      "supervision_states": [
+        "pixel_class_labels",
+        "class_regions"
+      ],
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Class labels are valid for topic-label association and supervised class tests only.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "salinas-corrected"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 26557047,
+      "raw_total_size_gb": 0.0247,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "salinas-corrected",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Salinas_corrected.mat",
+          "kind": "cube",
+          "url": "https://www.ehu.eus/ccwintco/uploads/a/a3/Salinas_corrected.mat",
+          "size_bytes": 26552770,
+          "sha256": "5ec1c0d22f56d18ecd336f8e35735863c0f160682e04e0c18ef3f89a3334d87d"
+        },
+        {
+          "raw_dataset_id": "salinas-corrected",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Salinas_gt.mat",
+          "kind": "ground_truth",
+          "url": "https://www.ehu.eus/ccwintco/uploads/f/fa/Salinas_gt.mat",
+          "size_bytes": 4277,
+          "sha256": "ecfab4d31ef5553f097943235d8ea502038eb4a2067b2ad10b33e37c949955e2"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "cuprite-upv-reflectance",
+      "name": "Cuprite reflectance",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "HSI scene",
+      "domains": [
+        "minerals",
+        "clays",
+        "geology",
+        "unmixing"
+      ],
+      "fit_for_demo": "mineral-priority",
+      "supervision_states": [
+        "none",
+        "inferred_topic_strata"
+      ],
+      "label_scope": "no official ground-truth map is bundled in the current app payload",
+      "measurement_scope": "none",
+      "supervision_caveat": "Topic strata and spectral-library neighbors are exploratory until calibrated wavelength and external mineral validation are added.",
+      "acquisition_status": "local-derived",
+      "access": "public benchmark",
+      "direct_download": true,
+      "license_note": "Use with UPV/EHU and AVIRIS provenance; raw redistribution remains policy-controlled because the file is near the active size limit.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Commit only compact previews, topic summaries, and method metadata.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "unmixing-roi-suite",
+      "name": "Small hyperspectral unmixing ROI suite",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "HSI unmixing benchmarks",
+      "domains": [
+        "minerals",
+        "urban",
+        "vegetation",
+        "water",
+        "unmixing"
+      ],
+      "fit_for_demo": "small-diverse-unmixing",
+      "supervision_states": [
+        "none",
+        "unmixing_reference_files_candidate"
+      ],
+      "label_scope": "treated as unlabeled in the current app; support files may enable later reference comparisons",
+      "measurement_scope": "none",
+      "supervision_caveat": "Use for topic-versus-unmixing comparisons, not for ground-truth class claims.",
+      "acquisition_status": "local-derived",
+      "access": "public GitHub source",
+      "direct_download": true,
+      "license_note": "Source files come from the public MUA_SparseUnmixing repository; keep provenance and verify redistribution before raw tracking.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Raw MATLAB files stay local; compact derived summaries are publishable.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "samson-unmixing-roi",
+        "jasper-ridge-unmixing-roi",
+        "urban-unmixing-roi"
+      ],
+      "raw_file_count": 6,
+      "raw_total_size_bytes": 25641059,
+      "raw_total_size_gb": 0.0239,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "samson-unmixing-roi",
+          "source_group": "borsoi_mua",
+          "source": "MUA_SparseUnmixing real_data",
+          "name": "samson_1.mat",
+          "kind": "hsi_unmixing_scene",
+          "url": "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data/samson_1.mat",
+          "size_bytes": 3604014,
+          "sha256": "1ebacaf7cd32bfc31c0ee3fd56c63a7f29a434893a8b45705fb59cd8a0c8beb6"
+        },
+        {
+          "raw_dataset_id": "samson-unmixing-roi",
+          "source_group": "borsoi_mua",
+          "source": "MUA_SparseUnmixing real_data",
+          "name": "spectral_library_samson.mat",
+          "kind": "spectral_library",
+          "url": "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data/spectral_library_samson.mat",
+          "size_bytes": 84614,
+          "sha256": "110763949940e1027d591e7e43e7deaf880340dd66ee3a62ffdfa03bc2f3ae67"
+        },
+        {
+          "raw_dataset_id": "jasper-ridge-unmixing-roi",
+          "source_group": "borsoi_mua",
+          "source": "MUA_SparseUnmixing real_data",
+          "name": "jasperRidge2_R198.mat",
+          "kind": "hsi_unmixing_scene",
+          "url": "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data/jasperRidge2_R198.mat",
+          "size_bytes": 2987224,
+          "sha256": "0e4118a6452f6044978a8ca3762fb0f791115467904936d463c4e111e56e682e"
+        },
+        {
+          "raw_dataset_id": "jasper-ridge-unmixing-roi",
+          "source_group": "borsoi_mua",
+          "source": "MUA_SparseUnmixing real_data",
+          "name": "spectral_library_jasperRidge.mat",
+          "kind": "spectral_library",
+          "url": "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data/spectral_library_jasperRidge.mat",
+          "size_bytes": 788456,
+          "sha256": "a58296ea60ec7f5e80fd59300a4a4d1287adf4075092d0d731d909ca21cc3bd7"
+        },
+        {
+          "raw_dataset_id": "urban-unmixing-roi",
+          "source_group": "borsoi_mua",
+          "source": "MUA_SparseUnmixing real_data",
+          "name": "Urban_R162.mat",
+          "kind": "hsi_unmixing_scene",
+          "url": "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data/Urban_R162.mat",
+          "size_bytes": 17744217,
+          "sha256": "aa8fb6d46ad229dee1a77ebaffea8f1d6a88cec80ebb101cd1975fb54cda9862"
+        },
+        {
+          "raw_dataset_id": "urban-unmixing-roi",
+          "source_group": "borsoi_mua",
+          "source": "MUA_SparseUnmixing real_data",
+          "name": "spectral_library_urban.mat",
+          "kind": "spectral_library",
+          "url": "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data/spectral_library_urban.mat",
+          "size_bytes": 432534,
+          "sha256": "19047fa928b762ed1ca9405e56b0085845c56db1c18d7c176f3a51a467af8d83"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "micasense-rededge-samples",
+      "name": "MicaSense RedEdge sample data",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "MSI field samples",
+      "domains": [
+        "vegetation",
+        "agriculture",
+        "uav",
+        "reflectance"
+      ],
+      "fit_for_demo": "downloaded-msi-demo",
+      "supervision_states": [
+        "heuristic_strata",
+        "ndvi_reference"
+      ],
+      "label_scope": "no ground-truth class labels; strata are derived heuristics",
+      "measurement_scope": "none",
+      "supervision_caveat": "NDVI and strata support exploratory comparison only; they are not field measurements.",
+      "acquisition_status": "local-derived",
+      "access": "official sample data",
+      "direct_download": true,
+      "license_note": "Use with MicaSense sample-data provenance; keep raw orthomosaics outside Git by default.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Commit derived JSON and previews only; fetch raw orthomosaics on demand.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "micasense-example-1",
+        "micasense-example-2",
+        "micasense-example-3"
+      ],
+      "raw_file_count": 5,
+      "raw_total_size_bytes": 110352627,
+      "raw_total_size_gb": 0.1028,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "micasense-example-1",
+          "source_group": "micasense",
+          "source": "MicaSense RedEdge Sample Data",
+          "name": "rededge_raw_example1.zip",
+          "kind": "raw_capture",
+          "url": "https://sample.micasense.com/rededge_raw_example1.zip",
+          "size_bytes": 7538965,
+          "sha256": "23c47e2e79fb3083ea88ac6c92cc766aca33dfdecc9289ce7b70d9971f2b1ff1"
+        },
+        {
+          "raw_dataset_id": "micasense-example-1",
+          "source_group": "micasense",
+          "source": "MicaSense RedEdge Sample Data",
+          "name": "rededge_geotiff_example1.tif",
+          "kind": "orthomosaic",
+          "url": "https://sample.micasense.com/rededge_geotiff_example1.tif",
+          "size_bytes": 18175678,
+          "sha256": "3d891d7971e9e070bd3e2d903fdf985acf52f1026655f14809fedab91c6f49c2"
+        },
+        {
+          "raw_dataset_id": "micasense-example-2",
+          "source_group": "micasense",
+          "source": "MicaSense RedEdge Sample Data",
+          "name": "rededge_raw_example2.zip",
+          "kind": "raw_capture",
+          "url": "https://sample.micasense.com/rededge_raw_example2.zip",
+          "size_bytes": 8497660,
+          "sha256": "30084c1c5fa3adb78d743ab45127abd84b84910f80808bc697987a53332f0ed7"
+        },
+        {
+          "raw_dataset_id": "micasense-example-2",
+          "source_group": "micasense",
+          "source": "MicaSense RedEdge Sample Data",
+          "name": "rededge_geotiff_example2.tif",
+          "kind": "orthomosaic",
+          "url": "https://sample.micasense.com/rededge_geotiff_example2.tif",
+          "size_bytes": 68556982,
+          "sha256": "bb2d7b659094e72d57f07abb2b2c004c6491be8676070def87c0097fe2f1d3de"
+        },
+        {
+          "raw_dataset_id": "micasense-example-3",
+          "source_group": "micasense",
+          "source": "MicaSense RedEdge Sample Data",
+          "name": "rededge_raw_example3.zip",
+          "kind": "raw_capture",
+          "url": "https://sample.micasense.com/rededge_raw_example3.zip",
+          "size_bytes": 7583342,
+          "sha256": "1b1f5f044a42fe757c77cdf46fb03d1bd7f52264670dfb7bce09b36f178cfd4f"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "eurosat",
+      "name": "EuroSAT",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "MSI patch dataset",
+      "domains": [
+        "land-cover",
+        "agriculture",
+        "urban",
+        "water"
+      ],
+      "fit_for_demo": "subset-only",
+      "supervision_states": [
+        "patch_class_labels"
+      ],
+      "label_scope": "patch-level land-cover labels after a curated subset is selected",
+      "measurement_scope": "none",
+      "supervision_caveat": "Patch labels are not pixel labels; UI comparisons must not imply pixel-level ground truth.",
+      "acquisition_status": "catalog-only",
+      "access": "official repository",
+      "direct_download": true,
+      "license_note": "Verify subset packaging, citation, and redistribution terms before local ingestion.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Use a tiny curated Sentinel-2 patch subset or a reproducible downloader.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "bigearthnet-v2",
+      "name": "BigEarthNet v2.0",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "Sentinel-1 / Sentinel-2 patch dataset",
+      "domains": [
+        "satellite",
+        "land-cover",
+        "urban",
+        "agriculture",
+        "forest",
+        "water"
+      ],
+      "fit_for_demo": "external-patch-subset",
+      "supervision_states": [
+        "patch_multi_labels",
+        "pixel_reference_maps_candidate"
+      ],
+      "label_scope": "patch-level multi-label land-cover annotations; pixel references require subset verification",
+      "measurement_scope": "none",
+      "supervision_caveat": "Full archive is too large for the app; only a documented compact subset can be product-visible.",
+      "acquisition_status": "catalog-only",
+      "access": "large official archive",
+      "direct_download": false,
+      "license_note": "Verify BigEarthNet v2.0 license and selected patch metadata before local ingestion.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Keep archive external; publish only selected patch metadata and compact derived summaries.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "whu-hi-uav-scenes",
+      "name": "WHU-Hi UAV hyperspectral scenes",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "UAV HSI benchmark",
+      "domains": [
+        "agriculture",
+        "vegetation",
+        "urban-fringe",
+        "water",
+        "shadows"
+      ],
+      "fit_for_demo": "uav-crop-diversity",
+      "supervision_states": [
+        "pixel_class_labels_candidate"
+      ],
+      "label_scope": "reported crop/land-cover labels require official source and license verification",
+      "measurement_scope": "none",
+      "supervision_caveat": "No app claim until source files, labels, and redistribution rights are verified.",
+      "acquisition_status": "catalog-only",
+      "access": "source pending",
+      "direct_download": false,
+      "license_note": "Current manifest points to the paper; official download and redistribution rules still need verification.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Do not ingest or expose in the app until a source manifest is complete.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "hyrank-cross-scene",
+      "name": "HyRANK cross-scene hyperspectral benchmark",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "Satellite / airborne HSI benchmark",
+      "domains": [
+        "urban",
+        "forest",
+        "agriculture",
+        "rocks",
+        "water",
+        "coastal"
+      ],
+      "fit_for_demo": "cross-scene-diversity",
+      "supervision_states": [
+        "pixel_class_labels_candidate",
+        "cross_scene_split_candidate"
+      ],
+      "label_scope": "class labels are candidate metadata until canonical source and files are verified",
+      "measurement_scope": "none",
+      "supervision_caveat": "Do not use for cross-scene validation claims until source, labels, and splits are reproduced locally.",
+      "acquisition_status": "catalog-only",
+      "access": "source pending",
+      "direct_download": false,
+      "license_note": "Verify canonical HyRANK source, license, and per-file sizes before ingestion.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Catalog-only until a reproducible acquisition manifest exists.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "hyspecnet-11k",
+      "name": "HySpecNet-11k",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "EnMAP HSI patch collection",
+      "domains": [
+        "satellite",
+        "land-cover",
+        "unsupervised-learning",
+        "compression"
+      ],
+      "fit_for_demo": "external-patch-subset",
+      "supervision_states": [
+        "none",
+        "patch_metadata"
+      ],
+      "label_scope": "no product-visible class labels selected",
+      "measurement_scope": "none",
+      "supervision_caveat": "Useful for unsupervised transfer only after selected patch IDs and license constraints are documented.",
+      "acquisition_status": "external-library",
+      "access": "license-gated official source",
+      "direct_download": false,
+      "license_note": "Official EnMAP patch collection requires license/agreement review before redistribution.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Keep collection external; track only selected patch IDs and compact summaries.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "houston-2013-hsi-lidar",
+      "name": "Houston 2013 HSI + LiDAR",
+      "family_id": "labeled-spectral-image",
+      "family_title": "Spectral images with pixel labels",
+      "modality": "Urban multimodal benchmark",
+      "domains": [
+        "urban",
+        "campus",
+        "multimodal",
+        "lidar",
+        "classification"
+      ],
+      "fit_for_demo": "urban-access-gated",
+      "supervision_states": [
+        "pixel_class_labels_candidate",
+        "lidar_auxiliary_candidate"
+      ],
+      "label_scope": "class labels and LiDAR pairing are access-gated candidate metadata",
+      "measurement_scope": "none",
+      "supervision_caveat": "No app-visible claim until access terms and redistribution constraints are cleared.",
+      "acquisition_status": "access-gated",
+      "access": "request-required contest source",
+      "direct_download": false,
+      "license_note": "Use only after IEEE GRSS/UH terms and redistribution limits are verified.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Catalog-only unless explicit access and publication permission are obtained.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "cross-scene-wetland-hsi",
+      "name": "Cross-scene wetland HSI",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "Satellite HSI wetland scenes",
+      "domains": [
+        "wetlands",
+        "water",
+        "vegetation",
+        "domain-adaptation"
+      ],
+      "fit_for_demo": "wetland-external-subset",
+      "supervision_states": [
+        "labels_candidate",
+        "domain_adaptation_candidate"
+      ],
+      "label_scope": "wetland labels require subset extraction and source verification before app use",
+      "measurement_scope": "none",
+      "supervision_caveat": "Treat as external research data until compact patches and label semantics are documented.",
+      "acquisition_status": "external-archive",
+      "access": "large Zenodo archive",
+      "direct_download": true,
+      "license_note": "Archive is too large for Git; verify selected patch license and attribution before derived publication.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Full archive stays external; only small derived patches may become app assets.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "landsat-c2-l2",
+      "name": "Landsat Collection 2 Level-2",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "Multispectral satellite surface reflectance / temperature",
+      "domains": [
+        "satellite",
+        "vegetation",
+        "water",
+        "humidity",
+        "drought",
+        "thermal"
+      ],
+      "fit_for_demo": "geospatial-ingestion-roadmap",
+      "supervision_states": [
+        "none",
+        "external_indices_candidate"
+      ],
+      "label_scope": "query results have no inherent class labels in the current product",
+      "measurement_scope": "surface reflectance and temperature products can support derived index workflows",
+      "supervision_caveat": "Requires geospatial ingestion before it can become a reproducible app dataset.",
+      "acquisition_status": "external-query-source",
+      "access": "query-driven official source",
+      "direct_download": false,
+      "license_note": "Use official USGS Landsat access paths and scene metadata; do not track full products in Git.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Publish only small selected tiles and derived index summaries after ingestion exists.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "cave-multispectral",
+      "name": "CAVE Multispectral Image Database",
+      "family_id": "unlabeled-spectral-image",
+      "family_title": "Spectral images without reliable labels",
+      "modality": "MSI / HSI laboratory scenes",
+      "domains": [
+        "laboratory",
+        "food",
+        "objects",
+        "reflectance"
+      ],
+      "fit_for_demo": "lab-reference",
+      "supervision_states": [
+        "scene_object_labels_candidate"
+      ],
+      "label_scope": "scene or object labels are candidate metadata; no pixel labels are configured",
+      "measurement_scope": "none",
+      "supervision_caveat": "Treat as a laboratory reference source until acquisition and label semantics are reproduced locally.",
+      "acquisition_status": "catalog-only",
+      "access": "manual or brittle official access",
+      "direct_download": false,
+      "license_note": "Verify official access, file layout, citation, and redistribution before ingestion.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "No raw tracking until a stable source manifest exists.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "usgs-splib07",
+      "name": "USGS Spectral Library Version 7",
+      "family_id": "individual-spectra",
+      "family_title": "Individual spectra with labels or measurements",
+      "modality": "Spectral library",
+      "domains": [
+        "minerals",
+        "rocks",
+        "soil",
+        "vegetation"
+      ],
+      "fit_for_demo": "high-value-library",
+      "supervision_states": [
+        "material_labels",
+        "spectral_reference_groups"
+      ],
+      "label_scope": "material and group labels are available for curated compact samples",
+      "measurement_scope": "none",
+      "supervision_caveat": "Nearest-reference matches are evidence, not material identifications.",
+      "acquisition_status": "local-derived",
+      "access": "public USGS data release",
+      "direct_download": true,
+      "license_note": "Use USGS data-release provenance and cite the source; never commit the full multi-GB library.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Track only compact curated samples and source-file metadata.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "usgs-splib07-aviris-1997",
+        "usgs-splib07-sentinel2"
+      ],
+      "raw_file_count": 2,
+      "raw_total_size_bytes": 5782505,
+      "raw_total_size_gb": 0.0054,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "usgs-splib07-aviris-1997",
+          "source_group": "usgs_splib07",
+          "source": "USGS Spectral Library Version 7 Data",
+          "name": "ASCIIdata_splib07b_cvAVIRISc1997.zip",
+          "kind": "spectral_library_ascii_zip",
+          "url": "https://www.sciencebase.gov/catalog/file/get/586e8c88e4b0f5ce109fccae?f=__disk__e4%2F7d%2F6f%2Fe47d6f9fd757caea738bea3a605a17df48c3df77",
+          "size_bytes": 4325586,
+          "sha256": "8ffad56800fe7cf6031b32eab626aaae5a1341dee8fc992655742acce5583b24"
+        },
+        {
+          "raw_dataset_id": "usgs-splib07-sentinel2",
+          "source_group": "usgs_splib07",
+          "source": "USGS Spectral Library Version 7 Data",
+          "name": "ASCIIdata_splib07b_rsSentinel2.zip",
+          "kind": "spectral_library_ascii_zip",
+          "url": "https://www.sciencebase.gov/catalog/file/get/586e8c88e4b0f5ce109fccae?f=__disk__b4%2Fc4%2Ffd%2Fb4c4fdcbfcda3a1d8bdf8d9823278349b3b294e2",
+          "size_bytes": 1456919,
+          "sha256": "6fb23fcefa426566bbe3e41a3e163d65231528e16606a6b0b4d4b8459af8d378"
+        }
+      ],
+      "ready_for_local_validation": true
+    },
+    {
+      "id": "ecostress-spectral-library",
+      "name": "ECOSTRESS Spectral Library v1.0",
+      "family_id": "individual-spectra",
+      "family_title": "Individual spectra with labels or measurements",
+      "modality": "Spectral library",
+      "domains": [
+        "vegetation",
+        "non-photosynthetic vegetation",
+        "minerals",
+        "man-made materials"
+      ],
+      "fit_for_demo": "external-library",
+      "supervision_states": [
+        "material_labels_candidate"
+      ],
+      "label_scope": "material labels are expected but not yet represented in local derived assets",
+      "measurement_scope": "none",
+      "supervision_caveat": "No app-visible sample until export path, license, and selected material slices are verified.",
+      "acquisition_status": "external-library",
+      "access": "official JPL web library",
+      "direct_download": false,
+      "license_note": "Verify ECOSTRESS/JPL export terms, citation, and subset redistribution before ingestion.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Keep full library external; publish only compact representative slices.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    },
+    {
+      "id": "hidsag-geometallurgy",
+      "name": "HIDSAG geometallurgy database",
+      "family_id": "regions-with-measurements",
+      "family_title": "Regions with measurements or external variables",
+      "modality": "Laboratory HSI geometallurgy dataset",
+      "domains": [
+        "minerals",
+        "geometallurgy",
+        "vnirswir",
+        "regression",
+        "classification"
+      ],
+      "fit_for_demo": "geometallurgy-reference",
+      "supervision_states": [
+        "response_measurements_candidate",
+        "sample_ids_candidate",
+        "hierarchical_regions_candidate"
+      ],
+      "label_scope": "sample and mineralogical labels require curated subset design",
+      "measurement_scope": "geochemical, mineralogical, and geometallurgical response variables are the target supervision",
+      "supervision_caveat": "Highest-value inference source, but no model claim until a subset, split, metrics, and model card exist.",
+      "acquisition_status": "external-reference",
+      "access": "article and linked data packages",
+      "direct_download": false,
+      "license_note": "Article is CC BY 4.0; selected data package terms, sizes, and redistribution still need verification.",
+      "checksum_status": "not-recorded",
+      "raw_asset_policy": "Keep as research/candidate data until a small response-variable subset is curated.",
+      "last_verified": "2026-04-30",
+      "local_raw_available": false,
+      "raw_dataset_ids": [],
+      "raw_file_count": 0,
+      "raw_total_size_bytes": 0,
+      "raw_total_size_gb": 0.0,
+      "sha256_complete": false,
+      "raw_files": [],
+      "ready_for_local_validation": false
+    }
+  ]
+}

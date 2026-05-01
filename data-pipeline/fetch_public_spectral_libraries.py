@@ -1,14 +1,16 @@
-"""Download compact public spectral-library archives used by the demo.
+"""Download public spectral-library archives used by the local validation core.
 
-The full USGS Spectral Library Version 7 release is multi-gigabyte, so the
-pipeline pulls only official ASCII subsets that are already convolved or
-resampled to useful HSI / MSI sensors. The raw zip archives remain outside
-Git; compact derived JSON assets are generated separately.
+The full USGS Spectral Library Version 7 release is multi-gigabyte, so this
+pipeline starts with official ASCII subsets that are already convolved or
+resampled to useful HSI / MSI sensors. Raw archives remain outside Git while
+local validation is allowed to download larger assets than the web-facing
+subset would ever ship.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 import time
 from pathlib import Path
 
@@ -18,7 +20,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw" / "usgs_splib07"
 MANIFEST_PATH = RAW_DIR / "download_manifest.json"
-MAX_PUBLIC_FILE_BYTES = 100 * 1024 * 1024
+MAX_LOCAL_DOWNLOAD_BYTES = int(os.getenv("CAOS_MAX_LOCAL_DOWNLOAD_BYTES", "0")) or None
 
 DATASETS = [
     {
@@ -113,7 +115,7 @@ def main() -> None:
     manifest: dict[str, object] = {
         "source": "USGS Spectral Library Version 7 Data",
         "source_url": "https://www.sciencebase.gov/catalog/item/586e8c88e4b0f5ce109fccae",
-        "max_public_file_bytes": MAX_PUBLIC_FILE_BYTES,
+        "max_local_download_bytes": MAX_LOCAL_DOWNLOAD_BYTES,
         "datasets": [],
     }
 
@@ -127,10 +129,10 @@ def main() -> None:
         for entry in dataset["files"]:
             destination = RAW_DIR / entry["name"]
             expected_size = remote_size(entry["url"])
-            if expected_size is not None and expected_size > MAX_PUBLIC_FILE_BYTES:
+            if MAX_LOCAL_DOWNLOAD_BYTES is not None and expected_size is not None and expected_size > MAX_LOCAL_DOWNLOAD_BYTES:
                 raise RuntimeError(
                     f"{entry['name']} is {expected_size} bytes, above the "
-                    f"{MAX_PUBLIC_FILE_BYTES} byte per-file policy."
+                    f"{MAX_LOCAL_DOWNLOAD_BYTES} byte configured local-download policy."
                 )
 
             local_size = destination.stat().st_size if destination.exists() else None

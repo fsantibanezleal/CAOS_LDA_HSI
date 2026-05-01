@@ -1,183 +1,193 @@
 # Functional Scope
 
-This document defines what the web app should do as a product surface.
-It is separate from the theoretical and dataset documentation.
+This document defines the role of the web application after the product
+reset.
 
-## Product Shape
+The app is not the scientific engine. The app is the interactive surface
+used to present, inspect, and validate a compact subset of what the
+local backend already computed. If a view cannot be backed by the local
+validation core, it should not exist in the public product.
 
-CAOS LDA HSI is a professional analytical workbench for exploring how
-topic models can organize multispectral and hyperspectral variability.
-It should not feel like a blog, article, landing page, or static project
-poster.
+## Product Role
 
-## Required First-Screen Areas
+The product has two top-level surfaces:
 
-### Header
+1. `Context`
+2. `Workspace`
+
+`Context` explains the methodological mapping and the dataset families.
+`Workspace` lets a user inspect real evidence, representations, topics,
+baselines, inference, and validation artifacts.
+
+The app must feel like a scientific instrument panel, not a blog, a
+report page, or a static poster.
+
+## Required Top-Level Structure
+
+### Context Surface
+
+Purpose:
+
+- explain the repo thesis
+- teach the PTM/LDA mapping
+- explain what counts as alphabet, word, document, corpus, topic, and
+  topic mixture
+- distinguish labeled, unlabeled, library, and measured-region workflows
+
+Allowed content:
+
+- diagrams
+- small didactic animations
+- interactive toy examples of corpus construction
+
+Disallowed content:
+
+- stock photos
+- static screenshots as primary evidence
+- narrative text walls that replace inspectable data
+
+### Workspace Surface
+
+Purpose:
+
+- let a user move through the actual methodological flow
+- let a user inspect real spectral/image evidence interactively
+- compare PTM/LDA against alternative methods
+- expose inference and validation only when justified by the data
+
+The workspace may use a three-section structure, but each section must
+have a disciplined role.
+
+## Workspace Layout
+
+### Left Section: Scope And Method
 
 Must include:
 
-- product name
-- workflow context
-- language toggle
-- light/dark toggle
-- visible source repository link
+- dataset family selector
+- theme/domain selector
+- curated dataset selector within the chosen family
+- representation recipe selector
+- method/baseline selector
+- compact didactic metadata about the selected source:
+  supervision state, measurement variables, band count, wavelengths,
+  label semantics, acquisition notes, and known caveats
 
 Must not include:
 
-- large hero copy
-- decorative marketing claims
-- large blank visual zones
+- a flat list of dozens of datasets
+- mixed documents, scenes, libraries, and models at the same hierarchy
+- controls that do not change the current analytical state
 
-### Left Navigator
+### Center Section: Evidence And Representations
 
-Must include:
+This is the main analytical canvas.
 
-- demo spectral documents
-- real HSI scenes
-- field MSI samples
-- dataset catalog entries
-- search or filtering
+It must support interactive evidence, not screenshots:
 
-Purpose:
+- linked spectral plots for hundreds of spectra
+- spectral brushing/filtering by class, cluster, topic, superpixel, or
+  semantic subset
+- interactive image visualization with manual band selection
+- precomputed recommended band combinations
+- overlay switching for labels, SLIC, topic maps, clustering maps, and
+  semantic segmentation when available
+- spectral distributions by class/cluster/topic
+- corpus previews and tokenization diagnostics
+- PTM/LDA outputs and alternative representation views
 
-- make data availability visible immediately
-- show local versus cataloged/external status
-- support rapid switching without page scrolling
+Rules:
 
-### Center Workbench
+- a scene view without band selection is incomplete
+- a spectral view with one or two static lines is incomplete
+- if labels exist, the user must be able to compare labels against topic
+  or cluster structure
+- if labels do not exist, the UI must state that clearly and keep the
+  output exploratory
 
-Must include:
-
-- selected spectrum or scene summary
-- spectral curve or compact spectral representation
-- token or quantization visualization
-- topic mixture
-- topic profile or topic grid
-- selected real/field preview when applicable
-
-Purpose:
-
-- keep the analytical object in the center
-- avoid a documentation-first layout
-- make the method inspectable through visual evidence
-
-### Right Inspector
+### Right Section: Inference, Comparison, And Validation
 
 Must include:
 
-- representation selector
-- topic details
-- token list
-- inference or model comparison summary
-- implementation status warnings where needed
+- current method definition
+- feature-space definition
+- supervision-use and spatial-use flags
+- metric summaries
+- comparison outcomes across baselines
+- model or regression summaries when applicable
+- caveats, failure cases, and interpretation constraints
 
-Purpose:
+This section is where the app says what the current result means and what
+it does not mean.
 
-- separate controls and interpretation from the central work surface
-- make assumptions visible without cluttering the main panel
+## Required Interaction Model
 
-## Interaction Requirements
+- Changing dataset family resets downstream selectors to compatible
+  options only.
+- Changing dataset updates available recipes, baselines, overlays, and
+  inference options.
+- Changing band selection updates the image view, the spectral plot
+  context, and any band-dependent overlays.
+- Changing cluster/topic/label filter updates both spectral evidence and
+  image overlays.
+- Changing representation updates corpus diagnostics before topic views.
+- Inference panels are hidden when the current dataset lacks labels or
+  measurements.
+- Validation panels are tied to the selected representation and method,
+  not displayed as generic text.
 
-- Changing a sample updates the center workbench and inspector.
-- Changing representation updates tokens and explanatory text.
-- Changing language updates all visible app labels.
-- Changing theme must not hide charts, controls, borders, or status
-  colors.
-- Mobile layout can stack panels, but the first viewport must still show
-  app controls and data, not a hero area.
+## Visualization Rules
 
-## Visual Requirements
+- Interactive spectral curves are mandatory.
+- Interactive scene band selection is mandatory for image datasets.
+- Precomputed overlays are acceptable; static screenshots are not an
+  acceptable primary output.
+- Every visualization must answer a named methodological question.
+- PCA/UMAP/scatter views are diagnostic only and must declare feature
+  space, method, and caveat.
+- No topic map may imply a semantic label without external validation.
+- No segmentation overlay may imply semantic correctness unless it comes
+  from labels or a documented trained model.
 
-Use the family direction established by Auralis and UnderMineRisk:
+## Backend Contract Direction
 
-- dense and operational
-- neutral technical background
-- restrained borders
-- small radius, usually 6-8 px
-- system fonts
-- no decorative gradients
-- no green/teal/orange brand palette
-- blue and cyan accents
-- purple only as a minor topic accent
-- green only as semantic success/status
+The current reset depends on the following payload families:
 
-## Current Backend Contract
+- dataset taxonomy and supervision
+- corpus recipes and corpus previews
+- segmentation and baseline payloads
+- local validation matrix
+- local dataset inventory
+- local core benchmarks
 
-The redesign must preserve the existing backend payload shape:
+The older aggregate app payload remains usable for the current technical
+checkpoint, but the rebuild should progressively pivot toward the
+workflow-oriented reset payloads.
 
-- `project`
-- `methodology`
-- `datasets`
-- `demo`
-- `real_scenes`
-- `field_samples`
-- `spectral_library`
-- `analysis`
+## Implemented Today
 
-The first workbench pass preserved the original payloads and later added
-`spectral_library` as a dedicated material-reference surface. The current
-analysis pass adds compact derived PCA/KMeans diagnostics through
-`analysis`. Future payload growth should remain deliberate and
-documented.
+Implemented in the repo today:
 
-## Implemented Functional Surface
+- local dataset inventory over curated manifests and raw downloads
+- first-pass corpus preview payloads
+- first-pass SLIC baselines
+- first-pass offline PTM/LDA plus supervised and clustering benchmarks
+- compact real-scene, field-scene, and spectral-library assets
+- current SPA checkpoint with bilingual/theme support
 
-The current backend supports:
+Not yet implemented in the app:
 
-- app metadata
-- methodology principles
-- citations
-- dataset catalog
-- synthetic demo samples
-- topic profiles
-- inference comparison summary
-- real HSI scene summaries and previews
-- field MSI sample summaries and previews
-- spectral-library material references and nearest-reference comparison
-- scene topic-mixture matrices over the current compact real-scene
-  summaries
-- topic-space PCA/KMeans clustering diagnostics over real scenes
-- spectral-library PCA/KMeans clustering diagnostics by band-count group
+- the rebuilt context/workspace structure
+- linked interactive spectral evidence for hundreds of spectra
+- scene band selectors wired to the central workflow
+- interactive overlay switching across SLIC, topics, clusters, and
+  semantic segmentation
+- explicit validation-driven right panel
 
-## Missing Functional Surface
+## Immediate Product Focus
 
-The app does not yet support:
-
-- user-uploaded cubes
-- runtime LDA training
-- server-side model jobs
-- full spectral-library search across external sources
-- calibrated wavelength inspection for every source
-- geospatial map navigation
-- downloadable experiment reports
-- topic stability reports across seeds, tokenizers, and scenes
-- authenticated project storage
-
-## Product Improvement Focus
-
-Short-term:
-
-- professional workbench layout
-- clear dataset status labels
-- mineral/clay first workflow
-- better use of existing real-scene and field-sample summaries
-- reusable smoke-test scripts for local or deployed URLs
-- compact clustering and embedding diagnostics that are tied to real
-  derived data rather than decorative charts
-
-Medium-term:
-
-- tokenizer engine
-- spectral-library subsets
-- Cuprite and full Salinas
-- satellite and wetland patch subsets
-- model comparison reports
-- topic stability and representation comparison reports
-
-Long-term:
-
-- upload and tokenize user datasets
-- asynchronous model training jobs
-- reproducible research reports
-- geospatial scene browser
-- spectral-library alignment and retrieval
+1. Extend the local validation core before expanding frontend behavior.
+2. Export compact interactive subsets only after they are justified by
+   offline results.
+3. Rebuild the app around `Context` plus `Workspace`.
+4. Remove any remaining poster/report behavior from the current SPA.

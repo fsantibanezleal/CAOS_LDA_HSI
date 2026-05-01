@@ -70,6 +70,28 @@ class ProjectOverview(BaseModel):
     repo: RepoLink
 
 
+class DatasetSupervision(BaseModel):
+    """What kind of labels, measurements, or supervision a dataset can support."""
+
+    family_id: str
+    states: list[str]
+    label_scope: str
+    measurement_scope: str
+    caveat: str
+
+
+class DatasetAcquisition(BaseModel):
+    """Reproducibility and publication status for one dataset source."""
+
+    status: str
+    access: str
+    direct_download: bool
+    license_note: str
+    checksum_status: str
+    raw_asset_policy: str
+    last_verified: str | None = None
+
+
 class DatasetEntry(BaseModel):
     """Single dataset or spectral library candidate."""
 
@@ -86,6 +108,8 @@ class DatasetEntry(BaseModel):
     repository_strategy: LocalizedText
     notes: LocalizedText
     fit_for_demo: str
+    supervision: DatasetSupervision
+    acquisition: DatasetAcquisition
 
 
 class DatasetExclusion(BaseModel):
@@ -102,6 +126,258 @@ class DatasetCatalog(BaseModel):
     selection_policy: LocalizedText
     datasets: list[DatasetEntry]
     exclusions: list[DatasetExclusion]
+
+
+class DataFamily(BaseModel):
+    """Methodological dataset family used by the product reset workflow."""
+
+    id: str
+    code: str
+    title: LocalizedText
+    definition: LocalizedText
+    supervision_states: list[str]
+    current_dataset_ids: list[str]
+    candidate_dataset_ids: list[str]
+    valid_recipe_ids: list[str]
+    valid_baseline_ids: list[str]
+    valid_outputs: list[LocalizedText]
+    caveats: list[LocalizedText]
+
+
+class DataFamiliesPayload(BaseModel):
+    """Dataset family taxonomy for the reset workflow."""
+
+    source: str
+    families: list[DataFamily]
+
+
+class CorpusRecipe(BaseModel):
+    """Static corpus recipe that defines alphabet, words, and documents."""
+
+    id: str
+    title: LocalizedText
+    summary: LocalizedText
+    alphabet_definition: LocalizedText
+    word_definition: LocalizedText
+    document_definition: LocalizedText
+    valid_family_ids: list[str]
+    required_metadata: list[str]
+    first_dataset_ids: list[str]
+    risks: list[LocalizedText]
+    validation_gates: list[str]
+
+
+class BaselineMethod(BaseModel):
+    """Comparison method that gives non-topic outputs a purpose."""
+
+    id: str
+    name: str
+    purpose: str
+    valid_family_ids: list[str]
+    feature_space: str
+    metrics: list[str]
+    caveat: str
+
+
+class ValidationBlock(BaseModel):
+    """Validation question required before strong product claims."""
+
+    id: str
+    title: str
+    question: str
+    metrics: list[str]
+    failure_conditions: list[str]
+
+
+class CorpusRecipesPayload(BaseModel):
+    """Corpus recipes, baselines, and validation blocks for the reset workflow."""
+
+    source: str
+    recipes: list[CorpusRecipe]
+    baselines: list[BaselineMethod]
+    validation_blocks: list[ValidationBlock]
+
+
+class CorpusDefinition(BaseModel):
+    """Concrete PTM/LDA mapping for one generated corpus preview."""
+
+    alphabet: str
+    word: str
+    document: str
+    corpus: str
+    topic_ready: bool
+
+
+class CorpusLengthStats(BaseModel):
+    """Document-length diagnostics for a corpus preview."""
+
+    min: int
+    median: float
+    max: int
+    mean: float
+
+
+class CorpusTokenCount(BaseModel):
+    """Token frequency inside a corpus preview."""
+
+    token: str
+    count: int
+
+
+class CorpusExampleDocument(BaseModel):
+    """Inspectable example document from a corpus preview."""
+
+    id: str
+    label: str
+    source: str
+    token_count: int
+    source_spectra_count: int | None = None
+    tokens: list[str]
+    token_explanation: str
+
+
+class CorpusPreview(BaseModel):
+    """Static, reversible corpus preview generated from a real compact asset."""
+
+    id: str
+    dataset_id: str
+    dataset_name: str
+    family_id: str
+    recipe_id: str
+    document_count: int
+    vocabulary_size: int
+    zero_token_documents: int
+    document_length: CorpusLengthStats
+    corpus_definition: CorpusDefinition
+    top_tokens: list[CorpusTokenCount]
+    example_documents: list[CorpusExampleDocument]
+    reversible_token_examples: dict[str, str]
+    caveats: list[str]
+
+
+class CorpusPreviewsPayload(BaseModel):
+    """Static corpus previews used to gate future topic charts."""
+
+    source: str
+    generated_at: str
+    previews: list[CorpusPreview]
+
+
+class SegmentationMethod(BaseModel):
+    """Spatial baseline method metadata."""
+
+    id: str
+    name: str
+    purpose: str
+    uses_spatial_information: bool
+    uses_supervision: bool
+    caveat: str
+
+
+class SlicParameters(BaseModel):
+    """SLIC parameter values used to generate one baseline."""
+
+    n_segments_requested: int
+    compactness: float
+    convert2lab: bool
+    enforce_connectivity: bool
+
+
+class SegmentSizeStats(BaseModel):
+    """Pixel-size distribution for generated segments."""
+
+    min: int
+    median: float
+    max: int
+    mean: float
+
+
+class SegmentationLabelMetrics(BaseModel):
+    """Label-alignment diagnostics for a segmentation baseline."""
+
+    label_available: bool
+    label_coverage_ratio: float | None = None
+    weighted_label_purity: float | None = None
+    segments_with_labels: int
+
+
+class SegmentExample(BaseModel):
+    """Representative superpixel/segment diagnostic."""
+
+    segment_id: int
+    pixel_count: int
+    labeled_pixel_count: int | None = None
+    majority_label_id: int | None = None
+    majority_label: str | None = None
+    purity: float | None = None
+
+
+class SegmentationSceneBaseline(BaseModel):
+    """Static SLIC baseline for one scene."""
+
+    scene_id: str
+    dataset_id: str
+    scene_name: str
+    family_id: str
+    method_id: str
+    feature_space: str
+    spatial_information_used: bool
+    supervision_used: bool
+    slic_parameters: SlicParameters
+    segment_count: int
+    segment_size_pixels: SegmentSizeStats
+    label_metrics: SegmentationLabelMetrics
+    segment_examples: list[SegmentExample]
+    preview_path: str
+    caveats: list[str]
+
+
+class SegmentationBaselinesPayload(BaseModel):
+    """SLIC/superpixel baselines generated from local raw scenes."""
+
+    source: str
+    generated_at: str
+    methods: list[SegmentationMethod]
+    scenes: list[SegmentationSceneBaseline]
+
+
+class LocalValidationMatrixPayload(BaseModel):
+    """Local-first workflow matrix that defines the repo thesis and method families."""
+
+    source: str
+    thesis: LocalizedText
+    workflow_stages: list[dict[str, str]]
+    dataset_groups: list[dict[str, Any]]
+    representation_families: list[dict[str, Any]]
+    segmentation_methods: list[dict[str, Any]]
+    clustering_methods: list[dict[str, Any]]
+    topic_methods: list[dict[str, Any]]
+    training_methods: list[dict[str, Any]]
+    web_projection_rules: dict[str, Any]
+
+
+class LocalDatasetInventoryPayload(BaseModel):
+    """Unified local inventory that merges manifests with raw-download evidence."""
+
+    source: str
+    generated_at: str
+    summary: dict[str, Any]
+    family_views: list[dict[str, Any]]
+    theme_groups: list[dict[str, Any]]
+    datasets: list[dict[str, Any]]
+
+
+class LocalCoreBenchmarksPayload(BaseModel):
+    """Offline PTM/LDA, clustering, and supervised benchmark outputs."""
+
+    source: str
+    generated_at: str
+    methods: dict[str, Any]
+    labeled_scene_runs: list[dict[str, Any]]
+    topic_stability_runs: list[dict[str, Any]]
+    unlabeled_scene_runs: list[dict[str, Any]]
+    unmixing_runs: list[dict[str, Any]]
+    spectral_library_runs: list[dict[str, Any]]
 
 
 class WorkflowStep(BaseModel):
@@ -438,6 +714,10 @@ class AppPayload(BaseModel):
 
     overview: ProjectOverview
     datasets: DatasetCatalog
+    data_families: DataFamiliesPayload
+    corpus_recipes: CorpusRecipesPayload
+    corpus_previews: CorpusPreviewsPayload
+    segmentation_baselines: SegmentationBaselinesPayload
     real_scenes: RealScenesPayload
     field_samples: FieldScenesPayload
     spectral_library: SpectralLibraryPayload

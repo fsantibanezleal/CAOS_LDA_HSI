@@ -1,0 +1,6501 @@
+{
+  "source": "Local-first PTM/LDA, clustering, stability, and unmixing benchmarks over real spectral datasets",
+  "generated_at": "2026-05-01",
+  "methods": {
+    "representation": "band-frequency count vectors from normalized spectra",
+    "topic_model": "scikit-learn LatentDirichletAllocation",
+    "classification_models": [
+      "raw_logistic_regression",
+      "pca_logistic_regression",
+      "topic_logistic_regression"
+    ],
+    "clustering_baselines": [
+      "raw_kmeans",
+      "raw_gmm",
+      "raw_hierarchical",
+      "topic_kmeans",
+      "topic_gmm",
+      "topic_hierarchical"
+    ],
+    "reference_baselines": [
+      "spectral_angle_mapper"
+    ],
+    "unmixing_baselines": [
+      "nmf"
+    ],
+    "stability_protocol": {
+      "seeds": [
+        42,
+        7,
+        19,
+        99
+      ],
+      "comparison_metric": "aligned topic cosine similarity plus top-token jaccard"
+    }
+  },
+  "labeled_scene_runs": [
+    {
+      "dataset_id": "indian-pines-corrected",
+      "dataset_name": "Indian Pines corrected",
+      "family_id": "labeled-spectral-image",
+      "sensor": "AVIRIS",
+      "cube_shape": [
+        145,
+        145,
+        200
+      ],
+      "sampled_documents": 2107,
+      "class_count": 16,
+      "train_size": 1580,
+      "test_size": 527,
+      "representation": {
+        "id": "band-frequency",
+        "alphabet": "band-center tokens",
+        "word": "band token repeated by normalized reflectance count",
+        "document": "one labeled pixel spectrum"
+      },
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 12,
+        "train_perplexity": 127.8297,
+        "test_perplexity": 129.2097,
+        "top_band_tokens": [
+          {
+            "topic_id": 1,
+            "tokens": [
+              {
+                "token": "1128nm",
+                "weight": 0.0145
+              },
+              {
+                "token": "0759nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "1107nm",
+                "weight": 0.0131
+              },
+              {
+                "token": "1181nm",
+                "weight": 0.013
+              },
+              {
+                "token": "0949nm",
+                "weight": 0.0127
+              },
+              {
+                "token": "1086nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "1065nm",
+                "weight": 0.0122
+              },
+              {
+                "token": "0822nm",
+                "weight": 0.0122
+              }
+            ]
+          },
+          {
+            "topic_id": 2,
+            "tokens": [
+              {
+                "token": "0907nm",
+                "weight": 0.0158
+              },
+              {
+                "token": "0611nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0917nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0790nm",
+                "weight": 0.0149
+              },
+              {
+                "token": "0833nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0601nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0569nm",
+                "weight": 0.0136
+              },
+              {
+                "token": "0928nm",
+                "weight": 0.0136
+              }
+            ]
+          },
+          {
+            "topic_id": 3,
+            "tokens": [
+              {
+                "token": "0453nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0759nm",
+                "weight": 0.0144
+              },
+              {
+                "token": "0463nm",
+                "weight": 0.0141
+              },
+              {
+                "token": "0537nm",
+                "weight": 0.0137
+              },
+              {
+                "token": "0569nm",
+                "weight": 0.0137
+              },
+              {
+                "token": "0579nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "0516nm",
+                "weight": 0.013
+              },
+              {
+                "token": "0558nm",
+                "weight": 0.0129
+              }
+            ]
+          },
+          {
+            "topic_id": 4,
+            "tokens": [
+              {
+                "token": "0822nm",
+                "weight": 0.0218
+              },
+              {
+                "token": "0833nm",
+                "weight": 0.0216
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.02
+              },
+              {
+                "token": "0801nm",
+                "weight": 0.0198
+              },
+              {
+                "token": "0907nm",
+                "weight": 0.0198
+              },
+              {
+                "token": "0790nm",
+                "weight": 0.0196
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0193
+              },
+              {
+                "token": "0917nm",
+                "weight": 0.0192
+              }
+            ]
+          },
+          {
+            "topic_id": 5,
+            "tokens": [
+              {
+                "token": "0928nm",
+                "weight": 0.0154
+              },
+              {
+                "token": "0548nm",
+                "weight": 0.0139
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.0139
+              },
+              {
+                "token": "0822nm",
+                "weight": 0.0138
+              },
+              {
+                "token": "0801nm",
+                "weight": 0.0138
+              },
+              {
+                "token": "0780nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "0558nm",
+                "weight": 0.0127
+              },
+              {
+                "token": "0790nm",
+                "weight": 0.0126
+              }
+            ]
+          },
+          {
+            "topic_id": 6,
+            "tokens": [
+              {
+                "token": "0453nm",
+                "weight": 0.0184
+              },
+              {
+                "token": "0463nm",
+                "weight": 0.0181
+              },
+              {
+                "token": "0474nm",
+                "weight": 0.0171
+              },
+              {
+                "token": "0506nm",
+                "weight": 0.0162
+              },
+              {
+                "token": "0411nm",
+                "weight": 0.0152
+              },
+              {
+                "token": "0442nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0484nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0432nm",
+                "weight": 0.0149
+              }
+            ]
+          },
+          {
+            "topic_id": 7,
+            "tokens": [
+              {
+                "token": "0664nm",
+                "weight": 0.0144
+              },
+              {
+                "token": "0695nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "0727nm",
+                "weight": 0.0131
+              },
+              {
+                "token": "0907nm",
+                "weight": 0.0129
+              },
+              {
+                "token": "0833nm",
+                "weight": 0.0128
+              },
+              {
+                "token": "0790nm",
+                "weight": 0.0128
+              },
+              {
+                "token": "0822nm",
+                "weight": 0.0126
+              },
+              {
+                "token": "0601nm",
+                "weight": 0.0125
+              }
+            ]
+          },
+          {
+            "topic_id": 8,
+            "tokens": [
+              {
+                "token": "0590nm",
+                "weight": 0.0179
+              },
+              {
+                "token": "0801nm",
+                "weight": 0.0174
+              },
+              {
+                "token": "0601nm",
+                "weight": 0.0164
+              },
+              {
+                "token": "0854nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0864nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0548nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0442nm",
+                "weight": 0.0137
+              },
+              {
+                "token": "0558nm",
+                "weight": 0.0134
+              }
+            ]
+          },
+          {
+            "topic_id": 9,
+            "tokens": [
+              {
+                "token": "0854nm",
+                "weight": 0.0169
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0166
+              },
+              {
+                "token": "0917nm",
+                "weight": 0.0159
+              },
+              {
+                "token": "0833nm",
+                "weight": 0.0159
+              },
+              {
+                "token": "0864nm",
+                "weight": 0.0156
+              },
+              {
+                "token": "0822nm",
+                "weight": 0.0152
+              },
+              {
+                "token": "0790nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0949nm",
+                "weight": 0.0147
+              }
+            ]
+          },
+          {
+            "topic_id": 10,
+            "tokens": [
+              {
+                "token": "1096nm",
+                "weight": 0.016
+              },
+              {
+                "token": "1075nm",
+                "weight": 0.0139
+              },
+              {
+                "token": "0938nm",
+                "weight": 0.0139
+              },
+              {
+                "token": "1065nm",
+                "weight": 0.0131
+              },
+              {
+                "token": "0495nm",
+                "weight": 0.0131
+              },
+              {
+                "token": "0622nm",
+                "weight": 0.0123
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.0122
+              },
+              {
+                "token": "0854nm",
+                "weight": 0.0122
+              }
+            ]
+          },
+          {
+            "topic_id": 11,
+            "tokens": [
+              {
+                "token": "0780nm",
+                "weight": 0.0141
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.0139
+              },
+              {
+                "token": "0653nm",
+                "weight": 0.0138
+              },
+              {
+                "token": "0717nm",
+                "weight": 0.0137
+              },
+              {
+                "token": "0685nm",
+                "weight": 0.0136
+              },
+              {
+                "token": "0833nm",
+                "weight": 0.0127
+              },
+              {
+                "token": "0790nm",
+                "weight": 0.0126
+              },
+              {
+                "token": "0611nm",
+                "weight": 0.0126
+              }
+            ]
+          },
+          {
+            "topic_id": 12,
+            "tokens": [
+              {
+                "token": "0463nm",
+                "weight": 0.0172
+              },
+              {
+                "token": "0484nm",
+                "weight": 0.0169
+              },
+              {
+                "token": "0474nm",
+                "weight": 0.0168
+              },
+              {
+                "token": "0537nm",
+                "weight": 0.0166
+              },
+              {
+                "token": "0506nm",
+                "weight": 0.0165
+              },
+              {
+                "token": "0453nm",
+                "weight": 0.0163
+              },
+              {
+                "token": "0548nm",
+                "weight": 0.0163
+              },
+              {
+                "token": "0558nm",
+                "weight": 0.0162
+              }
+            ]
+          }
+        ]
+      },
+      "classification": {
+        "raw_logistic_regression": {
+          "accuracy": 0.8216,
+          "macro_f1": 0.8282
+        },
+        "pca_logistic_regression": {
+          "accuracy": 0.74,
+          "macro_f1": 0.7396
+        },
+        "topic_logistic_regression": {
+          "accuracy": 0.5484,
+          "macro_f1": 0.4323
+        }
+      },
+      "clustering": {
+        "raw_kmeans": {
+          "feature_space": "normalized spectra",
+          "ari": 0.3272,
+          "nmi": 0.5585
+        },
+        "raw_gmm": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.3234,
+          "nmi": 0.5125
+        },
+        "raw_hierarchical": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.3179,
+          "nmi": 0.5414
+        },
+        "topic_kmeans": {
+          "feature_space": "topic mixture",
+          "ari": 0.2627,
+          "nmi": 0.5489
+        },
+        "topic_gmm": {
+          "feature_space": "topic mixture",
+          "ari": 0.2854,
+          "nmi": 0.5486
+        },
+        "topic_hierarchical": {
+          "feature_space": "topic mixture",
+          "ari": 0.2815,
+          "nmi": 0.53
+        }
+      }
+    },
+    {
+      "dataset_id": "salinas-corrected",
+      "dataset_name": "Salinas corrected",
+      "family_id": "labeled-spectral-image",
+      "sensor": "AVIRIS",
+      "cube_shape": [
+        512,
+        217,
+        204
+      ],
+      "sampled_documents": 2560,
+      "class_count": 16,
+      "train_size": 1920,
+      "test_size": 640,
+      "representation": {
+        "id": "band-frequency",
+        "alphabet": "band-center tokens",
+        "word": "band token repeated by normalized reflectance count",
+        "document": "one labeled pixel spectrum"
+      },
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 12,
+        "train_perplexity": 142.1227,
+        "test_perplexity": 143.2662,
+        "top_band_tokens": [
+          {
+            "topic_id": 1,
+            "tokens": [
+              {
+                "token": "0876nm",
+                "weight": 0.0143
+              },
+              {
+                "token": "0928nm",
+                "weight": 0.0139
+              },
+              {
+                "token": "0866nm",
+                "weight": 0.0138
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "0855nm",
+                "weight": 0.0131
+              },
+              {
+                "token": "0959nm",
+                "weight": 0.013
+              },
+              {
+                "token": "0948nm",
+                "weight": 0.0128
+              },
+              {
+                "token": "0938nm",
+                "weight": 0.0127
+              }
+            ]
+          },
+          {
+            "topic_id": 2,
+            "tokens": [
+              {
+                "token": "0679nm",
+                "weight": 0.0166
+              },
+              {
+                "token": "0772nm",
+                "weight": 0.0163
+              },
+              {
+                "token": "0659nm",
+                "weight": 0.0157
+              },
+              {
+                "token": "0638nm",
+                "weight": 0.0155
+              },
+              {
+                "token": "0783nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0741nm",
+                "weight": 0.0148
+              },
+              {
+                "token": "0648nm",
+                "weight": 0.0148
+              },
+              {
+                "token": "0721nm",
+                "weight": 0.0147
+              }
+            ]
+          },
+          {
+            "topic_id": 3,
+            "tokens": [
+              {
+                "token": "0866nm",
+                "weight": 0.0256
+              },
+              {
+                "token": "0855nm",
+                "weight": 0.0255
+              },
+              {
+                "token": "0824nm",
+                "weight": 0.0248
+              },
+              {
+                "token": "0876nm",
+                "weight": 0.0235
+              },
+              {
+                "token": "0886nm",
+                "weight": 0.0234
+              },
+              {
+                "token": "0845nm",
+                "weight": 0.0234
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0217
+              },
+              {
+                "token": "0928nm",
+                "weight": 0.0216
+              }
+            ]
+          },
+          {
+            "topic_id": 4,
+            "tokens": [
+              {
+                "token": "0814nm",
+                "weight": 0.0163
+              },
+              {
+                "token": "0855nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0876nm",
+                "weight": 0.0144
+              },
+              {
+                "token": "0741nm",
+                "weight": 0.0143
+              },
+              {
+                "token": "0866nm",
+                "weight": 0.0137
+              },
+              {
+                "token": "0597nm",
+                "weight": 0.0137
+              },
+              {
+                "token": "0690nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "0907nm",
+                "weight": 0.0134
+              }
+            ]
+          },
+          {
+            "topic_id": 5,
+            "tokens": [
+              {
+                "token": "0824nm",
+                "weight": 0.0155
+              },
+              {
+                "token": "0928nm",
+                "weight": 0.0148
+              },
+              {
+                "token": "0803nm",
+                "weight": 0.0148
+              },
+              {
+                "token": "0855nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0845nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0969nm",
+                "weight": 0.014
+              },
+              {
+                "token": "0979nm",
+                "weight": 0.0138
+              },
+              {
+                "token": "0917nm",
+                "weight": 0.0134
+              }
+            ]
+          },
+          {
+            "topic_id": 6,
+            "tokens": [
+              {
+                "token": "0824nm",
+                "weight": 0.0132
+              },
+              {
+                "token": "0907nm",
+                "weight": 0.0125
+              },
+              {
+                "token": "0969nm",
+                "weight": 0.0122
+              },
+              {
+                "token": "0886nm",
+                "weight": 0.0116
+              },
+              {
+                "token": "0876nm",
+                "weight": 0.0116
+              },
+              {
+                "token": "1103nm",
+                "weight": 0.0115
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0114
+              },
+              {
+                "token": "0783nm",
+                "weight": 0.0113
+              }
+            ]
+          },
+          {
+            "topic_id": 7,
+            "tokens": [
+              {
+                "token": "0721nm",
+                "weight": 0.0136
+              },
+              {
+                "token": "0741nm",
+                "weight": 0.0132
+              },
+              {
+                "token": "0731nm",
+                "weight": 0.0125
+              },
+              {
+                "token": "0679nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "0648nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "0752nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "0762nm",
+                "weight": 0.0119
+              },
+              {
+                "token": "0659nm",
+                "weight": 0.0119
+              }
+            ]
+          },
+          {
+            "topic_id": 8,
+            "tokens": [
+              {
+                "token": "0969nm",
+                "weight": 0.0132
+              },
+              {
+                "token": "0948nm",
+                "weight": 0.0132
+              },
+              {
+                "token": "0690nm",
+                "weight": 0.0128
+              },
+              {
+                "token": "0959nm",
+                "weight": 0.0127
+              },
+              {
+                "token": "0721nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "1134nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "0503nm",
+                "weight": 0.0123
+              },
+              {
+                "token": "0917nm",
+                "weight": 0.0121
+              }
+            ]
+          },
+          {
+            "topic_id": 9,
+            "tokens": [
+              {
+                "token": "0638nm",
+                "weight": 0.0124
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0123
+              },
+              {
+                "token": "0659nm",
+                "weight": 0.0122
+              },
+              {
+                "token": "0597nm",
+                "weight": 0.0121
+              },
+              {
+                "token": "0586nm",
+                "weight": 0.0118
+              },
+              {
+                "token": "0524nm",
+                "weight": 0.0115
+              },
+              {
+                "token": "0545nm",
+                "weight": 0.0115
+              },
+              {
+                "token": "0534nm",
+                "weight": 0.0114
+              }
+            ]
+          },
+          {
+            "topic_id": 10,
+            "tokens": [
+              {
+                "token": "0493nm",
+                "weight": 0.0148
+              },
+              {
+                "token": "0586nm",
+                "weight": 0.0143
+              },
+              {
+                "token": "0503nm",
+                "weight": 0.0136
+              },
+              {
+                "token": "0628nm",
+                "weight": 0.0133
+              },
+              {
+                "token": "0710nm",
+                "weight": 0.0128
+              },
+              {
+                "token": "0607nm",
+                "weight": 0.0125
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0121
+              },
+              {
+                "token": "0669nm",
+                "weight": 0.0121
+              }
+            ]
+          },
+          {
+            "topic_id": 11,
+            "tokens": [
+              {
+                "token": "0917nm",
+                "weight": 0.0176
+              },
+              {
+                "token": "0928nm",
+                "weight": 0.0154
+              },
+              {
+                "token": "0845nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0866nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0824nm",
+                "weight": 0.0145
+              },
+              {
+                "token": "0876nm",
+                "weight": 0.014
+              },
+              {
+                "token": "0855nm",
+                "weight": 0.0131
+              },
+              {
+                "token": "0803nm",
+                "weight": 0.0131
+              }
+            ]
+          },
+          {
+            "topic_id": 12,
+            "tokens": [
+              {
+                "token": "0959nm",
+                "weight": 0.0152
+              },
+              {
+                "token": "1083nm",
+                "weight": 0.0134
+              },
+              {
+                "token": "0772nm",
+                "weight": 0.0132
+              },
+              {
+                "token": "1145nm",
+                "weight": 0.013
+              },
+              {
+                "token": "0938nm",
+                "weight": 0.013
+              },
+              {
+                "token": "1124nm",
+                "weight": 0.0126
+              },
+              {
+                "token": "1114nm",
+                "weight": 0.0126
+              },
+              {
+                "token": "1093nm",
+                "weight": 0.0123
+              }
+            ]
+          }
+        ]
+      },
+      "classification": {
+        "raw_logistic_regression": {
+          "accuracy": 0.9281,
+          "macro_f1": 0.9276
+        },
+        "pca_logistic_regression": {
+          "accuracy": 0.9266,
+          "macro_f1": 0.9262
+        },
+        "topic_logistic_regression": {
+          "accuracy": 0.6547,
+          "macro_f1": 0.6191
+        }
+      },
+      "clustering": {
+        "raw_kmeans": {
+          "feature_space": "normalized spectra",
+          "ari": 0.5518,
+          "nmi": 0.7698
+        },
+        "raw_gmm": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.6196,
+          "nmi": 0.8002
+        },
+        "raw_hierarchical": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.5789,
+          "nmi": 0.7866
+        },
+        "topic_kmeans": {
+          "feature_space": "topic mixture",
+          "ari": 0.4647,
+          "nmi": 0.6825
+        },
+        "topic_gmm": {
+          "feature_space": "topic mixture",
+          "ari": 0.5048,
+          "nmi": 0.7085
+        },
+        "topic_hierarchical": {
+          "feature_space": "topic mixture",
+          "ari": 0.4685,
+          "nmi": 0.6984
+        }
+      }
+    },
+    {
+      "dataset_id": "pavia-university",
+      "dataset_name": "Pavia University",
+      "family_id": "labeled-spectral-image",
+      "sensor": "ROSIS",
+      "cube_shape": [
+        610,
+        340,
+        103
+      ],
+      "sampled_documents": 1440,
+      "class_count": 9,
+      "train_size": 1080,
+      "test_size": 360,
+      "representation": {
+        "id": "band-frequency",
+        "alphabet": "band-center tokens",
+        "word": "band token repeated by normalized reflectance count",
+        "document": "one labeled pixel spectrum"
+      },
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 9,
+        "train_perplexity": 87.7343,
+        "test_perplexity": 89.2586,
+        "top_band_tokens": [
+          {
+            "topic_id": 1,
+            "tokens": [
+              {
+                "token": "0434nm",
+                "weight": 0.0655
+              },
+              {
+                "token": "0430nm",
+                "weight": 0.0531
+              },
+              {
+                "token": "0438nm",
+                "weight": 0.0334
+              },
+              {
+                "token": "0653nm",
+                "weight": 0.0158
+              },
+              {
+                "token": "0649nm",
+                "weight": 0.0158
+              },
+              {
+                "token": "0662nm",
+                "weight": 0.0155
+              },
+              {
+                "token": "0658nm",
+                "weight": 0.0153
+              },
+              {
+                "token": "0666nm",
+                "weight": 0.0152
+              }
+            ]
+          },
+          {
+            "topic_id": 2,
+            "tokens": [
+              {
+                "token": "0691nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0712nm",
+                "weight": 0.0149
+              },
+              {
+                "token": "0670nm",
+                "weight": 0.0143
+              },
+              {
+                "token": "0696nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0645nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0679nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0801nm",
+                "weight": 0.014
+              },
+              {
+                "token": "0704nm",
+                "weight": 0.0138
+              }
+            ]
+          },
+          {
+            "topic_id": 3,
+            "tokens": [
+              {
+                "token": "0620nm",
+                "weight": 0.0153
+              },
+              {
+                "token": "0535nm",
+                "weight": 0.0153
+              },
+              {
+                "token": "0552nm",
+                "weight": 0.0152
+              },
+              {
+                "token": "0607nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0594nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0599nm",
+                "weight": 0.0149
+              },
+              {
+                "token": "0514nm",
+                "weight": 0.0146
+              },
+              {
+                "token": "0578nm",
+                "weight": 0.0146
+              }
+            ]
+          },
+          {
+            "topic_id": 4,
+            "tokens": [
+              {
+                "token": "0793nm",
+                "weight": 0.0161
+              },
+              {
+                "token": "0797nm",
+                "weight": 0.0157
+              },
+              {
+                "token": "0767nm",
+                "weight": 0.0156
+              },
+              {
+                "token": "0675nm",
+                "weight": 0.0155
+              },
+              {
+                "token": "0860nm",
+                "weight": 0.0154
+              },
+              {
+                "token": "0721nm",
+                "weight": 0.0153
+              },
+              {
+                "token": "0725nm",
+                "weight": 0.0152
+              },
+              {
+                "token": "0788nm",
+                "weight": 0.0152
+              }
+            ]
+          },
+          {
+            "topic_id": 5,
+            "tokens": [
+              {
+                "token": "0856nm",
+                "weight": 0.0243
+              },
+              {
+                "token": "0860nm",
+                "weight": 0.0242
+              },
+              {
+                "token": "0852nm",
+                "weight": 0.0239
+              },
+              {
+                "token": "0847nm",
+                "weight": 0.0235
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.0234
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0233
+              },
+              {
+                "token": "0835nm",
+                "weight": 0.0233
+              },
+              {
+                "token": "0830nm",
+                "weight": 0.0232
+              }
+            ]
+          },
+          {
+            "topic_id": 6,
+            "tokens": [
+              {
+                "token": "0839nm",
+                "weight": 0.033
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.0328
+              },
+              {
+                "token": "0830nm",
+                "weight": 0.0328
+              },
+              {
+                "token": "0826nm",
+                "weight": 0.0327
+              },
+              {
+                "token": "0835nm",
+                "weight": 0.0327
+              },
+              {
+                "token": "0822nm",
+                "weight": 0.0326
+              },
+              {
+                "token": "0814nm",
+                "weight": 0.0325
+              },
+              {
+                "token": "0809nm",
+                "weight": 0.0325
+              }
+            ]
+          },
+          {
+            "topic_id": 7,
+            "tokens": [
+              {
+                "token": "0485nm",
+                "weight": 0.0275
+              },
+              {
+                "token": "0489nm",
+                "weight": 0.0273
+              },
+              {
+                "token": "0493nm",
+                "weight": 0.0273
+              },
+              {
+                "token": "0497nm",
+                "weight": 0.0271
+              },
+              {
+                "token": "0481nm",
+                "weight": 0.0269
+              },
+              {
+                "token": "0502nm",
+                "weight": 0.0268
+              },
+              {
+                "token": "0472nm",
+                "weight": 0.0267
+              },
+              {
+                "token": "0476nm",
+                "weight": 0.0265
+              }
+            ]
+          },
+          {
+            "topic_id": 8,
+            "tokens": [
+              {
+                "token": "0822nm",
+                "weight": 0.0175
+              },
+              {
+                "token": "0729nm",
+                "weight": 0.0174
+              },
+              {
+                "token": "0809nm",
+                "weight": 0.0171
+              },
+              {
+                "token": "0687nm",
+                "weight": 0.0169
+              },
+              {
+                "token": "0780nm",
+                "weight": 0.0169
+              },
+              {
+                "token": "0717nm",
+                "weight": 0.0168
+              },
+              {
+                "token": "0818nm",
+                "weight": 0.0168
+              },
+              {
+                "token": "0691nm",
+                "weight": 0.0165
+              }
+            ]
+          },
+          {
+            "topic_id": 9,
+            "tokens": [
+              {
+                "token": "0447nm",
+                "weight": 0.0237
+              },
+              {
+                "token": "0443nm",
+                "weight": 0.0197
+              },
+              {
+                "token": "0451nm",
+                "weight": 0.0183
+              },
+              {
+                "token": "0696nm",
+                "weight": 0.0144
+              },
+              {
+                "token": "0666nm",
+                "weight": 0.0143
+              },
+              {
+                "token": "0679nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0687nm",
+                "weight": 0.0141
+              },
+              {
+                "token": "0658nm",
+                "weight": 0.0141
+              }
+            ]
+          }
+        ]
+      },
+      "classification": {
+        "raw_logistic_regression": {
+          "accuracy": 0.8917,
+          "macro_f1": 0.8911
+        },
+        "pca_logistic_regression": {
+          "accuracy": 0.8944,
+          "macro_f1": 0.8938
+        },
+        "topic_logistic_regression": {
+          "accuracy": 0.7278,
+          "macro_f1": 0.7203
+        }
+      },
+      "clustering": {
+        "raw_kmeans": {
+          "feature_space": "normalized spectra",
+          "ari": 0.4787,
+          "nmi": 0.6036
+        },
+        "raw_gmm": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.5072,
+          "nmi": 0.6518
+        },
+        "raw_hierarchical": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.4759,
+          "nmi": 0.6222
+        },
+        "topic_kmeans": {
+          "feature_space": "topic mixture",
+          "ari": 0.4888,
+          "nmi": 0.6245
+        },
+        "topic_gmm": {
+          "feature_space": "topic mixture",
+          "ari": 0.5075,
+          "nmi": 0.644
+        },
+        "topic_hierarchical": {
+          "feature_space": "topic mixture",
+          "ari": 0.4818,
+          "nmi": 0.6217
+        }
+      }
+    },
+    {
+      "dataset_id": "botswana",
+      "dataset_name": "Botswana",
+      "family_id": "labeled-spectral-image",
+      "sensor": "Hyperion",
+      "cube_shape": [
+        1476,
+        256,
+        145
+      ],
+      "sampled_documents": 2116,
+      "class_count": 14,
+      "train_size": 1587,
+      "test_size": 529,
+      "representation": {
+        "id": "band-frequency",
+        "alphabet": "band-center tokens",
+        "word": "band token repeated by normalized reflectance count",
+        "document": "one labeled pixel spectrum"
+      },
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 12,
+        "train_perplexity": 95.4774,
+        "test_perplexity": 96.5637,
+        "top_band_tokens": [
+          {
+            "topic_id": 1,
+            "tokens": [
+              {
+                "token": "0400nm",
+                "weight": 0.0231
+              },
+              {
+                "token": "1012nm",
+                "weight": 0.0216
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0215
+              },
+              {
+                "token": "0823nm",
+                "weight": 0.0214
+              },
+              {
+                "token": "0415nm",
+                "weight": 0.0205
+              },
+              {
+                "token": "0881nm",
+                "weight": 0.0204
+              },
+              {
+                "token": "0998nm",
+                "weight": 0.0196
+              },
+              {
+                "token": "0910nm",
+                "weight": 0.0193
+              }
+            ]
+          },
+          {
+            "topic_id": 2,
+            "tokens": [
+              {
+                "token": "0415nm",
+                "weight": 0.0206
+              },
+              {
+                "token": "0400nm",
+                "weight": 0.0202
+              },
+              {
+                "token": "0429nm",
+                "weight": 0.0194
+              },
+              {
+                "token": "0969nm",
+                "weight": 0.0176
+              },
+              {
+                "token": "0488nm",
+                "weight": 0.0167
+              },
+              {
+                "token": "0838nm",
+                "weight": 0.0165
+              },
+              {
+                "token": "0998nm",
+                "weight": 0.0163
+              },
+              {
+                "token": "1027nm",
+                "weight": 0.0162
+              }
+            ]
+          },
+          {
+            "topic_id": 3,
+            "tokens": [
+              {
+                "token": "0823nm",
+                "weight": 0.0244
+              },
+              {
+                "token": "0867nm",
+                "weight": 0.0214
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0196
+              },
+              {
+                "token": "0838nm",
+                "weight": 0.0195
+              },
+              {
+                "token": "0400nm",
+                "weight": 0.0192
+              },
+              {
+                "token": "0954nm",
+                "weight": 0.0184
+              },
+              {
+                "token": "0969nm",
+                "weight": 0.0178
+              },
+              {
+                "token": "0983nm",
+                "weight": 0.0175
+              }
+            ]
+          },
+          {
+            "topic_id": 4,
+            "tokens": [
+              {
+                "token": "0881nm",
+                "weight": 0.0171
+              },
+              {
+                "token": "1012nm",
+                "weight": 0.0167
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0159
+              },
+              {
+                "token": "0983nm",
+                "weight": 0.0157
+              },
+              {
+                "token": "0444nm",
+                "weight": 0.0153
+              },
+              {
+                "token": "0429nm",
+                "weight": 0.0151
+              },
+              {
+                "token": "0590nm",
+                "weight": 0.015
+              },
+              {
+                "token": "0910nm",
+                "weight": 0.0146
+              }
+            ]
+          },
+          {
+            "topic_id": 5,
+            "tokens": [
+              {
+                "token": "0429nm",
+                "weight": 0.0221
+              },
+              {
+                "token": "0415nm",
+                "weight": 0.0219
+              },
+              {
+                "token": "0444nm",
+                "weight": 0.0211
+              },
+              {
+                "token": "0400nm",
+                "weight": 0.0196
+              },
+              {
+                "token": "0488nm",
+                "weight": 0.0184
+              },
+              {
+                "token": "0838nm",
+                "weight": 0.0166
+              },
+              {
+                "token": "0910nm",
+                "weight": 0.0164
+              },
+              {
+                "token": "0546nm",
+                "weight": 0.0162
+              }
+            ]
+          },
+          {
+            "topic_id": 6,
+            "tokens": [
+              {
+                "token": "0735nm",
+                "weight": 0.021
+              },
+              {
+                "token": "0633nm",
+                "weight": 0.0201
+              },
+              {
+                "token": "0692nm",
+                "weight": 0.0199
+              },
+              {
+                "token": "0750nm",
+                "weight": 0.0193
+              },
+              {
+                "token": "0765nm",
+                "weight": 0.0192
+              },
+              {
+                "token": "0677nm",
+                "weight": 0.0186
+              },
+              {
+                "token": "0721nm",
+                "weight": 0.0185
+              },
+              {
+                "token": "0706nm",
+                "weight": 0.0182
+              }
+            ]
+          },
+          {
+            "topic_id": 7,
+            "tokens": [
+              {
+                "token": "0823nm",
+                "weight": 0.0147
+              },
+              {
+                "token": "0881nm",
+                "weight": 0.0146
+              },
+              {
+                "token": "0721nm",
+                "weight": 0.0144
+              },
+              {
+                "token": "0735nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0867nm",
+                "weight": 0.0142
+              },
+              {
+                "token": "0444nm",
+                "weight": 0.0141
+              },
+              {
+                "token": "0648nm",
+                "weight": 0.0141
+              }
+            ]
+          },
+          {
+            "topic_id": 8,
+            "tokens": [
+              {
+                "token": "0415nm",
+                "weight": 0.0681
+              },
+              {
+                "token": "0969nm",
+                "weight": 0.0586
+              },
+              {
+                "token": "1027nm",
+                "weight": 0.0535
+              },
+              {
+                "token": "0823nm",
+                "weight": 0.0501
+              },
+              {
+                "token": "1012nm",
+                "weight": 0.0495
+              },
+              {
+                "token": "0400nm",
+                "weight": 0.0482
+              },
+              {
+                "token": "0590nm",
+                "weight": 0.0453
+              },
+              {
+                "token": "0867nm",
+                "weight": 0.0447
+              }
+            ]
+          },
+          {
+            "topic_id": 9,
+            "tokens": [
+              {
+                "token": "0881nm",
+                "weight": 0.0201
+              },
+              {
+                "token": "0983nm",
+                "weight": 0.0196
+              },
+              {
+                "token": "0415nm",
+                "weight": 0.0186
+              },
+              {
+                "token": "1027nm",
+                "weight": 0.0175
+              },
+              {
+                "token": "0910nm",
+                "weight": 0.0166
+              },
+              {
+                "token": "0838nm",
+                "weight": 0.0165
+              },
+              {
+                "token": "0998nm",
+                "weight": 0.0163
+              },
+              {
+                "token": "1012nm",
+                "weight": 0.0162
+              }
+            ]
+          },
+          {
+            "topic_id": 10,
+            "tokens": [
+              {
+                "token": "0400nm",
+                "weight": 0.026
+              },
+              {
+                "token": "0415nm",
+                "weight": 0.0242
+              },
+              {
+                "token": "0458nm",
+                "weight": 0.0197
+              },
+              {
+                "token": "0444nm",
+                "weight": 0.0192
+              },
+              {
+                "token": "0473nm",
+                "weight": 0.0189
+              },
+              {
+                "token": "0517nm",
+                "weight": 0.0184
+              },
+              {
+                "token": "0590nm",
+                "weight": 0.0179
+              },
+              {
+                "token": "0488nm",
+                "weight": 0.0178
+              }
+            ]
+          },
+          {
+            "topic_id": 11,
+            "tokens": [
+              {
+                "token": "0881nm",
+                "weight": 0.0264
+              },
+              {
+                "token": "0867nm",
+                "weight": 0.0254
+              },
+              {
+                "token": "0910nm",
+                "weight": 0.0234
+              },
+              {
+                "token": "0838nm",
+                "weight": 0.0232
+              },
+              {
+                "token": "0896nm",
+                "weight": 0.0226
+              },
+              {
+                "token": "1027nm",
+                "weight": 0.0225
+              },
+              {
+                "token": "0969nm",
+                "weight": 0.0223
+              },
+              {
+                "token": "0925nm",
+                "weight": 0.0221
+              }
+            ]
+          },
+          {
+            "topic_id": 12,
+            "tokens": [
+              {
+                "token": "0400nm",
+                "weight": 0.0546
+              },
+              {
+                "token": "0415nm",
+                "weight": 0.0533
+              },
+              {
+                "token": "0429nm",
+                "weight": 0.0495
+              },
+              {
+                "token": "0444nm",
+                "weight": 0.0459
+              },
+              {
+                "token": "0458nm",
+                "weight": 0.0392
+              },
+              {
+                "token": "0473nm",
+                "weight": 0.0365
+              },
+              {
+                "token": "0488nm",
+                "weight": 0.0345
+              },
+              {
+                "token": "0502nm",
+                "weight": 0.0322
+              }
+            ]
+          }
+        ]
+      },
+      "classification": {
+        "raw_logistic_regression": {
+          "accuracy": 0.9263,
+          "macro_f1": 0.9267
+        },
+        "pca_logistic_regression": {
+          "accuracy": 0.9206,
+          "macro_f1": 0.9208
+        },
+        "topic_logistic_regression": {
+          "accuracy": 0.7164,
+          "macro_f1": 0.6892
+        }
+      },
+      "clustering": {
+        "raw_kmeans": {
+          "feature_space": "normalized spectra",
+          "ari": 0.4458,
+          "nmi": 0.6553
+        },
+        "raw_gmm": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.6089,
+          "nmi": 0.7617
+        },
+        "raw_hierarchical": {
+          "feature_space": "pca-normalized spectra",
+          "ari": 0.4575,
+          "nmi": 0.6633
+        },
+        "topic_kmeans": {
+          "feature_space": "topic mixture",
+          "ari": 0.4216,
+          "nmi": 0.6458
+        },
+        "topic_gmm": {
+          "feature_space": "topic mixture",
+          "ari": 0.4237,
+          "nmi": 0.6509
+        },
+        "topic_hierarchical": {
+          "feature_space": "topic mixture",
+          "ari": 0.3267,
+          "nmi": 0.6057
+        }
+      }
+    }
+  ],
+  "topic_stability_runs": [
+    {
+      "dataset_id": "indian-pines-corrected",
+      "dataset_name": "Indian Pines corrected",
+      "topic_count": 12,
+      "document_count": 1134,
+      "seeds": [
+        42,
+        7,
+        19,
+        99
+      ],
+      "perplexity_mean": 128.1132,
+      "perplexity_std": 0.1249,
+      "matched_topic_cosine_mean": 0.9397,
+      "matched_topic_cosine_min": 0.8572,
+      "matched_top_token_jaccard_mean": 0.3282,
+      "comparisons": [
+        {
+          "matched_topic_cosine_mean": 0.9811,
+          "matched_topic_cosine_min": 0.9565,
+          "matched_topic_cosine_std": 0.0108,
+          "matched_top_token_jaccard_mean": 0.3603,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9844,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9809,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9746,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9993,
+              "top_token_jaccard": 1.0
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.9774,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9749,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9857,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9565,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9808,
+              "top_token_jaccard": 0.5
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9784,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9813,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.999,
+              "top_token_jaccard": 0.6
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 7,
+          "reference_perplexity": 128.2005,
+          "candidate_perplexity": 128.1884
+        },
+        {
+          "matched_topic_cosine_mean": 0.9808,
+          "matched_topic_cosine_min": 0.9663,
+          "matched_topic_cosine_std": 0.0106,
+          "matched_top_token_jaccard_mean": 0.3572,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9906,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9727,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9731,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9991,
+              "top_token_jaccard": 0.8462
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9663,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9819,
+              "top_token_jaccard": 0.5
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9834,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9703,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9726,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.975,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9851,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9993,
+              "top_token_jaccard": 0.7143
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 19,
+          "reference_perplexity": 128.2005,
+          "candidate_perplexity": 128.1661
+        },
+        {
+          "matched_topic_cosine_mean": 0.8572,
+          "matched_topic_cosine_min": 0.4818,
+          "matched_topic_cosine_std": 0.2051,
+          "matched_top_token_jaccard_mean": 0.2672,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9892,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9746,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9889,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.542,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9672,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.4818,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9764,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9571,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.978,
+              "top_token_jaccard": 0.8462
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9662,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9798,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.4853,
+              "top_token_jaccard": 0.2
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 99,
+          "reference_perplexity": 128.2005,
+          "candidate_perplexity": 127.8979
+        }
+      ],
+      "caveat": "This first-pass stability view compares aligned topic components across seeds on a compact sample, not full-scene stability under all preprocessing choices."
+    },
+    {
+      "dataset_id": "salinas-corrected",
+      "dataset_name": "Salinas corrected",
+      "topic_count": 12,
+      "document_count": 1280,
+      "seeds": [
+        42,
+        7,
+        19,
+        99
+      ],
+      "perplexity_mean": 142.711,
+      "perplexity_std": 0.0389,
+      "matched_topic_cosine_mean": 0.9774,
+      "matched_topic_cosine_min": 0.975,
+      "matched_top_token_jaccard_mean": 0.3274,
+      "comparisons": [
+        {
+          "matched_topic_cosine_mean": 0.9812,
+          "matched_topic_cosine_min": 0.9695,
+          "matched_topic_cosine_std": 0.0086,
+          "matched_top_token_jaccard_mean": 0.3713,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9876,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.988,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9999,
+              "top_token_jaccard": 0.8462
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9696,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9818,
+              "top_token_jaccard": 0.5
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9761,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9881,
+              "top_token_jaccard": 0.5
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9756,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.9852,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9797,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9695,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9731,
+              "top_token_jaccard": 0.3333
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 7,
+          "reference_perplexity": 142.6922,
+          "candidate_perplexity": 142.6576
+        },
+        {
+          "matched_topic_cosine_mean": 0.975,
+          "matched_topic_cosine_min": 0.9624,
+          "matched_topic_cosine_std": 0.0097,
+          "matched_top_token_jaccard_mean": 0.2782,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.965,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9789,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 1.0,
+              "top_token_jaccard": 0.8462
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9709,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.9759,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9667,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9846,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9724,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9804,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9707,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9624,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9724,
+              "top_token_jaccard": 0.2
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 19,
+          "reference_perplexity": 142.6922,
+          "candidate_perplexity": 142.7581
+        },
+        {
+          "matched_topic_cosine_mean": 0.9761,
+          "matched_topic_cosine_min": 0.9564,
+          "matched_topic_cosine_std": 0.0117,
+          "matched_top_token_jaccard_mean": 0.3328,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9564,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9874,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 1.0,
+              "top_token_jaccard": 0.8462
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9725,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9869,
+              "top_token_jaccard": 0.5
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9666,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.982,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9616,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.9794,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9751,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9774,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9676,
+              "top_token_jaccard": 0.0909
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 99,
+          "reference_perplexity": 142.6922,
+          "candidate_perplexity": 142.7361
+        }
+      ],
+      "caveat": "This first-pass stability view compares aligned topic components across seeds on a compact sample, not full-scene stability under all preprocessing choices."
+    },
+    {
+      "dataset_id": "pavia-university",
+      "dataset_name": "Pavia University",
+      "topic_count": 9,
+      "document_count": 720,
+      "seeds": [
+        42,
+        7,
+        19,
+        99
+      ],
+      "perplexity_mean": 87.7593,
+      "perplexity_std": 0.2784,
+      "matched_topic_cosine_mean": 0.917,
+      "matched_topic_cosine_min": 0.9138,
+      "matched_top_token_jaccard_mean": 0.2463,
+      "comparisons": [
+        {
+          "matched_topic_cosine_mean": 0.9199,
+          "matched_topic_cosine_min": 0.5983,
+          "matched_topic_cosine_std": 0.1159,
+          "matched_top_token_jaccard_mean": 0.2015,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9344,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9841,
+              "top_token_jaccard": 0.0435
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9327,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9686,
+              "top_token_jaccard": 0.0435
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9277,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.5983,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9859,
+              "top_token_jaccard": 0.7143
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9863,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9607,
+              "top_token_jaccard": 0.2632
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 7,
+          "reference_perplexity": 88.2394,
+          "candidate_perplexity": 87.5968
+        },
+        {
+          "matched_topic_cosine_mean": 0.9174,
+          "matched_topic_cosine_min": 0.5233,
+          "matched_topic_cosine_std": 0.1419,
+          "matched_top_token_jaccard_mean": 0.3141,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.5233,
+              "top_token_jaccard": 0.0435
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9375,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9553,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.98,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.993,
+              "top_token_jaccard": 0.6
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9979,
+              "top_token_jaccard": 0.6
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9901,
+              "top_token_jaccard": 0.7143
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9113,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9681,
+              "top_token_jaccard": 0.3333
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 19,
+          "reference_perplexity": 88.2394,
+          "candidate_perplexity": 87.6372
+        },
+        {
+          "matched_topic_cosine_mean": 0.9138,
+          "matched_topic_cosine_min": 0.5996,
+          "matched_topic_cosine_std": 0.1139,
+          "matched_top_token_jaccard_mean": 0.2232,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9341,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9834,
+              "top_token_jaccard": 0.0435
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9562,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9208,
+              "top_token_jaccard": 0.0435
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9269,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.5996,
+              "top_token_jaccard": 0.1429
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9865,
+              "top_token_jaccard": 0.6
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9869,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9303,
+              "top_token_jaccard": 0.0909
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 99,
+          "reference_perplexity": 88.2394,
+          "candidate_perplexity": 87.5639
+        }
+      ],
+      "caveat": "This first-pass stability view compares aligned topic components across seeds on a compact sample, not full-scene stability under all preprocessing choices."
+    },
+    {
+      "dataset_id": "botswana",
+      "dataset_name": "Botswana",
+      "topic_count": 12,
+      "document_count": 1120,
+      "seeds": [
+        42,
+        7,
+        19,
+        99
+      ],
+      "perplexity_mean": 95.7586,
+      "perplexity_std": 0.0736,
+      "matched_topic_cosine_mean": 0.9255,
+      "matched_topic_cosine_min": 0.9226,
+      "matched_top_token_jaccard_mean": 0.4175,
+      "comparisons": [
+        {
+          "matched_topic_cosine_mean": 0.9226,
+          "matched_topic_cosine_min": 0.5508,
+          "matched_topic_cosine_std": 0.1446,
+          "matched_top_token_jaccard_mean": 0.4341,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9804,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.981,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.983,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.984,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9755,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.5508,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9999,
+              "top_token_jaccard": 0.8462
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.6558,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9798,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.985,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9958,
+              "top_token_jaccard": 0.7143
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9996,
+              "top_token_jaccard": 1.0
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 7,
+          "reference_perplexity": 95.6522,
+          "candidate_perplexity": 95.728
+        },
+        {
+          "matched_topic_cosine_mean": 0.9282,
+          "matched_topic_cosine_min": 0.6022,
+          "matched_topic_cosine_std": 0.1264,
+          "matched_top_token_jaccard_mean": 0.4285,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.9808,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9765,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9827,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9768,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9821,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.6022,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.9997,
+              "top_token_jaccard": 0.6
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.6966,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9838,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9767,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.9809,
+              "top_token_jaccard": 0.7143
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9997,
+              "top_token_jaccard": 1.0
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 19,
+          "reference_perplexity": 95.6522,
+          "candidate_perplexity": 95.8332
+        },
+        {
+          "matched_topic_cosine_mean": 0.9258,
+          "matched_topic_cosine_min": 0.6153,
+          "matched_topic_cosine_std": 0.126,
+          "matched_top_token_jaccard_mean": 0.3898,
+          "pairings": [
+            {
+              "reference_topic_id": 1,
+              "candidate_topic_id": 12,
+              "cosine_similarity": 0.9778,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 2,
+              "candidate_topic_id": 2,
+              "cosine_similarity": 0.9733,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 3,
+              "candidate_topic_id": 5,
+              "cosine_similarity": 0.9771,
+              "top_token_jaccard": 0.2632
+            },
+            {
+              "reference_topic_id": 4,
+              "candidate_topic_id": 6,
+              "cosine_similarity": 0.9825,
+              "top_token_jaccard": 0.0909
+            },
+            {
+              "reference_topic_id": 5,
+              "candidate_topic_id": 10,
+              "cosine_similarity": 0.9697,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 6,
+              "candidate_topic_id": 8,
+              "cosine_similarity": 0.6153,
+              "top_token_jaccard": 0.4118
+            },
+            {
+              "reference_topic_id": 7,
+              "candidate_topic_id": 3,
+              "cosine_similarity": 0.9989,
+              "top_token_jaccard": 0.2
+            },
+            {
+              "reference_topic_id": 8,
+              "candidate_topic_id": 11,
+              "cosine_similarity": 0.6773,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 9,
+              "candidate_topic_id": 7,
+              "cosine_similarity": 0.9689,
+              "top_token_jaccard": 0.6
+            },
+            {
+              "reference_topic_id": 10,
+              "candidate_topic_id": 4,
+              "cosine_similarity": 0.9879,
+              "top_token_jaccard": 0.3333
+            },
+            {
+              "reference_topic_id": 11,
+              "candidate_topic_id": 9,
+              "cosine_similarity": 0.9814,
+              "top_token_jaccard": 0.5
+            },
+            {
+              "reference_topic_id": 12,
+              "candidate_topic_id": 1,
+              "cosine_similarity": 0.9994,
+              "top_token_jaccard": 1.0
+            }
+          ],
+          "reference_seed": 42,
+          "candidate_seed": 99,
+          "reference_perplexity": 95.6522,
+          "candidate_perplexity": 95.8208
+        }
+      ],
+      "caveat": "This first-pass stability view compares aligned topic components across seeds on a compact sample, not full-scene stability under all preprocessing choices."
+    }
+  ],
+  "unlabeled_scene_runs": [
+    {
+      "dataset_id": "cuprite-upv-reflectance",
+      "dataset_name": "Cuprite reflectance",
+      "family_id": "unlabeled-spectral-image",
+      "sensor": "AVIRIS",
+      "cube_shape": [
+        512,
+        614,
+        224
+      ],
+      "sampled_documents": 4200,
+      "representation": {
+        "id": "band-frequency",
+        "alphabet": "band-center tokens",
+        "word": "band token repeated by normalized reflectance count",
+        "document": "one unlabeled pixel spectrum"
+      },
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 8,
+        "perplexity": 200.5205,
+        "top_band_tokens": [
+          {
+            "topic_id": 1,
+            "tokens": [
+              {
+                "token": "1841nm",
+                "weight": 0.0809
+              },
+              {
+                "token": "1831nm",
+                "weight": 0.0085
+              },
+              {
+                "token": "1963nm",
+                "weight": 0.0064
+              },
+              {
+                "token": "1690nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1822nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1718nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1784nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1803nm",
+                "weight": 0.0056
+              }
+            ]
+          },
+          {
+            "topic_id": 2,
+            "tokens": [
+              {
+                "token": "1445nm",
+                "weight": 0.0912
+              },
+              {
+                "token": "1963nm",
+                "weight": 0.0075
+              },
+              {
+                "token": "1831nm",
+                "weight": 0.0068
+              },
+              {
+                "token": "1069nm",
+                "weight": 0.0062
+              },
+              {
+                "token": "2321nm",
+                "weight": 0.0061
+              },
+              {
+                "token": "2302nm",
+                "weight": 0.006
+              },
+              {
+                "token": "2001nm",
+                "weight": 0.006
+              },
+              {
+                "token": "2378nm",
+                "weight": 0.006
+              }
+            ]
+          },
+          {
+            "topic_id": 3,
+            "tokens": [
+              {
+                "token": "1831nm",
+                "weight": 0.0087
+              },
+              {
+                "token": "1662nm",
+                "weight": 0.0073
+              },
+              {
+                "token": "1963nm",
+                "weight": 0.0072
+              },
+              {
+                "token": "1332nm",
+                "weight": 0.007
+              },
+              {
+                "token": "1794nm",
+                "weight": 0.007
+              },
+              {
+                "token": "1718nm",
+                "weight": 0.007
+              },
+              {
+                "token": "1389nm",
+                "weight": 0.0069
+              },
+              {
+                "token": "1737nm",
+                "weight": 0.0069
+              }
+            ]
+          },
+          {
+            "topic_id": 4,
+            "tokens": [
+              {
+                "token": "1831nm",
+                "weight": 0.0089
+              },
+              {
+                "token": "1709nm",
+                "weight": 0.0083
+              },
+              {
+                "token": "1737nm",
+                "weight": 0.0081
+              },
+              {
+                "token": "1756nm",
+                "weight": 0.0079
+              },
+              {
+                "token": "1690nm",
+                "weight": 0.0079
+              },
+              {
+                "token": "1634nm",
+                "weight": 0.0079
+              },
+              {
+                "token": "1643nm",
+                "weight": 0.0078
+              },
+              {
+                "token": "1549nm",
+                "weight": 0.0078
+              }
+            ]
+          },
+          {
+            "topic_id": 5,
+            "tokens": [
+              {
+                "token": "0899nm",
+                "weight": 0.0082
+              },
+              {
+                "token": "0861nm",
+                "weight": 0.0082
+              },
+              {
+                "token": "0909nm",
+                "weight": 0.0081
+              },
+              {
+                "token": "0927nm",
+                "weight": 0.008
+              },
+              {
+                "token": "0852nm",
+                "weight": 0.0079
+              },
+              {
+                "token": "0890nm",
+                "weight": 0.0078
+              },
+              {
+                "token": "0843nm",
+                "weight": 0.0078
+              },
+              {
+                "token": "0946nm",
+                "weight": 0.0077
+              }
+            ]
+          },
+          {
+            "topic_id": 6,
+            "tokens": [
+              {
+                "token": "1445nm",
+                "weight": 0.0457
+              },
+              {
+                "token": "1831nm",
+                "weight": 0.012
+              },
+              {
+                "token": "1784nm",
+                "weight": 0.0092
+              },
+              {
+                "token": "1765nm",
+                "weight": 0.0089
+              },
+              {
+                "token": "1718nm",
+                "weight": 0.0088
+              },
+              {
+                "token": "1822nm",
+                "weight": 0.0087
+              },
+              {
+                "token": "1794nm",
+                "weight": 0.0086
+              },
+              {
+                "token": "1700nm",
+                "weight": 0.0086
+              }
+            ]
+          },
+          {
+            "topic_id": 7,
+            "tokens": [
+              {
+                "token": "1455nm",
+                "weight": 0.0709
+              },
+              {
+                "token": "1831nm",
+                "weight": 0.0068
+              },
+              {
+                "token": "1332nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1737nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1690nm",
+                "weight": 0.0056
+              },
+              {
+                "token": "1700nm",
+                "weight": 0.0055
+              },
+              {
+                "token": "1709nm",
+                "weight": 0.0055
+              },
+              {
+                "token": "1662nm",
+                "weight": 0.0055
+              }
+            ]
+          },
+          {
+            "topic_id": 8,
+            "tokens": [
+              {
+                "token": "1831nm",
+                "weight": 0.0115
+              },
+              {
+                "token": "1963nm",
+                "weight": 0.008
+              },
+              {
+                "token": "2114nm",
+                "weight": 0.0078
+              },
+              {
+                "token": "1219nm",
+                "weight": 0.0077
+              },
+              {
+                "token": "2104nm",
+                "weight": 0.0075
+              },
+              {
+                "token": "1229nm",
+                "weight": 0.0073
+              },
+              {
+                "token": "2236nm",
+                "weight": 0.0073
+              },
+              {
+                "token": "2199nm",
+                "weight": 0.0073
+              }
+            ]
+          }
+        ]
+      },
+      "clustering": {
+        "raw_kmeans": {
+          "feature_space": "normalized spectra",
+          "cluster_summary": [
+            {
+              "cluster_id": 1,
+              "size": 719
+            },
+            {
+              "cluster_id": 2,
+              "size": 514
+            },
+            {
+              "cluster_id": 3,
+              "size": 483
+            },
+            {
+              "cluster_id": 4,
+              "size": 531
+            },
+            {
+              "cluster_id": 5,
+              "size": 604
+            },
+            {
+              "cluster_id": 6,
+              "size": 585
+            },
+            {
+              "cluster_id": 7,
+              "size": 396
+            },
+            {
+              "cluster_id": 8,
+              "size": 368
+            }
+          ]
+        },
+        "raw_gmm": {
+          "feature_space": "pca-normalized spectra",
+          "cluster_summary": [
+            {
+              "cluster_id": 1,
+              "size": 1507
+            },
+            {
+              "cluster_id": 2,
+              "size": 244
+            },
+            {
+              "cluster_id": 3,
+              "size": 600
+            },
+            {
+              "cluster_id": 4,
+              "size": 450
+            },
+            {
+              "cluster_id": 5,
+              "size": 265
+            },
+            {
+              "cluster_id": 6,
+              "size": 172
+            },
+            {
+              "cluster_id": 7,
+              "size": 94
+            },
+            {
+              "cluster_id": 8,
+              "size": 868
+            }
+          ]
+        },
+        "raw_hierarchical": {
+          "feature_space": "pca-normalized spectra",
+          "cluster_summary": [
+            {
+              "cluster_id": 1,
+              "size": 342
+            },
+            {
+              "cluster_id": 2,
+              "size": 1272
+            },
+            {
+              "cluster_id": 3,
+              "size": 1386
+            },
+            {
+              "cluster_id": 4,
+              "size": 76
+            },
+            {
+              "cluster_id": 5,
+              "size": 780
+            },
+            {
+              "cluster_id": 6,
+              "size": 133
+            },
+            {
+              "cluster_id": 7,
+              "size": 75
+            },
+            {
+              "cluster_id": 8,
+              "size": 136
+            }
+          ]
+        },
+        "topic_kmeans": {
+          "feature_space": "topic mixture",
+          "cluster_summary": [
+            {
+              "cluster_id": 1,
+              "size": 1237
+            },
+            {
+              "cluster_id": 2,
+              "size": 212
+            },
+            {
+              "cluster_id": 3,
+              "size": 446
+            },
+            {
+              "cluster_id": 4,
+              "size": 364
+            },
+            {
+              "cluster_id": 5,
+              "size": 455
+            },
+            {
+              "cluster_id": 6,
+              "size": 548
+            },
+            {
+              "cluster_id": 7,
+              "size": 294
+            },
+            {
+              "cluster_id": 8,
+              "size": 644
+            }
+          ]
+        },
+        "topic_gmm": {
+          "feature_space": "topic mixture",
+          "cluster_summary": [
+            {
+              "cluster_id": 1,
+              "size": 1154
+            },
+            {
+              "cluster_id": 2,
+              "size": 335
+            },
+            {
+              "cluster_id": 3,
+              "size": 529
+            },
+            {
+              "cluster_id": 4,
+              "size": 225
+            },
+            {
+              "cluster_id": 5,
+              "size": 340
+            },
+            {
+              "cluster_id": 6,
+              "size": 548
+            },
+            {
+              "cluster_id": 7,
+              "size": 413
+            },
+            {
+              "cluster_id": 8,
+              "size": 656
+            }
+          ]
+        },
+        "topic_hierarchical": {
+          "feature_space": "topic mixture",
+          "cluster_summary": [
+            {
+              "cluster_id": 1,
+              "size": 979
+            },
+            {
+              "cluster_id": 2,
+              "size": 677
+            },
+            {
+              "cluster_id": 3,
+              "size": 596
+            },
+            {
+              "cluster_id": 4,
+              "size": 572
+            },
+            {
+              "cluster_id": 5,
+              "size": 408
+            },
+            {
+              "cluster_id": 6,
+              "size": 426
+            },
+            {
+              "cluster_id": 7,
+              "size": 312
+            },
+            {
+              "cluster_id": 8,
+              "size": 230
+            }
+          ]
+        }
+      },
+      "reference_alignment": {
+        "reference_source": "USGS Spectral Library Version 7 compact 224-band group centroids",
+        "reference_group_count": 8,
+        "topic_alignment": {
+          "matched_angle_deg_mean": 36.3396,
+          "matched_angle_deg_max": 58.1634,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "mica / phyllosilicate",
+              "matched_angle_deg": 51.7256,
+              "top_band_tokens": [
+                {
+                  "token": "1841nm",
+                  "weight": 0.0809
+                },
+                {
+                  "token": "1831nm",
+                  "weight": 0.0085
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.0064
+                },
+                {
+                  "token": "1690nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1822nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1718nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1784nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1803nm",
+                  "weight": 0.0056
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "urban material",
+                  "angle_deg": 48.75
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 49.2255
+                },
+                {
+                  "name": "phyllosilicate",
+                  "angle_deg": 49.6254
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "vegetation",
+              "matched_angle_deg": 58.1634,
+              "top_band_tokens": [
+                {
+                  "token": "1445nm",
+                  "weight": 0.0912
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.0075
+                },
+                {
+                  "token": "1831nm",
+                  "weight": 0.0068
+                },
+                {
+                  "token": "1069nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "2321nm",
+                  "weight": 0.0061
+                },
+                {
+                  "token": "2302nm",
+                  "weight": 0.006
+                },
+                {
+                  "token": "2001nm",
+                  "weight": 0.006
+                },
+                {
+                  "token": "2378nm",
+                  "weight": 0.006
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "oxide",
+                  "angle_deg": 53.44
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 53.6185
+                },
+                {
+                  "name": "carbonate",
+                  "angle_deg": 54.4894
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "urban material",
+              "matched_angle_deg": 22.3897,
+              "top_band_tokens": [
+                {
+                  "token": "1831nm",
+                  "weight": 0.0087
+                },
+                {
+                  "token": "1662nm",
+                  "weight": 0.0073
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.0072
+                },
+                {
+                  "token": "1332nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "1794nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "1718nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "1389nm",
+                  "weight": 0.0069
+                },
+                {
+                  "token": "1737nm",
+                  "weight": 0.0069
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "urban material",
+                  "angle_deg": 22.3897
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 23.8387
+                },
+                {
+                  "name": "carbonate",
+                  "angle_deg": 24.0151
+                }
+              ]
+            },
+            {
+              "component_id": 4,
+              "matched_reference": "phyllosilicate",
+              "matched_angle_deg": 23.9072,
+              "top_band_tokens": [
+                {
+                  "token": "1831nm",
+                  "weight": 0.0089
+                },
+                {
+                  "token": "1709nm",
+                  "weight": 0.0083
+                },
+                {
+                  "token": "1737nm",
+                  "weight": 0.0081
+                },
+                {
+                  "token": "1756nm",
+                  "weight": 0.0079
+                },
+                {
+                  "token": "1690nm",
+                  "weight": 0.0079
+                },
+                {
+                  "token": "1634nm",
+                  "weight": 0.0079
+                },
+                {
+                  "token": "1643nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "1549nm",
+                  "weight": 0.0078
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "urban material",
+                  "angle_deg": 21.8583
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 22.3445
+                },
+                {
+                  "name": "phyllosilicate",
+                  "angle_deg": 23.9072
+                }
+              ]
+            },
+            {
+              "component_id": 5,
+              "matched_reference": "clay",
+              "matched_angle_deg": 25.7958,
+              "top_band_tokens": [
+                {
+                  "token": "0899nm",
+                  "weight": 0.0082
+                },
+                {
+                  "token": "0861nm",
+                  "weight": 0.0082
+                },
+                {
+                  "token": "0909nm",
+                  "weight": 0.0081
+                },
+                {
+                  "token": "0927nm",
+                  "weight": 0.008
+                },
+                {
+                  "token": "0852nm",
+                  "weight": 0.0079
+                },
+                {
+                  "token": "0890nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "0843nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "0946nm",
+                  "weight": 0.0077
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "carbonate",
+                  "angle_deg": 24.1212
+                },
+                {
+                  "name": "clay",
+                  "angle_deg": 25.7958
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 26.4705
+                }
+              ]
+            },
+            {
+              "component_id": 6,
+              "matched_reference": "carbonate",
+              "matched_angle_deg": 37.1535,
+              "top_band_tokens": [
+                {
+                  "token": "1445nm",
+                  "weight": 0.0457
+                },
+                {
+                  "token": "1831nm",
+                  "weight": 0.012
+                },
+                {
+                  "token": "1784nm",
+                  "weight": 0.0092
+                },
+                {
+                  "token": "1765nm",
+                  "weight": 0.0089
+                },
+                {
+                  "token": "1718nm",
+                  "weight": 0.0088
+                },
+                {
+                  "token": "1822nm",
+                  "weight": 0.0087
+                },
+                {
+                  "token": "1794nm",
+                  "weight": 0.0086
+                },
+                {
+                  "token": "1700nm",
+                  "weight": 0.0086
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "oxide",
+                  "angle_deg": 35.7095
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 36.738
+                },
+                {
+                  "name": "carbonate",
+                  "angle_deg": 37.1535
+                }
+              ]
+            },
+            {
+              "component_id": 7,
+              "matched_reference": "alteration mineral",
+              "matched_angle_deg": 48.7132,
+              "top_band_tokens": [
+                {
+                  "token": "1455nm",
+                  "weight": 0.0709
+                },
+                {
+                  "token": "1831nm",
+                  "weight": 0.0068
+                },
+                {
+                  "token": "1332nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1737nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1690nm",
+                  "weight": 0.0056
+                },
+                {
+                  "token": "1700nm",
+                  "weight": 0.0055
+                },
+                {
+                  "token": "1709nm",
+                  "weight": 0.0055
+                },
+                {
+                  "token": "1662nm",
+                  "weight": 0.0055
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "oxide",
+                  "angle_deg": 46.0759
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 46.3835
+                },
+                {
+                  "name": "carbonate",
+                  "angle_deg": 47.1471
+                }
+              ]
+            },
+            {
+              "component_id": 8,
+              "matched_reference": "oxide",
+              "matched_angle_deg": 22.8687,
+              "top_band_tokens": [
+                {
+                  "token": "1831nm",
+                  "weight": 0.0115
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.008
+                },
+                {
+                  "token": "2114nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "1219nm",
+                  "weight": 0.0077
+                },
+                {
+                  "token": "2104nm",
+                  "weight": 0.0075
+                },
+                {
+                  "token": "1229nm",
+                  "weight": 0.0073
+                },
+                {
+                  "token": "2236nm",
+                  "weight": 0.0073
+                },
+                {
+                  "token": "2199nm",
+                  "weight": 0.0073
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "oxide",
+                  "angle_deg": 22.8687
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 23.2303
+                },
+                {
+                  "name": "phyllosilicate",
+                  "angle_deg": 25.2984
+                }
+              ]
+            }
+          ]
+        },
+        "nmf_alignment": {
+          "matched_angle_deg_mean": 39.9728,
+          "matched_angle_deg_max": 69.0079,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "urban material",
+              "matched_angle_deg": 21.8603,
+              "top_band_tokens": [
+                {
+                  "token": "1831nm",
+                  "weight": 0.0074
+                },
+                {
+                  "token": "1313nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "1323nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "1351nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "1332nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "1361nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "1342nm",
+                  "weight": 0.0062
+                },
+                {
+                  "token": "1304nm",
+                  "weight": 0.0061
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "urban material",
+                  "angle_deg": 21.8603
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 22.0871
+                },
+                {
+                  "name": "carbonate",
+                  "angle_deg": 23.9295
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "alteration mineral",
+              "matched_angle_deg": 68.0234,
+              "top_band_tokens": [
+                {
+                  "token": "1455nm",
+                  "weight": 0.1537
+                },
+                {
+                  "token": "2349nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "2340nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "2330nm",
+                  "weight": 0.0069
+                },
+                {
+                  "token": "2359nm",
+                  "weight": 0.0068
+                },
+                {
+                  "token": "2434nm",
+                  "weight": 0.0068
+                },
+                {
+                  "token": "2387nm",
+                  "weight": 0.0068
+                },
+                {
+                  "token": "2396nm",
+                  "weight": 0.0068
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "oxide",
+                  "angle_deg": 65.5946
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 65.7983
+                },
+                {
+                  "name": "phyllosilicate",
+                  "angle_deg": 65.9287
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "oxide",
+              "matched_angle_deg": 52.4479,
+              "top_band_tokens": [
+                {
+                  "token": "1445nm",
+                  "weight": 0.0916
+                },
+                {
+                  "token": "1831nm",
+                  "weight": 0.0113
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.0084
+                },
+                {
+                  "token": "1822nm",
+                  "weight": 0.0065
+                },
+                {
+                  "token": "2152nm",
+                  "weight": 0.0065
+                },
+                {
+                  "token": "2161nm",
+                  "weight": 0.0065
+                },
+                {
+                  "token": "2142nm",
+                  "weight": 0.0065
+                },
+                {
+                  "token": "2170nm",
+                  "weight": 0.0064
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "oxide",
+                  "angle_deg": 52.4479
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 52.5844
+                },
+                {
+                  "name": "phyllosilicate",
+                  "angle_deg": 52.8961
+                }
+              ]
+            },
+            {
+              "component_id": 4,
+              "matched_reference": "vegetation",
+              "matched_angle_deg": 26.2919,
+              "top_band_tokens": [
+                {
+                  "token": "0748nm",
+                  "weight": 0.01
+                },
+                {
+                  "token": "0777nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "0739nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "0758nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "0767nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "0796nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "0786nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "0730nm",
+                  "weight": 0.0099
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "vegetation",
+                  "angle_deg": 26.2919
+                },
+                {
+                  "name": "clay",
+                  "angle_deg": 30.3023
+                },
+                {
+                  "name": "alteration mineral",
+                  "angle_deg": 32.9915
+                }
+              ]
+            },
+            {
+              "component_id": 5,
+              "matched_reference": "phyllosilicate",
+              "matched_angle_deg": 24.2158,
+              "top_band_tokens": [
+                {
+                  "token": "1831nm",
+                  "weight": 0.0161
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.015
+                },
+                {
+                  "token": "1822nm",
+                  "weight": 0.0085
+                },
+                {
+                  "token": "2095nm",
+                  "weight": 0.0084
+                },
+                {
+                  "token": "2152nm",
+                  "weight": 0.0084
+                },
+                {
+                  "token": "2086nm",
+                  "weight": 0.0084
+                },
+                {
+                  "token": "2142nm",
+                  "weight": 0.0084
+                },
+                {
+                  "token": "2076nm",
+                  "weight": 0.0084
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "phyllosilicate",
+                  "angle_deg": 24.2158
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 25.8912
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 27.8362
+                }
+              ]
+            },
+            {
+              "component_id": 6,
+              "matched_reference": "carbonate",
+              "matched_angle_deg": 26.4917,
+              "top_band_tokens": [
+                {
+                  "token": "1831nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1690nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1681nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1718nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1728nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1700nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1671nm",
+                  "weight": 0.0089
+                },
+                {
+                  "token": "1803nm",
+                  "weight": 0.0089
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "carbonate",
+                  "angle_deg": 26.4917
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 27.0825
+                },
+                {
+                  "name": "clay",
+                  "angle_deg": 27.7538
+                }
+              ]
+            },
+            {
+              "component_id": 7,
+              "matched_reference": "mica / phyllosilicate",
+              "matched_angle_deg": 69.0079,
+              "top_band_tokens": [
+                {
+                  "token": "1841nm",
+                  "weight": 0.1833
+                },
+                {
+                  "token": "1125nm",
+                  "weight": 0.0052
+                },
+                {
+                  "token": "1106nm",
+                  "weight": 0.0052
+                },
+                {
+                  "token": "1116nm",
+                  "weight": 0.0052
+                },
+                {
+                  "token": "1135nm",
+                  "weight": 0.0052
+                },
+                {
+                  "token": "1097nm",
+                  "weight": 0.0052
+                },
+                {
+                  "token": "1087nm",
+                  "weight": 0.0052
+                },
+                {
+                  "token": "1144nm",
+                  "weight": 0.0052
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "urban material",
+                  "angle_deg": 68.9768
+                },
+                {
+                  "name": "mica / phyllosilicate",
+                  "angle_deg": 69.0079
+                },
+                {
+                  "name": "carbonate",
+                  "angle_deg": 69.2013
+                }
+              ]
+            },
+            {
+              "component_id": 8,
+              "matched_reference": "clay",
+              "matched_angle_deg": 31.4433,
+              "top_band_tokens": [
+                {
+                  "token": "2500nm",
+                  "weight": 0.0203
+                },
+                {
+                  "token": "2481nm",
+                  "weight": 0.0161
+                },
+                {
+                  "token": "2491nm",
+                  "weight": 0.0115
+                },
+                {
+                  "token": "1125nm",
+                  "weight": 0.0069
+                },
+                {
+                  "token": "1116nm",
+                  "weight": 0.0069
+                },
+                {
+                  "token": "1135nm",
+                  "weight": 0.0069
+                },
+                {
+                  "token": "1106nm",
+                  "weight": 0.0069
+                },
+                {
+                  "token": "1963nm",
+                  "weight": 0.0069
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "clay",
+                  "angle_deg": 31.4433
+                },
+                {
+                  "name": "oxide",
+                  "angle_deg": 31.6868
+                },
+                {
+                  "name": "urban material",
+                  "angle_deg": 31.8783
+                }
+              ]
+            }
+          ]
+        },
+        "nmf_reconstruction_error": 0.0207,
+        "mean_abundance_entropy": 1.6826
+      },
+      "caveat": "Unlabeled topic regimes are exploratory. They are not semantic or mineral labels by themselves."
+    }
+  ],
+  "unmixing_runs": [
+    {
+      "dataset_id": "samson-unmixing-roi",
+      "dataset_name": "Samson unmixing ROI",
+      "sensor": "Samson HSI",
+      "cube_shape": [
+        95,
+        95,
+        156
+      ],
+      "sampled_documents": 4000,
+      "reference_material_count": 3,
+      "reference_materials": [
+        "Soil",
+        "Tree",
+        "Water"
+      ],
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 3,
+        "perplexity": 115.1785,
+        "mean_topic_entropy": 0.6034,
+        "alignment": {
+          "matched_angle_deg_mean": 3.0893,
+          "matched_angle_deg_max": 5.6089,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "Soil",
+              "matched_angle_deg": 5.6089,
+              "top_band_tokens": [
+                {
+                  "token": "0883nm",
+                  "weight": 0.0141
+                },
+                {
+                  "token": "0876nm",
+                  "weight": 0.0139
+                },
+                {
+                  "token": "0889nm",
+                  "weight": 0.0138
+                },
+                {
+                  "token": "0870nm",
+                  "weight": 0.0138
+                },
+                {
+                  "token": "0880nm",
+                  "weight": 0.0138
+                },
+                {
+                  "token": "0864nm",
+                  "weight": 0.0137
+                },
+                {
+                  "token": "0873nm",
+                  "weight": 0.0137
+                },
+                {
+                  "token": "0858nm",
+                  "weight": 0.0137
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Soil",
+                  "angle_deg": 5.6089
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 20.9577
+                },
+                {
+                  "name": "Water",
+                  "angle_deg": 67.5817
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "Water",
+              "matched_angle_deg": 2.2028,
+              "top_band_tokens": [
+                {
+                  "token": "0558nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "0552nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "0555nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "0549nm",
+                  "weight": 0.0167
+                },
+                {
+                  "token": "0543nm",
+                  "weight": 0.0167
+                },
+                {
+                  "token": "0546nm",
+                  "weight": 0.0166
+                },
+                {
+                  "token": "0562nm",
+                  "weight": 0.0166
+                },
+                {
+                  "token": "0540nm",
+                  "weight": 0.0166
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Water",
+                  "angle_deg": 2.2028
+                },
+                {
+                  "name": "Soil",
+                  "angle_deg": 63.5717
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 79.4737
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "Tree",
+              "matched_angle_deg": 1.4562,
+              "top_band_tokens": [
+                {
+                  "token": "0861nm",
+                  "weight": 0.0179
+                },
+                {
+                  "token": "0858nm",
+                  "weight": 0.0179
+                },
+                {
+                  "token": "0854nm",
+                  "weight": 0.0179
+                },
+                {
+                  "token": "0870nm",
+                  "weight": 0.0179
+                },
+                {
+                  "token": "0876nm",
+                  "weight": 0.0178
+                },
+                {
+                  "token": "0873nm",
+                  "weight": 0.0178
+                },
+                {
+                  "token": "0848nm",
+                  "weight": 0.0178
+                },
+                {
+                  "token": "0845nm",
+                  "weight": 0.0178
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Tree",
+                  "angle_deg": 1.4562
+                },
+                {
+                  "name": "Soil",
+                  "angle_deg": 20.0393
+                },
+                {
+                  "name": "Water",
+                  "angle_deg": 79.3719
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "nmf_baseline": {
+        "component_count": 3,
+        "normalized_reconstruction_error": 0.0451,
+        "mean_abundance_entropy": 0.6055,
+        "alignment": {
+          "matched_angle_deg_mean": 5.1626,
+          "matched_angle_deg_max": 10.0743,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "Soil",
+              "matched_angle_deg": 10.0743,
+              "top_band_tokens": [
+                {
+                  "token": "0876nm",
+                  "weight": 0.0149
+                },
+                {
+                  "token": "0870nm",
+                  "weight": 0.0149
+                },
+                {
+                  "token": "0864nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "0858nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "0848nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "0883nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "0854nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "0861nm",
+                  "weight": 0.0145
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Soil",
+                  "angle_deg": 10.0743
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 19.2629
+                },
+                {
+                  "name": "Water",
+                  "angle_deg": 72.8364
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "Water",
+              "matched_angle_deg": 2.8523,
+              "top_band_tokens": [
+                {
+                  "token": "0558nm",
+                  "weight": 0.0171
+                },
+                {
+                  "token": "0555nm",
+                  "weight": 0.0171
+                },
+                {
+                  "token": "0552nm",
+                  "weight": 0.017
+                },
+                {
+                  "token": "0543nm",
+                  "weight": 0.0169
+                },
+                {
+                  "token": "0549nm",
+                  "weight": 0.0169
+                },
+                {
+                  "token": "0546nm",
+                  "weight": 0.0169
+                },
+                {
+                  "token": "0540nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "0562nm",
+                  "weight": 0.0168
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Water",
+                  "angle_deg": 2.8523
+                },
+                {
+                  "name": "Soil",
+                  "angle_deg": 64.0556
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 79.9367
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "Tree",
+              "matched_angle_deg": 2.5612,
+              "top_band_tokens": [
+                {
+                  "token": "0861nm",
+                  "weight": 0.0185
+                },
+                {
+                  "token": "0858nm",
+                  "weight": 0.0185
+                },
+                {
+                  "token": "0854nm",
+                  "weight": 0.0184
+                },
+                {
+                  "token": "0873nm",
+                  "weight": 0.0183
+                },
+                {
+                  "token": "0845nm",
+                  "weight": 0.0183
+                },
+                {
+                  "token": "0848nm",
+                  "weight": 0.0183
+                },
+                {
+                  "token": "0757nm",
+                  "weight": 0.0183
+                },
+                {
+                  "token": "0870nm",
+                  "weight": 0.0182
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Tree",
+                  "angle_deg": 2.5612
+                },
+                {
+                  "name": "Soil",
+                  "angle_deg": 22.6389
+                },
+                {
+                  "name": "Water",
+                  "angle_deg": 80.9711
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "caveat": "Scene-specific spectral libraries support mixture-oriented reference checks, not semantic ground truth for every pixel."
+    },
+    {
+      "dataset_id": "jasper-ridge-unmixing-roi",
+      "dataset_name": "Jasper Ridge unmixing ROI",
+      "sensor": "AVIRIS subset",
+      "cube_shape": [
+        100,
+        100,
+        224
+      ],
+      "sampled_documents": 4000,
+      "reference_material_count": 4,
+      "reference_materials": [
+        "Tree",
+        "Water",
+        "Dirt",
+        "Road"
+      ],
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 4,
+        "perplexity": 167.5213,
+        "mean_topic_entropy": 0.7152,
+        "alignment": {
+          "matched_angle_deg_mean": 14.6129,
+          "matched_angle_deg_max": 43.7555,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "Dirt",
+              "matched_angle_deg": 8.5551,
+              "top_band_tokens": [
+                {
+                  "token": "1749nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1359nm",
+                  "weight": 0.009
+                },
+                {
+                  "token": "1739nm",
+                  "weight": 0.0086
+                },
+                {
+                  "token": "1730nm",
+                  "weight": 0.0082
+                },
+                {
+                  "token": "1350nm",
+                  "weight": 0.0081
+                },
+                {
+                  "token": "1720nm",
+                  "weight": 0.008
+                },
+                {
+                  "token": "1711nm",
+                  "weight": 0.0079
+                },
+                {
+                  "token": "1340nm",
+                  "weight": 0.0077
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Dirt",
+                  "angle_deg": 8.5551
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 12.6099
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 38.6131
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "Water",
+              "matched_angle_deg": 3.636,
+              "top_band_tokens": [
+                {
+                  "token": "0551nm",
+                  "weight": 0.03
+                },
+                {
+                  "token": "0542nm",
+                  "weight": 0.0299
+                },
+                {
+                  "token": "0532nm",
+                  "weight": 0.0297
+                },
+                {
+                  "token": "0561nm",
+                  "weight": 0.0283
+                },
+                {
+                  "token": "0523nm",
+                  "weight": 0.0274
+                },
+                {
+                  "token": "0513nm",
+                  "weight": 0.0274
+                },
+                {
+                  "token": "0504nm",
+                  "weight": 0.0265
+                },
+                {
+                  "token": "0494nm",
+                  "weight": 0.0249
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Water",
+                  "angle_deg": 3.636
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 62.1328
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 72.3092
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "Tree",
+              "matched_angle_deg": 2.505,
+              "top_band_tokens": [
+                {
+                  "token": "1064nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1074nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1083nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1055nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1093nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1045nm",
+                  "weight": 0.0121
+                },
+                {
+                  "token": "1036nm",
+                  "weight": 0.0118
+                },
+                {
+                  "token": "1103nm",
+                  "weight": 0.0118
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Tree",
+                  "angle_deg": 2.505
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 30.074
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 37.0096
+                }
+              ]
+            },
+            {
+              "component_id": 4,
+              "matched_reference": "Road",
+              "matched_angle_deg": 43.7555,
+              "top_band_tokens": [
+                {
+                  "token": "0542nm",
+                  "weight": 0.0158
+                },
+                {
+                  "token": "0532nm",
+                  "weight": 0.0157
+                },
+                {
+                  "token": "0551nm",
+                  "weight": 0.0156
+                },
+                {
+                  "token": "0561nm",
+                  "weight": 0.0155
+                },
+                {
+                  "token": "0523nm",
+                  "weight": 0.0148
+                },
+                {
+                  "token": "0570nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "0513nm",
+                  "weight": 0.0145
+                },
+                {
+                  "token": "0504nm",
+                  "weight": 0.0141
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Water",
+                  "angle_deg": 24.225
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 43.7555
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 55.3691
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "nmf_baseline": {
+        "component_count": 4,
+        "normalized_reconstruction_error": 0.0526,
+        "mean_abundance_entropy": 0.9665,
+        "alignment": {
+          "matched_angle_deg_mean": 17.238,
+          "matched_angle_deg_max": 29.1366,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "Dirt",
+              "matched_angle_deg": 29.1366,
+              "top_band_tokens": [
+                {
+                  "token": "1359nm",
+                  "weight": 0.0256
+                },
+                {
+                  "token": "1749nm",
+                  "weight": 0.0237
+                },
+                {
+                  "token": "1739nm",
+                  "weight": 0.0185
+                },
+                {
+                  "token": "1369nm",
+                  "weight": 0.0179
+                },
+                {
+                  "token": "1350nm",
+                  "weight": 0.0167
+                },
+                {
+                  "token": "1378nm",
+                  "weight": 0.0147
+                },
+                {
+                  "token": "1730nm",
+                  "weight": 0.0146
+                },
+                {
+                  "token": "1340nm",
+                  "weight": 0.0142
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Dirt",
+                  "angle_deg": 29.1366
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 37.1119
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 44.4455
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "Water",
+              "matched_angle_deg": 7.9828,
+              "top_band_tokens": [
+                {
+                  "token": "0551nm",
+                  "weight": 0.0355
+                },
+                {
+                  "token": "0542nm",
+                  "weight": 0.0354
+                },
+                {
+                  "token": "0532nm",
+                  "weight": 0.0346
+                },
+                {
+                  "token": "0561nm",
+                  "weight": 0.034
+                },
+                {
+                  "token": "0523nm",
+                  "weight": 0.0335
+                },
+                {
+                  "token": "0513nm",
+                  "weight": 0.0325
+                },
+                {
+                  "token": "0504nm",
+                  "weight": 0.0314
+                },
+                {
+                  "token": "0570nm",
+                  "weight": 0.0305
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Water",
+                  "angle_deg": 7.9828
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 67.8286
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 78.3671
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "Tree",
+              "matched_angle_deg": 8.2456,
+              "top_band_tokens": [
+                {
+                  "token": "1064nm",
+                  "weight": 0.014
+                },
+                {
+                  "token": "1074nm",
+                  "weight": 0.0139
+                },
+                {
+                  "token": "1083nm",
+                  "weight": 0.0138
+                },
+                {
+                  "token": "1055nm",
+                  "weight": 0.0138
+                },
+                {
+                  "token": "1045nm",
+                  "weight": 0.0137
+                },
+                {
+                  "token": "1093nm",
+                  "weight": 0.0136
+                },
+                {
+                  "token": "1036nm",
+                  "weight": 0.0135
+                },
+                {
+                  "token": "1026nm",
+                  "weight": 0.0133
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Tree",
+                  "angle_deg": 8.2456
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 37.6659
+                },
+                {
+                  "name": "Road",
+                  "angle_deg": 43.9263
+                }
+              ]
+            },
+            {
+              "component_id": 4,
+              "matched_reference": "Road",
+              "matched_angle_deg": 23.5868,
+              "top_band_tokens": [
+                {
+                  "token": "1758nm",
+                  "weight": 0.0099
+                },
+                {
+                  "token": "1873nm",
+                  "weight": 0.0098
+                },
+                {
+                  "token": "1882nm",
+                  "weight": 0.0097
+                },
+                {
+                  "token": "1777nm",
+                  "weight": 0.0096
+                },
+                {
+                  "token": "1892nm",
+                  "weight": 0.0096
+                },
+                {
+                  "token": "1863nm",
+                  "weight": 0.0096
+                },
+                {
+                  "token": "1854nm",
+                  "weight": 0.0095
+                },
+                {
+                  "token": "1901nm",
+                  "weight": 0.0095
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Road",
+                  "angle_deg": 23.5868
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 28.4591
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 51.0326
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "caveat": "Scene-specific spectral libraries support mixture-oriented reference checks, not semantic ground truth for every pixel."
+    },
+    {
+      "dataset_id": "urban-unmixing-roi",
+      "dataset_name": "Urban HYDICE unmixing ROI",
+      "sensor": "HYDICE",
+      "cube_shape": [
+        307,
+        307,
+        210
+      ],
+      "sampled_documents": 4000,
+      "reference_material_count": 6,
+      "reference_materials": [
+        "Asphalt",
+        "Grass",
+        "Tree",
+        "Roof",
+        "Metal",
+        "Dirt"
+      ],
+      "topic_model": {
+        "method": "sklearn-lda",
+        "topic_count": 6,
+        "perplexity": 127.3613,
+        "mean_topic_entropy": 1.0824,
+        "alignment": {
+          "matched_angle_deg_mean": 12.4627,
+          "matched_angle_deg_max": 25.0016,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "Dirt",
+              "matched_angle_deg": 10.2216,
+              "top_band_tokens": [
+                {
+                  "token": "1978nm",
+                  "weight": 0.0126
+                },
+                {
+                  "token": "1867nm",
+                  "weight": 0.0125
+                },
+                {
+                  "token": "1927nm",
+                  "weight": 0.0123
+                },
+                {
+                  "token": "1877nm",
+                  "weight": 0.0119
+                },
+                {
+                  "token": "1415nm",
+                  "weight": 0.0118
+                },
+                {
+                  "token": "1365nm",
+                  "weight": 0.0116
+                },
+                {
+                  "token": "1917nm",
+                  "weight": 0.0114
+                },
+                {
+                  "token": "1967nm",
+                  "weight": 0.0114
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Dirt",
+                  "angle_deg": 10.2216
+                },
+                {
+                  "name": "Asphalt",
+                  "angle_deg": 20.0945
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 25.5726
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "Tree",
+              "matched_angle_deg": 4.0665,
+              "top_band_tokens": [
+                {
+                  "token": "1174nm",
+                  "weight": 0.021
+                },
+                {
+                  "token": "1184nm",
+                  "weight": 0.021
+                },
+                {
+                  "token": "1194nm",
+                  "weight": 0.0208
+                },
+                {
+                  "token": "1164nm",
+                  "weight": 0.0204
+                },
+                {
+                  "token": "1154nm",
+                  "weight": 0.02
+                },
+                {
+                  "token": "1204nm",
+                  "weight": 0.0199
+                },
+                {
+                  "token": "1053nm",
+                  "weight": 0.0198
+                },
+                {
+                  "token": "1043nm",
+                  "weight": 0.0196
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Tree",
+                  "angle_deg": 4.0665
+                },
+                {
+                  "name": "Grass",
+                  "angle_deg": 19.2383
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 44.1871
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "Grass",
+              "matched_angle_deg": 24.1137,
+              "top_band_tokens": [
+                {
+                  "token": "1505nm",
+                  "weight": 0.0158
+                },
+                {
+                  "token": "1485nm",
+                  "weight": 0.0157
+                },
+                {
+                  "token": "1495nm",
+                  "weight": 0.0155
+                },
+                {
+                  "token": "1475nm",
+                  "weight": 0.0154
+                },
+                {
+                  "token": "1455nm",
+                  "weight": 0.0153
+                },
+                {
+                  "token": "1465nm",
+                  "weight": 0.0153
+                },
+                {
+                  "token": "1324nm",
+                  "weight": 0.0151
+                },
+                {
+                  "token": "1515nm",
+                  "weight": 0.0151
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Dirt",
+                  "angle_deg": 19.2072
+                },
+                {
+                  "name": "Grass",
+                  "angle_deg": 24.1137
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 31.6542
+                }
+              ]
+            },
+            {
+              "component_id": 4,
+              "matched_reference": "Metal",
+              "matched_angle_deg": 25.0016,
+              "top_band_tokens": [
+                {
+                  "token": "0872nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "0862nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "0882nm",
+                  "weight": 0.0167
+                },
+                {
+                  "token": "0832nm",
+                  "weight": 0.0166
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0165
+                },
+                {
+                  "token": "0852nm",
+                  "weight": 0.0159
+                },
+                {
+                  "token": "0892nm",
+                  "weight": 0.0159
+                },
+                {
+                  "token": "0902nm",
+                  "weight": 0.0159
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Metal",
+                  "angle_deg": 25.0016
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 40.313
+                },
+                {
+                  "name": "Asphalt",
+                  "angle_deg": 42.9319
+                }
+              ]
+            },
+            {
+              "component_id": 5,
+              "matched_reference": "Roof",
+              "matched_angle_deg": 7.804,
+              "top_band_tokens": [
+                {
+                  "token": "0420nm",
+                  "weight": 0.0155
+                },
+                {
+                  "token": "0470nm",
+                  "weight": 0.0143
+                },
+                {
+                  "token": "0480nm",
+                  "weight": 0.0143
+                },
+                {
+                  "token": "0460nm",
+                  "weight": 0.0142
+                },
+                {
+                  "token": "0450nm",
+                  "weight": 0.014
+                },
+                {
+                  "token": "0410nm",
+                  "weight": 0.014
+                },
+                {
+                  "token": "0490nm",
+                  "weight": 0.0139
+                },
+                {
+                  "token": "0500nm",
+                  "weight": 0.0137
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Roof",
+                  "angle_deg": 7.804
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 53.3988
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 57.4768
+                }
+              ]
+            },
+            {
+              "component_id": 6,
+              "matched_reference": "Asphalt",
+              "matched_angle_deg": 3.569,
+              "top_band_tokens": [
+                {
+                  "token": "1736nm",
+                  "weight": 0.0151
+                },
+                {
+                  "token": "1726nm",
+                  "weight": 0.015
+                },
+                {
+                  "token": "1636nm",
+                  "weight": 0.0149
+                },
+                {
+                  "token": "1626nm",
+                  "weight": 0.0149
+                },
+                {
+                  "token": "1716nm",
+                  "weight": 0.0149
+                },
+                {
+                  "token": "1756nm",
+                  "weight": 0.0148
+                },
+                {
+                  "token": "1686nm",
+                  "weight": 0.0148
+                },
+                {
+                  "token": "1676nm",
+                  "weight": 0.0147
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Asphalt",
+                  "angle_deg": 3.569
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 20.1234
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 32.4717
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "nmf_baseline": {
+        "component_count": 6,
+        "normalized_reconstruction_error": 0.0574,
+        "mean_abundance_entropy": 1.2064,
+        "alignment": {
+          "matched_angle_deg_mean": 20.929,
+          "matched_angle_deg_max": 40.0623,
+          "components": [
+            {
+              "component_id": 1,
+              "matched_reference": "Dirt",
+              "matched_angle_deg": 23.8548,
+              "top_band_tokens": [
+                {
+                  "token": "1515nm",
+                  "weight": 0.0169
+                },
+                {
+                  "token": "1525nm",
+                  "weight": 0.0168
+                },
+                {
+                  "token": "1485nm",
+                  "weight": 0.0165
+                },
+                {
+                  "token": "1545nm",
+                  "weight": 0.0165
+                },
+                {
+                  "token": "1505nm",
+                  "weight": 0.0164
+                },
+                {
+                  "token": "1535nm",
+                  "weight": 0.0164
+                },
+                {
+                  "token": "1475nm",
+                  "weight": 0.0162
+                },
+                {
+                  "token": "1495nm",
+                  "weight": 0.0162
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Dirt",
+                  "angle_deg": 23.8548
+                },
+                {
+                  "name": "Grass",
+                  "angle_deg": 33.3701
+                },
+                {
+                  "name": "Asphalt",
+                  "angle_deg": 36.0541
+                }
+              ]
+            },
+            {
+              "component_id": 2,
+              "matched_reference": "Asphalt",
+              "matched_angle_deg": 17.115,
+              "top_band_tokens": [
+                {
+                  "token": "1626nm",
+                  "weight": 0.0198
+                },
+                {
+                  "token": "1676nm",
+                  "weight": 0.0198
+                },
+                {
+                  "token": "1686nm",
+                  "weight": 0.0197
+                },
+                {
+                  "token": "1726nm",
+                  "weight": 0.0195
+                },
+                {
+                  "token": "1636nm",
+                  "weight": 0.0195
+                },
+                {
+                  "token": "1736nm",
+                  "weight": 0.0194
+                },
+                {
+                  "token": "1716nm",
+                  "weight": 0.0192
+                },
+                {
+                  "token": "1696nm",
+                  "weight": 0.0192
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Asphalt",
+                  "angle_deg": 17.115
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 34.0486
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 43.86
+                }
+              ]
+            },
+            {
+              "component_id": 3,
+              "matched_reference": "Roof",
+              "matched_angle_deg": 20.4604,
+              "top_band_tokens": [
+                {
+                  "token": "0420nm",
+                  "weight": 0.0227
+                },
+                {
+                  "token": "0470nm",
+                  "weight": 0.0222
+                },
+                {
+                  "token": "0410nm",
+                  "weight": 0.022
+                },
+                {
+                  "token": "0400nm",
+                  "weight": 0.0217
+                },
+                {
+                  "token": "0460nm",
+                  "weight": 0.0216
+                },
+                {
+                  "token": "0480nm",
+                  "weight": 0.0215
+                },
+                {
+                  "token": "0490nm",
+                  "weight": 0.0213
+                },
+                {
+                  "token": "0511nm",
+                  "weight": 0.0213
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Roof",
+                  "angle_deg": 20.4604
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 70.8185
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 78.8722
+                }
+              ]
+            },
+            {
+              "component_id": 4,
+              "matched_reference": "Grass",
+              "matched_angle_deg": 14.6358,
+              "top_band_tokens": [
+                {
+                  "token": "1314nm",
+                  "weight": 0.0184
+                },
+                {
+                  "token": "1224nm",
+                  "weight": 0.0183
+                },
+                {
+                  "token": "1234nm",
+                  "weight": 0.0181
+                },
+                {
+                  "token": "1304nm",
+                  "weight": 0.0179
+                },
+                {
+                  "token": "1324nm",
+                  "weight": 0.0177
+                },
+                {
+                  "token": "1284nm",
+                  "weight": 0.0176
+                },
+                {
+                  "token": "1294nm",
+                  "weight": 0.0175
+                },
+                {
+                  "token": "1274nm",
+                  "weight": 0.0174
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Grass",
+                  "angle_deg": 14.6358
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 31.3143
+                },
+                {
+                  "name": "Dirt",
+                  "angle_deg": 32.1562
+                }
+              ]
+            },
+            {
+              "component_id": 5,
+              "matched_reference": "Metal",
+              "matched_angle_deg": 40.0623,
+              "top_band_tokens": [
+                {
+                  "token": "0862nm",
+                  "weight": 0.0235
+                },
+                {
+                  "token": "0872nm",
+                  "weight": 0.023
+                },
+                {
+                  "token": "0882nm",
+                  "weight": 0.0229
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0226
+                },
+                {
+                  "token": "0832nm",
+                  "weight": 0.0225
+                },
+                {
+                  "token": "0852nm",
+                  "weight": 0.0221
+                },
+                {
+                  "token": "0902nm",
+                  "weight": 0.022
+                },
+                {
+                  "token": "0892nm",
+                  "weight": 0.0217
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Metal",
+                  "angle_deg": 40.0623
+                },
+                {
+                  "name": "Roof",
+                  "angle_deg": 49.6632
+                },
+                {
+                  "name": "Tree",
+                  "angle_deg": 56.0475
+                }
+              ]
+            },
+            {
+              "component_id": 6,
+              "matched_reference": "Tree",
+              "matched_angle_deg": 9.446,
+              "top_band_tokens": [
+                {
+                  "token": "1053nm",
+                  "weight": 0.0248
+                },
+                {
+                  "token": "1043nm",
+                  "weight": 0.0246
+                },
+                {
+                  "token": "1023nm",
+                  "weight": 0.0244
+                },
+                {
+                  "token": "1063nm",
+                  "weight": 0.0243
+                },
+                {
+                  "token": "1033nm",
+                  "weight": 0.0243
+                },
+                {
+                  "token": "1184nm",
+                  "weight": 0.0242
+                },
+                {
+                  "token": "1174nm",
+                  "weight": 0.0241
+                },
+                {
+                  "token": "1083nm",
+                  "weight": 0.024
+                }
+              ],
+              "nearest_references": [
+                {
+                  "name": "Tree",
+                  "angle_deg": 9.446
+                },
+                {
+                  "name": "Grass",
+                  "angle_deg": 29.1975
+                },
+                {
+                  "name": "Metal",
+                  "angle_deg": 50.0753
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "caveat": "Scene-specific spectral libraries support mixture-oriented reference checks, not semantic ground truth for every pixel."
+    }
+  ],
+  "spectral_library_runs": [
+    {
+      "dataset_id": "usgs-splib07",
+      "dataset_name": "USGS Spectral Library Version 7 compact local slices",
+      "family_id": "individual-spectra",
+      "representation": {
+        "id": "band-frequency",
+        "alphabet": "sensor-convolved spectral band tokens",
+        "word": "band token repeated by normalized reflectance count",
+        "document": "one material reference spectrum"
+      },
+      "band_groups": [
+        {
+          "band_count": 13,
+          "sample_count": 13,
+          "group_count": 8,
+          "topic_count": 6,
+          "perplexity": 13.4429,
+          "clustering": {
+            "raw_kmeans": {
+              "feature_space": "normalized spectra",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            },
+            "raw_gmm": {
+              "feature_space": "pca-normalized spectra",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            },
+            "raw_hierarchical": {
+              "feature_space": "pca-normalized spectra",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            },
+            "topic_kmeans": {
+              "feature_space": "topic mixture",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            },
+            "topic_gmm": {
+              "feature_space": "topic mixture",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            },
+            "topic_hierarchical": {
+              "feature_space": "topic mixture",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            }
+          },
+          "top_band_tokens": [
+            {
+              "topic_id": 1,
+              "tokens": [
+                {
+                  "token": "2190nm",
+                  "weight": 0.2672
+                },
+                {
+                  "token": "1610nm",
+                  "weight": 0.2185
+                },
+                {
+                  "token": "1375nm",
+                  "weight": 0.1786
+                },
+                {
+                  "token": "0945nm",
+                  "weight": 0.0603
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0541
+                },
+                {
+                  "token": "0740nm",
+                  "weight": 0.0511
+                },
+                {
+                  "token": "0783nm",
+                  "weight": 0.0499
+                },
+                {
+                  "token": "0865nm",
+                  "weight": 0.0426
+                }
+              ]
+            },
+            {
+              "topic_id": 2,
+              "tokens": [
+                {
+                  "token": "1610nm",
+                  "weight": 0.077
+                },
+                {
+                  "token": "1375nm",
+                  "weight": 0.077
+                },
+                {
+                  "token": "0945nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0865nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0665nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0705nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0783nm",
+                  "weight": 0.0769
+                }
+              ]
+            },
+            {
+              "topic_id": 3,
+              "tokens": [
+                {
+                  "token": "1610nm",
+                  "weight": 0.077
+                },
+                {
+                  "token": "1375nm",
+                  "weight": 0.077
+                },
+                {
+                  "token": "0945nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0865nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0665nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0705nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0783nm",
+                  "weight": 0.0769
+                }
+              ]
+            },
+            {
+              "topic_id": 4,
+              "tokens": [
+                {
+                  "token": "1610nm",
+                  "weight": 0.1075
+                },
+                {
+                  "token": "0443nm",
+                  "weight": 0.1013
+                },
+                {
+                  "token": "0490nm",
+                  "weight": 0.1007
+                },
+                {
+                  "token": "0945nm",
+                  "weight": 0.0842
+                },
+                {
+                  "token": "0560nm",
+                  "weight": 0.0837
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0762
+                },
+                {
+                  "token": "0865nm",
+                  "weight": 0.0759
+                },
+                {
+                  "token": "1375nm",
+                  "weight": 0.0756
+                }
+              ]
+            },
+            {
+              "topic_id": 5,
+              "tokens": [
+                {
+                  "token": "1610nm",
+                  "weight": 0.077
+                },
+                {
+                  "token": "1375nm",
+                  "weight": 0.077
+                },
+                {
+                  "token": "0945nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0865nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0665nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0705nm",
+                  "weight": 0.0769
+                },
+                {
+                  "token": "0783nm",
+                  "weight": 0.0769
+                }
+              ]
+            },
+            {
+              "topic_id": 6,
+              "tokens": [
+                {
+                  "token": "0783nm",
+                  "weight": 0.1133
+                },
+                {
+                  "token": "0842nm",
+                  "weight": 0.1112
+                },
+                {
+                  "token": "0740nm",
+                  "weight": 0.1111
+                },
+                {
+                  "token": "0865nm",
+                  "weight": 0.1082
+                },
+                {
+                  "token": "0705nm",
+                  "weight": 0.1072
+                },
+                {
+                  "token": "0665nm",
+                  "weight": 0.1007
+                },
+                {
+                  "token": "0945nm",
+                  "weight": 0.0964
+                },
+                {
+                  "token": "0560nm",
+                  "weight": 0.0755
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "band_count": 224,
+          "sample_count": 13,
+          "group_count": 8,
+          "topic_count": 6,
+          "perplexity": 222.1642,
+          "clustering": {
+            "raw_kmeans": {
+              "feature_space": "normalized spectra",
+              "ari": 0.1203,
+              "nmi": 0.778
+            },
+            "raw_gmm": {
+              "feature_space": "pca-normalized spectra",
+              "ari": 0.1203,
+              "nmi": 0.778
+            },
+            "raw_hierarchical": {
+              "feature_space": "pca-normalized spectra",
+              "ari": -0.0833,
+              "nmi": 0.7121
+            },
+            "topic_kmeans": {
+              "feature_space": "topic mixture",
+              "ari": 0.0602,
+              "nmi": 0.7447
+            },
+            "topic_gmm": {
+              "feature_space": "topic mixture",
+              "ari": 0.0602,
+              "nmi": 0.7447
+            },
+            "topic_hierarchical": {
+              "feature_space": "topic mixture",
+              "ari": 0.0602,
+              "nmi": 0.7447
+            }
+          },
+          "top_band_tokens": [
+            {
+              "topic_id": 1,
+              "tokens": [
+                {
+                  "token": "2453nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2444nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2434nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2500nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2425nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2415nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2330nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2406nm",
+                  "weight": 0.0045
+                }
+              ]
+            },
+            {
+              "topic_id": 2,
+              "tokens": [
+                {
+                  "token": "2453nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2444nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2434nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2500nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2425nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2415nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2330nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2406nm",
+                  "weight": 0.0045
+                }
+              ]
+            },
+            {
+              "topic_id": 3,
+              "tokens": [
+                {
+                  "token": "2453nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2444nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2434nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2500nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2425nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2415nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2330nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2406nm",
+                  "weight": 0.0045
+                }
+              ]
+            },
+            {
+              "topic_id": 4,
+              "tokens": [
+                {
+                  "token": "2180nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "2152nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "2123nm",
+                  "weight": 0.0078
+                },
+                {
+                  "token": "2133nm",
+                  "weight": 0.0077
+                },
+                {
+                  "token": "2142nm",
+                  "weight": 0.0077
+                },
+                {
+                  "token": "2170nm",
+                  "weight": 0.0077
+                },
+                {
+                  "token": "2161nm",
+                  "weight": 0.0077
+                },
+                {
+                  "token": "2114nm",
+                  "weight": 0.0076
+                }
+              ]
+            },
+            {
+              "topic_id": 5,
+              "tokens": [
+                {
+                  "token": "0871nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0880nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0805nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0796nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0899nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0890nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0909nm",
+                  "weight": 0.007
+                },
+                {
+                  "token": "0852nm",
+                  "weight": 0.0069
+                }
+              ]
+            },
+            {
+              "topic_id": 6,
+              "tokens": [
+                {
+                  "token": "2453nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2444nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2434nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2500nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2425nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2415nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2330nm",
+                  "weight": 0.0045
+                },
+                {
+                  "token": "2406nm",
+                  "weight": 0.0045
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

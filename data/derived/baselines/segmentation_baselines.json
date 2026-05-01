@@ -1,0 +1,316 @@
+{
+  "source": "SLIC segmentation baselines generated from local raw public HSI scenes",
+  "generated_at": "2026-04-30",
+  "methods": [
+    {
+      "id": "slic-rgb-spatial-baseline",
+      "name": "SLIC false-color spatial baseline",
+      "purpose": "Test whether spatially coherent superpixels are useful document boundaries before comparing topic maps or class labels.",
+      "uses_spatial_information": true,
+      "uses_supervision": false,
+      "caveat": "The current first pass uses approximate RGB bands; it must not be interpreted as a hyperspectral material segmentation."
+    }
+  ],
+  "scenes": [
+    {
+      "scene_id": "salinas-a-corrected",
+      "dataset_id": "salinas-a-corrected",
+      "scene_name": "Salinas-A corrected",
+      "family_id": "labeled-spectral-image",
+      "method_id": "slic-rgb-spatial-baseline",
+      "feature_space": "false-color RGB feature cube from approximate 650/550/450 nm bands",
+      "spatial_information_used": true,
+      "supervision_used": false,
+      "slic_parameters": {
+        "n_segments_requested": 90,
+        "compactness": 12.0,
+        "convert2lab": false,
+        "enforce_connectivity": true
+      },
+      "segment_count": 90,
+      "segment_size_pixels": {
+        "min": 63,
+        "median": 81.0,
+        "max": 90,
+        "mean": 79.31
+      },
+      "label_metrics": {
+        "label_available": true,
+        "label_coverage_ratio": 0.7492,
+        "weighted_label_purity": 0.9458,
+        "segments_with_labels": 89
+      },
+      "segment_examples": [
+        {
+          "segment_id": 1,
+          "pixel_count": 81,
+          "labeled_pixel_count": 81,
+          "majority_label_id": 1,
+          "majority_label": "Brocoli_green_weeds_1",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 2,
+          "pixel_count": 81,
+          "labeled_pixel_count": 81,
+          "majority_label_id": 1,
+          "majority_label": "Brocoli_green_weeds_1",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 3,
+          "pixel_count": 81,
+          "labeled_pixel_count": 75,
+          "majority_label_id": 1,
+          "majority_label": "Brocoli_green_weeds_1",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 4,
+          "pixel_count": 81,
+          "labeled_pixel_count": 11,
+          "majority_label_id": 1,
+          "majority_label": "Brocoli_green_weeds_1",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 5,
+          "pixel_count": 81,
+          "labeled_pixel_count": 51,
+          "majority_label_id": 11,
+          "majority_label": "label 11",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 6,
+          "pixel_count": 81,
+          "labeled_pixel_count": 81,
+          "majority_label_id": 11,
+          "majority_label": "label 11",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 7,
+          "pixel_count": 81,
+          "labeled_pixel_count": 40,
+          "majority_label_id": 11,
+          "majority_label": "label 11",
+          "purity": 0.875
+        },
+        {
+          "segment_id": 8,
+          "pixel_count": 72,
+          "labeled_pixel_count": 54,
+          "majority_label_id": 12,
+          "majority_label": "label 12",
+          "purity": 0.9815
+        },
+        {
+          "segment_id": 9,
+          "pixel_count": 72,
+          "labeled_pixel_count": 72,
+          "majority_label_id": 12,
+          "majority_label": "label 12",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 10,
+          "pixel_count": 63,
+          "labeled_pixel_count": 63,
+          "majority_label_id": 12,
+          "majority_label": "label 12",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 11,
+          "pixel_count": 81,
+          "labeled_pixel_count": 79,
+          "majority_label_id": 1,
+          "majority_label": "Brocoli_green_weeds_1",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 12,
+          "pixel_count": 81,
+          "labeled_pixel_count": 46,
+          "majority_label_id": 1,
+          "majority_label": "Brocoli_green_weeds_1",
+          "purity": 1.0
+        }
+      ],
+      "preview_path": "/generated/baselines/previews/salinas-a-corrected-slic.png",
+      "caveats": [
+        "SLIC is used as a spatial grouping baseline and possible document generator, not as a class or material detector.",
+        "This first pass uses approximate RGB bands for compactness; full hyperspectral SLIC/PCA features should be compared later."
+      ]
+    },
+    {
+      "scene_id": "indian-pines-corrected",
+      "dataset_id": "indian-pines-corrected",
+      "scene_name": "Indian Pines corrected",
+      "family_id": "labeled-spectral-image",
+      "method_id": "slic-rgb-spatial-baseline",
+      "feature_space": "false-color RGB feature cube from approximate 650/550/450 nm bands",
+      "spatial_information_used": true,
+      "supervision_used": false,
+      "slic_parameters": {
+        "n_segments_requested": 160,
+        "compactness": 10.0,
+        "convert2lab": false,
+        "enforce_connectivity": true
+      },
+      "segment_count": 169,
+      "segment_size_pixels": {
+        "min": 121,
+        "median": 121.0,
+        "max": 144,
+        "mean": 124.41
+      },
+      "label_metrics": {
+        "label_available": true,
+        "label_coverage_ratio": 0.4875,
+        "weighted_label_purity": 0.8267,
+        "segments_with_labels": 138
+      },
+      "segment_examples": [
+        {
+          "segment_id": 1,
+          "pixel_count": 121,
+          "labeled_pixel_count": 94,
+          "majority_label_id": 3,
+          "majority_label": "Corn-mintill",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 2,
+          "pixel_count": 121,
+          "labeled_pixel_count": 91,
+          "majority_label_id": 3,
+          "majority_label": "Corn-mintill",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 3,
+          "pixel_count": 121,
+          "labeled_pixel_count": 70,
+          "majority_label_id": 10,
+          "majority_label": "Soybean-notill",
+          "purity": 0.3571
+        },
+        {
+          "segment_id": 4,
+          "pixel_count": 121,
+          "labeled_pixel_count": 52,
+          "majority_label_id": 12,
+          "majority_label": "Soybean-clean",
+          "purity": 0.9038
+        },
+        {
+          "segment_id": 5,
+          "pixel_count": 121,
+          "labeled_pixel_count": 17,
+          "majority_label_id": 12,
+          "majority_label": "Soybean-clean",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 7,
+          "pixel_count": 121,
+          "labeled_pixel_count": 64,
+          "majority_label_id": 15,
+          "majority_label": "Buildings-Grass-Trees-Drives",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 8,
+          "pixel_count": 121,
+          "labeled_pixel_count": 121,
+          "majority_label_id": 15,
+          "majority_label": "Buildings-Grass-Trees-Drives",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 9,
+          "pixel_count": 121,
+          "labeled_pixel_count": 99,
+          "majority_label_id": 15,
+          "majority_label": "Buildings-Grass-Trees-Drives",
+          "purity": 0.7778
+        },
+        {
+          "segment_id": 10,
+          "pixel_count": 121,
+          "labeled_pixel_count": 121,
+          "majority_label_id": 11,
+          "majority_label": "Soybean-mintill",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 11,
+          "pixel_count": 121,
+          "labeled_pixel_count": 90,
+          "majority_label_id": 11,
+          "majority_label": "Soybean-mintill",
+          "purity": 0.9778
+        },
+        {
+          "segment_id": 12,
+          "pixel_count": 132,
+          "labeled_pixel_count": 18,
+          "majority_label_id": 14,
+          "majority_label": "Woods",
+          "purity": 1.0
+        },
+        {
+          "segment_id": 14,
+          "pixel_count": 121,
+          "labeled_pixel_count": 30,
+          "majority_label_id": 2,
+          "majority_label": "Corn-notill",
+          "purity": 1.0
+        }
+      ],
+      "preview_path": "/generated/baselines/previews/indian-pines-corrected-slic.png",
+      "caveats": [
+        "SLIC is used as a spatial grouping baseline and possible document generator, not as a class or material detector.",
+        "This first pass uses approximate RGB bands for compactness; full hyperspectral SLIC/PCA features should be compared later."
+      ]
+    },
+    {
+      "scene_id": "cuprite-aviris-reflectance",
+      "dataset_id": "cuprite-upv-reflectance",
+      "scene_name": "Cuprite reflectance",
+      "family_id": "unlabeled-spectral-image",
+      "method_id": "slic-rgb-spatial-baseline",
+      "feature_space": "false-color RGB feature cube from approximate 650/550/450 nm bands",
+      "spatial_information_used": true,
+      "supervision_used": false,
+      "slic_parameters": {
+        "n_segments_requested": 420,
+        "compactness": 16.0,
+        "convert2lab": false,
+        "enforce_connectivity": true
+      },
+      "segment_count": 437,
+      "segment_size_pixels": {
+        "min": 624,
+        "median": 729.0,
+        "max": 729,
+        "mean": 719.38
+      },
+      "label_metrics": {
+        "label_available": false,
+        "label_coverage_ratio": null,
+        "weighted_label_purity": null,
+        "segments_with_labels": 0
+      },
+      "segment_examples": [],
+      "preview_path": "/generated/baselines/previews/cuprite-aviris-reflectance-slic.png",
+      "caveats": [
+        "SLIC is used as a spatial grouping baseline and possible document generator, not as a class or material detector.",
+        "This first pass uses approximate RGB bands for compactness; full hyperspectral SLIC/PCA features should be compared later.",
+        "No ground-truth labels are available in the app; SLIC regions are spatial documents, not material labels."
+      ]
+    }
+  ]
+}

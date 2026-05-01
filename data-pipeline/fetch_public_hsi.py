@@ -1,13 +1,14 @@
-"""Download compact public HSI benchmark scenes from official source pages.
+"""Download public HSI benchmark scenes from official source pages.
 
 Raw files are stored under ``data/raw/`` and intentionally kept out of Git.
-The repository should track only compact derived assets generated from these
-raw scenes.
+The repository should track only manifests plus compact derived assets. Large
+raw local downloads are allowed because local validation is the primary goal.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 import time
 import urllib.request
 from pathlib import Path
@@ -16,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw" / "upv_ehu"
 MANIFEST_PATH = ROOT / "data" / "raw" / "download_manifest.json"
-MAX_PUBLIC_FILE_BYTES = 100 * 1024 * 1024
+MAX_LOCAL_DOWNLOAD_BYTES = int(os.getenv("CAOS_MAX_LOCAL_DOWNLOAD_BYTES", "0")) or None
 
 DATASETS = [
     {
@@ -180,7 +181,7 @@ def main() -> None:
     manifest: dict[str, object] = {
         "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
         "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
-        "max_public_file_bytes": MAX_PUBLIC_FILE_BYTES,
+        "max_local_download_bytes": MAX_LOCAL_DOWNLOAD_BYTES,
         "datasets": [],
     }
 
@@ -189,10 +190,10 @@ def main() -> None:
         for entry in dataset["files"]:
             destination = RAW_DIR / entry["name"]
             expected_size = remote_size(entry["url"])
-            if expected_size is not None and expected_size > MAX_PUBLIC_FILE_BYTES:
+            if MAX_LOCAL_DOWNLOAD_BYTES is not None and expected_size is not None and expected_size > MAX_LOCAL_DOWNLOAD_BYTES:
                 raise RuntimeError(
                     f"{entry['name']} is {expected_size} bytes, above the "
-                    f"{MAX_PUBLIC_FILE_BYTES} byte per-file policy."
+                    f"{MAX_LOCAL_DOWNLOAD_BYTES} byte configured local-download policy."
                 )
 
             local_size = destination.stat().st_size if destination.exists() else None

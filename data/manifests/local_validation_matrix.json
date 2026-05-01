@@ -1,0 +1,207 @@
+{
+  "source": "Local-first validation matrix for the CAOS LDA HSI research backend",
+  "thesis": {
+    "en": "The repository's primary purpose is local scientific validation over real spectral datasets. The web app is a subsidiary interactive surface that projects a compact, versioned subset of the validated outputs.",
+    "es": "El proposito principal del repositorio es la validacion cientifica local sobre datasets espectrales reales. La app web es una superficie interactiva subsidiaria que proyecta un subconjunto compacto y versionado de las salidas validadas."
+  },
+  "workflow_stages": [
+    {
+      "id": "acquisition",
+      "title": "Acquire and organize raw datasets locally"
+    },
+    {
+      "id": "preprocessing",
+      "title": "Preprocess spectra, labels, measurements, and scene metadata"
+    },
+    {
+      "id": "representation",
+      "title": "Generate document/corpus representations"
+    },
+    {
+      "id": "segmentation",
+      "title": "Generate SLIC and other spatial document partitions"
+    },
+    {
+      "id": "clustering",
+      "title": "Run spectral and topic-space clustering baselines"
+    },
+    {
+      "id": "topic-modeling",
+      "title": "Fit PTM/LDA-family topic models"
+    },
+    {
+      "id": "training",
+      "title": "Train supervised classifiers/regressors where labels or measurements exist"
+    },
+    {
+      "id": "validation",
+      "title": "Validate stability, sensitivity, and predictive value"
+    },
+    {
+      "id": "web-projection",
+      "title": "Project compact validated subsets into the interactive web app"
+    }
+  ],
+  "dataset_groups": [
+    {
+      "id": "mineral-clay",
+      "title": "Mineral and clay workflows",
+      "dataset_ids": ["cuprite-upv-reflectance", "usgs-splib07", "ecostress-spectral-library", "hidsag-geometallurgy"]
+    },
+    {
+      "id": "agriculture-labeled",
+      "title": "Agriculture with labels",
+      "dataset_ids": ["indian-pines-corrected", "salinas-corrected", "salinas-a-corrected"]
+    },
+    {
+      "id": "urban-labeled",
+      "title": "Urban labeled imagery",
+      "dataset_ids": ["pavia-university", "houston-2013-hsi-lidar"]
+    },
+    {
+      "id": "wetlands-water",
+      "title": "Wetlands, soil, and water",
+      "dataset_ids": ["kennedy-space-center", "botswana", "cross-scene-wetland-hsi"]
+    },
+    {
+      "id": "field-msi",
+      "title": "Field multispectral transfer",
+      "dataset_ids": ["micasense-rededge-samples", "eurosat", "bigearthnet-v2", "landsat-c2-l2"]
+    },
+    {
+      "id": "unmixing",
+      "title": "Unmixing and variability references",
+      "dataset_ids": ["unmixing-roi-suite", "cuprite-upv-reflectance"]
+    }
+  ],
+  "representation_families": [
+    {
+      "id": "magnitude-phrase",
+      "status": "implemented-first-pass",
+      "goal": "Discretized magnitude sequences for one-spectrum documents"
+    },
+    {
+      "id": "band-frequency",
+      "status": "implemented-first-pass",
+      "goal": "Band words with normalized count weights for LDA-ready documents"
+    },
+    {
+      "id": "band-magnitude",
+      "status": "implemented-first-pass",
+      "goal": "Band plus magnitude event vocabulary"
+    },
+    {
+      "id": "region-documents",
+      "status": "implemented-first-pass",
+      "goal": "Class, ROI, patch, or superpixel documents"
+    },
+    {
+      "id": "absorption-shape",
+      "status": "planned",
+      "goal": "Continuum-removed absorption and spectral-shape vocabulary"
+    },
+    {
+      "id": "hierarchical-documents",
+      "status": "planned",
+      "goal": "Sample -> region -> spectrum hierarchies for measured datasets"
+    }
+  ],
+  "segmentation_methods": [
+    {
+      "id": "slic-rgb-spatial-baseline",
+      "status": "implemented-first-pass",
+      "goal": "Compact first spatial baseline and document generator"
+    },
+    {
+      "id": "slic-pca-hyperspectral",
+      "status": "planned",
+      "goal": "Spatial grouping using hyperspectral or PCA features"
+    },
+    {
+      "id": "semantic-segmentation",
+      "status": "planned",
+      "goal": "Reference semantic segmentation overlays where labels or trained models exist"
+    }
+  ],
+  "clustering_methods": [
+    {
+      "id": "kmeans",
+      "status": "implemented-first-pass",
+      "goal": "Spectral or topic-space grouping baseline"
+    },
+    {
+      "id": "gmm",
+      "status": "implemented-first-pass",
+      "goal": "Soft clustering comparison"
+    },
+    {
+      "id": "hierarchical",
+      "status": "implemented-first-pass",
+      "goal": "Multiscale grouping comparison"
+    },
+    {
+      "id": "sam-neighborhood",
+      "status": "implemented-first-pass",
+      "goal": "Reference similarity baseline against spectral libraries"
+    },
+    {
+      "id": "nmf-unmixing",
+      "status": "implemented-first-pass",
+      "goal": "Mixture-oriented baseline for mineral and unmixing scenes"
+    }
+  ],
+  "topic_methods": [
+    {
+      "id": "lda-sklearn",
+      "status": "implemented-first-pass",
+      "goal": "Baseline discrete topic modeling over document representations"
+    },
+    {
+      "id": "pm-lda",
+      "status": "planned",
+      "goal": "Partial membership topic modeling for endmember variability and spatial documents"
+    },
+    {
+      "id": "semi-supervised-pm-lda",
+      "status": "planned",
+      "goal": "Guided endmember variability modeling with supervision"
+    }
+  ],
+  "training_methods": [
+    {
+      "id": "logistic-regression",
+      "task": "classification",
+      "status": "implemented-first-pass"
+    },
+    {
+      "id": "random-forest-classifier",
+      "task": "classification",
+      "status": "planned"
+    },
+    {
+      "id": "pls-regression",
+      "task": "regression",
+      "status": "planned"
+    },
+    {
+      "id": "ridge-regression",
+      "task": "regression",
+      "status": "planned"
+    },
+    {
+      "id": "topic-routed-models",
+      "task": "classification-regression",
+      "status": "planned"
+    }
+  ],
+  "web_projection_rules": {
+    "interactive_only": true,
+    "allow_static_screenshots_as_primary_evidence": false,
+    "requirements": [
+      "interactive spectral plots",
+      "interactive image band selection",
+      "precomputed overlays for SLIC, clustering, semantic segmentation, and topics",
+      "family/group-driven workflow rather than flat dataset spam"
+    ]
+  }
+}

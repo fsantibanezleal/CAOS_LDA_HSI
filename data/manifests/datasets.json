@@ -1,7 +1,7 @@
 {
   "selection_policy": {
-    "en": "Prefer public examples that keep each individual raw file below 100 MB whenever possible. When a source is larger, access-gated, or distributed as a heavy archive, keep only a manifest and load curated subsets on demand. Prefer sources with direct official downloads so the pipeline can be reproduced locally and on the VPS without manual portal work.",
-    "es": "Preferir ejemplos publicos que mantengan cada archivo crudo individual bajo 100 MB cuando sea posible. Cuando una fuente sea mayor, requiera acceso o se distribuya como archivo pesado, mantener solo un manifiesto y cargar subconjuntos curados bajo demanda. Privilegiar fuentes con descargas oficiales directas para que el pipeline pueda reproducirse localmente y en el VPS sin trabajo manual en portales."
+    "en": "Prefer real public spectral datasets that can be reproduced locally with official acquisition paths. Raw-local validation is allowed to use large files when licensing and storage are acceptable, but Git and the public app should only carry manifests, curated subsets, and compact derived assets.",
+    "es": "Priorizar datasets espectrales publicos reales que puedan reproducirse localmente con rutas oficiales de adquisicion. La validacion local puede usar archivos grandes cuando licencia y almacenamiento lo permitan, pero Git y la app publica solo deben cargar manifiestos, subconjuntos curados y activos derivados compactos."
   },
   "datasets": [
     {
@@ -26,7 +26,23 @@
         "en": "Classic agricultural benchmark with enough bands to demonstrate quantization, band words, and topic mixtures without stressing the repository.",
         "es": "Benchmark agricola clasico con suficientes bandas para demostrar cuantizacion, palabras por banda y mezclas de topicos sin tensionar el repositorio."
       },
-      "fit_for_demo": "good-first-demo"
+      "fit_for_demo": "good-first-demo",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels", "class_regions"],
+        "label_scope": "official pixel class labels available in the local derived payload",
+        "measurement_scope": "none",
+        "caveat": "Labels support class/topic validation, not mineral or response-variable claims."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "salinas-a-corrected",
@@ -50,7 +66,23 @@
         "en": "Very compact scene that is especially useful when the product needs one fully reproducible public sample under tight size limits.",
         "es": "Escena muy compacta, especialmente util cuando el producto necesita una muestra publica completamente reproducible bajo limites de tamano estrictos."
       },
-      "fit_for_demo": "best-size-footprint"
+      "fit_for_demo": "best-size-footprint",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels", "class_regions"],
+        "label_scope": "official pixel class labels available in the local derived payload",
+        "measurement_scope": "none",
+        "caveat": "Tiny footprint makes it ideal for validation experiments, but labels remain crop classes only."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "pavia-university",
@@ -74,7 +106,23 @@
         "en": "Urban texture and material transitions make it useful for showing that topics can capture regimes beyond agriculture.",
         "es": "Las texturas urbanas y transiciones de materiales la vuelven util para mostrar que los topicos pueden capturar regimenes mas alla de la agricultura."
       },
-      "fit_for_demo": "good-second-scene"
+      "fit_for_demo": "good-second-scene",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels", "class_regions"],
+        "label_scope": "official pixel class labels available in the local derived payload",
+        "measurement_scope": "none",
+        "caveat": "Urban classes support spatial/material comparison, but they are not laboratory material measurements."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "kennedy-space-center",
@@ -98,7 +146,23 @@
         "en": "Useful when the story needs water, marsh, and vegetation transitions instead of only crop fields or urban materials.",
         "es": "Util cuando la narrativa necesita transiciones entre agua, humedales y vegetacion en vez de solo cultivos o materiales urbanos."
       },
-      "fit_for_demo": "optional-raw-scene"
+      "fit_for_demo": "optional-raw-scene",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels", "class_regions"],
+        "label_scope": "official pixel class labels available in the local derived payload",
+        "measurement_scope": "none",
+        "caveat": "Wetland classes enable label alignment; ecological or biophysical responses are not included."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "botswana",
@@ -122,7 +186,23 @@
         "en": "Good boundary case for the size policy and still attractive for diversity in vegetation and soil conditions.",
         "es": "Buen caso limite para la politica de tamano y aun atractivo por su diversidad en vegetacion y condiciones de suelo."
       },
-      "fit_for_demo": "borderline-raw-scene"
+      "fit_for_demo": "borderline-raw-scene",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels", "class_regions"],
+        "label_scope": "official pixel class labels available in the local derived payload",
+        "measurement_scope": "none",
+        "caveat": "Labels support validation, but the raw file is close enough to the size policy to prefer derived assets."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw files stay local by default; compact derived JSON and previews are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "salinas-corrected",
@@ -146,7 +226,23 @@
         "en": "Full agricultural Salinas scene with 16 classes. It broadens the current Salinas-A subset without adding a heavy file.",
         "es": "Escena agricola Salinas completa con 16 clases. Amplia el subconjunto Salinas-A actual sin agregar un archivo pesado."
       },
-      "fit_for_demo": "under-100mb-expansion"
+      "fit_for_demo": "under-100mb-expansion",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels", "class_regions"],
+        "label_scope": "official pixel class labels available in the local derived payload",
+        "measurement_scope": "none",
+        "caveat": "Class labels are valid for topic-label association and supervised class tests only."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU benchmark attribution; raw redistribution remains policy-controlled.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw files stay local unless separately approved; compact derived JSON and previews are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "cuprite-upv-reflectance",
@@ -163,14 +259,30 @@
         "es": "Descargado localmente y destilado en activos derivados compactos"
       },
       "repository_strategy": {
-        "en": "Keep raw Cuprite download-on-demand because it is close to the 100 MB policy; commit only derived previews and compact topic summaries.",
-        "es": "Mantener Cuprite crudo bajo descarga bajo demanda porque esta cerca de la politica de 100 MB; commitear solo previews derivados y resumenes compactos de topicos."
+        "en": "Keep raw Cuprite local for validation and publish only compact derived subsets and documented exports.",
+        "es": "Mantener Cuprite crudo local para validacion y publicar solo subconjuntos derivados compactos y exportaciones documentadas."
       },
       "notes": {
         "en": "High-value mineral and clay benchmark for the product's first serious workflow.",
         "es": "Benchmark mineral y de arcillas de alto valor para el primer flujo serio del producto."
       },
-      "fit_for_demo": "mineral-priority-under-limit"
+      "fit_for_demo": "mineral-priority",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["none", "inferred_topic_strata"],
+        "label_scope": "no official ground-truth map is bundled in the current app payload",
+        "measurement_scope": "none",
+        "caveat": "Topic strata and spectral-library neighbors are exploratory until calibrated wavelength and external mineral validation are added."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public benchmark",
+        "direct_download": true,
+        "license_note": "Use with UPV/EHU and AVIRIS provenance; raw redistribution remains policy-controlled because the file is near the active size limit.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Commit only compact previews, topic summaries, and method metadata.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "unmixing-roi-suite",
@@ -194,7 +306,23 @@
         "en": "Samson, Jasper Ridge, Urban, and Cuprite ROI scenes can support topic-mixture versus unmixing comparisons.",
         "es": "Escenas ROI Samson, Jasper Ridge, Urban y Cuprite pueden apoyar comparaciones entre mezclas de topicos y unmixing."
       },
-      "fit_for_demo": "small-diverse-unmixing"
+      "fit_for_demo": "small-diverse-unmixing",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["none", "unmixing_reference_files_candidate"],
+        "label_scope": "treated as unlabeled in the current app; support files may enable later reference comparisons",
+        "measurement_scope": "none",
+        "caveat": "Use for topic-versus-unmixing comparisons, not for ground-truth class claims."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public GitHub source",
+        "direct_download": true,
+        "license_note": "Source files come from the public MUA_SparseUnmixing repository; keep provenance and verify redistribution before raw tracking.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Raw MATLAB files stay local; compact derived summaries are publishable.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "micasense-rededge-samples",
@@ -218,7 +346,23 @@
         "en": "Official 4-band field samples at 480, 550, 670, and 850 nm. Example 1 orthomosaic is about 18.2 MB and Example 2 is about 68.6 MB, so both stay inside the current per-file target.",
         "es": "Muestras de campo oficiales de 4 bandas en 480, 550, 670 y 850 nm. El ortomosaico del Ejemplo 1 pesa aproximadamente 18.2 MB y el del Ejemplo 2 aproximadamente 68.6 MB, por lo que ambos quedan dentro del objetivo actual por archivo."
       },
-      "fit_for_demo": "downloaded-msi-demo"
+      "fit_for_demo": "downloaded-msi-demo",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["heuristic_strata", "ndvi_reference"],
+        "label_scope": "no ground-truth class labels; strata are derived heuristics",
+        "measurement_scope": "none",
+        "caveat": "NDVI and strata support exploratory comparison only; they are not field measurements."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "official sample data",
+        "direct_download": true,
+        "license_note": "Use with MicaSense sample-data provenance; keep raw orthomosaics outside Git by default.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Commit derived JSON and previews only; fetch raw orthomosaics on demand.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "eurosat",
@@ -242,7 +386,23 @@
         "en": "Strong MSI complement to remote-sensing HSI scenes. Individual patches are tiny even if the full archive should stay external.",
         "es": "Complemento MSI fuerte a las escenas HSI de teledeteccion. Los parches individuales son pequenos aunque el archivo completo deba mantenerse externo."
       },
-      "fit_for_demo": "subset-only"
+      "fit_for_demo": "subset-only",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["patch_class_labels"],
+        "label_scope": "patch-level land-cover labels after a curated subset is selected",
+        "measurement_scope": "none",
+        "caveat": "Patch labels are not pixel labels; UI comparisons must not imply pixel-level ground truth."
+      },
+      "acquisition": {
+        "status": "catalog-only",
+        "access": "official repository",
+        "direct_download": true,
+        "license_note": "Verify subset packaging, citation, and redistribution terms before local ingestion.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Use a tiny curated Sentinel-2 patch subset or a reproducible downloader.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "bigearthnet-v2",
@@ -266,7 +426,23 @@
         "en": "Large benchmark for multi-label land cover. It is valuable for proving transfer across urban, vegetation, agricultural, and water scenes.",
         "es": "Benchmark grande para cobertura de suelo multi-etiqueta. Es valioso para probar transferencia entre escenas urbanas, vegetacion, agricultura y agua."
       },
-      "fit_for_demo": "external-patch-subset"
+      "fit_for_demo": "external-patch-subset",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["patch_multi_labels", "pixel_reference_maps_candidate"],
+        "label_scope": "patch-level multi-label land-cover annotations; pixel references require subset verification",
+        "measurement_scope": "none",
+        "caveat": "Full archive is too large for the app; only a documented compact subset can be product-visible."
+      },
+      "acquisition": {
+        "status": "catalog-only",
+        "access": "large official archive",
+        "direct_download": false,
+        "license_note": "Verify BigEarthNet v2.0 license and selected patch metadata before local ingestion.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Keep archive external; publish only selected patch metadata and compact derived summaries.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "whu-hi-uav-scenes",
@@ -290,7 +466,23 @@
         "en": "Useful for showing the method on high-spatial-resolution UAV crop and land-cover scenes, not only classic airborne benchmarks.",
         "es": "Util para mostrar el metodo en escenas UAV de alta resolucion espacial para cultivos y cobertura de suelo, no solo benchmarks aerotransportados clasicos."
       },
-      "fit_for_demo": "uav-crop-diversity"
+      "fit_for_demo": "uav-crop-diversity",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels_candidate"],
+        "label_scope": "reported crop/land-cover labels require official source and license verification",
+        "measurement_scope": "none",
+        "caveat": "No app claim until source files, labels, and redistribution rights are verified."
+      },
+      "acquisition": {
+        "status": "catalog-only",
+        "access": "source pending",
+        "direct_download": false,
+        "license_note": "Current manifest points to the paper; official download and redistribution rules still need verification.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Do not ingest or expose in the app until a source manifest is complete.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "hyrank-cross-scene",
@@ -314,7 +506,23 @@
         "en": "Candidate for testing whether topic structures remain stable when scene geography changes.",
         "es": "Candidato para probar si las estructuras de topicos se mantienen estables cuando cambia la geografia de la escena."
       },
-      "fit_for_demo": "cross-scene-diversity"
+      "fit_for_demo": "cross-scene-diversity",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels_candidate", "cross_scene_split_candidate"],
+        "label_scope": "class labels are candidate metadata until canonical source and files are verified",
+        "measurement_scope": "none",
+        "caveat": "Do not use for cross-scene validation claims until source, labels, and splits are reproduced locally."
+      },
+      "acquisition": {
+        "status": "catalog-only",
+        "access": "source pending",
+        "direct_download": false,
+        "license_note": "Verify canonical HyRANK source, license, and per-file sizes before ingestion.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Catalog-only until a reproducible acquisition manifest exists.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "hyspecnet-11k",
@@ -338,7 +546,23 @@
         "en": "Large-scale EnMAP source for demonstrating satellite HSI transfer beyond hand-picked academic scenes.",
         "es": "Fuente EnMAP de gran escala para demostrar transferencia satelital HSI mas alla de escenas academicas seleccionadas manualmente."
       },
-      "fit_for_demo": "external-patch-subset"
+      "fit_for_demo": "external-patch-subset",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["none", "patch_metadata"],
+        "label_scope": "no product-visible class labels selected",
+        "measurement_scope": "none",
+        "caveat": "Useful for unsupervised transfer only after selected patch IDs and license constraints are documented."
+      },
+      "acquisition": {
+        "status": "external-library",
+        "access": "license-gated official source",
+        "direct_download": false,
+        "license_note": "Official EnMAP patch collection requires license/agreement review before redistribution.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Keep collection external; track only selected patch IDs and compact summaries.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "houston-2013-hsi-lidar",
@@ -362,7 +586,23 @@
         "en": "Important urban case because it pairs hyperspectral imagery with LiDAR DSM over a campus and neighboring urban area.",
         "es": "Caso urbano importante porque combina imagen hiperespectral con DSM LiDAR sobre un campus y area urbana vecina."
       },
-      "fit_for_demo": "urban-access-gated"
+      "fit_for_demo": "urban-access-gated",
+      "supervision": {
+        "family_id": "labeled-spectral-image",
+        "states": ["pixel_class_labels_candidate", "lidar_auxiliary_candidate"],
+        "label_scope": "class labels and LiDAR pairing are access-gated candidate metadata",
+        "measurement_scope": "none",
+        "caveat": "No app-visible claim until access terms and redistribution constraints are cleared."
+      },
+      "acquisition": {
+        "status": "access-gated",
+        "access": "request-required contest source",
+        "direct_download": false,
+        "license_note": "Use only after IEEE GRSS/UH terms and redistribution limits are verified.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Catalog-only unless explicit access and publication permission are obtained.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "cross-scene-wetland-hsi",
@@ -386,7 +626,23 @@
         "en": "Direct match for wetland demonstrations, but the archive size requires subset-only handling.",
         "es": "Coincide directamente con demostraciones de humedales, pero el tamano del archivo exige manejo solo por subconjuntos."
       },
-      "fit_for_demo": "wetland-external-subset"
+      "fit_for_demo": "wetland-external-subset",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["labels_candidate", "domain_adaptation_candidate"],
+        "label_scope": "wetland labels require subset extraction and source verification before app use",
+        "measurement_scope": "none",
+        "caveat": "Treat as external research data until compact patches and label semantics are documented."
+      },
+      "acquisition": {
+        "status": "external-archive",
+        "access": "large Zenodo archive",
+        "direct_download": true,
+        "license_note": "Archive is too large for Git; verify selected patch license and attribution before derived publication.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Full archive stays external; only small derived patches may become app assets.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "landsat-c2-l2",
@@ -410,7 +666,23 @@
         "en": "Best suited for vegetation, water, humidity, drought, and temperature index demonstrations when the app adds geospatial ingestion.",
         "es": "Adecuado para demostraciones de vegetacion, agua, humedad, sequia e indices de temperatura cuando la app agregue ingestion geoespacial."
       },
-      "fit_for_demo": "geospatial-ingestion-roadmap"
+      "fit_for_demo": "geospatial-ingestion-roadmap",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["none", "external_indices_candidate"],
+        "label_scope": "query results have no inherent class labels in the current product",
+        "measurement_scope": "surface reflectance and temperature products can support derived index workflows",
+        "caveat": "Requires geospatial ingestion before it can become a reproducible app dataset."
+      },
+      "acquisition": {
+        "status": "external-query-source",
+        "access": "query-driven official source",
+        "direct_download": false,
+        "license_note": "Use official USGS Landsat access paths and scene metadata; do not track full products in Git.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Publish only small selected tiles and derived index summaries after ingestion exists.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "cave-multispectral",
@@ -434,7 +706,23 @@
         "en": "Useful laboratory-scale complement to airborne or satellite scenes. It is widely cited as a 31-band visible-range benchmark, but official public access is more brittle than UPV/EHU or MicaSense.",
         "es": "Complemento de escala laboratorio util frente a escenas aerotransportadas o satelitales. Es ampliamente citado como benchmark visible de 31 bandas, pero su acceso oficial publico es mas fragil que UPV/EHU o MicaSense."
       },
-      "fit_for_demo": "lab-reference"
+      "fit_for_demo": "lab-reference",
+      "supervision": {
+        "family_id": "unlabeled-spectral-image",
+        "states": ["scene_object_labels_candidate"],
+        "label_scope": "scene or object labels are candidate metadata; no pixel labels are configured",
+        "measurement_scope": "none",
+        "caveat": "Treat as a laboratory reference source until acquisition and label semantics are reproduced locally."
+      },
+      "acquisition": {
+        "status": "catalog-only",
+        "access": "manual or brittle official access",
+        "direct_download": false,
+        "license_note": "Verify official access, file layout, citation, and redistribution before ingestion.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "No raw tracking until a stable source manifest exists.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "usgs-splib07",
@@ -458,7 +746,23 @@
         "en": "Closer to mineral and clay interpretation workflows than remote-sensing scenes. Excellent for one-dimensional spectral corpora.",
         "es": "Mas cercano a flujos de interpretacion mineral y de arcillas que las escenas de teledeteccion. Excelente para corpus espectrales unidimensionales."
       },
-      "fit_for_demo": "high-value-library"
+      "fit_for_demo": "high-value-library",
+      "supervision": {
+        "family_id": "individual-spectra",
+        "states": ["material_labels", "spectral_reference_groups"],
+        "label_scope": "material and group labels are available for curated compact samples",
+        "measurement_scope": "none",
+        "caveat": "Nearest-reference matches are evidence, not material identifications."
+      },
+      "acquisition": {
+        "status": "local-derived",
+        "access": "public USGS data release",
+        "direct_download": true,
+        "license_note": "Use USGS data-release provenance and cite the source; never commit the full multi-GB library.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Track only compact curated samples and source-file metadata.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "ecostress-spectral-library",
@@ -482,7 +786,23 @@
         "en": "Valuable when the app needs examples spanning natural and man-made materials, with much richer variability than a single spectral signature.",
         "es": "Valiosa cuando la app necesita ejemplos que abarquen materiales naturales y artificiales, con mucha mas variabilidad que una firma espectral unica."
       },
-      "fit_for_demo": "external-library"
+      "fit_for_demo": "external-library",
+      "supervision": {
+        "family_id": "individual-spectra",
+        "states": ["material_labels_candidate"],
+        "label_scope": "material labels are expected but not yet represented in local derived assets",
+        "measurement_scope": "none",
+        "caveat": "No app-visible sample until export path, license, and selected material slices are verified."
+      },
+      "acquisition": {
+        "status": "external-library",
+        "access": "official JPL web library",
+        "direct_download": false,
+        "license_note": "Verify ECOSTRESS/JPL export terms, citation, and subset redistribution before ingestion.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Keep full library external; publish only compact representative slices.",
+        "last_verified": "2026-04-30"
+      }
     },
     {
       "id": "hidsag-geometallurgy",
@@ -506,7 +826,23 @@
         "en": "High-priority research reference for mineral workflows because it provides supervised VNIR/SWIR hyperspectral images and geometallurgical response variables.",
         "es": "Referencia de investigacion prioritaria para flujos minerales porque provee imagenes hiperespectrales VNIR/SWIR supervisadas y variables de respuesta geometalurgicas."
       },
-      "fit_for_demo": "geometallurgy-reference"
+      "fit_for_demo": "geometallurgy-reference",
+      "supervision": {
+        "family_id": "regions-with-measurements",
+        "states": ["response_measurements_candidate", "sample_ids_candidate", "hierarchical_regions_candidate"],
+        "label_scope": "sample and mineralogical labels require curated subset design",
+        "measurement_scope": "geochemical, mineralogical, and geometallurgical response variables are the target supervision",
+        "caveat": "Highest-value inference source, but no model claim until a subset, split, metrics, and model card exist."
+      },
+      "acquisition": {
+        "status": "external-reference",
+        "access": "article and linked data packages",
+        "direct_download": false,
+        "license_note": "Article is CC BY 4.0; selected data package terms, sizes, and redistribution still need verification.",
+        "checksum_status": "not-recorded",
+        "raw_asset_policy": "Keep as research/candidate data until a small response-variable subset is curated.",
+        "last_verified": "2026-04-30"
+      }
     }
   ],
   "exclusions": [
@@ -514,8 +850,8 @@
       "name": "Pavia Centre",
       "source_url": "https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes",
       "reason": {
-        "en": "The full raw scene is above the active 100 MB individual-file rule. Keep it external or build compact derived previews only.",
-        "es": "La escena cruda completa supera la regla activa de 100 MB por archivo individual. Mantenerla externa o construir solo previews derivados compactos."
+        "en": "The full raw scene is large enough that it should stay local-only unless a specific compact export strategy is approved.",
+        "es": "La escena cruda completa es lo bastante grande como para mantenerse solo localmente salvo que se apruebe una estrategia de exportacion compacta."
       }
     },
     {

@@ -1,192 +1,191 @@
 # Technical Roadmap
 
-This roadmap separates product recovery, data expansion, and research
-validation. It is intentionally explicit about what is built and what is
-only planned.
+This roadmap now treats the repo as a local scientific validation system
+with a secondary interactive presentation layer.
 
-## Phase 0: Recovery Baseline
+## Current Reset Status
 
-Status: complete before this document.
+Status: active reset in progress.
+
+The deployed SPA is a technical checkpoint only. The accepted direction
+is:
+
+1. local acquisition and organization of real spectral data
+2. offline representations, segmentation, PTM/LDA, clustering, and
+   supervised modeling
+3. dense methodological documentation
+4. compact interactive export into the web app
+
+## Phase 0: Historical Recovery Baseline
+
+Status: complete.
+
+Delivered historically:
+
+- FastAPI backend serving a React SPA
+- public repo and VPS deployment
+- bilingual UI and theme support
+- compact demo and first derived scene assets
+
+Limitation:
+
+- the UI direction was rejected because it behaved like a confused
+  workbench/report hybrid and did not express the real methodological
+  flow
+
+## Phase 1: Method Review And Product Reset
+
+Status: first pass delivered, ongoing expansion.
 
 Delivered:
 
-- FastAPI backend serving a React SPA.
-- Public GitHub repository.
-- VPS deployment at `https://lda-hsi.fasl-work.com`.
-- `/healthz` and `/api/app-data` endpoints.
-- Compact synthetic demo.
-- Derived summaries from the first five HSI scenes and two MSI field
-  samples.
+- `docs/product-reset-research.md`
+- `data/manifests/data_families.json`
+- `data/manifests/corpus_recipes.json`
+- `data/manifests/local_validation_matrix.json`
+- explicit supervision and acquisition metadata in
+  `data/manifests/datasets.json`
 
-Problem:
+Acceptance:
 
-- The released UI was not a professional workbench. It presented the
-  product like an editorial page, used a rejected green/teal/orange
-  palette, and hid useful data behind a hero-first flow.
+- every product-visible method must state alphabet, word, document,
+  corpus, feature space, supervision, and caveat
 
-## Phase 1: Professional Workbench
+## Phase 2: Local Data Acquisition And Inventory
 
-Status: implemented and deployed on the 2026-04-30 main release; pending
-continued manual product review for the next iteration.
+Status: first pass delivered.
 
-Acceptance criteria:
+Delivered:
 
-- First viewport exposes controls, datasets, topics, and inspector data.
-- Layout uses a compact app shell: header, left navigator, center
-  workbench, right inspector.
-- No hero section, blog flow, decorative empty space, or anchor-section
-  navigation.
-- Palette is neutral technical with blue/cyan accents; green is only a
-  semantic success/status color.
-- ES/EN i18n works.
-- Light/dark mode works.
-- Public repository link is visible.
-- Backend payload may grow only when the workbench needs a new data
-  surface. The current release includes `spectral_library` and
-  `analysis`.
-- A compact help/status modal is available from the header.
-- The spectral-library navigator participates in the main search filter.
-- Scene topic matrices and nearest spectral-library reference comparisons
-  are implemented and deployed.
-- Compact PCA/KMeans clustering diagnostics are implemented and deployed
-  for real-scene topic mixtures and spectral-library reference spectra.
+- reproducible raw acquisition scripts in `data-pipeline/`
+- unified local inventory in `data/derived/core/local_dataset_inventory.json`
+- local raw evidence currently indexed across UPV/EHU, Borsoi MUA,
+  MicaSense, and USGS compact spectral-library archives
 
-## Phase 2: Dataset Expansion
+Next work:
 
-Status: partially implemented locally.
+- expand high-value real sources such as ECOSTRESS and HIDSAG
+- reproduce at least one cross-scene transfer dataset
+- keep raw-local, git-public, and web-public policies clearly separated
 
-Immediate additions:
+## Phase 3: Representation And Corpus Engine
 
-- full Salinas corrected: implemented
-- Cuprite reflectance: implemented as an unlabeled mineral scene with
-  inferred topic-stratum preview
-- Samson, Jasper Ridge, and Urban unmixing ROIs: implemented as unlabeled
-  scenes with inferred topic-stratum previews
-- USGS Spectral Library v7 AVIRIS/Sentinel-2 compact samples: implemented
+Status: first pass delivered.
 
-Catalog and subset additions:
+Delivered:
 
-- EuroSAT
-- BigEarthNet
-- WHU-Hi
-- HyRANK
-- HySpecNet-11k
-- Houston 2013
-- cross-scene wetland HSI
-- Landsat Collection 2 Level-2
-- HIDSAG
+- deterministic corpus previews in
+  `data/derived/corpus/corpus_previews.json`
+- first-pass recipes for magnitude phrase, band frequency,
+  band-magnitude words, and region-style documents
 
-Remaining immediate data work:
+Next work:
 
-- ECOSTRESS compact material samples
-- verified Cuprite unmixing ROI
-- curated Sentinel-2 / EuroSAT patch subset
-- calibrated wavelength metadata where available
-- reusable smoke-test scripts: implemented for PowerShell and Bash
-- derived analysis payload: implemented through
-  `data-pipeline/build_analysis_payload.py`
+- absorption/shape vocabularies
+- hierarchical documents for measured regions
+- stronger token diagnostics and reversibility metadata
 
-Acceptance criteria:
+## Phase 4: Segmentation, Clustering, And Topic Benchmarks
 
-- every added source has provenance, URL, status, and repository strategy
-- every raw local file respects the 100 MB individual-file rule
-- every large source is represented through metadata, manifests, or
-  compact derived subsets
-- app copy does not imply local availability when the data is only
-  cataloged
+Status: first pass delivered and now extended.
 
-## Phase 3: Tokenization Engine
+Delivered:
 
-Status: partially scaffolded through deterministic derived assets and
-topic-space diagnostics; the full tokenizer engine is still planned.
+- SLIC baseline payload in
+  `data/derived/baselines/segmentation_baselines.json`
+- offline benchmark payload in
+  `data/derived/core/local_core_benchmarks.json`
+- first-pass LDA runs over real local scenes
+- first-pass supervised baselines on labeled scenes
+- KMeans, GMM, and hierarchical clustering comparisons in raw and
+  topic-space views
+- first-pass topic-stability diagnostics across multiple seeds
+- first-pass SAM-style reference alignment
+- first-pass NMF/unmixing comparisons on Borsoi ROIs and Cuprite
+  alignment probes
 
-Work:
+Current limitation:
 
-- implement a stable tokenizer module
-- add vocabulary manifests
-- store document metadata
-- support band-intensity, spectral group, slope, and patch-strata tokens
-- add deterministic tests under fixed seeds
+- semantic segmentation overlays are still planned
+- PM-LDA and semi-supervised PM-LDA are still pending
+- topic stability is still compact-sample-based and not yet a full
+  preprocessing-sensitivity study
 
-Acceptance criteria:
-
-- tokenized corpora are reproducible
-- token meaning can be inspected from JSON
-- generated corpora stay compact enough for Git or are excluded with a
-  manifest-only workflow
-- derived diagnostics record the feature space, method, random seed
-  convention, cluster count, silhouette score, and PCA variance whenever
-  applicable
-
-## Phase 4: Mineral/Clay Workflow
-
-Status: partially scaffolded.
-
-Work:
-
-- integrate Cuprite or another mineral scene: first Cuprite scene is now
-  local, but interpretation remains provisional
-- add calibrated wavelength metadata
-- add continuum-removal and absorption-feature tokens
-- add curated USGS/ECOSTRESS mineral and clay reference slices: USGS
-  compact samples are local; ECOSTRESS remains planned
-- compare topic profiles with known wavelength regions
-
-Acceptance criteria:
-
-- topics are described as regimes, not as confirmed minerals
-- every mineral interpretation states the supporting evidence
-- the app distinguishes observed topic behavior from expert inference
-
-## Phase 5: Transfer Demonstrations
+## Phase 5: Measured-Target Training And Validation
 
 Status: planned.
 
-Work:
+Scope:
 
-- vegetation demo with MicaSense, Salinas, and Sentinel-2 patches
-- wetland demo with Kennedy Space Center, Botswana, and external wetland
-  patches
-- urban demo with Pavia University, Houston 2013, and Sentinel-2 patches
-- satellite patch demo with EuroSAT, BigEarthNet, or HySpecNet-11k
+- regression and classification over measured datasets such as HIDSAG
+- topic-routed and hierarchical models
+- split definitions, model cards, residual/error analysis
+- topic stability and sensitivity studies
 
-Acceptance criteria:
+Acceptance:
 
-- each theme has a clear local/external data status
-- comparisons include simple baselines or known indices where applicable
-- topic stability is checked before making claims about transfer
+- no trained model becomes product-visible without split definition,
+  metrics, caveats, and provenance
 
-## Phase 6: Research Validation
+## Phase 6: Publishable Interactive Subsets
 
-Status: first diagnostic layer implemented; full validation is planned.
+Status: planned.
 
-Work:
+Scope:
 
-- repeated topic fits across random seeds
-- topic stability metrics
-- representation comparisons
-- baseline model comparison
-- cross-scene train/test reports
-- documented failure cases
-- PCA/KMeans topic-space and spectral-library diagnostics for visual
-  inspection before formal validation
+- select only compact, high-value subsets from the local core
+- export band metadata, spectral samples, overlays, topic maps, and
+  comparison summaries in app-friendly form
+- version those subsets independently from raw local archives
 
-Acceptance criteria:
+Acceptance:
 
-- validation outputs are reproducible
-- reports explain when LDA helps and when it does not
-- docs distinguish demo evidence from publishable evidence
-- cluster visualizations expose diagnostics such as silhouette score
-  instead of showing unlabeled decorative scatter plots
+- every exported subset must link back to a validated local workflow
+- static screenshots are auxiliary only, never the primary evidence
 
-## Open Engineering Questions
+## Phase 7: Web App Rebuild
 
-- Should generated corpora be stored as JSON, compressed NPZ, or SQLite?
-- How should wavelength metadata be normalized across UPV/EHU, MicaSense,
-  Sentinel-2, Landsat, and EnMAP?
-- Should large external sources use a manifest plus checksum cache?
-- Should the backend expose a future `/api/corpus/:id` endpoint or keep
-  the existing single payload for simplicity?
-- Which topic stability metric is easiest to explain in the public app?
-- Should topic embeddings stay PCA-first for interpretability, or add
-  UMAP/t-SNE only after seed-stability and parameter-sensitivity checks?
+Status: blocked on Phase 6 assets, but the target structure is already
+defined.
+
+Target product structure:
+
+- `Context` surface for explanation and conceptual framing
+- `Workspace` surface with left method scope, central interactive
+  evidence, and right inference/validation
+
+Mandatory capabilities:
+
+- interactive spectral plots
+- band-selectable image views
+- overlay switching for labels, SLIC, topics, clusters, and semantic
+  maps where available
+- explicit comparison and caveat panels
+
+## Phase 8: Scientific Validation Layer
+
+Status: planned.
+
+Scope:
+
+- repeated fits across seeds
+- quantization sensitivity
+- document-definition sensitivity
+- spectral-library alignment
+- label/measurement association
+- cross-scene transfer validation
+
+Acceptance:
+
+- the app must distinguish exploratory evidence from validated evidence
+- the docs must distinguish demo assets from publishable scientific
+  claims
+
+## Immediate Engineering Focus
+
+1. keep growing the local validation core
+2. deepen acquisition for real high-value datasets
+3. extend offline method comparisons beyond the first SAM/NMF/stability
+   layer
+4. export only compact subsets with interactive value
+5. rebuild the app only after the above is materially in place

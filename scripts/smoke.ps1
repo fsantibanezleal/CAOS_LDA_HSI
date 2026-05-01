@@ -10,11 +10,23 @@ $ErrorActionPreference = "Stop"
 $paths = @(
     "/healthz",
     "/api/app-data",
+    "/api/data-families",
+    "/api/corpus-recipes",
+    "/api/corpus-previews",
+    "/api/segmentation-baselines",
+    "/api/local-validation-matrix",
+    "/api/local-dataset-inventory",
+    "/api/local-core-benchmarks",
     "/api/spectral-library",
     "/api/analysis",
     "/generated/real/previews/cuprite-aviris-reflectance-rgb.png",
     "/generated/spectral/library_samples.json",
     "/generated/analysis/analysis.json",
+    "/generated/corpus/corpus_previews.json",
+    "/generated/baselines/segmentation_baselines.json",
+    "/generated/core/local_dataset_inventory.json",
+    "/generated/core/local_core_benchmarks.json",
+    "/generated/baselines/previews/cuprite-aviris-reflectance-slic.png",
     "/"
 )
 

@@ -68,6 +68,26 @@ class Settings(BaseSettings):
         return self.data_path / "derived" / "analysis" / "analysis.json"
 
     @property
+    def corpus_previews_path(self) -> Path:
+        return self.data_path / "derived" / "corpus" / "corpus_previews.json"
+
+    @property
+    def segmentation_baselines_path(self) -> Path:
+        return self.data_path / "derived" / "baselines" / "segmentation_baselines.json"
+
+    @property
+    def local_validation_matrix_path(self) -> Path:
+        return self.manifests_path / "local_validation_matrix.json"
+
+    @property
+    def local_dataset_inventory_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "local_dataset_inventory.json"
+
+    @property
+    def local_core_benchmarks_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "local_core_benchmarks.json"
+
+    @property
     def derived_path(self) -> Path:
         return self.data_path / "derived"
 

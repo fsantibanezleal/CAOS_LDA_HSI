@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "smoke", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "run-core", "build-local-core", "smoke", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -29,6 +29,11 @@ function Show-Help {
     Write-Host "  build-field Rebuild compact field MSI derived assets from downloaded raw scenes"
     Write-Host "  build-spectral Rebuild compact USGS spectral-library samples"
     Write-Host "  build-analysis Rebuild compact PCA/KMeans diagnostics from derived assets"
+    Write-Host "  build-corpus Rebuild static corpus previews from derived assets"
+    Write-Host "  build-baselines Rebuild static SLIC segmentation baselines from raw scenes"
+    Write-Host "  build-inventory Build unified local dataset/raw inventory for the validation backend"
+    Write-Host "  run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks"
+    Write-Host "  build-local-core Run inventory + full local-core benchmarks"
     Write-Host "  smoke       Smoke test a running local app at http://127.0.0.1:8105"
     Write-Host "  clean       Remove build outputs and Python caches"
     Write-Host "  stop        Kill local Python and Node processes started from this repo"
@@ -75,6 +80,15 @@ function Ensure-DerivedIfMissing {
     }
     if ((Test-Path "data\\derived\\real\\real_samples.json") -and (Test-Path "data\\derived\\spectral\\library_samples.json") -and -not (Test-Path "data\\derived\\analysis\\analysis.json")) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_analysis_payload.py | Out-Null
+    }
+    if ((Test-Path "data\\derived\\real\\real_samples.json") -and (Test-Path "data\\derived\\spectral\\library_samples.json") -and -not (Test-Path "data\\derived\\corpus\\corpus_previews.json")) {
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_corpus_previews.py | Out-Null
+    }
+    if ((Test-Path "data\\raw\\upv_ehu") -and -not (Test-Path "data\\derived\\baselines\\segmentation_baselines.json")) {
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_segmentation_baselines.py | Out-Null
+    }
+    if ((Test-Path "data\\raw") -and -not (Test-Path "data\\derived\\core\\local_dataset_inventory.json")) {
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_local_inventory.py | Out-Null
     }
 }
 
@@ -169,6 +183,32 @@ switch ($Command) {
     "build-analysis" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_analysis_payload.py
+    }
+
+    "build-corpus" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_corpus_previews.py
+    }
+
+    "build-baselines" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_segmentation_baselines.py
+    }
+
+    "build-inventory" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_local_inventory.py
+    }
+
+    "run-core" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\run_local_core_benchmarks.py
+    }
+
+    "build-local-core" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_local_inventory.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\run_local_core_benchmarks.py
     }
 
     "smoke" {

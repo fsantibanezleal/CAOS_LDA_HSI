@@ -1,103 +1,85 @@
 # CAOS LDA HSI
 
-CAOS LDA HSI is a public research-oriented web app for explaining and
-demonstrating probabilistic topic modelling over multispectral and
-hyperspectral data.
+CAOS LDA HSI is a local-first research and validation repository for
+probabilistic topic modeling, clustering, segmentation, and supervised
+learning over multispectral and hyperspectral data.
 
-The project is built around one central hypothesis: the informative
-structure of a sample is not captured by a single representative
-spectrum. The relevant signal also lives in the variability across
-spectra. Under this view, spectra can be discretized into text-like
-tokens, grouped into documents, and analyzed with topic models such as
-Latent Dirichlet Allocation (LDA).
+The central thesis is methodological, not cosmetic:
+
+> Spectral variability is not disposable noise. It can be represented as
+> a corpus, inspected through PTM/LDA-style models, compared against
+> spatial and spectral baselines, and used for inference when labels or
+> measurements exist.
+
+The backend, data pipeline, local experiments, and documentation are the
+primary product. The web app is a compact interactive projection of a
+validated subset of those outputs.
 
 ## Current Scope
 
 The repository now includes:
 
-- a FastAPI backend that serves both API content and the built SPA
-- a React + Vite frontend with English / Spanish UI and dark / light
-  theme support
-- a compact synthetic topic-modelling demo in `data/demo/demo.json`
-- compact derived summaries of ten downloaded public HSI / unmixing scenes in
-  `data/derived/real/real_samples.json`
-- compact derived summaries of two downloaded official MicaSense MSI
-  field orthomosaics in `data/derived/field/field_samples.json`
-- compact material spectra extracted from official USGS spectral-library
-  subsets in `data/derived/spectral/library_samples.json`
-- compact PCA/KMeans diagnostics for real-scene topic mixtures and
-  spectral-library reference spectra in `data/derived/analysis/analysis.json`
-- reproducible download and build scripts for raw public data under
+- a FastAPI backend and React + Vite frontend
+- a local validation package in `research_core/`
+- curated manifests for datasets, families, corpus recipes, and workflow
+  rules
+- reproducible acquisition scripts for public raw data under
   `data-pipeline/`
-- `legacy/` material preserved as historical reference for the early
-  experiments
+- deterministic derived assets for scenes, field data, spectral-library
+  slices, corpus previews, segmentation baselines, and analytical
+  diagnostics
+- local-core outputs in `data/derived/core/`:
+  - unified dataset inventory
+  - offline PTM/LDA, clustering, supervised, topic-stability, SAM, and
+    NMF/unmixing benchmarks
+- dense technical documentation under `docs/`
+- `legacy/` material retained as historical reference
 
-## Product Surface
+## Current Status
 
-- `Datasets`: curated MSI / HSI sources with GitHub-aware size strategy
-- `Real HSI scenes`: downloaded UPV/EHU benchmarks and unmixing ROIs with
-  topic summaries, official label previews where available, and inferred
-  topic-stratum previews for unlabeled scenes
-- `Field MSI samples`: downloaded MicaSense orthomosaics converted to
-  patch corpora and topic summaries
-- `Spectral library`: compact material spectra for clay, mineral,
-  oxide, carbonate, urban, and vegetation references
-- `Clustering diagnostics`: topic-space PCA/KMeans views over real
-  scenes and spectral-library PCA/KMeans views over reference materials
-- `Representations`: alternative spectral-to-document encodings
-- `Topics`: topic-word and document-topic visualizations
-- `Inference`: topic-aware downstream modelling examples
-- `Theory`: the conceptual basis for treating spectral variability as
-  structured information
+- the deployed SPA is a technical checkpoint only
+- the old app direction was rejected
+- the repo is being rebuilt around a local scientific workflow first
+- the new accepted app direction is interactive-only for spectral and
+  scene evidence
 
 ## Repository Layout
 
 - `app/`: FastAPI backend
-- `frontend/`: React + Vite frontend
-- `data/`: manifests, generated demo assets, derived scene summaries,
-  and generated previews
-- `data-pipeline/`: scripts for demo generation, public-data download,
-  and derived-asset creation
-- `docs/`: technical and research documentation
+- `frontend/`: React + Vite SPA
+- `research_core/`: reusable local validation utilities
+- `data/`: manifests, demo assets, derived outputs, and ignored raw
+  downloads
+- `data-pipeline/`: acquisition and derivation scripts
+- `docs/`: theory, datasets, architecture, reset memo, and roadmap
 - `deploy/`: VPS deployment templates
-- `scripts/`: local development and maintenance scripts
-- `legacy/`: notebooks and reference papers retained for context
+- `scripts/`: local development, build, and smoke-test commands
+- `legacy/`: earlier experiments kept for context
 
-## Technical Documentation
+## Key Generated Assets
 
-- `docs/theory.md`: theoretical framing, implemented scope, risks, and
-  open research questions
-- `docs/spectral-tokenization.md`: document/word design, normalization,
-  quantization, vocabulary families, and metadata requirements
-- `docs/datasets.md`: current local data, under-100 MB expansion
-  candidates, external subset sources, and non-claims
-- `docs/functional-scope.md`: required workbench behavior and product
-  surface rules
-- `docs/technical-roadmap.md`: phased implementation and validation plan
-- `docs/sources.md`: research and data source references
+- `data/derived/core/local_dataset_inventory.json`
+- `data/derived/core/local_core_benchmarks.json`
+- `data/derived/corpus/corpus_previews.json`
+- `data/derived/baselines/segmentation_baselines.json`
+- `data/derived/real/real_samples.json`
+- `data/derived/field/field_samples.json`
+- `data/derived/spectral/library_samples.json`
 
-## Conventions
+## Local Workflow
 
-- Code, comments, docstrings, and documentation are written in English.
-- The UI is bilingual from day one: Spanish and English.
-- Legacy notebooks remain exploratory references, but they are kept
-  tidy: outputs removed, machine-specific artifacts cleaned, and visible
-  text normalized to English where practical.
-- Large raw datasets are not committed blindly. The repository prefers
-  small demo assets, manifests, and reproducible download workflows.
+Raw third-party files live under `data/raw/` and stay out of Git.
+Offline validation regenerates derived artifacts from those local raw
+sources. The public app should load only compact exported subsets.
 
-## Local Data Workflow
+Current first-pass local-core evidence now includes:
 
-The app currently uses three data layers:
-
-- a compact synthetic demo in `data/demo/demo.json`
-- compact derived HSI scene assets in `data/derived/real/`
-- compact derived MSI field assets in `data/derived/field/`
-- compact derived spectral-library samples in `data/derived/spectral/`
-- compact derived clustering diagnostics in `data/derived/analysis/`
-
-Raw third-party files are downloaded into `data/raw/` and kept out of
-Git on purpose.
+- labeled-scene classification and clustering baselines
+- multi-seed topic-stability diagnostics
+- spectral-angle reference alignment
+- NMF/unmixing baselines over Borsoi ROIs
+- Cuprite reference-alignment experiments against compact USGS 224-band
+  group centroids
 
 Useful commands:
 
@@ -111,6 +93,11 @@ Useful commands:
 .\scripts\local.ps1 build-field
 .\scripts\local.ps1 build-spectral
 .\scripts\local.ps1 build-analysis
+.\scripts\local.ps1 build-corpus
+.\scripts\local.ps1 build-baselines
+.\scripts\local.ps1 build-inventory
+.\scripts\local.ps1 run-core
+.\scripts\local.ps1 build-local-core
 .\scripts\local.ps1 smoke
 .\scripts\local.ps1 demo
 .\scripts\local.ps1 dev
@@ -126,22 +113,31 @@ Useful commands:
 ./scripts/local.sh build-field
 ./scripts/local.sh build-spectral
 ./scripts/local.sh build-analysis
+./scripts/local.sh build-corpus
+./scripts/local.sh build-baselines
+./scripts/local.sh build-inventory
+./scripts/local.sh run-core
+./scripts/local.sh build-local-core
 ./scripts/local.sh smoke
 ./scripts/local.sh demo
 ./scripts/local.sh dev
 ```
 
+## Main Documents
+
+- `docs/theory.md`
+- `docs/datasets.md`
+- `docs/architecture.md`
+- `docs/functional-scope.md`
+- `docs/product-reset-research.md`
+- `docs/technical-roadmap.md`
+- `docs/sources.md`
+
 ## Immediate Next Steps
 
-- Review the deployed professional workbench and clustering diagnostics
-  on `https://lda-hsi.fasl-work.com` before the next iteration
-- Extend the new PCA/KMeans diagnostics into topic stability, seed
-  comparison, and representation-comparison reports
-- Add ECOSTRESS and satellite/UAV curated subsets after direct access,
-  size, and licensing checks
-- Replace approximate HSI wavelength axes with calibrated band-center
-  vectors where available
-- Extend real-scene modelling to compare multiple document encodings on
-  the downloaded public scenes, not only on the synthetic demo
-- Keep future production deploys gated by local build, API smoke tests,
-  public smoke tests, and visual checks
+1. extend local acquisition for real high-value datasets
+2. deepen offline comparisons: topic models, clustering, segmentation,
+   unmixing-style baselines, and validation
+3. curate compact interactive subsets for publication
+4. rebuild the app around `Context` and `Workspace`
+5. keep production deploys gated behind local build and smoke checks

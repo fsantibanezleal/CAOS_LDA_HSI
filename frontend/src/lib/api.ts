@@ -52,6 +52,24 @@ export interface ProjectOverview {
   repo: RepoLink;
 }
 
+export interface DatasetSupervision {
+  family_id: string;
+  states: string[];
+  label_scope: string;
+  measurement_scope: string;
+  caveat: string;
+}
+
+export interface DatasetAcquisition {
+  status: string;
+  access: string;
+  direct_download: boolean;
+  license_note: string;
+  checksum_status: string;
+  raw_asset_policy: string;
+  last_verified: string | null;
+}
+
 export interface DatasetEntry {
   id: string;
   name: string;
@@ -66,6 +84,8 @@ export interface DatasetEntry {
   repository_strategy: LocalizedText;
   notes: LocalizedText;
   fit_for_demo: string;
+  supervision: DatasetSupervision;
+  acquisition: DatasetAcquisition;
 }
 
 export interface DatasetExclusion {
@@ -78,6 +98,214 @@ export interface DatasetCatalog {
   selection_policy: LocalizedText;
   datasets: DatasetEntry[];
   exclusions: DatasetExclusion[];
+}
+
+export interface DataFamily {
+  id: string;
+  code: string;
+  title: LocalizedText;
+  definition: LocalizedText;
+  supervision_states: string[];
+  current_dataset_ids: string[];
+  candidate_dataset_ids: string[];
+  valid_recipe_ids: string[];
+  valid_baseline_ids: string[];
+  valid_outputs: LocalizedText[];
+  caveats: LocalizedText[];
+}
+
+export interface DataFamiliesPayload {
+  source: string;
+  families: DataFamily[];
+}
+
+export interface CorpusRecipe {
+  id: string;
+  title: LocalizedText;
+  summary: LocalizedText;
+  alphabet_definition: LocalizedText;
+  word_definition: LocalizedText;
+  document_definition: LocalizedText;
+  valid_family_ids: string[];
+  required_metadata: string[];
+  first_dataset_ids: string[];
+  risks: LocalizedText[];
+  validation_gates: string[];
+}
+
+export interface BaselineMethod {
+  id: string;
+  name: string;
+  purpose: string;
+  valid_family_ids: string[];
+  feature_space: string;
+  metrics: string[];
+  caveat: string;
+}
+
+export interface ValidationBlock {
+  id: string;
+  title: string;
+  question: string;
+  metrics: string[];
+  failure_conditions: string[];
+}
+
+export interface CorpusRecipesPayload {
+  source: string;
+  recipes: CorpusRecipe[];
+  baselines: BaselineMethod[];
+  validation_blocks: ValidationBlock[];
+}
+
+export interface CorpusDefinition {
+  alphabet: string;
+  word: string;
+  document: string;
+  corpus: string;
+  topic_ready: boolean;
+}
+
+export interface CorpusLengthStats {
+  min: number;
+  median: number;
+  max: number;
+  mean: number;
+}
+
+export interface CorpusTokenCount {
+  token: string;
+  count: number;
+}
+
+export interface CorpusExampleDocument {
+  id: string;
+  label: string;
+  source: string;
+  token_count: number;
+  source_spectra_count: number | null;
+  tokens: string[];
+  token_explanation: string;
+}
+
+export interface CorpusPreview {
+  id: string;
+  dataset_id: string;
+  dataset_name: string;
+  family_id: string;
+  recipe_id: string;
+  document_count: number;
+  vocabulary_size: number;
+  zero_token_documents: number;
+  document_length: CorpusLengthStats;
+  corpus_definition: CorpusDefinition;
+  top_tokens: CorpusTokenCount[];
+  example_documents: CorpusExampleDocument[];
+  reversible_token_examples: Record<string, string>;
+  caveats: string[];
+}
+
+export interface CorpusPreviewsPayload {
+  source: string;
+  generated_at: string;
+  previews: CorpusPreview[];
+}
+
+export interface SegmentationMethod {
+  id: string;
+  name: string;
+  purpose: string;
+  uses_spatial_information: boolean;
+  uses_supervision: boolean;
+  caveat: string;
+}
+
+export interface SlicParameters {
+  n_segments_requested: number;
+  compactness: number;
+  convert2lab: boolean;
+  enforce_connectivity: boolean;
+}
+
+export interface SegmentSizeStats {
+  min: number;
+  median: number;
+  max: number;
+  mean: number;
+}
+
+export interface SegmentationLabelMetrics {
+  label_available: boolean;
+  label_coverage_ratio: number | null;
+  weighted_label_purity: number | null;
+  segments_with_labels: number;
+}
+
+export interface SegmentExample {
+  segment_id: number;
+  pixel_count: number;
+  labeled_pixel_count: number | null;
+  majority_label_id: number | null;
+  majority_label: string | null;
+  purity: number | null;
+}
+
+export interface SegmentationSceneBaseline {
+  scene_id: string;
+  dataset_id: string;
+  scene_name: string;
+  family_id: string;
+  method_id: string;
+  feature_space: string;
+  spatial_information_used: boolean;
+  supervision_used: boolean;
+  slic_parameters: SlicParameters;
+  segment_count: number;
+  segment_size_pixels: SegmentSizeStats;
+  label_metrics: SegmentationLabelMetrics;
+  segment_examples: SegmentExample[];
+  preview_path: string;
+  caveats: string[];
+}
+
+export interface SegmentationBaselinesPayload {
+  source: string;
+  generated_at: string;
+  methods: SegmentationMethod[];
+  scenes: SegmentationSceneBaseline[];
+}
+
+export interface LocalValidationMatrixPayload {
+  source: string;
+  thesis: LocalizedText;
+  workflow_stages: Array<Record<string, string>>;
+  dataset_groups: Array<Record<string, unknown>>;
+  representation_families: Array<Record<string, unknown>>;
+  segmentation_methods: Array<Record<string, unknown>>;
+  clustering_methods: Array<Record<string, unknown>>;
+  topic_methods: Array<Record<string, unknown>>;
+  training_methods: Array<Record<string, unknown>>;
+  web_projection_rules: Record<string, unknown>;
+}
+
+export interface LocalDatasetInventoryPayload {
+  source: string;
+  generated_at: string;
+  summary: Record<string, unknown>;
+  family_views: Array<Record<string, unknown>>;
+  theme_groups: Array<Record<string, unknown>>;
+  datasets: Array<Record<string, unknown>>;
+}
+
+export interface LocalCoreBenchmarksPayload {
+  source: string;
+  generated_at: string;
+  methods: Record<string, unknown>;
+  labeled_scene_runs: Array<Record<string, unknown>>;
+  topic_stability_runs: Array<Record<string, unknown>>;
+  unlabeled_scene_runs: Array<Record<string, unknown>>;
+  unmixing_runs: Array<Record<string, unknown>>;
+  spectral_library_runs: Array<Record<string, unknown>>;
 }
 
 export interface WorkflowStep {
@@ -352,6 +580,10 @@ export interface AnalysisPayload {
 export interface AppPayload {
   overview: ProjectOverview;
   datasets: DatasetCatalog;
+  data_families: DataFamiliesPayload;
+  corpus_recipes: CorpusRecipesPayload;
+  corpus_previews: CorpusPreviewsPayload;
+  segmentation_baselines: SegmentationBaselinesPayload;
   real_scenes: RealScenesPayload;
   field_samples: FieldScenesPayload;
   spectral_library: SpectralLibraryPayload;
@@ -373,6 +605,13 @@ export function pickText(value: LocalizedText, language: string): string {
 }
 
 export const api = {
+  getDataFamilies: () => getJson<DataFamiliesPayload>("/api/data-families"),
+  getCorpusRecipes: () => getJson<CorpusRecipesPayload>("/api/corpus-recipes"),
+  getCorpusPreviews: () => getJson<CorpusPreviewsPayload>("/api/corpus-previews"),
+  getSegmentationBaselines: () => getJson<SegmentationBaselinesPayload>("/api/segmentation-baselines"),
+  getLocalValidationMatrix: () => getJson<LocalValidationMatrixPayload>("/api/local-validation-matrix"),
+  getLocalDatasetInventory: () => getJson<LocalDatasetInventoryPayload>("/api/local-dataset-inventory"),
+  getLocalCoreBenchmarks: () => getJson<LocalCoreBenchmarksPayload>("/api/local-core-benchmarks"),
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
   getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
   getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),

@@ -1,0 +1,1121 @@
+{
+  "source": "Static corpus previews generated from compact derived spectral assets",
+  "generated_at": "2026-04-30",
+  "previews": [
+    {
+      "id": "usgs-splib07__magnitude-phrase",
+      "dataset_id": "usgs-splib07",
+      "dataset_name": "USGS Spectral Library Version 7",
+      "family_id": "individual-spectra",
+      "recipe_id": "magnitude-phrase",
+      "document_count": 12,
+      "vocabulary_size": 12,
+      "zero_token_documents": 0,
+      "document_length": {
+        "min": 224,
+        "median": 224.0,
+        "max": 224,
+        "mean": 224.0
+      },
+      "corpus_definition": {
+        "alphabet": "16 normalized magnitude bins q00..q15",
+        "word": "one quantized reflectance level emitted by a band",
+        "document": "one curated material reference spectrum",
+        "corpus": "selected compact USGS reference spectra with comparable sensor convolution",
+        "topic_ready": true
+      },
+      "top_tokens": [
+        {
+          "token": "q10",
+          "count": 571
+        },
+        {
+          "token": "q11",
+          "count": 534
+        },
+        {
+          "token": "q09",
+          "count": 432
+        },
+        {
+          "token": "q08",
+          "count": 342
+        },
+        {
+          "token": "q07",
+          "count": 149
+        },
+        {
+          "token": "q06",
+          "count": 122
+        },
+        {
+          "token": "q02",
+          "count": 106
+        },
+        {
+          "token": "q05",
+          "count": 106
+        },
+        {
+          "token": "q04",
+          "count": 94
+        },
+        {
+          "token": "q03",
+          "count": 91
+        },
+        {
+          "token": "q01",
+          "count": 73
+        },
+        {
+          "token": "q00",
+          "count": 68
+        }
+      ],
+      "example_documents": [
+        {
+          "id": "aviris1997-asphalt-gds376-blck-road-old-asdfra-aref",
+          "label": "Asphalt GDS376 Blck Road old ASDFRa AREF",
+          "source": "urban material",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q02",
+            "q02",
+            "q02"
+          ],
+          "token_explanation": "Each band emits one magnitude-bin token; band position is preserved only by token order."
+        },
+        {
+          "id": "aviris1997-concrete-gds375-lt-gry-road",
+          "label": "Concrete GDS375 Lt Gry Road",
+          "source": "urban material",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "q00",
+            "q00",
+            "q01",
+            "q01",
+            "q02",
+            "q02",
+            "q03",
+            "q03",
+            "q04",
+            "q04",
+            "q04",
+            "q04",
+            "q05",
+            "q05",
+            "q06",
+            "q06",
+            "q06",
+            "q07"
+          ],
+          "token_explanation": "Each band emits one magnitude-bin token; band position is preserved only by token order."
+        },
+        {
+          "id": "aviris1997-goethite-thin-film-ws222",
+          "label": "Goethite Thin Film WS222",
+          "source": "oxide",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q01",
+            "q02",
+            "q02",
+            "q03"
+          ],
+          "token_explanation": "Each band emits one magnitude-bin token; band position is preserved only by token order."
+        },
+        {
+          "id": "aviris1997-hematite-coatd-qtz-br93-25b",
+          "label": "Hematite Coatd Qtz BR93-25B",
+          "source": "oxide",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00",
+            "q00"
+          ],
+          "token_explanation": "Each band emits one magnitude-bin token; band position is preserved only by token order."
+        },
+        {
+          "id": "aviris1997-alunite-al706-na100",
+          "label": "Alunite AL706 Na100",
+          "source": "alteration mineral",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "q02",
+            "q03",
+            "q04",
+            "q05",
+            "q06",
+            "q06",
+            "q06",
+            "q07",
+            "q07",
+            "q08",
+            "q08",
+            "q08",
+            "q08",
+            "q09",
+            "q09",
+            "q09",
+            "q09",
+            "q09"
+          ],
+          "token_explanation": "Each band emits one magnitude-bin token; band position is preserved only by token order."
+        },
+        {
+          "id": "aviris1997-ammonio-illite-smect-gds87",
+          "label": "Ammonio-Illite/Smect GDS87",
+          "source": "clay",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "q06",
+            "q06",
+            "q06",
+            "q07",
+            "q07",
+            "q07",
+            "q07",
+            "q07",
+            "q07",
+            "q07",
+            "q07",
+            "q08",
+            "q08",
+            "q08",
+            "q09",
+            "q09",
+            "q09",
+            "q09"
+          ],
+          "token_explanation": "Each band emits one magnitude-bin token; band position is preserved only by token order."
+        }
+      ],
+      "reversible_token_examples": {
+        "q00": "lowest normalized reflectance bin in the document",
+        "q15": "highest normalized reflectance bin in the document"
+      },
+      "caveats": [
+        "This representation is easy to inspect but weakly identifies wavelength unless order is preserved.",
+        "Do not interpret magnitude-only topics as material identities."
+      ]
+    },
+    {
+      "id": "usgs-splib07__band-frequency",
+      "dataset_id": "usgs-splib07",
+      "dataset_name": "USGS Spectral Library Version 7",
+      "family_id": "individual-spectra",
+      "recipe_id": "band-frequency",
+      "document_count": 12,
+      "vocabulary_size": 224,
+      "zero_token_documents": 0,
+      "document_length": {
+        "min": 1621,
+        "median": 1931.0,
+        "max": 2297,
+        "mean": 1942.58
+      },
+      "corpus_definition": {
+        "alphabet": "USGS band-center wavelength tokens",
+        "word": "a wavelength token repeated by normalized reflectance count",
+        "document": "one curated material reference spectrum",
+        "corpus": "selected compact USGS reference spectra transformed to count vectors",
+        "topic_ready": true
+      },
+      "top_tokens": [
+        {
+          "token": "1681nm",
+          "count": 132
+        },
+        {
+          "token": "1690nm",
+          "count": 132
+        },
+        {
+          "token": "1700nm",
+          "count": 132
+        },
+        {
+          "token": "1709nm",
+          "count": 132
+        },
+        {
+          "token": "1718nm",
+          "count": 132
+        },
+        {
+          "token": "1634nm",
+          "count": 131
+        },
+        {
+          "token": "1671nm",
+          "count": 131
+        },
+        {
+          "token": "1737nm",
+          "count": 131
+        },
+        {
+          "token": "1747nm",
+          "count": 131
+        },
+        {
+          "token": "1643nm",
+          "count": 130
+        },
+        {
+          "token": "1652nm",
+          "count": 130
+        },
+        {
+          "token": "1662nm",
+          "count": 130
+        }
+      ],
+      "example_documents": [
+        {
+          "id": "aviris1997-asphalt-gds376-blck-road-old-asdfra-aref",
+          "label": "Asphalt GDS376 Blck Road old ASDFRa AREF",
+          "source": "urban material",
+          "token_count": 1698,
+          "source_spectra_count": null,
+          "tokens": [
+            "0447nm",
+            "0456nm",
+            "0466nm",
+            "0475nm",
+            "0485nm",
+            "0494nm",
+            "0504nm",
+            "0513nm",
+            "0522nm",
+            "0532nm",
+            "0532nm",
+            "0541nm",
+            "0541nm",
+            "0551nm",
+            "0551nm",
+            "0560nm",
+            "0560nm",
+            "0570nm"
+          ],
+          "token_explanation": "Band words are repeated according to normalized reflectance magnitude."
+        },
+        {
+          "id": "aviris1997-concrete-gds375-lt-gry-road",
+          "label": "Concrete GDS375 Lt Gry Road",
+          "source": "urban material",
+          "token_count": 2153,
+          "source_spectra_count": null,
+          "tokens": [
+            "0419nm",
+            "0428nm",
+            "0438nm",
+            "0438nm",
+            "0447nm",
+            "0447nm",
+            "0456nm",
+            "0456nm",
+            "0456nm",
+            "0466nm",
+            "0466nm",
+            "0466nm",
+            "0475nm",
+            "0475nm",
+            "0475nm",
+            "0475nm",
+            "0485nm",
+            "0485nm"
+          ],
+          "token_explanation": "Band words are repeated according to normalized reflectance magnitude."
+        },
+        {
+          "id": "aviris1997-goethite-thin-film-ws222",
+          "label": "Goethite Thin Film WS222",
+          "source": "oxide",
+          "token_count": 2129,
+          "source_spectra_count": null,
+          "tokens": [
+            "0475nm",
+            "0485nm",
+            "0494nm",
+            "0504nm",
+            "0513nm",
+            "0522nm",
+            "0532nm",
+            "0541nm",
+            "0541nm",
+            "0551nm",
+            "0551nm",
+            "0551nm",
+            "0560nm",
+            "0560nm",
+            "0560nm",
+            "0560nm",
+            "0570nm",
+            "0570nm"
+          ],
+          "token_explanation": "Band words are repeated according to normalized reflectance magnitude."
+        },
+        {
+          "id": "aviris1997-hematite-coatd-qtz-br93-25b",
+          "label": "Hematite Coatd Qtz BR93-25B",
+          "source": "oxide",
+          "token_count": 1621,
+          "source_spectra_count": null,
+          "tokens": [
+            "0607nm",
+            "0617nm",
+            "0626nm",
+            "0635nm",
+            "0645nm",
+            "0654nm",
+            "0654nm",
+            "0664nm",
+            "0664nm",
+            "0673nm",
+            "0673nm",
+            "0683nm",
+            "0683nm",
+            "0692nm",
+            "0692nm",
+            "0701nm",
+            "0701nm",
+            "0711nm"
+          ],
+          "token_explanation": "Band words are repeated according to normalized reflectance magnitude."
+        },
+        {
+          "id": "aviris1997-alunite-al706-na100",
+          "label": "Alunite AL706 Na100",
+          "source": "alteration mineral",
+          "token_count": 2130,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm",
+            "0400nm",
+            "0409nm",
+            "0409nm",
+            "0409nm",
+            "0419nm",
+            "0419nm",
+            "0419nm",
+            "0419nm",
+            "0428nm",
+            "0428nm",
+            "0428nm",
+            "0428nm",
+            "0428nm",
+            "0438nm",
+            "0438nm",
+            "0438nm",
+            "0438nm"
+          ],
+          "token_explanation": "Band words are repeated according to normalized reflectance magnitude."
+        },
+        {
+          "id": "aviris1997-ammonio-illite-smect-gds87",
+          "label": "Ammonio-Illite/Smect GDS87",
+          "source": "clay",
+          "token_count": 1721,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm",
+            "0400nm",
+            "0400nm",
+            "0400nm",
+            "0400nm",
+            "0400nm",
+            "0409nm",
+            "0409nm",
+            "0409nm",
+            "0409nm",
+            "0409nm",
+            "0409nm",
+            "0409nm",
+            "0419nm",
+            "0419nm",
+            "0419nm",
+            "0419nm",
+            "0419nm"
+          ],
+          "token_explanation": "Band words are repeated according to normalized reflectance magnitude."
+        }
+      ],
+      "reversible_token_examples": {
+        "2200nm": "reflectance support near the 2200 nm band; repeated tokens encode magnitude",
+        "0650nm": "visible red-region support; repetition is normalized, not calibrated radiance"
+      },
+      "caveats": [
+        "High-reflectance regions can dominate unless normalization and count scaling are reported.",
+        "Count repetition is a modelling device, not a physical photon count."
+      ]
+    },
+    {
+      "id": "salinas-a-corrected__band-magnitude",
+      "dataset_id": "salinas-a-corrected",
+      "dataset_name": "Salinas-A corrected",
+      "family_id": "labeled-spectral-image",
+      "recipe_id": "band-magnitude",
+      "document_count": 1,
+      "vocabulary_size": 204,
+      "zero_token_documents": 0,
+      "document_length": {
+        "min": 204,
+        "median": 204.0,
+        "max": 204,
+        "mean": 204.0
+      },
+      "corpus_definition": {
+        "alphabet": "band-center plus magnitude-bin words such as 2200nm_q07",
+        "word": "one band/magnitude event from a labelled pixel example",
+        "document": "one labelled pixel example from the compact derived payload",
+        "corpus": "Salinas-A example documents generated under the same quantization",
+        "topic_ready": false
+      },
+      "top_tokens": [
+        {
+          "token": "0400nm_q01",
+          "count": 1
+        },
+        {
+          "token": "0410nm_q01",
+          "count": 1
+        },
+        {
+          "token": "0421nm_q01",
+          "count": 1
+        },
+        {
+          "token": "0431nm_q02",
+          "count": 1
+        },
+        {
+          "token": "0441nm_q03",
+          "count": 1
+        },
+        {
+          "token": "0452nm_q03",
+          "count": 1
+        },
+        {
+          "token": "0462nm_q02",
+          "count": 1
+        },
+        {
+          "token": "0472nm_q03",
+          "count": 1
+        },
+        {
+          "token": "0483nm_q03",
+          "count": 1
+        },
+        {
+          "token": "0493nm_q03",
+          "count": 1
+        },
+        {
+          "token": "0503nm_q03",
+          "count": 1
+        },
+        {
+          "token": "0514nm_q03",
+          "count": 1
+        }
+      ],
+      "example_documents": [
+        {
+          "id": "salinas-a-corrected::1",
+          "label": "Brocoli_green_weeds_1",
+          "source": "Salinas-A corrected",
+          "token_count": 204,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q01",
+            "0410nm_q01",
+            "0421nm_q01",
+            "0431nm_q02",
+            "0441nm_q03",
+            "0452nm_q03",
+            "0462nm_q02",
+            "0472nm_q03",
+            "0483nm_q03",
+            "0493nm_q03",
+            "0503nm_q03",
+            "0514nm_q03",
+            "0524nm_q03",
+            "0534nm_q03",
+            "0545nm_q02",
+            "0555nm_q02",
+            "0566nm_q03",
+            "0576nm_q03"
+          ],
+          "token_explanation": "Each word joins approximate band center and quantized magnitude."
+        }
+      ],
+      "reversible_token_examples": {
+        "2200nm_q07": "approximately 2200 nm with quantized magnitude level 7",
+        "0650nm_q03": "approximately 650 nm with quantized magnitude level 3"
+      },
+      "caveats": [
+        "Current compact Salinas-A payload exposes only the available example documents; regenerate more examples before fitting a serious topic model.",
+        "Band centers are approximate visual metadata, not calibrated sensor metadata."
+      ]
+    },
+    {
+      "id": "salinas-corrected__region-documents",
+      "dataset_id": "salinas-corrected",
+      "dataset_name": "Salinas corrected",
+      "family_id": "labeled-spectral-image",
+      "recipe_id": "region-documents",
+      "document_count": 16,
+      "vocabulary_size": 958,
+      "zero_token_documents": 0,
+      "document_length": {
+        "min": 204,
+        "median": 204.0,
+        "max": 204,
+        "mean": 204.0
+      },
+      "corpus_definition": {
+        "alphabet": "band-center plus magnitude-bin words",
+        "word": "one aggregated band/magnitude event from a labelled class region",
+        "document": "one official Salinas class region aggregated from labelled spectra",
+        "corpus": "all class-region documents built from the same Salinas scene",
+        "topic_ready": true
+      },
+      "top_tokens": [
+        {
+          "token": "0834nm_q09",
+          "count": 16
+        },
+        {
+          "token": "0855nm_q15",
+          "count": 16
+        },
+        {
+          "token": "1228nm_q02",
+          "count": 16
+        },
+        {
+          "token": "1497nm_q00",
+          "count": 16
+        },
+        {
+          "token": "1507nm_q00",
+          "count": 16
+        },
+        {
+          "token": "1517nm_q00",
+          "count": 16
+        },
+        {
+          "token": "1910nm_q00",
+          "count": 16
+        },
+        {
+          "token": "1921nm_q00",
+          "count": 16
+        },
+        {
+          "token": "1931nm_q00",
+          "count": 16
+        },
+        {
+          "token": "2448nm_q00",
+          "count": 16
+        },
+        {
+          "token": "2469nm_q00",
+          "count": 16
+        },
+        {
+          "token": "2479nm_q00",
+          "count": 16
+        }
+      ],
+      "example_documents": [
+        {
+          "id": "salinas-corrected::class-1",
+          "label": "Brocoli_green_weeds_1",
+          "source": "Salinas corrected",
+          "token_count": 204,
+          "source_spectra_count": 2009,
+          "tokens": [
+            "0400nm_q01",
+            "0410nm_q01",
+            "0421nm_q01",
+            "0431nm_q02",
+            "0441nm_q03",
+            "0452nm_q03",
+            "0462nm_q03",
+            "0472nm_q03",
+            "0483nm_q03",
+            "0493nm_q03",
+            "0503nm_q03",
+            "0514nm_q03",
+            "0524nm_q03",
+            "0534nm_q03",
+            "0545nm_q03",
+            "0555nm_q03",
+            "0566nm_q03",
+            "0576nm_q03"
+          ],
+          "token_explanation": "Each class region emits band/magnitude words from its mean spectrum."
+        },
+        {
+          "id": "salinas-corrected::class-2",
+          "label": "Brocoli_green_weeds_2",
+          "source": "Salinas corrected",
+          "token_count": 204,
+          "source_spectra_count": 3726,
+          "tokens": [
+            "0400nm_q01",
+            "0410nm_q01",
+            "0421nm_q01",
+            "0431nm_q02",
+            "0441nm_q03",
+            "0452nm_q03",
+            "0462nm_q03",
+            "0472nm_q03",
+            "0483nm_q03",
+            "0493nm_q03",
+            "0503nm_q03",
+            "0514nm_q03",
+            "0524nm_q03",
+            "0534nm_q03",
+            "0545nm_q03",
+            "0555nm_q03",
+            "0566nm_q03",
+            "0576nm_q04"
+          ],
+          "token_explanation": "Each class region emits band/magnitude words from its mean spectrum."
+        },
+        {
+          "id": "salinas-corrected::class-3",
+          "label": "Fallow",
+          "source": "Salinas corrected",
+          "token_count": 204,
+          "source_spectra_count": 1976,
+          "tokens": [
+            "0400nm_q02",
+            "0410nm_q03",
+            "0421nm_q04",
+            "0431nm_q07",
+            "0441nm_q09",
+            "0452nm_q10",
+            "0462nm_q09",
+            "0472nm_q10",
+            "0483nm_q12",
+            "0493nm_q13",
+            "0503nm_q13",
+            "0514nm_q13",
+            "0524nm_q12",
+            "0534nm_q13",
+            "0545nm_q13",
+            "0555nm_q13",
+            "0566nm_q13",
+            "0576nm_q14"
+          ],
+          "token_explanation": "Each class region emits band/magnitude words from its mean spectrum."
+        },
+        {
+          "id": "salinas-corrected::class-4",
+          "label": "Fallow_rough_plow",
+          "source": "Salinas corrected",
+          "token_count": 204,
+          "source_spectra_count": 1394,
+          "tokens": [
+            "0400nm_q03",
+            "0410nm_q04",
+            "0421nm_q06",
+            "0431nm_q09",
+            "0441nm_q12",
+            "0452nm_q12",
+            "0462nm_q12",
+            "0472nm_q13",
+            "0483nm_q14",
+            "0493nm_q15",
+            "0503nm_q15",
+            "0514nm_q15",
+            "0524nm_q14",
+            "0534nm_q14",
+            "0545nm_q14",
+            "0555nm_q14",
+            "0566nm_q14",
+            "0576nm_q15"
+          ],
+          "token_explanation": "Each class region emits band/magnitude words from its mean spectrum."
+        },
+        {
+          "id": "salinas-corrected::class-5",
+          "label": "Fallow_smooth",
+          "source": "Salinas corrected",
+          "token_count": 204,
+          "source_spectra_count": 2678,
+          "tokens": [
+            "0400nm_q02",
+            "0410nm_q03",
+            "0421nm_q04",
+            "0431nm_q07",
+            "0441nm_q10",
+            "0452nm_q10",
+            "0462nm_q10",
+            "0472nm_q11",
+            "0483nm_q13",
+            "0493nm_q13",
+            "0503nm_q13",
+            "0514nm_q13",
+            "0524nm_q13",
+            "0534nm_q13",
+            "0545nm_q13",
+            "0555nm_q13",
+            "0566nm_q14",
+            "0576nm_q14"
+          ],
+          "token_explanation": "Each class region emits band/magnitude words from its mean spectrum."
+        },
+        {
+          "id": "salinas-corrected::class-6",
+          "label": "Stubble",
+          "source": "Salinas corrected",
+          "token_count": 204,
+          "source_spectra_count": 3959,
+          "tokens": [
+            "0400nm_q01",
+            "0410nm_q02",
+            "0421nm_q03",
+            "0431nm_q04",
+            "0441nm_q06",
+            "0452nm_q06",
+            "0462nm_q06",
+            "0472nm_q07",
+            "0483nm_q08",
+            "0493nm_q08",
+            "0503nm_q08",
+            "0514nm_q09",
+            "0524nm_q08",
+            "0534nm_q09",
+            "0545nm_q09",
+            "0555nm_q09",
+            "0566nm_q10",
+            "0576nm_q10"
+          ],
+          "token_explanation": "Each class region emits band/magnitude words from its mean spectrum."
+        }
+      ],
+      "reversible_token_examples": {
+        "class document": "document boundaries come from official labels, not inferred topics",
+        "source_spectra_count": "number of labelled pixels supporting the regional document"
+      },
+      "caveats": [
+        "Class-region documents are useful for validation but leak supervision, so they must be separated from unsupervised pixel documents.",
+        "Mean spectra hide intra-class variability; future previews should include patch and SLIC documents."
+      ]
+    },
+    {
+      "id": "cuprite-upv-reflectance__band-magnitude",
+      "dataset_id": "cuprite-upv-reflectance",
+      "dataset_name": "Cuprite reflectance",
+      "family_id": "unlabeled-spectral-image",
+      "recipe_id": "band-magnitude",
+      "document_count": 6,
+      "vocabulary_size": 545,
+      "zero_token_documents": 0,
+      "document_length": {
+        "min": 224,
+        "median": 224.0,
+        "max": 224,
+        "mean": 224.0
+      },
+      "corpus_definition": {
+        "alphabet": "approximate AVIRIS wavelength plus quantized reflectance-bin words",
+        "word": "one band/magnitude event from an unlabeled Cuprite spectrum",
+        "document": "one example pixel from an inferred spectral stratum",
+        "corpus": "compact Cuprite examples generated from the same quantization",
+        "topic_ready": true
+      },
+      "top_tokens": [
+        {
+          "token": "0400nm_q00",
+          "count": 6
+        },
+        {
+          "token": "0409nm_q00",
+          "count": 6
+        },
+        {
+          "token": "0419nm_q00",
+          "count": 6
+        },
+        {
+          "token": "0428nm_q01",
+          "count": 6
+        },
+        {
+          "token": "0513nm_q02",
+          "count": 6
+        },
+        {
+          "token": "0522nm_q02",
+          "count": 6
+        },
+        {
+          "token": "1408nm_q00",
+          "count": 6
+        },
+        {
+          "token": "1417nm_q00",
+          "count": 6
+        },
+        {
+          "token": "1426nm_q00",
+          "count": 6
+        },
+        {
+          "token": "1436nm_q00",
+          "count": 6
+        },
+        {
+          "token": "1850nm_q00",
+          "count": 6
+        },
+        {
+          "token": "1860nm_q00",
+          "count": 6
+        }
+      ],
+      "example_documents": [
+        {
+          "id": "cuprite-upv-reflectance::stratum-1",
+          "label": "Inferred spectral stratum 1",
+          "source": "Cuprite AVIRIS reflectance",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q00",
+            "0409nm_q00",
+            "0419nm_q00",
+            "0428nm_q01",
+            "0438nm_q02",
+            "0447nm_q02",
+            "0456nm_q02",
+            "0466nm_q02",
+            "0475nm_q02",
+            "0485nm_q02",
+            "0494nm_q02",
+            "0504nm_q02",
+            "0513nm_q02",
+            "0522nm_q02",
+            "0532nm_q03",
+            "0541nm_q03",
+            "0551nm_q03",
+            "0560nm_q03"
+          ],
+          "token_explanation": "Each inferred stratum example emits band/magnitude words from an unlabeled pixel spectrum."
+        },
+        {
+          "id": "cuprite-upv-reflectance::stratum-2",
+          "label": "Inferred spectral stratum 2",
+          "source": "Cuprite AVIRIS reflectance",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q00",
+            "0409nm_q00",
+            "0419nm_q00",
+            "0428nm_q01",
+            "0438nm_q01",
+            "0447nm_q01",
+            "0456nm_q01",
+            "0466nm_q01",
+            "0475nm_q01",
+            "0485nm_q02",
+            "0494nm_q02",
+            "0504nm_q02",
+            "0513nm_q02",
+            "0522nm_q02",
+            "0532nm_q02",
+            "0541nm_q02",
+            "0551nm_q02",
+            "0560nm_q02"
+          ],
+          "token_explanation": "Each inferred stratum example emits band/magnitude words from an unlabeled pixel spectrum."
+        },
+        {
+          "id": "cuprite-upv-reflectance::stratum-3",
+          "label": "Inferred spectral stratum 3",
+          "source": "Cuprite AVIRIS reflectance",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q00",
+            "0409nm_q00",
+            "0419nm_q00",
+            "0428nm_q01",
+            "0438nm_q01",
+            "0447nm_q01",
+            "0456nm_q01",
+            "0466nm_q02",
+            "0475nm_q02",
+            "0485nm_q02",
+            "0494nm_q02",
+            "0504nm_q02",
+            "0513nm_q02",
+            "0522nm_q02",
+            "0532nm_q02",
+            "0541nm_q02",
+            "0551nm_q02",
+            "0560nm_q02"
+          ],
+          "token_explanation": "Each inferred stratum example emits band/magnitude words from an unlabeled pixel spectrum."
+        },
+        {
+          "id": "cuprite-upv-reflectance::stratum-4",
+          "label": "Inferred spectral stratum 4",
+          "source": "Cuprite AVIRIS reflectance",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q00",
+            "0409nm_q00",
+            "0419nm_q00",
+            "0428nm_q01",
+            "0438nm_q01",
+            "0447nm_q01",
+            "0456nm_q01",
+            "0466nm_q01",
+            "0475nm_q01",
+            "0485nm_q01",
+            "0494nm_q01",
+            "0504nm_q01",
+            "0513nm_q02",
+            "0522nm_q02",
+            "0532nm_q02",
+            "0541nm_q02",
+            "0551nm_q02",
+            "0560nm_q02"
+          ],
+          "token_explanation": "Each inferred stratum example emits band/magnitude words from an unlabeled pixel spectrum."
+        },
+        {
+          "id": "cuprite-upv-reflectance::stratum-5",
+          "label": "Inferred spectral stratum 5",
+          "source": "Cuprite AVIRIS reflectance",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q00",
+            "0409nm_q00",
+            "0419nm_q00",
+            "0428nm_q01",
+            "0438nm_q01",
+            "0447nm_q01",
+            "0456nm_q01",
+            "0466nm_q01",
+            "0475nm_q01",
+            "0485nm_q01",
+            "0494nm_q01",
+            "0504nm_q01",
+            "0513nm_q02",
+            "0522nm_q02",
+            "0532nm_q02",
+            "0541nm_q02",
+            "0551nm_q02",
+            "0560nm_q02"
+          ],
+          "token_explanation": "Each inferred stratum example emits band/magnitude words from an unlabeled pixel spectrum."
+        },
+        {
+          "id": "cuprite-upv-reflectance::stratum-6",
+          "label": "Inferred spectral stratum 6",
+          "source": "Cuprite AVIRIS reflectance",
+          "token_count": 224,
+          "source_spectra_count": null,
+          "tokens": [
+            "0400nm_q00",
+            "0409nm_q00",
+            "0419nm_q00",
+            "0428nm_q01",
+            "0438nm_q01",
+            "0447nm_q01",
+            "0456nm_q01",
+            "0466nm_q01",
+            "0475nm_q01",
+            "0485nm_q01",
+            "0494nm_q01",
+            "0504nm_q01",
+            "0513nm_q02",
+            "0522nm_q02",
+            "0532nm_q02",
+            "0541nm_q02",
+            "0551nm_q02",
+            "0560nm_q02"
+          ],
+          "token_explanation": "Each inferred stratum example emits band/magnitude words from an unlabeled pixel spectrum."
+        }
+      ],
+      "reversible_token_examples": {
+        "2200nm_q10": "SWIR event near a mineral-sensitive wavelength; not a mineral ID by itself",
+        "inferred stratum": "topic-derived grouping used only as exploratory context"
+      },
+      "caveats": [
+        "Cuprite has no product-visible ground-truth map here; inferred strata are not labels.",
+        "Mineral interpretation requires calibrated wavelengths, absorption checks, and library alignment."
+      ]
+    }
+  ]
+}

@@ -22,6 +22,11 @@ Subcommands:
   build-field Rebuild compact field MSI derived assets from downloaded raw scenes
   build-spectral Rebuild compact USGS spectral-library samples
   build-analysis Rebuild compact PCA/KMeans diagnostics from derived assets
+  build-corpus Rebuild static corpus previews from derived assets
+  build-baselines Rebuild static SLIC segmentation baselines from raw scenes
+  build-inventory Build unified local dataset/raw inventory for the validation backend
+  run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks
+  build-local-core Run inventory + full local-core benchmarks
   smoke      Smoke test a running local app at http://127.0.0.1:8105
   clean       Remove build outputs and Python caches
   stop        Kill local Python and Node processes started from this repo
@@ -70,6 +75,15 @@ ensure_derived_if_missing() {
   fi
   if [[ -f data/derived/real/real_samples.json && -f data/derived/spectral/library_samples.json && ! -f data/derived/analysis/analysis.json ]]; then
     .venv-pipeline/bin/python data-pipeline/build_analysis_payload.py >/dev/null
+  fi
+  if [[ -f data/derived/real/real_samples.json && -f data/derived/spectral/library_samples.json && ! -f data/derived/corpus/corpus_previews.json ]]; then
+    .venv-pipeline/bin/python data-pipeline/build_corpus_previews.py >/dev/null
+  fi
+  if [[ -d data/raw/upv_ehu && ! -f data/derived/baselines/segmentation_baselines.json ]]; then
+    .venv-pipeline/bin/python data-pipeline/build_segmentation_baselines.py >/dev/null
+  fi
+  if [[ -d data/raw && ! -f data/derived/core/local_dataset_inventory.json ]]; then
+    .venv-pipeline/bin/python data-pipeline/build_local_inventory.py >/dev/null
   fi
 }
 
@@ -154,6 +168,27 @@ case "$command_name" in
   build-analysis)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_analysis_payload.py
+    ;;
+  build-corpus)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_corpus_previews.py
+    ;;
+  build-baselines)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_segmentation_baselines.py
+    ;;
+  build-inventory)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_local_inventory.py
+    ;;
+  run-core)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/run_local_core_benchmarks.py
+    ;;
+  build-local-core)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_local_inventory.py
+    .venv-pipeline/bin/python data-pipeline/run_local_core_benchmarks.py
     ;;
   smoke)
     scripts/smoke.sh "http://127.0.0.1:8105"

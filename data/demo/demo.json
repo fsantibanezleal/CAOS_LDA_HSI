@@ -51,7 +51,7 @@
         "en": "Broad continuum with hydroxyl-related absorptions around 1400 nm and 2200 nm.",
         "es": "Continuo amplio con absorciones asociadas a hidroxilos cerca de 1400 nm y 2200 nm."
       },
-      "color": "#7c3aed",
+      "color": "#c9824d",
       "top_words": [
         {
           "token": "0516nm",
@@ -121,7 +121,7 @@
         "en": "Visible to NIR slope with stronger response in the red and near infrared.",
         "es": "Pendiente visible a NIR con respuesta mas fuerte en el rojo y el infrarrojo cercano."
       },
-      "color": "#f85149",
+      "color": "#d84f3c",
       "top_words": [
         {
           "token": "0516nm",
@@ -191,7 +191,7 @@
         "en": "Low visible reflectance followed by a red-edge jump and high NIR plateau.",
         "es": "Baja reflectancia en visible seguida por un salto de borde rojo y una meseta alta en NIR."
       },
-      "color": "#06b6d4",
+      "color": "#4f8f5b",
       "top_words": [
         {
           "token": "0843nm",
@@ -261,7 +261,7 @@
         "en": "Lower overall reflectance with broad absorptions near water-sensitive regions.",
         "es": "Reflectancia general menor con absorciones amplias cerca de regiones sensibles al agua."
       },
-      "color": "#3b82f6",
+      "color": "#277da1",
       "top_words": [
         {
           "token": "0516nm",
@@ -507,9 +507,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 53.973,
       "predictions": {
-        "baseline_linear": 49.36,
+        "baseline_linear": 49.245,
         "topic_mixture_linear": 53.0,
-        "topic_routed_linear": 49.36
+        "topic_routed_linear": 49.245
       }
     },
     {
@@ -696,9 +696,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 52.432,
       "predictions": {
-        "baseline_linear": 58.813,
+        "baseline_linear": 57.268,
         "topic_mixture_linear": 52.25,
-        "topic_routed_linear": 58.813
+        "topic_routed_linear": 57.268
       }
     },
     {
@@ -885,9 +885,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 56.882,
       "predictions": {
-        "baseline_linear": 52.383,
+        "baseline_linear": 51.724,
         "topic_mixture_linear": 54.25,
-        "topic_routed_linear": 52.383
+        "topic_routed_linear": 51.724
       }
     },
     {
@@ -1074,9 +1074,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 45.441,
       "predictions": {
-        "baseline_linear": 52.541,
+        "baseline_linear": 52.246,
         "topic_mixture_linear": 50.219,
-        "topic_routed_linear": 52.541
+        "topic_routed_linear": 52.246
       }
     },
     {
@@ -1263,9 +1263,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 54.341,
       "predictions": {
-        "baseline_linear": 58.772,
+        "baseline_linear": 56.8,
         "topic_mixture_linear": 54.5,
-        "topic_routed_linear": 58.772
+        "topic_routed_linear": 56.8
       }
     },
     {
@@ -1452,9 +1452,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 46.007,
       "predictions": {
-        "baseline_linear": 51.529,
+        "baseline_linear": 51.923,
         "topic_mixture_linear": 50.0,
-        "topic_routed_linear": 51.529
+        "topic_routed_linear": 51.923
       }
     },
     {
@@ -1641,9 +1641,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 52.343,
       "predictions": {
-        "baseline_linear": 52.036,
+        "baseline_linear": 51.441,
         "topic_mixture_linear": 53.5,
-        "topic_routed_linear": 52.036
+        "topic_routed_linear": 51.441
       }
     },
     {
@@ -1830,9 +1830,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 42.487,
       "predictions": {
-        "baseline_linear": 39.759,
+        "baseline_linear": 40.395,
         "topic_mixture_linear": 43.5,
-        "topic_routed_linear": 39.759
+        "topic_routed_linear": 40.395
       }
     },
     {
@@ -2019,9 +2019,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 51.861,
       "predictions": {
-        "baseline_linear": 58.213,
+        "baseline_linear": 57.836,
         "topic_mixture_linear": 54.0,
-        "topic_routed_linear": 58.213
+        "topic_routed_linear": 57.836
       }
     },
     {
@@ -2208,9 +2208,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 52.793,
       "predictions": {
-        "baseline_linear": 46.983,
+        "baseline_linear": 47.104,
         "topic_mixture_linear": 49.25,
-        "topic_routed_linear": 46.983
+        "topic_routed_linear": 47.104
       }
     },
     {
@@ -2397,9 +2397,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 44.716,
       "predictions": {
-        "baseline_linear": 46.39,
+        "baseline_linear": 46.487,
         "topic_mixture_linear": 45.5,
-        "topic_routed_linear": 46.39
+        "topic_routed_linear": 46.487
       }
     },
     {
@@ -2586,9 +2586,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 50.072,
       "predictions": {
-        "baseline_linear": 54.602,
+        "baseline_linear": 53.73,
         "topic_mixture_linear": 51.0,
-        "topic_routed_linear": 54.602
+        "topic_routed_linear": 53.73
       }
     },
     {
@@ -2775,9 +2775,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 52.419,
       "predictions": {
-        "baseline_linear": 47.856,
+        "baseline_linear": 47.869,
         "topic_mixture_linear": 53.25,
-        "topic_routed_linear": 47.856
+        "topic_routed_linear": 47.869
       }
     },
     {
@@ -2964,9 +2964,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 52.076,
       "predictions": {
-        "baseline_linear": 51.458,
+        "baseline_linear": 50.587,
         "topic_mixture_linear": 52.5,
-        "topic_routed_linear": 51.458
+        "topic_routed_linear": 50.587
       }
     },
     {
@@ -3153,9 +3153,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 50.106,
       "predictions": {
-        "baseline_linear": 44.046,
+        "baseline_linear": 43.683,
         "topic_mixture_linear": 50.5,
-        "topic_routed_linear": 44.046
+        "topic_routed_linear": 43.683
       }
     },
     {
@@ -3342,9 +3342,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 53.796,
       "predictions": {
-        "baseline_linear": 55.971,
+        "baseline_linear": 54.927,
         "topic_mixture_linear": 53.5,
-        "topic_routed_linear": 55.971
+        "topic_routed_linear": 54.927
       }
     },
     {
@@ -3531,9 +3531,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 44.906,
       "predictions": {
-        "baseline_linear": 42.177,
+        "baseline_linear": 39.671,
         "topic_mixture_linear": 42.0,
-        "topic_routed_linear": 42.177
+        "topic_routed_linear": 39.671
       }
     },
     {
@@ -3720,9 +3720,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 57.303,
       "predictions": {
-        "baseline_linear": 62.078,
+        "baseline_linear": 60.609,
         "topic_mixture_linear": 54.0,
-        "topic_routed_linear": 62.078
+        "topic_routed_linear": 60.609
       }
     },
     {
@@ -3909,9 +3909,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 53.551,
       "predictions": {
-        "baseline_linear": 55.121,
+        "baseline_linear": 53.905,
         "topic_mixture_linear": 53.0,
-        "topic_routed_linear": 55.121
+        "topic_routed_linear": 53.905
       }
     },
     {
@@ -4098,9 +4098,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 40.379,
       "predictions": {
-        "baseline_linear": 44.568,
+        "baseline_linear": 45.777,
         "topic_mixture_linear": 36.0,
-        "topic_routed_linear": 44.568
+        "topic_routed_linear": 45.777
       }
     },
     {
@@ -4287,9 +4287,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 51.924,
       "predictions": {
-        "baseline_linear": 58.087,
+        "baseline_linear": 56.922,
         "topic_mixture_linear": 54.25,
-        "topic_routed_linear": 58.087
+        "topic_routed_linear": 56.922
       }
     },
     {
@@ -4476,9 +4476,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 51.907,
       "predictions": {
-        "baseline_linear": 58.164,
+        "baseline_linear": 59.487,
         "topic_mixture_linear": 54.0,
-        "topic_routed_linear": 58.164
+        "topic_routed_linear": 59.487
       }
     },
     {
@@ -4665,9 +4665,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 54.902,
       "predictions": {
-        "baseline_linear": 48.059,
+        "baseline_linear": 48.573,
         "topic_mixture_linear": 53.25,
-        "topic_routed_linear": 48.059
+        "topic_routed_linear": 48.573
       }
     },
     {
@@ -4854,9 +4854,9 @@
       "dominant_topic_id": "vegetation-regime",
       "target_value": 53.105,
       "predictions": {
-        "baseline_linear": 54.454,
+        "baseline_linear": 54.285,
         "topic_mixture_linear": 51.25,
-        "topic_routed_linear": 54.454
+        "topic_routed_linear": 54.285
       }
     }
   ],
@@ -4867,7 +4867,7 @@
         "en": "Baseline linear regression on raw spectra",
         "es": "Regresion lineal base sobre espectros crudos"
       },
-      "rmse": 4.683,
+      "rmse": 4.594,
       "note": {
         "en": "One global linear model sees every sample as if it came from the same regime.",
         "es": "Un modelo lineal global ve cada muestra como si viniera del mismo regimen."
@@ -4891,7 +4891,7 @@
         "en": "Topic-routed local linear models",
         "es": "Modelos lineales locales enrutados por topicos"
       },
-      "rmse": 4.683,
+      "rmse": 4.594,
       "note": {
         "en": "Each sample is routed to a local regressor according to its dominant inferred topic.",
         "es": "Cada muestra se enruta a un regresor local segun su topico inferido dominante."

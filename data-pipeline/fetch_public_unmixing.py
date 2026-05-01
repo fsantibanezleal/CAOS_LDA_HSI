@@ -1,4 +1,4 @@
-"""Download compact public HSI unmixing examples from Borsoi et al.
+"""Download public HSI unmixing examples from Borsoi et al.
 
 These scenes are useful because they are small, familiar in the unmixing
 literature, and include spectral-library files for material-level workflows.
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import time
 import urllib.request
 from pathlib import Path
@@ -17,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw" / "borsoi_mua"
 MANIFEST_PATH = RAW_DIR / "download_manifest.json"
-MAX_PUBLIC_FILE_BYTES = 100 * 1024 * 1024
+MAX_LOCAL_DOWNLOAD_BYTES = int(os.getenv("CAOS_MAX_LOCAL_DOWNLOAD_BYTES", "0")) or None
 SOURCE_URL = "https://github.com/ricardoborsoi/MUA_SparseUnmixing/tree/master/real_data"
 RAW_BASE = "https://raw.githubusercontent.com/ricardoborsoi/MUA_SparseUnmixing/master/real_data"
 
@@ -104,7 +105,7 @@ def main() -> None:
     manifest: dict[str, object] = {
         "source": "MUA_SparseUnmixing real_data",
         "source_url": SOURCE_URL,
-        "max_public_file_bytes": MAX_PUBLIC_FILE_BYTES,
+        "max_local_download_bytes": MAX_LOCAL_DOWNLOAD_BYTES,
         "datasets": [],
     }
 
@@ -114,10 +115,10 @@ def main() -> None:
             url = f"{RAW_BASE}/{entry['name']}"
             destination = RAW_DIR / entry["name"]
             expected_size = remote_size(url)
-            if expected_size is not None and expected_size > MAX_PUBLIC_FILE_BYTES:
+            if MAX_LOCAL_DOWNLOAD_BYTES is not None and expected_size is not None and expected_size > MAX_LOCAL_DOWNLOAD_BYTES:
                 raise RuntimeError(
                     f"{entry['name']} is {expected_size} bytes, above the "
-                    f"{MAX_PUBLIC_FILE_BYTES} byte per-file policy."
+                    f"{MAX_LOCAL_DOWNLOAD_BYTES} byte configured local-download policy."
                 )
 
             local_size = destination.stat().st_size if destination.exists() else None
