@@ -82,13 +82,17 @@ Current first-pass local-core evidence now includes:
 - NMF/unmixing baselines over Borsoi ROIs
 - Cuprite reference-alignment experiments against compact USGS 224-band
   group centroids
-- HIDSAG raw-subset metadata with sample-level mineral targets and
-  acquisition-mode summaries
+- HIDSAG raw-subset metadata with sample-level targets, multi-measurement
+  summaries, and acquisition-mode tags
 - HIDSAG curated spectral subset with per-cube mean and standard
-  deviation spectra for `GEOMET` and `MINERAL2`
-- first supervised Family D benchmarks on `HIDSAG GEOMET` and
-  `MINERAL2`, including cross-validated classification/regression
-  baselines and topic-mixture comparisons at sample and cube levels
+  deviation spectra for `GEOMET`, `MINERAL1`, `MINERAL2`, and `GEOCHEM`
+- HIDSAG patch-level region-document export
+  (`hidsag_region_documents.json` + `.npz`) for local hierarchical
+  validation
+- supervised Family D benchmarks on `HIDSAG GEOMET`, `MINERAL1`,
+  `MINERAL2`, and `GEOCHEM`, including cross-validated
+  classification/regression baselines and topic-mixture comparisons at
+  sample, cube, and region levels
 
 Useful commands:
 

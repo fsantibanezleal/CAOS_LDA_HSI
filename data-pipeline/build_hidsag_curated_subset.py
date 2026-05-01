@@ -5,6 +5,7 @@ import json
 import os
 import tempfile
 import zipfile
+from collections import Counter
 from datetime import date
 from pathlib import Path
 
@@ -15,6 +16,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw" / "hidsag"
 OUTPUT_PATH = ROOT / "data" / "derived" / "core" / "hidsag_curated_subset.json"
+HIDSAG_MODALITY_ORDER = ["swir_low", "vnir_low", "vnir_high"]
 
 
 def rounded_list(array: np.ndarray, decimals: int = 4) -> list[float]:
@@ -72,12 +74,41 @@ def build_cube_entry(
     }
 
 
+def build_measurement_entry(
+    archive: zipfile.ZipFile,
+    cube_root: str,
+    crop: dict[str, object],
+) -> dict[str, object]:
+    tags = [str(tag) for tag in crop.get("tags", [])]
+    for crop_id, crop_payload in crop.items():
+        if crop_id == "tags" or not isinstance(crop_payload, dict):
+            continue
+        cubes = []
+        modalities = []
+        for modality in HIDSAG_MODALITY_ORDER:
+            modality_payload = crop_payload.get(modality)
+            if not isinstance(modality_payload, dict):
+                continue
+            cubes.append(build_cube_entry(archive, cube_root, crop_id, modality, modality_payload))
+            modalities.append(modality)
+        return {
+            "crop_id": crop_id,
+            "tags": tags,
+            "cube_count": len(cubes),
+            "modalities": modalities,
+            "cubes": cubes,
+        }
+    raise ValueError(f"Crop payload at {cube_root} did not contain any measurement dictionaries.")
+
+
 def build_subset(path: Path) -> dict[str, object]:
     with zipfile.ZipFile(path) as archive:
         metadata_names = sorted(name for name in archive.namelist() if name.endswith("metadata.json"))
         samples: list[dict[str, object]] = []
         variable_names: set[str] = set()
         dominant_tracker: dict[str, list[float]] = {}
+        measurement_counts: list[int] = []
+        tag_counter: Counter[str] = Counter()
 
         for metadata_name in metadata_names:
             payload = json.loads(archive.read(metadata_name))
@@ -89,31 +120,25 @@ def build_subset(path: Path) -> dict[str, object]:
 
             dominant_targets = sorted(variables.items(), key=lambda item: item[1], reverse=True)[:5]
             cube_root = metadata_name.rsplit("/", 1)[0]
-            cubes: list[dict[str, object]] = []
-            crop_ids: list[str] = []
-            for crop in payload.get("crops", []):
-                for crop_id, crop_payload in crop.items():
-                    if crop_id == "tags":
-                        continue
-                    crop_ids.append(crop_id)
-                    if not isinstance(crop_payload, dict):
-                        continue
-                    for modality, modality_payload in crop_payload.items():
-                        if not isinstance(modality_payload, dict):
-                            continue
-                        cubes.append(build_cube_entry(archive, cube_root, crop_id, modality, modality_payload))
+            measurements = [build_measurement_entry(archive, cube_root, crop) for crop in payload.get("crops", [])]
+            measurement_counts.append(len(measurements))
+            crop_ids = [str(measurement["crop_id"]) for measurement in measurements]
+            sample_tag_counter = Counter(tag for measurement in measurements for tag in measurement.get("tags", []))
+            tag_counter.update(sample_tag_counter)
 
             samples.append(
                 {
                     "sample_name": sample_name,
                     "datarecord": payload.get("datarecord"),
                     "crop_ids": crop_ids,
+                    "measurement_count": len(measurements),
+                    "measurement_tag_summary": dict(sorted(sample_tag_counter.items())),
                     "target_sum": round(sum(variables.values()), 4),
                     "targets": variables,
                     "dominant_targets": [
                         {"name": name, "value": round(value, 4)} for name, value in dominant_targets
                     ],
-                    "cubes": cubes,
+                    "measurements": measurements,
                 }
             )
 
@@ -134,8 +159,19 @@ def build_subset(path: Path) -> dict[str, object]:
             "zip_name": path.name,
             "size_bytes": path.stat().st_size,
             "sample_count": len(samples),
+            "measurement_count_total": int(sum(measurement_counts)),
+            "measurement_count_stats": {
+                "min": int(min(measurement_counts)) if measurement_counts else 0,
+                "median": round(float(np.median(measurement_counts)), 4) if measurement_counts else 0.0,
+                "max": int(max(measurement_counts)) if measurement_counts else 0,
+                "mean": round(float(np.mean(measurement_counts)), 4) if measurement_counts else 0.0,
+            },
             "variable_count": len(variable_names),
             "variable_names": sorted(variable_names),
+            "measurement_tags_top": [
+                {"tag": tag, "count": int(count)}
+                for tag, count in tag_counter.most_common(12)
+            ],
             "dominant_targets_by_mean": dominant_targets_by_mean[:10],
             "samples": samples,
             "caveats": [

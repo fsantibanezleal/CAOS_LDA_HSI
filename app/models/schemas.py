@@ -397,6 +397,16 @@ class HidsagCuratedSubsetPayload(BaseModel):
     subsets: list[dict[str, Any]]
 
 
+class HidsagRegionDocumentsPayload(BaseModel):
+    """Patch-level HIDSAG region-document summary for local validation."""
+
+    source: str
+    generated_at: str
+    patch_grid: dict[str, Any]
+    npz_path: str
+    subsets: list[dict[str, Any]]
+
+
 class WorkflowStep(BaseModel):
     """Ordered methodology step."""
 

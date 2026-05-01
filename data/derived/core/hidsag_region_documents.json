@@ -1,0 +1,971 @@
+{
+  "source": "Patch-level HIDSAG region documents derived from local raw ZIP archives",
+  "generated_at": "2026-05-01",
+  "patch_grid": {
+    "rows": 3,
+    "cols": 3
+  },
+  "npz_path": "D:\\_Repos\\_Web_Projects\\CAOS_LDA_HSI\\data\\derived\\core\\hidsag_region_documents.npz",
+  "subsets": [
+    {
+      "subset_code": "GEOCHEM",
+      "sample_count": 28,
+      "measurement_count_total": 106,
+      "region_document_count": 954,
+      "feature_layout": [
+        {
+          "modality": "swir_low",
+          "band_count": 268,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_low",
+          "band_count": 942,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_high",
+          "band_count": 942,
+          "source": "patch_mean_spectrum"
+        }
+      ],
+      "patch_grid": {
+        "rows": 3,
+        "cols": 3
+      },
+      "documents_per_measurement_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "documents_per_sample_stats": {
+        "min": 18.0,
+        "median": 36.0,
+        "max": 36.0,
+        "mean": 34.0714
+      },
+      "sample_previews": [
+        {
+          "sample_name": "GCH-0001",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0001:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0001:01:patch-r1c1",
+                "GCH-0001:01:patch-r1c2",
+                "GCH-0001:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0001:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0001:02:patch-r1c1",
+                "GCH-0001:02:patch-r1c2",
+                "GCH-0001:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0002",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0002:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0002:01:patch-r1c1",
+                "GCH-0002:01:patch-r1c2",
+                "GCH-0002:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0002:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0002:02:patch-r1c1",
+                "GCH-0002:02:patch-r1c2",
+                "GCH-0002:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0003",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0003:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0003:01:patch-r1c1",
+                "GCH-0003:01:patch-r1c2",
+                "GCH-0003:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0003:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0003:02:patch-r1c1",
+                "GCH-0003:02:patch-r1c2",
+                "GCH-0003:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0004",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0004:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0004:01:patch-r1c1",
+                "GCH-0004:01:patch-r1c2",
+                "GCH-0004:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0004:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0004:02:patch-r1c1",
+                "GCH-0004:02:patch-r1c2",
+                "GCH-0004:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0005",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0005:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0005:01:patch-r1c1",
+                "GCH-0005:01:patch-r1c2",
+                "GCH-0005:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0005:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0005:02:patch-r1c1",
+                "GCH-0005:02:patch-r1c2",
+                "GCH-0005:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0006",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0006:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0006:01:patch-r1c1",
+                "GCH-0006:01:patch-r1c2",
+                "GCH-0006:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0006:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0006:02:patch-r1c1",
+                "GCH-0006:02:patch-r1c2",
+                "GCH-0006:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0007",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0007:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0007:01:patch-r1c1",
+                "GCH-0007:01:patch-r1c2",
+                "GCH-0007:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0007:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0007:02:patch-r1c1",
+                "GCH-0007:02:patch-r1c2",
+                "GCH-0007:02:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0008",
+          "measurement_count": 4,
+          "measurement_tag_summary": {
+            "coarse": 2,
+            "fine": 2
+          },
+          "region_document_count": 36,
+          "measurement_previews": [
+            {
+              "measurement_name": "GCH-0008:01",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0008:01:patch-r1c1",
+                "GCH-0008:01:patch-r1c2",
+                "GCH-0008:01:patch-r1c3"
+              ]
+            },
+            {
+              "measurement_name": "GCH-0008:02",
+              "tags": [
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GCH-0008:02:patch-r1c1",
+                "GCH-0008:02:patch-r1c2",
+                "GCH-0008:02:patch-r1c3"
+              ]
+            }
+          ]
+        }
+      ],
+      "caveats": [
+        "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "These features are intended for local validation and future interactive subsets, not direct publication claims."
+      ]
+    },
+    {
+      "subset_code": "GEOMET",
+      "sample_count": 146,
+      "measurement_count_total": 146,
+      "region_document_count": 1314,
+      "feature_layout": [
+        {
+          "modality": "swir_low",
+          "band_count": 268,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_low",
+          "band_count": 471,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_high",
+          "band_count": 471,
+          "source": "patch_mean_spectrum"
+        }
+      ],
+      "patch_grid": {
+        "rows": 3,
+        "cols": 3
+      },
+      "documents_per_measurement_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "documents_per_sample_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "sample_previews": [
+        {
+          "sample_name": "GMET-0001",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0001:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0001:01:patch-r1c1",
+                "GMET-0001:01:patch-r1c2",
+                "GMET-0001:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0002",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0002:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0002:01:patch-r1c1",
+                "GMET-0002:01:patch-r1c2",
+                "GMET-0002:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0003",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0003:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0003:01:patch-r1c1",
+                "GMET-0003:01:patch-r1c2",
+                "GMET-0003:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0004",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0004:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0004:01:patch-r1c1",
+                "GMET-0004:01:patch-r1c2",
+                "GMET-0004:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0005",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0005:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0005:01:patch-r1c1",
+                "GMET-0005:01:patch-r1c2",
+                "GMET-0005:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0006",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0006:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0006:01:patch-r1c1",
+                "GMET-0006:01:patch-r1c2",
+                "GMET-0006:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0007",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0007:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0007:01:patch-r1c1",
+                "GMET-0007:01:patch-r1c2",
+                "GMET-0007:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "GMET-0008",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "GMET-0008:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "GMET-0008:01:patch-r1c1",
+                "GMET-0008:01:patch-r1c2",
+                "GMET-0008:01:patch-r1c3"
+              ]
+            }
+          ]
+        }
+      ],
+      "caveats": [
+        "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "These features are intended for local validation and future interactive subsets, not direct publication claims."
+      ]
+    },
+    {
+      "subset_code": "MINERAL1",
+      "sample_count": 99,
+      "measurement_count_total": 99,
+      "region_document_count": 891,
+      "feature_layout": [
+        {
+          "modality": "swir_low",
+          "band_count": 268,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_low",
+          "band_count": 942,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_high",
+          "band_count": 942,
+          "source": "patch_mean_spectrum"
+        }
+      ],
+      "patch_grid": {
+        "rows": 3,
+        "cols": 3
+      },
+      "documents_per_measurement_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "documents_per_sample_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "sample_previews": [
+        {
+          "sample_name": "M1-0001",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P1": 1,
+            "S1": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0001:01",
+              "tags": [
+                "P1",
+                "S1",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0001:01:patch-r1c1",
+                "M1-0001:01:patch-r1c2",
+                "M1-0001:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0002",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P2": 1,
+            "S1": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0002:01",
+              "tags": [
+                "P2",
+                "S1",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0002:01:patch-r1c1",
+                "M1-0002:01:patch-r1c2",
+                "M1-0002:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0003",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P3": 1,
+            "S1": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0003:01",
+              "tags": [
+                "P3",
+                "S1",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0003:01:patch-r1c1",
+                "M1-0003:01:patch-r1c2",
+                "M1-0003:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0004",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P1": 1,
+            "S2": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0004:01",
+              "tags": [
+                "P1",
+                "S2",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0004:01:patch-r1c1",
+                "M1-0004:01:patch-r1c2",
+                "M1-0004:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0005",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P2": 1,
+            "S2": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0005:01",
+              "tags": [
+                "P2",
+                "S2",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0005:01:patch-r1c1",
+                "M1-0005:01:patch-r1c2",
+                "M1-0005:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0006",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P3": 1,
+            "S2": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0006:01",
+              "tags": [
+                "P3",
+                "S2",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0006:01:patch-r1c1",
+                "M1-0006:01:patch-r1c2",
+                "M1-0006:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0007",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P1": 1,
+            "S3": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0007:01",
+              "tags": [
+                "P1",
+                "S3",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0007:01:patch-r1c1",
+                "M1-0007:01:patch-r1c2",
+                "M1-0007:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0008",
+          "measurement_count": 1,
+          "measurement_tag_summary": {
+            "P2": 1,
+            "S3": 1,
+            "coarse": 1
+          },
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M1-0008:01",
+              "tags": [
+                "P2",
+                "S3",
+                "coarse"
+              ],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M1-0008:01:patch-r1c1",
+                "M1-0008:01:patch-r1c2",
+                "M1-0008:01:patch-r1c3"
+              ]
+            }
+          ]
+        }
+      ],
+      "caveats": [
+        "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "These features are intended for local validation and future interactive subsets, not direct publication claims."
+      ]
+    },
+    {
+      "subset_code": "MINERAL2",
+      "sample_count": 20,
+      "measurement_count_total": 20,
+      "region_document_count": 180,
+      "feature_layout": [
+        {
+          "modality": "swir_low",
+          "band_count": 268,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_low",
+          "band_count": 942,
+          "source": "patch_mean_spectrum"
+        },
+        {
+          "modality": "vnir_high",
+          "band_count": 942,
+          "source": "patch_mean_spectrum"
+        }
+      ],
+      "patch_grid": {
+        "rows": 3,
+        "cols": 3
+      },
+      "documents_per_measurement_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "documents_per_sample_stats": {
+        "min": 9.0,
+        "median": 9.0,
+        "max": 9.0,
+        "mean": 9.0
+      },
+      "sample_previews": [
+        {
+          "sample_name": "M2-0001",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0001:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0001:01:patch-r1c1",
+                "M2-0001:01:patch-r1c2",
+                "M2-0001:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0002",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0002:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0002:01:patch-r1c1",
+                "M2-0002:01:patch-r1c2",
+                "M2-0002:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0003",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0003:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0003:01:patch-r1c1",
+                "M2-0003:01:patch-r1c2",
+                "M2-0003:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0004",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0004:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0004:01:patch-r1c1",
+                "M2-0004:01:patch-r1c2",
+                "M2-0004:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0005",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0005:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0005:01:patch-r1c1",
+                "M2-0005:01:patch-r1c2",
+                "M2-0005:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0006",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0006:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0006:01:patch-r1c1",
+                "M2-0006:01:patch-r1c2",
+                "M2-0006:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0007",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0007:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0007:01:patch-r1c1",
+                "M2-0007:01:patch-r1c2",
+                "M2-0007:01:patch-r1c3"
+              ]
+            }
+          ]
+        },
+        {
+          "sample_name": "M2-0008",
+          "measurement_count": 1,
+          "measurement_tag_summary": {},
+          "region_document_count": 9,
+          "measurement_previews": [
+            {
+              "measurement_name": "M2-0008:01",
+              "tags": [],
+              "region_document_count": 9,
+              "preview_region_ids": [
+                "M2-0008:01:patch-r1c1",
+                "M2-0008:01:patch-r1c2",
+                "M2-0008:01:patch-r1c3"
+              ]
+            }
+          ]
+        }
+      ],
+      "caveats": [
+        "Region documents are fixed-grid patch means, not semantic segments or SLIC superpixels.",
+        "Patch coordinates are stored in pixel space only; wavelength metadata is still band-index based.",
+        "These features are intended for local validation and future interactive subsets, not direct publication claims."
+      ]
+    }
+  ]
+}

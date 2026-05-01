@@ -13,6 +13,7 @@ from app.models.schemas import (
     DemoPayload,
     FieldScenesPayload,
     HidsagCuratedSubsetPayload,
+    HidsagRegionDocumentsPayload,
     HidsagSubsetInventoryPayload,
     LocalCoreBenchmarksPayload,
     LocalDatasetInventoryPayload,
@@ -33,6 +34,7 @@ from app.services.content import (
     get_demo,
     get_field_samples,
     get_hidsag_curated_subset,
+    get_hidsag_region_documents,
     get_hidsag_subset_inventory,
     get_local_core_benchmarks,
     get_local_dataset_inventory,
@@ -101,6 +103,11 @@ def hidsag_subset_inventory() -> HidsagSubsetInventoryPayload:
 @router.get("/hidsag-curated-subset", response_model=HidsagCuratedSubsetPayload)
 def hidsag_curated_subset() -> HidsagCuratedSubsetPayload:
     return get_hidsag_curated_subset()
+
+
+@router.get("/hidsag-region-documents", response_model=HidsagRegionDocumentsPayload)
+def hidsag_region_documents() -> HidsagRegionDocumentsPayload:
+    return get_hidsag_region_documents()
 
 
 @router.get("/methodology", response_model=Methodology)

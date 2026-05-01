@@ -4,14 +4,14 @@
   "summary": {
     "cataloged_dataset_count": 21,
     "datasets_with_local_raw": 10,
-    "raw_total_size_bytes": 5087508718,
-    "raw_total_size_gb": 4.7381,
+    "raw_total_size_bytes": 15967087035,
+    "raw_total_size_gb": 14.8705,
     "source_group_counts": {
       "upv_ehu": 6,
       "borsoi_mua": 3,
       "micasense": 3,
       "usgs_splib07": 2,
-      "hidsag": 2
+      "hidsag": 4
     }
   },
   "family_views": [
@@ -1399,9 +1399,9 @@
         "hidsag-mineral1",
         "hidsag-mineral2"
       ],
-      "raw_file_count": 2,
-      "raw_total_size_bytes": 4741120197,
-      "raw_total_size_gb": 4.4155,
+      "raw_file_count": 4,
+      "raw_total_size_bytes": 15620698514,
+      "raw_total_size_gb": 14.5479,
       "sha256_complete": true,
       "raw_files": [
         {
@@ -1413,6 +1413,26 @@
           "url": "https://ndownloader.figshare.com/files/38652824",
           "size_bytes": 3264279514,
           "sha256": "c22cd3e44946ec2d9cfd5a78f3ca4f127d42166440c568068bfe0961db7f5fc0"
+        },
+        {
+          "raw_dataset_id": "hidsag-geochem",
+          "source_group": "hidsag",
+          "source": "HIDSAG Figshare collection",
+          "name": "GEOCHEM.zip",
+          "kind": "hidsag_zip",
+          "url": "https://ndownloader.figshare.com/files/38652791",
+          "size_bytes": 6195326462,
+          "sha256": "1273909b7a9ce43c27605b4d2fb9633cf7ab95a6c69fc905852de8b41afc0678"
+        },
+        {
+          "raw_dataset_id": "hidsag-mineral1",
+          "source_group": "hidsag",
+          "source": "HIDSAG Figshare collection",
+          "name": "MINERAL1.zip",
+          "kind": "hidsag_zip",
+          "url": "https://ndownloader.figshare.com/files/38652803",
+          "size_bytes": 4684251855,
+          "sha256": "1090c970d93c2aad6b2aab60ec217f6dae0fb6b0e583f2ebbbd08fd3fcef589c"
         },
         {
           "raw_dataset_id": "hidsag-mineral2",

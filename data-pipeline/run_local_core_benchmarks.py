@@ -49,6 +49,8 @@ from research_core.unmixing import (
 
 OUTPUT_PATH = CORE_DERIVED_DIR / "local_core_benchmarks.json"
 HIDSAG_CURATED_PATH = CORE_DERIVED_DIR / "hidsag_curated_subset.json"
+HIDSAG_REGION_PATH = CORE_DERIVED_DIR / "hidsag_region_documents.json"
+HIDSAG_REGION_ARRAYS_PATH = CORE_DERIVED_DIR / "hidsag_region_documents.npz"
 LIBRARY_PATH = DERIVED_DIR / "spectral" / "library_samples.json"
 RANDOM_STATE = 42
 LABELED_SCENES = [
@@ -72,12 +74,22 @@ HIDSAG_BINARY_THRESHOLD = 1.0
 HIDSAG_REGRESSION_MIN_STD = 2.0
 HIDSAG_REGRESSION_MIN_NONZERO = 8
 HIDSAG_SUBSET_TOPIC_COUNTS = {
+    "MINERAL1": 6,
     "MINERAL2": 4,
     "GEOMET": 6,
+    "GEOCHEM": 5,
 }
 HIDSAG_SUBSET_DOC_TOPIC_COUNTS = {
+    "MINERAL1": 6,
     "MINERAL2": 6,
     "GEOMET": 3,
+    "GEOCHEM": 5,
+}
+HIDSAG_SUBSET_REGION_TOPIC_COUNTS = {
+    "MINERAL1": 8,
+    "MINERAL2": 6,
+    "GEOMET": 6,
+    "GEOCHEM": 6,
 }
 
 
@@ -267,19 +279,59 @@ def load_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
     raise KeyError(f"HIDSAG subset {subset_code} not found in {HIDSAG_CURATED_PATH}")
 
 
-def hidsag_feature_rows(subset: dict[str, object]) -> tuple[np.ndarray, list[str], list[dict[str, object]], list[str]]:
-    samples = subset.get("samples", [])
-    matrix = []
-    sample_names = []
-    feature_layout = []
-    token_names = []
+def load_hidsag_region_documents(subset_code: str) -> tuple[dict[str, object], dict[str, np.ndarray]]:
+    manifest = load_json(HIDSAG_REGION_PATH)
+    subset_manifest = None
+    for subset in manifest.get("subsets", []):
+        if str(subset.get("subset_code")) == subset_code:
+            subset_manifest = subset
+            break
+    if subset_manifest is None:
+        raise KeyError(f"HIDSAG region-doc subset {subset_code} not found in {HIDSAG_REGION_PATH}")
 
+    with np.load(HIDSAG_REGION_ARRAYS_PATH, allow_pickle=False) as payload:
+        arrays = {
+            "features": np.asarray(payload[f"{subset_code}__features"], dtype=np.float32),
+            "sample_owner": np.asarray(payload[f"{subset_code}__sample_owner"], dtype=np.int32),
+            "measurement_owner": np.asarray(payload[f"{subset_code}__measurement_owner"], dtype=np.int32),
+            "patch_row_index": np.asarray(payload[f"{subset_code}__patch_row_index"], dtype=np.int8),
+            "patch_col_index": np.asarray(payload[f"{subset_code}__patch_col_index"], dtype=np.int8),
+        }
+    return subset_manifest, arrays
+
+
+def hidsag_measurements(sample: dict[str, object]) -> list[dict[str, object]]:
+    measurements = sample.get("measurements")
+    if isinstance(measurements, list) and measurements:
+        return measurements
+
+    cubes = sample.get("cubes", [])
+    grouped: dict[str, dict[str, object]] = {}
+    for cube in cubes:
+        crop_id = str(cube["crop_id"])
+        entry = grouped.setdefault(crop_id, {"crop_id": crop_id, "tags": [], "cubes": []})
+        entry["cubes"].append(cube)
+    return list(grouped.values())
+
+
+def hidsag_sample_cubes(sample: dict[str, object]) -> list[dict[str, object]]:
+    cubes: list[dict[str, object]] = []
+    for measurement in hidsag_measurements(sample):
+        cubes.extend(measurement.get("cubes", []))
+    return cubes
+
+
+def hidsag_feature_layout_and_tokens(subset: dict[str, object]) -> tuple[list[dict[str, object]], list[str]]:
+    samples = subset.get("samples", [])
     if not samples:
         raise ValueError("HIDSAG curated subset has no samples.")
 
-    first_cubes = {cube["modality"]: cube for cube in samples[0]["cubes"]}
+    first_measurement = hidsag_measurements(samples[0])[0]
+    cubes_by_modality = {cube["modality"]: cube for cube in first_measurement["cubes"]}
+    feature_layout = []
+    token_names = []
     for modality in HIDSAG_MODALITY_ORDER:
-        cube = first_cubes[modality]
+        cube = cubes_by_modality[modality]
         band_count = int(cube["spectral_band_count"])
         feature_layout.append(
             {
@@ -289,13 +341,27 @@ def hidsag_feature_rows(subset: dict[str, object]) -> tuple[np.ndarray, list[str
             }
         )
         token_names.extend([f"{modality}_b{band_index + 1:03d}" for band_index in range(band_count)])
+    return feature_layout, token_names
+
+
+def hidsag_feature_rows(subset: dict[str, object]) -> tuple[np.ndarray, list[str], list[dict[str, object]], list[str]]:
+    samples = subset.get("samples", [])
+    matrix = []
+    sample_names = []
+    feature_layout, token_names = hidsag_feature_layout_and_tokens(subset)
 
     for sample in samples:
-        cubes = {cube["modality"]: cube for cube in sample["cubes"]}
         vectors = []
         for modality in HIDSAG_MODALITY_ORDER:
-            mean_spectrum = np.asarray(cubes[modality]["mean_spectrum"], dtype=np.float32)
-            vectors.append(normalize_rows01(mean_spectrum[None, :])[0])
+            modality_vectors = []
+            for cube in hidsag_sample_cubes(sample):
+                if str(cube["modality"]) != modality:
+                    continue
+                mean_spectrum = np.asarray(cube["mean_spectrum"], dtype=np.float32)
+                modality_vectors.append(normalize_rows01(mean_spectrum[None, :])[0])
+            if not modality_vectors:
+                raise ValueError(f"Sample {sample['sample_name']} missing modality {modality}.")
+            vectors.append(np.mean(np.vstack(modality_vectors), axis=0))
         matrix.append(np.concatenate(vectors))
         sample_names.append(str(sample["sample_name"]))
 
@@ -317,19 +383,26 @@ def hidsag_cube_document_rows(
     owners = []
     doc_names = []
     for sample_index, sample in enumerate(samples):
-        cubes = {cube["modality"]: cube for cube in sample["cubes"]}
         sample_name = str(sample["sample_name"])
-        for modality in HIDSAG_MODALITY_ORDER:
-            cube = cubes[modality]
-            spectrum = normalize_rows01(np.asarray(cube["mean_spectrum"], dtype=np.float32)[None, :])[0]
-            row = np.zeros(offset, dtype=np.float32)
-            start = modality_offsets[modality]
-            row[start : start + spectrum.shape[0]] = spectrum
-            matrix.append(row)
-            owners.append(sample_index)
-            doc_names.append(f"{sample_name}:{modality}")
+        for measurement in hidsag_measurements(sample):
+            crop_id = str(measurement["crop_id"])
+            cubes = {cube["modality"]: cube for cube in measurement["cubes"]}
+            for modality in HIDSAG_MODALITY_ORDER:
+                cube = cubes[modality]
+                spectrum = normalize_rows01(np.asarray(cube["mean_spectrum"], dtype=np.float32)[None, :])[0]
+                row = np.zeros(offset, dtype=np.float32)
+                start = modality_offsets[modality]
+                row[start : start + spectrum.shape[0]] = spectrum
+                matrix.append(row)
+                owners.append(sample_index)
+                doc_names.append(f"{sample_name}:{crop_id}:{modality}")
 
     return np.asarray(matrix, dtype=np.float32), np.asarray(owners, dtype=np.int32), doc_names
+
+
+def hidsag_region_document_rows(subset_code: str) -> tuple[dict[str, object], np.ndarray, np.ndarray]:
+    manifest, arrays = load_hidsag_region_documents(subset_code)
+    return manifest, arrays["features"], arrays["sample_owner"]
 
 
 def hidsag_target_summary(subset: dict[str, object]) -> list[dict[str, object]]:
@@ -372,11 +445,11 @@ def hidsag_secondary_regime_labels(subset: dict[str, object]) -> tuple[np.ndarra
     return np.asarray(labels), top_secondary
 
 
-def hidsag_binary_tasks(target_summary: list[dict[str, object]]) -> list[dict[str, object]]:
+def hidsag_binary_tasks(target_summary: list[dict[str, object]], sample_count: int) -> list[dict[str, object]]:
     candidates = []
     for row in target_summary:
         positive = int(row["threshold_1pct_positive"])
-        negative = 20 - positive
+        negative = sample_count - positive
         if min(positive, negative) < 5:
             continue
         candidates.append(
@@ -402,18 +475,23 @@ def hidsag_regression_targets(target_summary: list[dict[str, object]]) -> list[s
     return selected[:8]
 
 
-def geomet_binary_tasks(subset: dict[str, object], target_summary: list[dict[str, object]]) -> list[dict[str, object]]:
+def continuous_binary_tasks(
+    subset: dict[str, object],
+    target_summary: list[dict[str, object]],
+    min_std: float,
+    min_class_size: int,
+) -> list[dict[str, object]]:
     samples = subset.get("samples", [])
     candidates = []
     for row in target_summary:
-        if float(row["std"]) < 0.5:
+        if float(row["std"]) < min_std:
             continue
         target_name = str(row["target"])
         values = np.asarray([sample["targets"][target_name] for sample in samples], dtype=np.float32)
         threshold = float(np.median(values))
         positive = int(np.sum(values >= threshold))
         negative = int(values.shape[0] - positive)
-        if min(positive, negative) < 20:
+        if min(positive, negative) < min_class_size:
             continue
         candidates.append(
             {
@@ -435,6 +513,13 @@ def geomet_binary_tasks(subset: dict[str, object], target_summary: list[dict[str
 def hidsag_regression_targets_for_subset(subset_code: str, target_summary: list[dict[str, object]]) -> list[str]:
     if subset_code == "GEOMET":
         return [str(row["target"]) for row in target_summary]
+    if subset_code == "GEOCHEM":
+        selected = [
+            str(row["target"])
+            for row in target_summary
+            if float(row["std"]) >= 0.12 and int(row["nonzero_samples"]) >= 20
+        ]
+        return selected[:8]
     return hidsag_regression_targets(target_summary)
 
 
@@ -444,6 +529,7 @@ def hidsag_classification_task_defs(
     target_summary: list[dict[str, object]],
 ) -> list[dict[str, object]]:
     tasks: list[dict[str, object]] = []
+    sample_count = int(subset.get("sample_count", len(subset.get("samples", []))))
     if subset_code == "MINERAL2":
         secondary_labels, top_secondary = hidsag_secondary_regime_labels(subset)
         tasks.append(
@@ -455,7 +541,7 @@ def hidsag_classification_task_defs(
                 "top_secondary": top_secondary,
             }
         )
-        for task in hidsag_binary_tasks(target_summary):
+        for task in hidsag_binary_tasks(target_summary, sample_count):
             values = np.asarray(
                 [sample["targets"][str(task["target"])] for sample in subset.get("samples", [])],
                 dtype=np.float32,
@@ -472,7 +558,27 @@ def hidsag_classification_task_defs(
             )
         return tasks
 
-    for task in geomet_binary_tasks(subset, target_summary):
+    if "Quartz" in {str(name) for name in subset.get("variable_names", [])}:
+        for task in hidsag_binary_tasks(target_summary, sample_count):
+            values = np.asarray(
+                [sample["targets"][str(task["target"])] for sample in subset.get("samples", [])],
+                dtype=np.float32,
+            )
+            labels = np.where(values >= float(task["threshold"]), "present", "absent")
+            tasks.append(
+                {
+                    **task,
+                    "labels": labels,
+                    "values": values,
+                    "label_definition": f"{task['target']} >= {task['threshold']} wt%",
+                    "label_distribution": dict(Counter(labels.tolist())),
+                }
+            )
+        return tasks
+
+    binary_min_std = 0.15 if subset_code == "GEOCHEM" else 0.5
+    binary_min_class_size = 8 if subset_code == "GEOCHEM" else 20
+    for task in continuous_binary_tasks(subset, target_summary, binary_min_std, binary_min_class_size):
         tasks.append(
             {
                 "task_id": task["task_id"],
@@ -491,7 +597,7 @@ def hidsag_classification_task_defs(
 
 
 def hidsag_protocol_definition(subset_code: str, task_type: str, sample_count: int) -> dict[str, object]:
-    if subset_code == "MINERAL2":
+    if sample_count <= 20:
         return {
             "type": "leave-one-out",
             "fold_count": sample_count,
@@ -506,13 +612,13 @@ def hidsag_protocol_definition(subset_code: str, task_type: str, sample_count: i
 
 
 def hidsag_classification_splits(subset_code: str, labels: np.ndarray, sample_count: int):
-    if subset_code == "MINERAL2":
+    if sample_count <= 20:
         return LeaveOneOut().split(np.arange(sample_count))
     return StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE).split(np.arange(sample_count), labels)
 
 
 def hidsag_regression_splits(subset_code: str, sample_count: int):
-    if subset_code == "MINERAL2":
+    if sample_count <= 20:
         return LeaveOneOut().split(np.arange(sample_count))
     return KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE).split(np.arange(sample_count))
 
@@ -528,11 +634,14 @@ def aggregate_doc_mixtures(
 def crossval_hidsag_classification(
     subset_code: str,
     features: np.ndarray,
-    doc_features: np.ndarray,
-    doc_owners: np.ndarray,
+    cube_doc_features: np.ndarray,
+    cube_doc_owners: np.ndarray,
+    region_doc_features: np.ndarray,
+    region_doc_owners: np.ndarray,
     labels: np.ndarray,
     n_topics: int,
     doc_topic_count: int,
+    region_topic_count: int,
 ) -> tuple[dict[str, object], dict[str, np.ndarray], list[dict[str, object]]]:
     sample_count = int(features.shape[0])
     protocol = hidsag_protocol_definition(subset_code, "classification", sample_count)
@@ -541,6 +650,7 @@ def crossval_hidsag_classification(
         "pca_logistic_regression": np.empty(sample_count, dtype=object),
         "topic_logistic_regression": np.empty(sample_count, dtype=object),
         "cube_topic_logistic_regression": np.empty(sample_count, dtype=object),
+        "region_topic_logistic_regression": np.empty(sample_count, dtype=object),
     }
     fold_rows = []
 
@@ -562,25 +672,42 @@ def crossval_hidsag_classification(
         topic_test = lda.transform(counts_test)
         topic_model = make_logreg()
 
-        train_doc_mask = np.isin(doc_owners, train_idx)
-        test_doc_mask = np.isin(doc_owners, test_idx)
-        doc_counts_train = band_frequency_counts(doc_features[train_doc_mask])
-        doc_counts_test = band_frequency_counts(doc_features[test_doc_mask])
+        train_doc_mask = np.isin(cube_doc_owners, train_idx)
+        test_doc_mask = np.isin(cube_doc_owners, test_idx)
+        doc_counts_train = band_frequency_counts(cube_doc_features[train_doc_mask])
+        doc_counts_test = band_frequency_counts(cube_doc_features[test_doc_mask])
         lda_doc, doc_topic_train = fit_lda(doc_counts_train, n_topics=doc_topic_count, seed=RANDOM_STATE, max_iter=20)
         doc_topic_test = lda_doc.transform(doc_counts_test)
-        cube_topic_train = aggregate_doc_mixtures(doc_topic_train, doc_owners[train_doc_mask], train_idx)
-        cube_topic_test = aggregate_doc_mixtures(doc_topic_test, doc_owners[test_doc_mask], test_idx)
+        cube_topic_train = aggregate_doc_mixtures(doc_topic_train, cube_doc_owners[train_doc_mask], train_idx)
+        cube_topic_test = aggregate_doc_mixtures(doc_topic_test, cube_doc_owners[test_doc_mask], test_idx)
         cube_topic_model = make_logreg()
+
+        train_region_mask = np.isin(region_doc_owners, train_idx)
+        test_region_mask = np.isin(region_doc_owners, test_idx)
+        region_counts_train = band_frequency_counts(region_doc_features[train_region_mask])
+        region_counts_test = band_frequency_counts(region_doc_features[test_region_mask])
+        lda_region, region_topic_train_docs = fit_lda(
+            region_counts_train,
+            n_topics=region_topic_count,
+            seed=RANDOM_STATE,
+            max_iter=20,
+        )
+        region_topic_test_docs = lda_region.transform(region_counts_test)
+        region_topic_train = aggregate_doc_mixtures(region_topic_train_docs, region_doc_owners[train_region_mask], train_idx)
+        region_topic_test = aggregate_doc_mixtures(region_topic_test_docs, region_doc_owners[test_region_mask], test_idx)
+        region_topic_model = make_logreg()
 
         raw_pred = raw_model.fit(x_train, y_train).predict(x_test)
         pca_pred = pca_model.fit(x_train, y_train).predict(x_test)
         topic_pred = topic_model.fit(topic_train, y_train).predict(topic_test)
         cube_topic_pred = cube_topic_model.fit(cube_topic_train, y_train).predict(cube_topic_test)
+        region_topic_pred = region_topic_model.fit(region_topic_train, y_train).predict(region_topic_test)
 
         predictions["raw_logistic_regression"][test_idx] = raw_pred
         predictions["pca_logistic_regression"][test_idx] = pca_pred
         predictions["topic_logistic_regression"][test_idx] = topic_pred
         predictions["cube_topic_logistic_regression"][test_idx] = cube_topic_pred
+        predictions["region_topic_logistic_regression"][test_idx] = region_topic_pred
 
         for local_index, sample_index in enumerate(test_idx):
             fold_rows.append(
@@ -593,6 +720,7 @@ def crossval_hidsag_classification(
                         "pca_logistic_regression": str(pca_pred[local_index]),
                         "topic_logistic_regression": str(topic_pred[local_index]),
                         "cube_topic_logistic_regression": str(cube_topic_pred[local_index]),
+                        "region_topic_logistic_regression": str(region_topic_pred[local_index]),
                     },
                 }
             )
@@ -603,11 +731,14 @@ def crossval_hidsag_classification(
 def crossval_hidsag_regression(
     subset_code: str,
     features: np.ndarray,
-    doc_features: np.ndarray,
-    doc_owners: np.ndarray,
+    cube_doc_features: np.ndarray,
+    cube_doc_owners: np.ndarray,
+    region_doc_features: np.ndarray,
+    region_doc_owners: np.ndarray,
     target: np.ndarray,
     n_topics: int,
     doc_topic_count: int,
+    region_topic_count: int,
 ) -> tuple[dict[str, object], dict[str, np.ndarray], list[dict[str, object]]]:
     sample_count = int(features.shape[0])
     protocol = hidsag_protocol_definition(subset_code, "regression", sample_count)
@@ -616,6 +747,7 @@ def crossval_hidsag_regression(
         "pls_regression": np.zeros(sample_count, dtype=np.float32),
         "topic_mixture_linear_regression": np.zeros(sample_count, dtype=np.float32),
         "cube_topic_mixture_linear_regression": np.zeros(sample_count, dtype=np.float32),
+        "region_topic_mixture_linear_regression": np.zeros(sample_count, dtype=np.float32),
         "topic_routed_linear_regression": np.zeros(sample_count, dtype=np.float32),
     }
     fold_rows = []
@@ -637,15 +769,30 @@ def crossval_hidsag_regression(
         topic_test = lda.transform(counts_test)
         topic_pred = LinearRegression().fit(topic_train, y_train).predict(topic_test).astype(np.float32)
 
-        train_doc_mask = np.isin(doc_owners, train_idx)
-        test_doc_mask = np.isin(doc_owners, test_idx)
-        doc_counts_train = band_frequency_counts(doc_features[train_doc_mask])
-        doc_counts_test = band_frequency_counts(doc_features[test_doc_mask])
+        train_doc_mask = np.isin(cube_doc_owners, train_idx)
+        test_doc_mask = np.isin(cube_doc_owners, test_idx)
+        doc_counts_train = band_frequency_counts(cube_doc_features[train_doc_mask])
+        doc_counts_test = band_frequency_counts(cube_doc_features[test_doc_mask])
         lda_doc, doc_topic_train = fit_lda(doc_counts_train, n_topics=doc_topic_count, seed=RANDOM_STATE, max_iter=20)
         doc_topic_test = lda_doc.transform(doc_counts_test)
-        cube_topic_train = aggregate_doc_mixtures(doc_topic_train, doc_owners[train_doc_mask], train_idx)
-        cube_topic_test = aggregate_doc_mixtures(doc_topic_test, doc_owners[test_doc_mask], test_idx)
+        cube_topic_train = aggregate_doc_mixtures(doc_topic_train, cube_doc_owners[train_doc_mask], train_idx)
+        cube_topic_test = aggregate_doc_mixtures(doc_topic_test, cube_doc_owners[test_doc_mask], test_idx)
         cube_topic_pred = LinearRegression().fit(cube_topic_train, y_train).predict(cube_topic_test).astype(np.float32)
+
+        train_region_mask = np.isin(region_doc_owners, train_idx)
+        test_region_mask = np.isin(region_doc_owners, test_idx)
+        region_counts_train = band_frequency_counts(region_doc_features[train_region_mask])
+        region_counts_test = band_frequency_counts(region_doc_features[test_region_mask])
+        lda_region, region_topic_train_docs = fit_lda(
+            region_counts_train,
+            n_topics=region_topic_count,
+            seed=RANDOM_STATE,
+            max_iter=20,
+        )
+        region_topic_test_docs = lda_region.transform(region_counts_test)
+        region_topic_train = aggregate_doc_mixtures(region_topic_train_docs, region_doc_owners[train_region_mask], train_idx)
+        region_topic_test = aggregate_doc_mixtures(region_topic_test_docs, region_doc_owners[test_region_mask], test_idx)
+        region_topic_pred = LinearRegression().fit(region_topic_train, y_train).predict(region_topic_test).astype(np.float32)
 
         train_dominant = np.argmax(topic_train, axis=1)
         test_dominant = np.argmax(topic_test, axis=1)
@@ -670,6 +817,7 @@ def crossval_hidsag_regression(
         predictions["pls_regression"][test_idx] = pls_pred
         predictions["topic_mixture_linear_regression"][test_idx] = topic_pred
         predictions["cube_topic_mixture_linear_regression"][test_idx] = cube_topic_pred
+        predictions["region_topic_mixture_linear_regression"][test_idx] = region_topic_pred
         predictions["topic_routed_linear_regression"][test_idx] = routed_pred
 
         for local_index, sample_index in enumerate(test_idx):
@@ -686,6 +834,7 @@ def crossval_hidsag_regression(
                         "pls_regression": round(float(pls_pred[local_index]), 4),
                         "topic_mixture_linear_regression": round(float(topic_pred[local_index]), 4),
                         "cube_topic_mixture_linear_regression": round(float(cube_topic_pred[local_index]), 4),
+                        "region_topic_mixture_linear_regression": round(float(region_topic_pred[local_index]), 4),
                         "topic_routed_linear_regression": round(float(routed_pred[local_index]), 4),
                     },
                 }
@@ -1269,17 +1418,25 @@ def benchmark_unmixing_scene(dataset_id: str) -> dict[str, object]:
 def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
     subset = load_hidsag_subset(subset_code)
     features, sample_names, feature_layout, token_names = hidsag_feature_rows(subset)
-    doc_features, doc_owners, _ = hidsag_cube_document_rows(subset, feature_layout)
+    cube_doc_features, cube_doc_owners, _ = hidsag_cube_document_rows(subset, feature_layout)
+    region_manifest, region_doc_features, region_doc_owners = hidsag_region_document_rows(subset_code)
     counts = band_frequency_counts(features)
-    doc_counts = band_frequency_counts(doc_features)
+    cube_doc_counts = band_frequency_counts(cube_doc_features)
+    region_doc_counts = band_frequency_counts(region_doc_features)
     topic_count = HIDSAG_SUBSET_TOPIC_COUNTS.get(subset_code, 4)
     doc_topic_count = HIDSAG_SUBSET_DOC_TOPIC_COUNTS.get(subset_code, min(topic_count, 3))
+    region_topic_count = HIDSAG_SUBSET_REGION_TOPIC_COUNTS.get(subset_code, max(doc_topic_count, topic_count))
     lda, mixtures = fit_lda(counts, n_topics=topic_count, seed=RANDOM_STATE, max_iter=20)
-    lda_doc, doc_mixtures = fit_lda(doc_counts, n_topics=doc_topic_count, seed=RANDOM_STATE, max_iter=20)
+    lda_doc, cube_doc_mixtures = fit_lda(cube_doc_counts, n_topics=doc_topic_count, seed=RANDOM_STATE, max_iter=20)
+    lda_region, region_doc_mixtures = fit_lda(region_doc_counts, n_topics=region_topic_count, seed=RANDOM_STATE, max_iter=20)
     dominant_topic_counts = np.bincount(np.argmax(mixtures, axis=1), minlength=topic_count)
     hierarchical_topic_counts = np.bincount(
-        np.argmax(aggregate_doc_mixtures(doc_mixtures, doc_owners, np.arange(features.shape[0])), axis=1),
+        np.argmax(aggregate_doc_mixtures(cube_doc_mixtures, cube_doc_owners, np.arange(features.shape[0])), axis=1),
         minlength=doc_topic_count,
+    )
+    region_topic_counts = np.bincount(
+        np.argmax(aggregate_doc_mixtures(region_doc_mixtures, region_doc_owners, np.arange(features.shape[0])), axis=1),
+        minlength=region_topic_count,
     )
     target_summary = hidsag_target_summary(subset)
     regression_targets = hidsag_regression_targets_for_subset(subset_code, target_summary)
@@ -1290,11 +1447,14 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
         protocol, predictions, fold_rows = crossval_hidsag_classification(
             subset_code,
             features,
-            doc_features,
-            doc_owners,
+            cube_doc_features,
+            cube_doc_owners,
+            region_doc_features,
+            region_doc_owners,
             labels,
             n_topics=topic_count,
             doc_topic_count=doc_topic_count,
+            region_topic_count=region_topic_count,
         )
         task_metrics = {
             model_id: classification_metrics_from_predictions(labels, prediction)
@@ -1351,11 +1511,14 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
         protocol, predictions, fold_rows = crossval_hidsag_regression(
             subset_code,
             features,
-            doc_features,
-            doc_owners,
+            cube_doc_features,
+            cube_doc_owners,
+            region_doc_features,
+            region_doc_owners,
             target,
             n_topics=topic_count,
             doc_topic_count=doc_topic_count,
+            region_topic_count=region_topic_count,
         )
         task_metrics = {
             model_id: regression_metrics_from_predictions(target, prediction)
@@ -1391,20 +1554,30 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
         "subset_code": subset_code,
         "family_id": "regions-with-measurements",
         "sample_count": int(subset["sample_count"]),
-        "cube_document_count": int(doc_features.shape[0]),
+        "measurement_count_total": int(subset.get("measurement_count_total", subset["sample_count"])),
+        "cube_document_count": int(cube_doc_features.shape[0]),
+        "region_document_count": int(region_doc_features.shape[0]),
         "feature_layout": feature_layout,
         "representation": {
             "id": "sample-mean-band-frequency",
             "alphabet": "modality-specific band-position tokens",
             "word": "modality band token repeated by normalized sample-mean intensity count",
-            "document": "one HIDSAG sample built from concatenated mean spectra across swir_low, vnir_low, and vnir_high cubes",
+            "document": "one HIDSAG sample built from concatenated per-modality averages across all available measurement supports",
         },
         "hierarchical_representation": {
             "id": "cube-topic-aggregation",
             "alphabet": "modality-specific band-position tokens",
             "word": "modality band token repeated by normalized cube-mean intensity count",
-            "document": "one cube mean spectrum per modality",
+            "document": "one cube mean spectrum per crop and modality",
             "aggregation": "sample-level mean of cube topic mixtures",
+        },
+        "regional_representation": {
+            "id": "patch-topic-aggregation",
+            "alphabet": "modality-specific band-position tokens",
+            "word": "modality band token repeated by normalized fixed-grid patch intensity count",
+            "document": "one fixed-grid patch mean per crop and modality cube",
+            "aggregation": "sample-level mean of patch topic mixtures",
+            "patch_grid": region_manifest["patch_grid"],
         },
         "topic_model": {
             "method": "sklearn-lda",
@@ -1430,7 +1603,7 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
         "hierarchical_topic_model": {
             "method": "sklearn-lda",
             "topic_count": doc_topic_count,
-            "perplexity": round(float(lda_doc.perplexity(doc_counts)), 4),
+            "perplexity": round(float(lda_doc.perplexity(cube_doc_counts)), 4),
             "active_topic_count": int(np.sum(hierarchical_topic_counts > 0)),
             "topic_activity_warning": "topic-collapse-detected" if int(np.sum(hierarchical_topic_counts > 0)) < doc_topic_count else "all-topics-active",
             "top_tokens": [
@@ -1448,10 +1621,37 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
                 for topic_id, count in enumerate(hierarchical_topic_counts)
             ],
         },
+        "regional_topic_model": {
+            "method": "sklearn-lda",
+            "topic_count": region_topic_count,
+            "perplexity": round(float(lda_region.perplexity(region_doc_counts)), 4),
+            "active_topic_count": int(np.sum(region_topic_counts > 0)),
+            "topic_activity_warning": "topic-collapse-detected" if int(np.sum(region_topic_counts > 0)) < region_topic_count else "all-topics-active",
+            "top_tokens": [
+                {
+                    "topic_id": topic_index + 1,
+                    "tokens": top_named_tokens(component, token_names),
+                }
+                for topic_index, component in enumerate(lda_region.components_)
+            ],
+            "dominant_topic_counts": [
+                {
+                    "topic_id": int(topic_id + 1),
+                    "sample_count": int(count),
+                }
+                for topic_id, count in enumerate(region_topic_counts)
+            ],
+        },
+        "measurement_tags_top": subset.get("measurement_tags_top", []),
+        "measurement_count_stats": subset.get("measurement_count_stats", {}),
         "target_summary": target_summary,
         "classification_tasks": classification_tasks,
         "regression_tasks": regression_tasks,
-        "caveat": "This is the first supervised Family D benchmark over a compact local subset. It validates feasibility, not production-ready mineral regression claims.",
+        "region_document_summary": {
+            "documents_per_measurement_stats": region_manifest.get("documents_per_measurement_stats", {}),
+            "documents_per_sample_stats": region_manifest.get("documents_per_sample_stats", {}),
+        },
+        "caveat": "This is a local Family D benchmark over compact HIDSAG subsets with sample, cube, and fixed-grid region documents. It validates methodological options, not production-ready mineral or geochemical claims.",
     }
 
 
@@ -1487,12 +1687,14 @@ def main() -> None:
                     "pca_logistic_regression",
                     "topic_logistic_regression",
                     "cube_topic_logistic_regression",
+                    "region_topic_logistic_regression",
                 ],
                 "regression": [
                     "raw_ridge_regression",
                     "pls_regression",
                     "topic_mixture_linear_regression",
                     "cube_topic_mixture_linear_regression",
+                    "region_topic_mixture_linear_regression",
                     "topic_routed_linear_regression",
                 ],
             },
@@ -1507,8 +1709,10 @@ def main() -> None:
         "unmixing_runs": [benchmark_unmixing_scene(dataset_id) for dataset_id in UNMIXING_SCENES],
         "spectral_library_runs": [benchmark_spectral_library()],
         "measured_target_runs": [
+            benchmark_hidsag_subset("MINERAL1"),
             benchmark_hidsag_subset("MINERAL2"),
             benchmark_hidsag_subset("GEOMET"),
+            benchmark_hidsag_subset("GEOCHEM"),
         ],
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

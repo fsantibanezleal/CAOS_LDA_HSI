@@ -96,6 +96,10 @@ class Settings(BaseSettings):
         return self.data_path / "derived" / "core" / "hidsag_curated_subset.json"
 
     @property
+    def hidsag_region_documents_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "hidsag_region_documents.json"
+
+    @property
     def derived_path(self) -> Path:
         return self.data_path / "derived"
 

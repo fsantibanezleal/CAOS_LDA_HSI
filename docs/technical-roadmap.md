@@ -66,8 +66,9 @@ Next work:
 
 - reproduce a session-backed ECOSTRESS export path beyond the current
   public metadata manifest
-- expand the current HIDSAG `GEOMET` + `MINERAL2` supervised benchmarks
-  into broader measured-target splits and richer sample hierarchies
+- expand the current HIDSAG `GEOMET` + `MINERAL1` + `MINERAL2` +
+  `GEOCHEM` supervised benchmarks into wavelength-aware region
+  documents, stronger split design, and the remaining `PORPHYRY` subset
 - reproduce at least one cross-scene transfer dataset
 - keep raw-local, git-public, and web-public policies clearly separated
 
@@ -81,11 +82,14 @@ Delivered:
   `data/derived/corpus/corpus_previews.json`
 - first-pass recipes for magnitude phrase, band frequency,
   band-magnitude words, and region-style documents
+- first compact HIDSAG patch-region export in
+  `data/derived/core/hidsag_region_documents.json` +
+  `hidsag_region_documents.npz`
 
 Next work:
 
 - absorption/shape vocabularies
-- hierarchical documents for measured regions
+- hierarchical documents for measured regions with wavelength metadata
 - stronger token diagnostics and reversibility metadata
 
 ## Phase 4: Segmentation, Clustering, And Topic Benchmarks
@@ -121,28 +125,34 @@ Status: first pass delivered.
 Scope:
 
 - regression and classification over measured datasets such as HIDSAG,
-  starting from `GEOMET` and `MINERAL2`
+  now covering `GEOMET`, `MINERAL1`, `MINERAL2`, and `GEOCHEM`
 - topic-routed and hierarchical models
 - split definitions, model cards, residual/error analysis
 - topic stability and sensitivity studies
 
 Delivered:
 
+- first supervised Family D benchmark over `HIDSAG MINERAL1`
 - first supervised Family D benchmark over `HIDSAG MINERAL2`
 - second supervised Family D benchmark over `HIDSAG GEOMET`
+- third supervised Family D benchmark over `HIDSAG GEOCHEM`
 - leave-one-out classification/regression tasks for `MINERAL2`
-- five-fold classification/regression tasks for `GEOMET`
-- sample-level and cube-aggregated topic-mixture comparisons for both
-  subsets
+- five-fold classification/regression tasks for `MINERAL1`, `GEOMET`,
+  and `GEOCHEM`
+- sample-level, cube-aggregated, and patch-region topic-mixture
+  comparisons across all four current subsets
 - explicit evidence that current Family D topic documents still collapse
-  to too few active topics under the current formulation
+  unevenly under the current formulation, even after patch-region
+  aggregation
+- positive `R^2` geochemical regression signal on `GEOCHEM` for routed
+  or region-topic variants on targets such as Fe, Ca, S, and Cu
 
 Next work:
 
-- move from leave-one-out to broader split designs as more HIDSAG
-  subsets enter local validation
-- test cube/region hierarchical documents instead of sample-only topic
-  documents
+- bring in `PORPHYRY` and then move from the current CV setup to
+  broader split designs with process/particle-size awareness
+- test wavelength-aware cube/region hierarchical documents instead of
+  band-index-only topic documents
 - add model cards and failure-case summaries before any web-facing
   narrative
 

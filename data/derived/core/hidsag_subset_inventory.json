@@ -3,6 +3,485 @@
   "generated_at": "2026-05-01",
   "subsets": [
     {
+      "zip_name": "GEOCHEM.zip",
+      "subset_code": "GEOCHEM",
+      "size_bytes": 6195326462,
+      "file_count": 665,
+      "suffix_counts": {
+        ".h5": 318,
+        ".png": 318,
+        ".json": 29
+      },
+      "top_level_entries": {
+        "GEOCHEM": 665
+      },
+      "header_examples": [],
+      "metadata_json_count": 29,
+      "sample_count": 28,
+      "crop_count": 106,
+      "cube_file_count": 318,
+      "rgb_preview_count": 318,
+      "metadata_keys": [
+        "crops",
+        "datarecord",
+        "sample_name",
+        "vars"
+      ],
+      "variable_count": 18,
+      "variable_names": [
+        "Al",
+        "As",
+        "Ca",
+        "Cu",
+        "Fe",
+        "K",
+        "Mo",
+        "Nb",
+        "P",
+        "Pb",
+        "Rb",
+        "S",
+        "Si",
+        "Sr",
+        "Ti",
+        "Y",
+        "Zn",
+        "Zr"
+      ],
+      "composition_sum_stats": {
+        "min": 32.4808,
+        "median": 34.5921,
+        "max": 35.8806,
+        "mean": 34.4802
+      },
+      "nonzero_variable_count_stats": {
+        "min": 16.0,
+        "median": 17.0,
+        "max": 18.0,
+        "mean": 16.8571
+      },
+      "dominant_variables_by_mean": [
+        {
+          "name": "Si",
+          "mean": 18.1932,
+          "max": 19.43,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Fe",
+          "mean": 4.3234,
+          "max": 5.24,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Al",
+          "mean": 4.1871,
+          "max": 4.55,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "K",
+          "mean": 2.6545,
+          "max": 2.9778,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "S",
+          "mean": 1.5661,
+          "max": 2.1479,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Cu",
+          "mean": 1.5428,
+          "max": 1.8508,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Ca",
+          "mean": 0.9383,
+          "max": 1.4755,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "P",
+          "mean": 0.5439,
+          "max": 0.6234,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Ti",
+          "mean": 0.3733,
+          "max": 0.4853,
+          "nonzero_samples": 28
+        },
+        {
+          "name": "Mo",
+          "mean": 0.044,
+          "max": 0.0752,
+          "nonzero_samples": 28
+        }
+      ],
+      "modality_summary": {
+        "swir_low": {
+          "cube_count": 106,
+          "image_width_stats": {
+            "min": 62.0,
+            "median": 139.5,
+            "max": 172.0,
+            "mean": 140.6509
+          },
+          "image_height_stats": {
+            "min": 25.0,
+            "median": 74.0,
+            "max": 87.0,
+            "mean": 73.4906
+          },
+          "real_width_stats": {
+            "min": 38.4,
+            "median": 86.45,
+            "max": 106.6,
+            "mean": 87.1764
+          },
+          "real_height_stats": {
+            "min": 20.4,
+            "median": 60.3,
+            "max": 70.9,
+            "mean": 59.8972
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            1.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            4.0
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_low": {
+          "cube_count": 106,
+          "image_width_stats": {
+            "min": 62.0,
+            "median": 139.5,
+            "max": 172.0,
+            "mean": 140.6509
+          },
+          "image_height_stats": {
+            "min": 25.0,
+            "median": 74.0,
+            "max": 87.0,
+            "mean": 73.4906
+          },
+          "real_width_stats": {
+            "min": 38.4,
+            "median": 86.45,
+            "max": 106.6,
+            "mean": 87.1764
+          },
+          "real_height_stats": {
+            "min": 20.4,
+            "median": 60.3,
+            "max": 70.9,
+            "mean": 59.8972
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_high": {
+          "cube_count": 106,
+          "image_width_stats": {
+            "min": 140.0,
+            "median": 315.0,
+            "max": 384.0,
+            "mean": 315.8962
+          },
+          "image_height_stats": {
+            "min": 27.0,
+            "median": 76.0,
+            "max": 89.0,
+            "mean": 76.3491
+          },
+          "real_width_stats": {
+            "min": 38.7,
+            "median": 87.15,
+            "max": 106.3,
+            "mean": 87.4226
+          },
+          "real_height_stats": {
+            "min": 22.0,
+            "median": 61.9,
+            "max": 72.5,
+            "mean": 62.2292
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        }
+      },
+      "sample_previews": [
+        {
+          "sample_name": "GCH-0001",
+          "crop_ids": [
+            "01",
+            "02",
+            "03",
+            "04"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 34.8933,
+          "nonzero_variable_count": 17,
+          "dominant_variables": [
+            {
+              "name": "Si",
+              "value": 17.96
+            },
+            {
+              "name": "Fe",
+              "value": 4.31
+            },
+            {
+              "name": "Al",
+              "value": 4.29
+            },
+            {
+              "name": "K",
+              "value": 2.7361
+            },
+            {
+              "name": "S",
+              "value": 1.6674
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0002",
+          "crop_ids": [
+            "01",
+            "02",
+            "03",
+            "04"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 34.6678,
+          "nonzero_variable_count": 17,
+          "dominant_variables": [
+            {
+              "name": "Si",
+              "value": 17.43
+            },
+            {
+              "name": "Fe",
+              "value": 4.58
+            },
+            {
+              "name": "Al",
+              "value": 4.37
+            },
+            {
+              "name": "K",
+              "value": 2.6938
+            },
+            {
+              "name": "S",
+              "value": 1.6598
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0003",
+          "crop_ids": [
+            "01",
+            "02",
+            "03",
+            "04"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 33.9775,
+          "nonzero_variable_count": 18,
+          "dominant_variables": [
+            {
+              "name": "Si",
+              "value": 17.2
+            },
+            {
+              "name": "Fe",
+              "value": 4.96
+            },
+            {
+              "name": "Al",
+              "value": 4.41
+            },
+            {
+              "name": "K",
+              "value": 2.651
+            },
+            {
+              "name": "Cu",
+              "value": 1.4774
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0004",
+          "crop_ids": [
+            "01",
+            "02",
+            "03",
+            "04"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 33.8445,
+          "nonzero_variable_count": 18,
+          "dominant_variables": [
+            {
+              "name": "Si",
+              "value": 17.56
+            },
+            {
+              "name": "Fe",
+              "value": 5.03
+            },
+            {
+              "name": "Al",
+              "value": 4.27
+            },
+            {
+              "name": "K",
+              "value": 2.429
+            },
+            {
+              "name": "S",
+              "value": 1.4214
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0005",
+          "crop_ids": [
+            "01",
+            "02",
+            "03",
+            "04"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 34.7499,
+          "nonzero_variable_count": 17,
+          "dominant_variables": [
+            {
+              "name": "Si",
+              "value": 16.95
+            },
+            {
+              "name": "Fe",
+              "value": 5.24
+            },
+            {
+              "name": "Al",
+              "value": 4.12
+            },
+            {
+              "name": "K",
+              "value": 2.448
+            },
+            {
+              "name": "S",
+              "value": 2.0052
+            }
+          ]
+        },
+        {
+          "sample_name": "GCH-0006",
+          "crop_ids": [
+            "01",
+            "02",
+            "03",
+            "04"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 34.6376,
+          "nonzero_variable_count": 16,
+          "dominant_variables": [
+            {
+              "name": "Si",
+              "value": 18.36
+            },
+            {
+              "name": "Fe",
+              "value": 4.24
+            },
+            {
+              "name": "Al",
+              "value": 4.17
+            },
+            {
+              "name": "K",
+              "value": 2.6476
+            },
+            {
+              "name": "S",
+              "value": 1.7037
+            }
+          ]
+        }
+      ]
+    },
+    {
       "zip_name": "GEOMET.zip",
       "subset_code": "GEOMET",
       "size_bytes": 3264279514,
@@ -415,6 +894,482 @@
             {
               "name": "Lime cons",
               "value": 0.11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "zip_name": "MINERAL1.zip",
+      "subset_code": "MINERAL1",
+      "size_bytes": 4684251855,
+      "file_count": 694,
+      "suffix_counts": {
+        ".h5": 297,
+        ".png": 297,
+        ".json": 100
+      },
+      "top_level_entries": {
+        "MINERAL1": 694
+      },
+      "header_examples": [],
+      "metadata_json_count": 100,
+      "sample_count": 99,
+      "crop_count": 99,
+      "cube_file_count": 297,
+      "rgb_preview_count": 297,
+      "metadata_keys": [
+        "crops",
+        "datarecord",
+        "sample_name",
+        "vars"
+      ],
+      "variable_count": 33,
+      "variable_names": [
+        "Actinolite",
+        "Albite",
+        "Andesina_An40",
+        "Anhydrite/Gypsum",
+        "Anorthite",
+        "Apatite",
+        "Biotite",
+        "Bornite",
+        "Bytownite_An80",
+        "Calcite",
+        "Chalcopyrite",
+        "Chalcosite/Digenite",
+        "Chlorite",
+        "Covelite",
+        "Epidote",
+        "Fe Oxides",
+        "Fe-Clays",
+        "K-Feldspar",
+        "Kaolinite",
+        "Labradorite_An60",
+        "Molybdenite",
+        "Muscovite/Sericite",
+        "Oligoclasa_An20",
+        "Other Amphibole",
+        "Others",
+        "Others Carbonates",
+        "Others Ti Minerals",
+        "Pyrite",
+        "Pyroxene",
+        "Quartz",
+        "Rutile",
+        "Siderite",
+        "Tourmaline"
+      ],
+      "composition_sum_stats": {
+        "min": 100.0,
+        "median": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      },
+      "nonzero_variable_count_stats": {
+        "min": 29.0,
+        "median": 33.0,
+        "max": 33.0,
+        "mean": 32.0404
+      },
+      "dominant_variables_by_mean": [
+        {
+          "name": "Quartz",
+          "mean": 25.967,
+          "max": 35.28,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Muscovite/Sericite",
+          "mean": 17.1777,
+          "max": 28.03,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Biotite",
+          "mean": 9.0159,
+          "max": 15.05,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Chlorite",
+          "mean": 7.413,
+          "max": 13.47,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Albite",
+          "mean": 5.4856,
+          "max": 8.94,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Oligoclasa_An20",
+          "mean": 4.8121,
+          "max": 9.0,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Anhydrite/Gypsum",
+          "mean": 4.8025,
+          "max": 10.27,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Labradorite_An60",
+          "mean": 3.7766,
+          "max": 6.25,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "Anorthite",
+          "mean": 3.6218,
+          "max": 7.83,
+          "nonzero_samples": 99
+        },
+        {
+          "name": "K-Feldspar",
+          "mean": 2.9267,
+          "max": 6.28,
+          "nonzero_samples": 99
+        }
+      ],
+      "modality_summary": {
+        "swir_low": {
+          "cube_count": 99,
+          "image_width_stats": {
+            "min": 44.0,
+            "median": 110.0,
+            "max": 151.0,
+            "mean": 105.2727
+          },
+          "image_height_stats": {
+            "min": 28.0,
+            "median": 81.0,
+            "max": 119.0,
+            "mean": 79.1818
+          },
+          "real_width_stats": {
+            "min": 27.3,
+            "median": 68.2,
+            "max": 93.6,
+            "mean": 65.2505
+          },
+          "real_height_stats": {
+            "min": 22.8,
+            "median": 66.0,
+            "max": 97.0,
+            "mean": 64.5434
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            1.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            4.0
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_low": {
+          "cube_count": 99,
+          "image_width_stats": {
+            "min": 44.0,
+            "median": 110.0,
+            "max": 151.0,
+            "mean": 105.2727
+          },
+          "image_height_stats": {
+            "min": 28.0,
+            "median": 81.0,
+            "max": 119.0,
+            "mean": 79.1818
+          },
+          "real_width_stats": {
+            "min": 27.3,
+            "median": 68.2,
+            "max": 93.6,
+            "mean": 65.2505
+          },
+          "real_height_stats": {
+            "min": 22.8,
+            "median": 66.0,
+            "max": 97.0,
+            "mean": 64.5434
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        },
+        "vnir_high": {
+          "cube_count": 99,
+          "image_width_stats": {
+            "min": 99.0,
+            "median": 246.0,
+            "max": 337.0,
+            "mean": 235.8283
+          },
+          "image_height_stats": {
+            "min": 29.0,
+            "median": 82.0,
+            "max": 120.0,
+            "mean": 80.7071
+          },
+          "real_width_stats": {
+            "min": 27.4,
+            "median": 68.1,
+            "max": 93.3,
+            "mean": 65.2626
+          },
+          "real_height_stats": {
+            "min": 23.6,
+            "median": 66.8,
+            "max": 97.8,
+            "mean": 65.7818
+          },
+          "spectral_binning_values": [
+            1.0
+          ],
+          "spatial_binning_values": [
+            2.0
+          ],
+          "sample_frequency_values": [
+            50.0
+          ],
+          "integration_time_values": [
+            12.7
+          ],
+          "dolly_speed_values": [
+            40.0
+          ]
+        }
+      },
+      "sample_previews": [
+        {
+          "sample_name": "M1-0001",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 31,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 30.49
+            },
+            {
+              "name": "Muscovite/Sericite",
+              "value": 22.74
+            },
+            {
+              "name": "Chlorite",
+              "value": 9.97
+            },
+            {
+              "name": "Oligoclasa_An20",
+              "value": 5.81
+            },
+            {
+              "name": "Biotite",
+              "value": 5.58
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0002",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 30,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 20.6
+            },
+            {
+              "name": "Biotite",
+              "value": 14.92
+            },
+            {
+              "name": "Muscovite/Sericite",
+              "value": 13.14
+            },
+            {
+              "name": "Oligoclasa_An20",
+              "value": 9.0
+            },
+            {
+              "name": "Chlorite",
+              "value": 6.39
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0003",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 31,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 22.02
+            },
+            {
+              "name": "Muscovite/Sericite",
+              "value": 14.25
+            },
+            {
+              "name": "Biotite",
+              "value": 12.47
+            },
+            {
+              "name": "Oligoclasa_An20",
+              "value": 8.62
+            },
+            {
+              "name": "Albite",
+              "value": 8.19
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0004",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 31,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 34.18
+            },
+            {
+              "name": "Muscovite/Sericite",
+              "value": 23.65
+            },
+            {
+              "name": "Chlorite",
+              "value": 9.09
+            },
+            {
+              "name": "Andesina_An40",
+              "value": 4.02
+            },
+            {
+              "name": "Oligoclasa_An20",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0005",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 32,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 22.73
+            },
+            {
+              "name": "Biotite",
+              "value": 13.56
+            },
+            {
+              "name": "Muscovite/Sericite",
+              "value": 10.65
+            },
+            {
+              "name": "Anorthite",
+              "value": 7.83
+            },
+            {
+              "name": "Oligoclasa_An20",
+              "value": 7.01
+            }
+          ]
+        },
+        {
+          "sample_name": "M1-0006",
+          "crop_ids": [
+            "01"
+          ],
+          "modalities": [
+            "swir_low",
+            "vnir_high",
+            "vnir_low"
+          ],
+          "composition_sum": 100.0,
+          "nonzero_variable_count": 31,
+          "dominant_variables": [
+            {
+              "name": "Quartz",
+              "value": 24.82
+            },
+            {
+              "name": "Muscovite/Sericite",
+              "value": 14.57
+            },
+            {
+              "name": "Biotite",
+              "value": 13.45
+            },
+            {
+              "name": "Oligoclasa_An20",
+              "value": 5.44
+            },
+            {
+              "name": "Labradorite_An60",
+              "value": 5.38
             }
           ]
         }
