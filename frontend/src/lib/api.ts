@@ -693,6 +693,91 @@ export function pickText(value: LocalizedText, language: string): string {
   return language.startsWith("en") ? value.en : value.es;
 }
 
+export interface SubsetCardEvidenceItem {
+  dataset_id: string;
+  dataset_name: string;
+  modality: string;
+  band_count: number | null;
+  spatial_shape: number[] | null;
+  preview_image_path: string | null;
+  label_scope: string | null;
+  measurement_scope: string | null;
+  summary: LocalizedText;
+}
+
+export interface SubsetCardCorpusItem {
+  recipe_id: string;
+  recipe_title: LocalizedText;
+  dataset_id: string;
+  vocabulary_size: number;
+  document_count: number;
+  document_length_quartiles: number[];
+  sample_tokens: string[];
+}
+
+export interface SubsetCardTopicSummary {
+  topic_id: number;
+  top_words: string[];
+  weight: number;
+}
+
+export interface SubsetCardTopicBlock {
+  representation_id: string | null;
+  K: number | null;
+  topics: SubsetCardTopicSummary[];
+  stability_score: number | null;
+  seeds_compared: number | null;
+}
+
+export interface SubsetCardValidationItem {
+  block_id: string;
+  status: string;
+  detail: LocalizedText | null;
+  metric_name: string | null;
+  metric_value: number | null;
+}
+
+export interface SubsetCardArtifactRef {
+  id: string;
+  title: LocalizedText;
+  path: string;
+  purpose: LocalizedText | null;
+}
+
+export interface SubsetCard {
+  id: string;
+  title: LocalizedText;
+  summary: LocalizedText;
+  family_id: string;
+  status: string;
+  last_validated: string | null;
+  public_goal: LocalizedText;
+  supported_claims: InteractiveSubsetClaim[];
+  blocked_claims: InteractiveSubsetClaim[];
+  workflow_steps: InteractiveSubsetWorkflowStep[];
+  evidence: SubsetCardEvidenceItem[];
+  corpus: SubsetCardCorpusItem[];
+  topics: SubsetCardTopicBlock | null;
+  validation: SubsetCardValidationItem[];
+  artifacts: SubsetCardArtifactRef[];
+  next_steps: LocalizedText[];
+  generated_at: string;
+}
+
+export interface SubsetCardSummary {
+  id: string;
+  title: LocalizedText;
+  family_id: string;
+  status: string;
+  last_validated: string | null;
+}
+
+export interface SubsetCardsIndex {
+  source: string;
+  generated_at: string;
+  cards: SubsetCardSummary[];
+}
+
 export const api = {
   getDataFamilies: () => getJson<DataFamiliesPayload>("/api/data-families"),
   getCorpusRecipes: () => getJson<CorpusRecipesPayload>("/api/corpus-recipes"),
@@ -706,9 +791,12 @@ export const api = {
   getHidsagCuratedSubset: () => getJson<HidsagCuratedSubsetPayload>("/api/hidsag-curated-subset"),
   getHidsagRegionDocuments: () => getJson<HidsagRegionDocumentsPayload>("/api/hidsag-region-documents"),
   getHidsagBandQuality: () => getJson<HidsagBandQualityPayload>("/api/hidsag-band-quality"),
-  getHidsagPreprocessingSensitivity: () => getJson<HidsagPreprocessingSensitivityPayload>("/api/hidsag-preprocessing-sensitivity"),
+  getHidsagPreprocessingSensitivity: () =>
+    getJson<HidsagPreprocessingSensitivityPayload>("/api/hidsag-preprocessing-sensitivity"),
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
   getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
   getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),
-  getAppData: () => getJson<AppPayload>("/api/app-data")
+  getAppData: () => getJson<AppPayload>("/api/app-data"),
+  getSubsetCardsIndex: () => getJson<SubsetCardsIndex>("/api/subset-cards"),
+  getSubsetCard: (id: string) => getJson<SubsetCard>(`/api/subset-cards/${encodeURIComponent(id)}`)
 };
