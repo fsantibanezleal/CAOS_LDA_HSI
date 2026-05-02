@@ -72,7 +72,9 @@ The first seven reset endpoints are the ones that now define the intended
 product flow. `interactive-subsets` adds the public gating layer that says
 which compact slices are actually ready, prototype-only, or blocked for
 the rebuilt app. The older `app-data` aggregate remains as a
-compatibility surface for the current technical checkpoint.
+compatibility surface for the current technical checkpoint and for the
+first local shell rebuild now under active development on the work
+branch.
 
 ## Derived Asset Policy
 
@@ -96,6 +98,22 @@ Important distinction:
 - preview images may exist as auxiliary context, but the accepted app
   direction requires interactive spectral curves, band-selectable scenes,
   and overlay switching rather than screenshot-style evidence
+
+## Frontend Direction
+
+The current branch frontend is moving away from the earlier scene-first
+workbench and into a family-gated scientific shell:
+
+1. family selection
+2. interactive subset selection
+3. workflow-step routing
+4. evidence, corpus, topics, baselines, inference, and validation as
+   separate surfaces
+5. explicit claim and caveat inspection in the right panel
+
+This shell still needs smaller family-specific summary payloads and
+deeper evidence controls, but the structural reset is already in place
+locally.
 
 ## Why JSON Plus Local Raw
 

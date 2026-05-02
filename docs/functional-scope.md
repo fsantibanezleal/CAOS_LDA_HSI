@@ -174,16 +174,17 @@ Implemented in the repo today:
 - first-pass SLIC baselines
 - first-pass offline PTM/LDA plus supervised and clustering benchmarks
 - compact real-scene, field-scene, and spectral-library assets
-- current SPA checkpoint with bilingual/theme support
+- production checkpoint SPA with bilingual/theme support
+- local branch rebuild of the app as a `Context + Workspace` scientific
+  shell driven by family selection, subset gating, and interactive plots
 
 Not yet implemented in the app:
 
-- the rebuilt context/workspace structure
 - linked interactive spectral evidence for hundreds of spectra
 - scene band selectors wired to the central workflow
 - interactive overlay switching across SLIC, topics, clusters, and
   semantic segmentation
-- explicit validation-driven right panel
+- thinner frontend modules extracted from the current monolithic shell
 
 ## Immediate Product Focus
 
