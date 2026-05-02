@@ -1,0 +1,271 @@
+{
+  "id": "hidsag-family-d-validation-window",
+  "title": {
+    "en": "HIDSAG Family D Validation Window",
+    "es": "Ventana de validacion HIDSAG Familia D"
+  },
+  "summary": {
+    "en": "A prototype public window over five downloaded HIDSAG subsets, compact curated spectra, region-document summaries, measured-target benchmarks, and preprocessing diagnostics.",
+    "es": "Una ventana publica prototipo sobre cinco subconjuntos HIDSAG descargados, espectros compactos curados, resumenes de documentos de region, benchmarks de objetivos medidos y diagnosticos de preprocesamiento."
+  },
+  "family_id": "regions-with-measurements",
+  "status": "prototype",
+  "last_validated": "2026-05-01",
+  "public_goal": {
+    "en": "Define the first serious measured-target workflow for the rebuilt app without exposing raw archives or unsupported mineral and geochemical claims.",
+    "es": "Definir el primer flujo serio con objetivos medidos para la app reconstruida sin exponer archivos crudos ni afirmaciones minerales o geoquimicas no soportadas."
+  },
+  "supported_claims": [
+    {
+      "id": "hidsag-local-family-d-exists",
+      "title": {
+        "en": "A real Family D validation core already exists locally.",
+        "es": "Ya existe localmente un core real de validacion para Familia D."
+      },
+      "detail": {
+        "en": "Five HIDSAG subsets already support sample, cube, and region-level measured-target benchmarks.",
+        "es": "Cinco subconjuntos HIDSAG ya soportan benchmarks con objetivos medidos a nivel de muestra, cubo y region."
+      }
+    },
+    {
+      "id": "hidsag-split-and-preprocessing-matter",
+      "title": {
+        "en": "Split policy and preprocessing materially change Family D conclusions.",
+        "es": "La politica de splits y el preprocesamiento cambian materialmente las conclusiones de Familia D."
+      },
+      "detail": {
+        "en": "The current benchmark already shows that optimistic readings collapse under stronger splits and different preprocessing choices.",
+        "es": "El benchmark actual ya muestra que lecturas optimistas colapsan bajo splits mas fuertes y distintas decisiones de preprocesamiento."
+      }
+    }
+  ],
+  "blocked_claims": [
+    {
+      "id": "hidsag-no-production-claim",
+      "title": {
+        "en": "No production mineral or geochemical claim is acceptable yet.",
+        "es": "Aun no es aceptable ninguna afirmacion productiva mineral o geoquimica."
+      },
+      "detail": {
+        "en": "The current outputs are research benchmarks, not public prediction products.",
+        "es": "Las salidas actuales son benchmarks de investigacion, no productos publicos de prediccion."
+      }
+    },
+    {
+      "id": "hidsag-no-public-model-artifact",
+      "title": {
+        "en": "No public model artifact should ship without subset-specific model cards.",
+        "es": "No debe publicarse ningun artefacto de modelo sin model cards especificas por subconjunto."
+      },
+      "detail": {
+        "en": "Measured-target metrics exist, but target cards, failure notes, and source-aware preprocessing contracts are still missing.",
+        "es": "Existen metricas con objetivos medidos, pero aun faltan tarjetas de targets, notas de falla y contratos de preprocesamiento conscientes de la fuente."
+      }
+    }
+  ],
+  "workflow_steps": [
+    {
+      "step": "evidence",
+      "status": "prototype",
+      "note": {
+        "en": "Compact curated spectra and subset inventory already exist, but they are still benchmark-oriented rather than public card-oriented.",
+        "es": "Los espectros compactos curados y el inventario de subconjuntos ya existen, pero aun estan orientados a benchmarks y no a tarjetas publicas."
+      }
+    },
+    {
+      "step": "corpus",
+      "status": "prototype",
+      "note": {
+        "en": "Region-document summaries exist, but the app still lacks a compact Family D corpus preview contract.",
+        "es": "Existen resumenes de documentos de region, pero la app aun carece de un contrato compacto de preview de corpus para Familia D."
+      }
+    },
+    {
+      "step": "topics",
+      "status": "prototype",
+      "note": {
+        "en": "Measured-target runs already contain topic models, but the public app still needs compact topic cards per subset.",
+        "es": "Las corridas con objetivos medidos ya contienen modelos de topicos, pero la app publica aun necesita tarjetas compactas de topicos por subconjunto."
+      }
+    },
+    {
+      "step": "baselines",
+      "status": "prototype",
+      "note": {
+        "en": "Raw, PCA, topic-mixture, and topic-routed comparisons already exist in local-core benchmarks.",
+        "es": "Las comparaciones raw, PCA, topic-mixture y topic-routed ya existen en los benchmarks local-core."
+      }
+    },
+    {
+      "step": "inference",
+      "status": "prototype",
+      "note": {
+        "en": "Measured-target classification and regression metrics exist, but no compact public target cards or model cards have been approved yet.",
+        "es": "Existen metricas de clasificacion y regresion con objetivos medidos, pero aun no se aprueban tarjetas publicas compactas de targets ni model cards."
+      }
+    },
+    {
+      "step": "validation",
+      "status": "prototype",
+      "note": {
+        "en": "Band-quality and preprocessing-sensitivity outputs exist, but source-aware bad-band masks and stronger split cards are still pending.",
+        "es": "Existen salidas de calidad de bandas y sensibilidad al preprocesamiento, pero aun faltan mascaras de bandas malas conscientes de la fuente y tarjetas mas fuertes de splits."
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "dataset_id": "hidsag-geometallurgy",
+      "dataset_name": "HIDSAG geometallurgy database",
+      "modality": "Laboratory HSI geometallurgy dataset",
+      "band_count": null,
+      "spatial_shape": null,
+      "preview_image_path": null,
+      "label_scope": "sample ids and response targets are locally visible across GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY metadata, with supervised subset benchmarks already running",
+      "measurement_scope": "geometallurgical, mineralogical, and geochemical responses are locally verified across five subsets; repeated-measurement support now exists for GEOCHEM and PORPHYRY",
+      "summary": {
+        "en": "Highest-priority Family D source. Local raw coverage now includes GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY, plus compact derived spectral exports, wavelength metadata, patch-region documents, and supervised local benchmarks at sample, cube, and region levels.",
+        "es": "Fuente Family D de mayor prioridad. La cobertura cruda local ahora incluye GEOMET, MINERAL1, MINERAL2, GEOCHEM y PORPHYRY, ademas de exportaciones espectrales compactas derivadas, metadata de longitudes de onda, documentos regionales por patches y benchmarks supervisados locales a nivel de muestra, cubo y region."
+      }
+    }
+  ],
+  "corpus": [],
+  "topics": {
+    "representation_id": null,
+    "K": null,
+    "topics": [],
+    "stability_score": null,
+    "seeds_compared": null
+  },
+  "validation": [
+    {
+      "block_id": "corpus-integrity",
+      "status": "prototype",
+      "detail": {
+        "en": "Region-document artifacts are versioned, but not yet distilled into a compact public corpus card.",
+        "es": "Los artefactos de documentos de region estan versionados, pero aun no se destilan en una tarjeta publica compacta de corpus."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "document-definition-sensitivity",
+      "status": "prototype",
+      "detail": {
+        "en": "Sample, cube, and fixed-grid region documents already coexist in the local-core benchmark.",
+        "es": "Los documentos de muestra, cubo y region fija ya coexisten en el benchmark local-core."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "supervision-association",
+      "status": "prototype",
+      "detail": {
+        "en": "Measured-target metrics exist across five subsets, but public target cards are still missing.",
+        "es": "Existen metricas con objetivos medidos a traves de cinco subconjuntos, pero aun faltan tarjetas publicas de targets."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "quantization-sensitivity",
+      "status": "blocked",
+      "detail": {
+        "en": "No compact Family D quantization-sensitivity export is versioned yet.",
+        "es": "Aun no se versiona una exportacion compacta de sensibilidad a la cuantizacion para Familia D."
+      },
+      "metric_name": null,
+      "metric_value": null
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "subset-inventory",
+      "title": {
+        "en": "HIDSAG subset inventory",
+        "es": "Inventario de subconjuntos HIDSAG"
+      },
+      "path": "/api/hidsag-subset-inventory",
+      "purpose": {
+        "en": "Expose provenance, sample counts, and subset-level structure.",
+        "es": "Exponer procedencia, conteos de muestras y estructura a nivel de subconjunto."
+      }
+    },
+    {
+      "id": "curated-subset",
+      "title": {
+        "en": "HIDSAG curated subset",
+        "es": "Subconjunto curado HIDSAG"
+      },
+      "path": "/api/hidsag-curated-subset",
+      "purpose": {
+        "en": "Expose compact per-cube spectra and wavelength metadata without publishing raw ZIP archives.",
+        "es": "Exponer espectros compactos por cubo y metadata de longitudes de onda sin publicar archivos ZIP crudos."
+      }
+    },
+    {
+      "id": "region-documents",
+      "title": {
+        "en": "HIDSAG region-document summary",
+        "es": "Resumen de documentos de region HIDSAG"
+      },
+      "path": "/api/hidsag-region-documents",
+      "purpose": {
+        "en": "Expose fixed-grid region-document structure for hierarchical validation.",
+        "es": "Exponer la estructura de documentos de region en grilla fija para validacion jerarquica."
+      }
+    },
+    {
+      "id": "measured-target-benchmarks",
+      "title": {
+        "en": "Measured-target benchmark summary",
+        "es": "Resumen de benchmark con objetivos medidos"
+      },
+      "path": "/api/local-core-benchmarks",
+      "purpose": {
+        "en": "Expose sample, cube, and region-level benchmark comparisons for Family D.",
+        "es": "Exponer comparaciones de benchmark a nivel de muestra, cubo y region para Familia D."
+      }
+    },
+    {
+      "id": "band-quality",
+      "title": {
+        "en": "HIDSAG band-quality summary",
+        "es": "Resumen de calidad de bandas HIDSAG"
+      },
+      "path": "/api/hidsag-band-quality",
+      "purpose": {
+        "en": "Expose current heuristic bad-band evidence before source-aware masks replace it.",
+        "es": "Exponer la evidencia heuristica actual de bandas malas antes de que la reemplacen mascaras conscientes de la fuente."
+      }
+    },
+    {
+      "id": "preprocessing-sensitivity",
+      "title": {
+        "en": "HIDSAG preprocessing sensitivity",
+        "es": "Sensibilidad al preprocesamiento HIDSAG"
+      },
+      "path": "/api/hidsag-preprocessing-sensitivity",
+      "purpose": {
+        "en": "Expose how preprocessing policy changes downstream Family D results.",
+        "es": "Exponer como la politica de preprocesamiento cambia los resultados descendentes de Familia D."
+      }
+    }
+  ],
+  "next_steps": [
+    {
+      "en": "Extract compact subset cards with one or two publishable targets each.",
+      "es": "Extraer tarjetas compactas por subconjunto con uno o dos targets publicables cada una."
+    },
+    {
+      "en": "Replace heuristic bad-band handling with source-aware masks and record the change in validation cards.",
+      "es": "Reemplazar el manejo heuristico de bandas malas por mascaras conscientes de la fuente y registrar el cambio en tarjetas de validacion."
+    },
+    {
+      "en": "Export compact topic cards and residual summaries for the rebuilt Family D GUI.",
+      "es": "Exportar tarjetas compactas de topicos y resumenes de residuales para la GUI reconstruida de Familia D."
+    }
+  ],
+  "generated_at": "2026-05-02"
+}

@@ -1,8 +1,30 @@
-h5py==3.16.0
+# Pinned dependencies for the CAOS LDA HSI data pipeline (.venv-pipeline).
+#
+# This file is the heavy scientific stack. The runtime backend (.venv) lives
+# under the repo-root requirements.txt and is intentionally smaller.
+#
+# When upgrading: bump versions in lockstep, regenerate compact derived
+# assets, and run `scripts/local.ps1 build-local-core` plus the local
+# smoke checks before committing.
+#
+# The active pipeline uses scikit-learn's LatentDirichletAllocation
+# (online variational Bayes) — gensim / pyLDAvis are only relevant for
+# the historical notebook in legacy/notebooks/ and are not pinned here.
+
+# Core numerics
 numpy==2.2.0
-Pillow==12.2.0
-requests==2.33.1
-scikit-learn==1.6.0
 scipy==1.14.1
-scikit-image==0.26.0
+
+# Storage backends
+h5py==3.16.0
 tifffile==2026.4.11
+
+# Imaging
+Pillow==12.2.0
+scikit-image==0.26.0
+
+# ML and topic modelling
+scikit-learn==1.6.0
+
+# Acquisition utilities
+requests==2.33.1

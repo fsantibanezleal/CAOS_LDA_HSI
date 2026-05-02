@@ -111,6 +111,17 @@ class Settings(BaseSettings):
     def derived_path(self) -> Path:
         return self.data_path / "derived"
 
+    @property
+    def subset_cards_dir(self) -> Path:
+        return self.data_path / "derived" / "subsets"
+
+    @property
+    def subset_cards_index_path(self) -> Path:
+        return self.subset_cards_dir / "index.json"
+
+    def subset_card_path(self, subset_id: str) -> Path:
+        return self.subset_cards_dir / f"{subset_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

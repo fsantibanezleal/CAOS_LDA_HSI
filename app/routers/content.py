@@ -1,7 +1,7 @@
 """Content API for the CAOS LDA HSI demo application."""
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.models.schemas import (
     AnalysisPayload,
@@ -26,6 +26,8 @@ from app.models.schemas import (
     RealScenesPayload,
     SegmentationBaselinesPayload,
     SpectralLibraryPayload,
+    SubsetCard,
+    SubsetCardsIndex,
 )
 from app.services.content import (
     get_analysis,
@@ -50,6 +52,8 @@ from app.services.content import (
     get_real_scenes,
     get_segmentation_baselines,
     get_spectral_library,
+    get_subset_card,
+    get_subset_cards_index,
 )
 
 
@@ -159,6 +163,28 @@ def analysis() -> AnalysisPayload:
 @router.get("/demo", response_model=DemoPayload)
 def demo() -> DemoPayload:
     return get_demo()
+
+
+@router.get("/subset-cards", response_model=SubsetCardsIndex)
+def subset_cards_index() -> SubsetCardsIndex:
+    try:
+        return get_subset_cards_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="subset cards index not generated yet; run scripts/local.* build-subset-cards",
+        ) from exc
+
+
+@router.get("/subset-cards/{subset_id}", response_model=SubsetCard)
+def subset_card(subset_id: str) -> SubsetCard:
+    try:
+        return get_subset_card(subset_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"subset card '{subset_id}' not generated yet; run scripts/local.* build-subset-cards",
+        ) from exc
 
 
 @router.get("/app-data", response_model=AppPayload)

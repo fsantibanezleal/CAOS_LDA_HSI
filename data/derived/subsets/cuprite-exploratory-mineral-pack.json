@@ -1,0 +1,347 @@
+{
+  "id": "cuprite-exploratory-mineral-pack",
+  "title": {
+    "en": "Cuprite Exploratory Mineral Pack",
+    "es": "Paquete exploratorio mineral Cuprite"
+  },
+  "summary": {
+    "en": "Compact Cuprite evidence, corpus preview, topic summaries, spatial regioning, and reference-alignment diagnostics for an explicitly exploratory unlabeled workflow.",
+    "es": "Evidencia compacta de Cuprite, preview de corpus, resumenes de topicos, regionamiento espacial y diagnosticos de alineamiento con referencias para un flujo sin etiquetas explicitamente exploratorio."
+  },
+  "family_id": "unlabeled-spectral-image",
+  "status": "ready",
+  "last_validated": "2026-05-01",
+  "public_goal": {
+    "en": "Give the app a serious Family C workflow where topics, clusters, spatial grouping, and reference neighborhoods can be inspected without pretending there is ground truth.",
+    "es": "Dar a la app un flujo serio de Familia C donde topicos, clusters, agrupamiento espacial y vecindarios de referencia puedan inspeccionarse sin fingir que existe ground truth."
+  },
+  "supported_claims": [
+    {
+      "id": "cuprite-exploratory-regimes",
+      "title": {
+        "en": "Unlabeled spectral regimes can be inspected without pretending there is ground truth.",
+        "es": "Los regimenes espectrales sin etiquetas pueden inspeccionarse sin fingir que existe ground truth."
+      },
+      "detail": {
+        "en": "The pack already combines evidence, topics, clustering, and reference neighborhoods under explicit caveats.",
+        "es": "El paquete ya combina evidencia, topicos, clustering y vecindarios de referencia bajo advertencias explicitas."
+      }
+    },
+    {
+      "id": "cuprite-reference-comparison",
+      "title": {
+        "en": "Reference alignment can support exploratory interpretation.",
+        "es": "El alineamiento con referencias puede apoyar interpretacion exploratoria."
+      },
+      "detail": {
+        "en": "Local-core diagnostics already compare compact Cuprite outputs against USGS-derived reference groups.",
+        "es": "Los diagnosticos local-core ya comparan salidas compactas de Cuprite contra grupos de referencia derivados de USGS."
+      }
+    }
+  ],
+  "blocked_claims": [
+    {
+      "id": "cuprite-no-mineral-identification",
+      "title": {
+        "en": "No mineral or clay identification claim is acceptable yet.",
+        "es": "Aun no es aceptable ninguna afirmacion de identificacion mineral o de arcillas."
+      },
+      "detail": {
+        "en": "Compact topics and nearest references are evidence only, not final semantic labels.",
+        "es": "Los topicos compactos y las referencias mas cercanas son solo evidencia, no etiquetas semanticas finales."
+      }
+    },
+    {
+      "id": "cuprite-no-supervised-metrics",
+      "title": {
+        "en": "No supervised inference surface should be exposed.",
+        "es": "No debe exponerse ninguna superficie de inferencia supervisada."
+      },
+      "detail": {
+        "en": "This dataset is intentionally tracked as unlabeled in the app contract.",
+        "es": "Este dataset se rastrea intencionalmente como no etiquetado dentro del contrato de la app."
+      }
+    }
+  ],
+  "workflow_steps": [
+    {
+      "step": "evidence",
+      "status": "ready",
+      "note": {
+        "en": "Compact Cuprite scene evidence already ships with example documents and topic summaries.",
+        "es": "La evidencia compacta de la escena Cuprite ya se publica con documentos de ejemplo y resumenes de topicos."
+      }
+    },
+    {
+      "step": "corpus",
+      "status": "ready",
+      "note": {
+        "en": "A compact band-magnitude corpus preview already exists for Cuprite.",
+        "es": "Ya existe un preview compacto de corpus band-magnitude para Cuprite."
+      }
+    },
+    {
+      "step": "topics",
+      "status": "ready",
+      "note": {
+        "en": "Compact topic snapshots ship in the real-scene payload and the local-core benchmark adds a deeper unlabeled topic model summary.",
+        "es": "Los snapshots compactos de topicos se publican en el payload de escenas reales y el benchmark local-core agrega un resumen mas profundo del modelo de topicos sin etiquetas."
+      }
+    },
+    {
+      "step": "baselines",
+      "status": "ready",
+      "note": {
+        "en": "SLIC, clustering, reference alignment, and unmixing-oriented diagnostics are all already represented in compact form.",
+        "es": "SLIC, clustering, alineamiento con referencias y diagnosticos orientados a unmixing ya estan representados en forma compacta."
+      }
+    },
+    {
+      "step": "inference",
+      "status": "blocked",
+      "note": {
+        "en": "This workflow is intentionally unlabeled and should not expose a supervised inference surface.",
+        "es": "Este flujo es intencionalmente sin etiquetas y no debe exponer una superficie de inferencia supervisada."
+      }
+    },
+    {
+      "step": "validation",
+      "status": "prototype",
+      "note": {
+        "en": "Reference alignment and exploratory clustering are available, but Cuprite still lacks a compact topic-stability export.",
+        "es": "El alineamiento con referencias y el clustering exploratorio estan disponibles, pero Cuprite aun carece de una exportacion compacta de estabilidad de topicos."
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "dataset_id": "cuprite-upv-reflectance",
+      "dataset_name": "Cuprite reflectance",
+      "modality": "HSI scene",
+      "band_count": 224,
+      "spatial_shape": [
+        512,
+        614
+      ],
+      "preview_image_path": null,
+      "label_scope": "no official ground-truth map is bundled in the current app payload",
+      "measurement_scope": "none",
+      "summary": {
+        "en": "High-value mineral and clay benchmark for the product's first serious workflow.",
+        "es": "Benchmark mineral y de arcillas de alto valor para el primer flujo serio del producto."
+      }
+    }
+  ],
+  "corpus": [
+    {
+      "recipe_id": "band-magnitude",
+      "recipe_title": {
+        "en": "Band-magnitude words",
+        "es": "Palabras banda-magnitud"
+      },
+      "dataset_id": "cuprite-upv-reflectance",
+      "vocabulary_size": 545,
+      "document_count": 6,
+      "document_length_quartiles": [
+        224.0,
+        224.0,
+        224.0,
+        224.0,
+        224.0
+      ],
+      "sample_tokens": [
+        "0400nm_q00",
+        "0409nm_q00",
+        "0419nm_q00",
+        "0428nm_q01",
+        "0513nm_q02",
+        "0522nm_q02",
+        "1408nm_q00",
+        "1417nm_q00"
+      ]
+    }
+  ],
+  "topics": {
+    "representation_id": null,
+    "K": 8,
+    "topics": [
+      {
+        "topic_id": 1,
+        "top_words": [
+          "1841nm",
+          "1831nm",
+          "1963nm",
+          "1690nm",
+          "1822nm",
+          "1718nm"
+        ],
+        "weight": 0.1126
+      },
+      {
+        "topic_id": 2,
+        "top_words": [
+          "1445nm",
+          "1963nm",
+          "1831nm",
+          "1069nm",
+          "2321nm",
+          "2302nm"
+        ],
+        "weight": 0.1238
+      },
+      {
+        "topic_id": 3,
+        "top_words": [
+          "1831nm",
+          "1662nm",
+          "1963nm",
+          "1332nm",
+          "1794nm",
+          "1718nm"
+        ],
+        "weight": 0.0442
+      },
+      {
+        "topic_id": 4,
+        "top_words": [
+          "1831nm",
+          "1709nm",
+          "1737nm",
+          "1756nm",
+          "1690nm",
+          "1634nm"
+        ],
+        "weight": 0.049
+      },
+      {
+        "topic_id": 5,
+        "top_words": [
+          "0899nm",
+          "0861nm",
+          "0909nm",
+          "0927nm",
+          "0852nm",
+          "0890nm"
+        ],
+        "weight": 0.0482
+      },
+      {
+        "topic_id": 6,
+        "top_words": [
+          "1445nm",
+          "1831nm",
+          "1784nm",
+          "1765nm",
+          "1718nm",
+          "1822nm"
+        ],
+        "weight": 0.0933
+      }
+    ],
+    "stability_score": null,
+    "seeds_compared": null
+  },
+  "validation": [
+    {
+      "block_id": "corpus-integrity",
+      "status": "ready",
+      "detail": {
+        "en": "The public repo already ships a deterministic Cuprite corpus preview.",
+        "es": "El repo publico ya publica un preview determinista de corpus para Cuprite."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "spectral-library-alignment",
+      "status": "ready",
+      "detail": {
+        "en": "Local-core results already include compact reference-alignment diagnostics against USGS-derived centroids.",
+        "es": "Los resultados local-core ya incluyen diagnosticos compactos de alineamiento con referencias contra centroides derivados de USGS."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "document-definition-sensitivity",
+      "status": "prototype",
+      "detail": {
+        "en": "The pack compares pixel-style documents with spatial grouping, but it still lacks a dedicated sensitivity card.",
+        "es": "El paquete compara documentos tipo pixel con agrupamiento espacial, pero aun carece de una tarjeta dedicada de sensibilidad."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "topic-stability",
+      "status": "blocked",
+      "detail": {
+        "en": "No compact multi-seed Cuprite topic-stability payload is exported yet.",
+        "es": "Aun no se exporta un payload compacto de estabilidad multi-seed para Cuprite."
+      },
+      "metric_name": null,
+      "metric_value": null
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "real-scene",
+      "title": {
+        "en": "Compact Cuprite scene evidence",
+        "es": "Evidencia compacta de escena Cuprite"
+      },
+      "path": "/api/real-scenes",
+      "purpose": {
+        "en": "Provide the compact scene preview, topic snapshots, and example documents.",
+        "es": "Entregar el preview compacto de escena, snapshots de topicos y documentos de ejemplo."
+      }
+    },
+    {
+      "id": "corpus-preview",
+      "title": {
+        "en": "Cuprite corpus preview",
+        "es": "Preview de corpus Cuprite"
+      },
+      "path": "/api/corpus-previews",
+      "purpose": {
+        "en": "Show a compact, inspectable tokenization path for the unlabeled scene.",
+        "es": "Mostrar una ruta de tokenizacion compacta e inspeccionable para la escena sin etiquetas."
+      }
+    },
+    {
+      "id": "segmentation-baseline",
+      "title": {
+        "en": "Cuprite SLIC baseline",
+        "es": "Baseline SLIC de Cuprite"
+      },
+      "path": "/api/segmentation-baselines",
+      "purpose": {
+        "en": "Expose a compact spatial grouping baseline for exploratory region creation.",
+        "es": "Exponer un baseline compacto de agrupamiento espacial para creacion exploratoria de regiones."
+      }
+    },
+    {
+      "id": "unlabeled-benchmark",
+      "title": {
+        "en": "Cuprite unlabeled-scene benchmark",
+        "es": "Benchmark de escena sin etiquetas Cuprite"
+      },
+      "path": "/api/local-core-benchmarks",
+      "purpose": {
+        "en": "Expose topic, clustering, and reference-alignment diagnostics for the exploratory mineral workflow.",
+        "es": "Exponer diagnosticos de topicos, clustering y alineamiento con referencias para el flujo exploratorio mineral."
+      }
+    }
+  ],
+  "next_steps": [
+    {
+      "en": "Export a compact Cuprite topic-stability payload for the validation panel.",
+      "es": "Exportar un payload compacto de estabilidad de topicos para Cuprite dentro del panel de validacion."
+    },
+    {
+      "en": "Add a compact absorption-feature summary only after calibrated wavelength handling is explicit.",
+      "es": "Agregar un resumen compacto de rasgos de absorcion solo despues de explicitar el manejo de longitudes de onda calibradas."
+    }
+  ],
+  "generated_at": "2026-05-02"
+}

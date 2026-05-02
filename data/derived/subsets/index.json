@@ -1,0 +1,46 @@
+{
+  "source": "Compact public subset cards extracted from the interactive subset registry",
+  "generated_at": "2026-05-02",
+  "cards": [
+    {
+      "id": "usgs-material-reference-slice",
+      "title": {
+        "en": "USGS Material-Reference Slice",
+        "es": "Corte de referencia de materiales USGS"
+      },
+      "family_id": "individual-spectra",
+      "status": "prototype",
+      "last_validated": "2026-04-30"
+    },
+    {
+      "id": "salinas-labeled-scene-pack",
+      "title": {
+        "en": "Salinas Labeled Scene Pack",
+        "es": "Paquete de escena etiquetada Salinas"
+      },
+      "family_id": "labeled-spectral-image",
+      "status": "ready",
+      "last_validated": "2026-05-01"
+    },
+    {
+      "id": "cuprite-exploratory-mineral-pack",
+      "title": {
+        "en": "Cuprite Exploratory Mineral Pack",
+        "es": "Paquete exploratorio mineral Cuprite"
+      },
+      "family_id": "unlabeled-spectral-image",
+      "status": "ready",
+      "last_validated": "2026-05-01"
+    },
+    {
+      "id": "hidsag-family-d-validation-window",
+      "title": {
+        "en": "HIDSAG Family D Validation Window",
+        "es": "Ventana de validacion HIDSAG Familia D"
+      },
+      "family_id": "regions-with-measurements",
+      "status": "prototype",
+      "last_validated": "2026-05-01"
+    }
+  ]
+}

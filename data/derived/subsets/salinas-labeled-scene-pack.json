@@ -1,0 +1,391 @@
+{
+  "id": "salinas-labeled-scene-pack",
+  "title": {
+    "en": "Salinas Labeled Scene Pack",
+    "es": "Paquete de escena etiquetada Salinas"
+  },
+  "summary": {
+    "en": "Compact agricultural HSI evidence, corpus previews, topic summaries, and label-aware benchmarks organized around Salinas-A for footprint and Salinas corrected for validation depth.",
+    "es": "Evidencia agricola HSI compacta, previews de corpus, resumenes de topicos y benchmarks conscientes de etiquetas organizados alrededor de Salinas-A por huella y Salinas corrected por profundidad de validacion."
+  },
+  "family_id": "labeled-spectral-image",
+  "status": "ready",
+  "last_validated": "2026-05-01",
+  "public_goal": {
+    "en": "Give the rebuilt app one publishable Family B workflow where evidence, corpus definition, topics, baselines, inference, and validation all have a compact anchor.",
+    "es": "Dar a la app reconstruida un flujo publicable de Familia B donde evidencia, definicion de corpus, topicos, baselines, inferencia y validacion tengan un ancla compacta."
+  },
+  "supported_claims": [
+    {
+      "id": "salinas-evidence-first-flow",
+      "title": {
+        "en": "A labeled HSI workflow can already be shown in an evidence-first order.",
+        "es": "Un flujo HSI etiquetado ya puede mostrarse en un orden centrado en evidencia."
+      },
+      "detail": {
+        "en": "This pack already covers evidence, corpus definition, topics, baselines, inference, and validation with compact assets.",
+        "es": "Este paquete ya cubre evidencia, definicion de corpus, topicos, baselines, inferencia y validacion con activos compactos."
+      }
+    },
+    {
+      "id": "salinas-label-aware-validation",
+      "title": {
+        "en": "Label-aware baselines and topic-mixture benchmarks already exist.",
+        "es": "Ya existen baselines conscientes de etiquetas y benchmarks topic-mixture."
+      },
+      "detail": {
+        "en": "The larger Salinas corrected scene already contributes local-core classification and topic-stability outputs.",
+        "es": "La escena mas grande Salinas corrected ya aporta salidas local-core de clasificacion y estabilidad de topicos."
+      }
+    }
+  ],
+  "blocked_claims": [
+    {
+      "id": "salinas-no-general-transfer",
+      "title": {
+        "en": "This pack does not validate transfer across all labeled HSI domains.",
+        "es": "Este paquete no valida transferencia a traves de todos los dominios HSI etiquetados."
+      },
+      "detail": {
+        "en": "Agricultural Salinas scenes are strong anchors, but they do not cover urban or wetland transfer by themselves.",
+        "es": "Las escenas agricolas de Salinas son anclas fuertes, pero no cubren por si solas la transferencia urbana o de humedales."
+      }
+    },
+    {
+      "id": "salinas-no-topic-equals-class",
+      "title": {
+        "en": "Topic maps are not semantic labels by themselves.",
+        "es": "Los mapas de topicos no son etiquetas semanticas por si mismos."
+      },
+      "detail": {
+        "en": "Labels support comparison and validation, not automatic topic naming.",
+        "es": "Las etiquetas apoyan comparacion y validacion, no el nombrado automatico de topicos."
+      }
+    }
+  ],
+  "workflow_steps": [
+    {
+      "step": "evidence",
+      "status": "ready",
+      "note": {
+        "en": "Compact real-scene summaries already exist for both Salinas-A and Salinas corrected.",
+        "es": "Ya existen resumenes compactos de escena real para Salinas-A y Salinas corrected."
+      }
+    },
+    {
+      "step": "corpus",
+      "status": "ready",
+      "note": {
+        "en": "Salinas-A covers a footprint-friendly band-magnitude preview, while Salinas corrected covers region documents.",
+        "es": "Salinas-A cubre un preview band-magnitude de baja huella, mientras Salinas corrected cubre documentos de region."
+      }
+    },
+    {
+      "step": "topics",
+      "status": "ready",
+      "note": {
+        "en": "Compact topic snapshots already ship in the real-scene payload and are suitable for an evidence-first Family B flow.",
+        "es": "Los snapshots compactos de topicos ya se publican en el payload de escenas reales y son adecuados para un flujo de Familia B centrado en evidencia."
+      }
+    },
+    {
+      "step": "baselines",
+      "status": "ready",
+      "note": {
+        "en": "The pack already combines SLIC regioning with labeled-scene baseline metrics from the local-core benchmark.",
+        "es": "El paquete ya combina regionamiento SLIC con metricas de baselines de escena etiquetada desde el benchmark local-core."
+      }
+    },
+    {
+      "step": "inference",
+      "status": "ready",
+      "note": {
+        "en": "Salinas corrected already has compact raw, PCA, and topic-mixture classification results in local-core benchmarks.",
+        "es": "Salinas corrected ya tiene resultados compactos de clasificacion raw, PCA y topic-mixture en benchmarks local-core."
+      }
+    },
+    {
+      "step": "validation",
+      "status": "ready",
+      "note": {
+        "en": "Topic stability and label-aware comparisons already exist for the larger Salinas corrected scene.",
+        "es": "La estabilidad de topicos y las comparaciones conscientes de etiquetas ya existen para la escena mas grande Salinas corrected."
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "dataset_id": "salinas-a-corrected",
+      "dataset_name": "Salinas-A corrected",
+      "modality": "HSI scene",
+      "band_count": 204,
+      "spatial_shape": [
+        83,
+        86
+      ],
+      "preview_image_path": "/generated/real/previews/salinas-a-corrected-rgb.png",
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "summary": {
+        "en": "Very compact scene that is especially useful when the product needs one fully reproducible public sample under tight size limits.",
+        "es": "Escena muy compacta, especialmente util cuando el producto necesita una muestra publica completamente reproducible bajo limites de tamano estrictos."
+      }
+    },
+    {
+      "dataset_id": "salinas-corrected",
+      "dataset_name": "Salinas corrected",
+      "modality": "HSI scene",
+      "band_count": 204,
+      "spatial_shape": [
+        512,
+        217
+      ],
+      "preview_image_path": "/generated/real/previews/salinas-corrected-rgb.png",
+      "label_scope": "official pixel class labels available in the local derived payload",
+      "measurement_scope": "none",
+      "summary": {
+        "en": "Full agricultural Salinas scene with 16 classes. It broadens the current Salinas-A subset without adding a heavy file.",
+        "es": "Escena agricola Salinas completa con 16 clases. Amplia el subconjunto Salinas-A actual sin agregar un archivo pesado."
+      }
+    }
+  ],
+  "corpus": [
+    {
+      "recipe_id": "band-magnitude",
+      "recipe_title": {
+        "en": "Band-magnitude words",
+        "es": "Palabras banda-magnitud"
+      },
+      "dataset_id": "salinas-a-corrected",
+      "vocabulary_size": 204,
+      "document_count": 1,
+      "document_length_quartiles": [
+        204.0,
+        204.0,
+        204.0,
+        204.0,
+        204.0
+      ],
+      "sample_tokens": [
+        "0400nm_q01",
+        "0410nm_q01",
+        "0421nm_q01",
+        "0431nm_q02",
+        "0441nm_q03",
+        "0452nm_q03",
+        "0462nm_q02",
+        "0472nm_q03"
+      ]
+    },
+    {
+      "recipe_id": "region-documents",
+      "recipe_title": {
+        "en": "Region documents",
+        "es": "Documentos de region"
+      },
+      "dataset_id": "salinas-corrected",
+      "vocabulary_size": 958,
+      "document_count": 16,
+      "document_length_quartiles": [
+        204.0,
+        204.0,
+        204.0,
+        204.0,
+        204.0
+      ],
+      "sample_tokens": [
+        "0834nm_q09",
+        "0855nm_q15",
+        "1228nm_q02",
+        "1497nm_q00",
+        "1507nm_q00",
+        "1517nm_q00",
+        "1910nm_q00",
+        "1921nm_q00"
+      ]
+    }
+  ],
+  "topics": {
+    "representation_id": null,
+    "K": 12,
+    "topics": [
+      {
+        "topic_id": 1,
+        "top_words": [
+          "0876nm",
+          "0928nm",
+          "0866nm",
+          "0814nm",
+          "0855nm",
+          "0959nm"
+        ],
+        "weight": 0.0815
+      },
+      {
+        "topic_id": 2,
+        "top_words": [
+          "0679nm",
+          "0772nm",
+          "0659nm",
+          "0638nm",
+          "0783nm",
+          "0741nm"
+        ],
+        "weight": 0.094
+      },
+      {
+        "topic_id": 3,
+        "top_words": [
+          "0866nm",
+          "0855nm",
+          "0824nm",
+          "0876nm",
+          "0886nm",
+          "0845nm"
+        ],
+        "weight": 0.1462
+      },
+      {
+        "topic_id": 4,
+        "top_words": [
+          "0814nm",
+          "0855nm",
+          "0876nm",
+          "0741nm",
+          "0866nm",
+          "0597nm"
+        ],
+        "weight": 0.0875
+      },
+      {
+        "topic_id": 5,
+        "top_words": [
+          "0824nm",
+          "0928nm",
+          "0803nm",
+          "0855nm",
+          "0845nm",
+          "0969nm"
+        ],
+        "weight": 0.0885
+      },
+      {
+        "topic_id": 6,
+        "top_words": [
+          "0824nm",
+          "0907nm",
+          "0969nm",
+          "0886nm",
+          "0876nm",
+          "1103nm"
+        ],
+        "weight": 0.0726
+      }
+    ],
+    "stability_score": 0.9774,
+    "seeds_compared": 4
+  },
+  "validation": [
+    {
+      "block_id": "corpus-integrity",
+      "status": "ready",
+      "detail": {
+        "en": "Both compact corpus previews are already deterministic and public.",
+        "es": "Ambos previews compactos de corpus ya son deterministas y publicos."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "topic-stability",
+      "status": "ready",
+      "detail": {
+        "en": "Salinas corrected already participates in the multi-seed labeled-scene stability benchmark.",
+        "es": "Salinas corrected ya participa en el benchmark multi-seed de estabilidad para escenas etiquetadas."
+      },
+      "metric_name": "matched_topic_cosine_mean",
+      "metric_value": 0.9774
+    },
+    {
+      "block_id": "document-definition-sensitivity",
+      "status": "ready",
+      "detail": {
+        "en": "The pack already spans band-magnitude pixel-style documents and region-document summaries.",
+        "es": "El paquete ya abarca documentos tipo pixel band-magnitude y resumenes de documentos de region."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "supervision-association",
+      "status": "ready",
+      "detail": {
+        "en": "Label-aware classification baselines already exist in the local-core payload.",
+        "es": "Los baselines de clasificacion conscientes de etiquetas ya existen en el payload local-core."
+      },
+      "metric_name": null,
+      "metric_value": null
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "real-scenes",
+      "title": {
+        "en": "Compact Salinas real-scene evidence",
+        "es": "Evidencia compacta de escenas reales Salinas"
+      },
+      "path": "/api/real-scenes",
+      "purpose": {
+        "en": "Provide real scene previews, class summaries, topic mixtures, and example documents.",
+        "es": "Entregar previews de escenas reales, resumenes por clase, mezclas de topicos y documentos de ejemplo."
+      }
+    },
+    {
+      "id": "corpus-previews",
+      "title": {
+        "en": "Salinas corpus previews",
+        "es": "Previews de corpus Salinas"
+      },
+      "path": "/api/corpus-previews",
+      "purpose": {
+        "en": "Expose compact corpus definitions for footprint-friendly pixel documents and richer region documents.",
+        "es": "Exponer definiciones compactas de corpus para documentos tipo pixel de baja huella y documentos de region mas ricos."
+      }
+    },
+    {
+      "id": "segmentation-baseline",
+      "title": {
+        "en": "Salinas-A SLIC baseline",
+        "es": "Baseline SLIC de Salinas-A"
+      },
+      "path": "/api/segmentation-baselines",
+      "purpose": {
+        "en": "Show one compact spatial baseline for region creation.",
+        "es": "Mostrar un baseline espacial compacto para creacion de regiones."
+      }
+    },
+    {
+      "id": "labeled-benchmarks",
+      "title": {
+        "en": "Salinas corrected labeled-scene benchmark",
+        "es": "Benchmark de escena etiquetada Salinas corrected"
+      },
+      "path": "/api/local-core-benchmarks",
+      "purpose": {
+        "en": "Expose label-aware baseline, topic-mixture, clustering, and stability diagnostics.",
+        "es": "Exponer diagnosticos de baselines conscientes de etiquetas, topic-mixture, clustering y estabilidad."
+      }
+    }
+  ],
+  "next_steps": [
+    {
+      "en": "Extract a compact labeled-scene validation payload from the Salinas corrected local-core benchmark.",
+      "es": "Extraer un payload compacto de validacion de escena etiquetada desde el benchmark local-core de Salinas corrected."
+    },
+    {
+      "en": "Wire label overlays, corpus cards, and benchmark cards into the `Context + Workspace` shell.",
+      "es": "Conectar overlays de etiquetas, tarjetas de corpus y tarjetas de benchmarks dentro del shell `Context + Workspace`."
+    }
+  ],
+  "generated_at": "2026-05-02"
+}

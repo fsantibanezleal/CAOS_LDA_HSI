@@ -837,4 +837,113 @@ class AppPayload(BaseModel):
     demo: DemoPayload
 
 
+class SubsetCardEvidenceItem(BaseModel):
+    """One per-dataset evidence summary used in a public subset card."""
+
+    dataset_id: str
+    dataset_name: str
+    modality: str
+    band_count: int | None = None
+    spatial_shape: list[int] | None = None
+    preview_image_path: str | None = None
+    label_scope: str | None = None
+    measurement_scope: str | None = None
+    summary: LocalizedText
+
+
+class SubsetCardCorpusItem(BaseModel):
+    """One per-recipe corpus summary used in a public subset card."""
+
+    recipe_id: str
+    recipe_title: LocalizedText
+    dataset_id: str
+    vocabulary_size: int
+    document_count: int
+    document_length_quartiles: list[float]
+    sample_tokens: list[str]
+
+
+class SubsetCardTopicSummary(BaseModel):
+    """One topic entry in the compact public subset card."""
+
+    topic_id: int
+    top_words: list[str]
+    weight: float
+
+
+class SubsetCardTopicBlock(BaseModel):
+    """Topic-level summary for a public subset card."""
+
+    representation_id: str | None = None
+    K: int | None = None
+    topics: list[SubsetCardTopicSummary] = Field(default_factory=list)
+    stability_score: float | None = None
+    seeds_compared: int | None = None
+
+
+class SubsetCardValidationItem(BaseModel):
+    """Per-validation-block status entry inside a public subset card."""
+
+    block_id: str
+    status: str
+    detail: LocalizedText | None = None
+    metric_name: str | None = None
+    metric_value: float | None = None
+
+
+class SubsetCardArtifactRef(BaseModel):
+    """Pointer to a compact artifact backing a public subset card."""
+
+    id: str
+    title: LocalizedText
+    path: str
+    purpose: LocalizedText | None = None
+
+
+class SubsetCard(BaseModel):
+    """Compact public card that fully describes one interactive subset.
+
+    The card removes the frontend's dependency on deep benchmark JSON.
+    It bundles enough family / dataset / recipe / topic / validation
+    metadata to drive the public Workspace tab without re-reading the
+    underlying local-core benchmarks file.
+    """
+
+    id: str
+    title: LocalizedText
+    summary: LocalizedText
+    family_id: str
+    status: str
+    last_validated: str | None = None
+    public_goal: LocalizedText
+    supported_claims: list[InteractiveSubsetClaim]
+    blocked_claims: list[InteractiveSubsetClaim]
+    workflow_steps: list[InteractiveSubsetWorkflowStep]
+    evidence: list[SubsetCardEvidenceItem]
+    corpus: list[SubsetCardCorpusItem]
+    topics: SubsetCardTopicBlock | None = None
+    validation: list[SubsetCardValidationItem]
+    artifacts: list[SubsetCardArtifactRef]
+    next_steps: list[LocalizedText]
+    generated_at: str
+
+
+class SubsetCardSummary(BaseModel):
+    """Lightweight registry entry returned by the subset-cards index."""
+
+    id: str
+    title: LocalizedText
+    family_id: str
+    status: str
+    last_validated: str | None = None
+
+
+class SubsetCardsIndex(BaseModel):
+    """Index of available compact public subset cards."""
+
+    source: str
+    generated_at: str
+    cards: list[SubsetCardSummary]
+
+
 JSONDict = dict[str, Any]

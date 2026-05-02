@@ -28,6 +28,8 @@ from app.models.schemas import (
     RealScenesPayload,
     SegmentationBaselinesPayload,
     SpectralLibraryPayload,
+    SubsetCard,
+    SubsetCardsIndex,
 )
 
 
@@ -181,6 +183,20 @@ def get_analysis() -> AnalysisPayload:
     settings = get_settings()
     data = _load_json(str(settings.analysis_path))
     return AnalysisPayload.model_validate(data)
+
+
+@lru_cache
+def get_subset_cards_index() -> SubsetCardsIndex:
+    settings = get_settings()
+    data = _load_json(str(settings.subset_cards_index_path))
+    return SubsetCardsIndex.model_validate(data)
+
+
+@lru_cache
+def get_subset_card(subset_id: str) -> SubsetCard:
+    settings = get_settings()
+    data = _load_json(str(settings.subset_card_path(subset_id)))
+    return SubsetCard.model_validate(data)
 
 
 @lru_cache

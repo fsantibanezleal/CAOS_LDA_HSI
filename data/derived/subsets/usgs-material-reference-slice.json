@@ -1,0 +1,276 @@
+{
+  "id": "usgs-material-reference-slice",
+  "title": {
+    "en": "USGS Material-Reference Slice",
+    "es": "Corte de referencia de materiales USGS"
+  },
+  "summary": {
+    "en": "Compact AVIRIS and Sentinel-2-convolved reference spectra used to inspect one-spectrum documents, tokenization, and reference alignment without shipping the full library.",
+    "es": "Espectros de referencia compactos con AVIRIS y Sentinel-2 usados para inspeccionar documentos de un espectro, tokenizacion y alineamiento de referencias sin publicar la libreria completa."
+  },
+  "family_id": "individual-spectra",
+  "status": "prototype",
+  "last_validated": "2026-04-30",
+  "public_goal": {
+    "en": "Give the app a compact Family A workflow where one spectrum is one document and topic tokens can be compared with known reference groups.",
+    "es": "Dar a la app un flujo compacto de Familia A donde un espectro sea un documento y los tokens de topicos puedan compararse con grupos de referencia conocidos."
+  },
+  "supported_claims": [
+    {
+      "id": "usgs-one-spectrum-documents",
+      "title": {
+        "en": "One-spectrum documents are reproducible and inspectable.",
+        "es": "Los documentos de un espectro son reproducibles e inspeccionables."
+      },
+      "detail": {
+        "en": "The repo already exposes real reference spectra together with deterministic corpus previews.",
+        "es": "El repo ya expone espectros reales de referencia junto con previews de corpus deterministas."
+      }
+    },
+    {
+      "id": "usgs-topic-token-bridge",
+      "title": {
+        "en": "Compact topic tokens can be compared with known reference groups.",
+        "es": "Los tokens compactos de topicos pueden compararse con grupos de referencia conocidos."
+      },
+      "detail": {
+        "en": "Local-core results already contain topic-token summaries and group-level clustering diagnostics.",
+        "es": "Los resultados local-core ya contienen resumenes de tokens de topicos y diagnosticos de clustering a nivel de grupos."
+      }
+    }
+  ],
+  "blocked_claims": [
+    {
+      "id": "usgs-no-identification-claim",
+      "title": {
+        "en": "Nearest references are not material identifications.",
+        "es": "Las referencias mas cercanas no son identificaciones de material."
+      },
+      "detail": {
+        "en": "This slice supports comparison and vocabulary inspection, not definitive material labeling.",
+        "es": "Este corte apoya comparacion e inspeccion de vocabulario, no etiquetado definitivo de materiales."
+      }
+    },
+    {
+      "id": "usgs-no-public-predictive-claim",
+      "title": {
+        "en": "No public predictive claim is approved yet.",
+        "es": "Aun no se aprueba ninguna afirmacion predictiva publica."
+      },
+      "detail": {
+        "en": "Material labels exist, but supervised model cards are still missing from the public contract.",
+        "es": "Existen etiquetas de material, pero aun faltan model cards supervisadas dentro del contrato publico."
+      }
+    }
+  ],
+  "workflow_steps": [
+    {
+      "step": "evidence",
+      "status": "ready",
+      "note": {
+        "en": "Compact spectral-library samples already expose real material-reference spectra.",
+        "es": "Las muestras compactas de la libreria espectral ya exponen espectros reales de referencia de materiales."
+      }
+    },
+    {
+      "step": "corpus",
+      "status": "ready",
+      "note": {
+        "en": "Both magnitude-phrase and band-frequency corpus previews are already versioned.",
+        "es": "Los previews de corpus de tipo magnitude-phrase y band-frequency ya estan versionados."
+      }
+    },
+    {
+      "step": "topics",
+      "status": "prototype",
+      "note": {
+        "en": "Topic tokens exist inside the local-core spectral-library benchmark, but they still need a dedicated compact card for the rebuilt GUI.",
+        "es": "Los tokens de topicos existen dentro del benchmark local-core de la libreria espectral, pero aun necesitan una tarjeta compacta dedicada para la GUI reconstruida."
+      }
+    },
+    {
+      "step": "baselines",
+      "status": "prototype",
+      "note": {
+        "en": "Reference alignment is meaningful, but the app still lacks a compact Family A baseline summary card.",
+        "es": "El alineamiento de referencias es significativo, pero la app aun no tiene una tarjeta compacta de resumen de baselines para Familia A."
+      }
+    },
+    {
+      "step": "inference",
+      "status": "blocked",
+      "note": {
+        "en": "Material labels exist, but no public supervised model card is approved yet.",
+        "es": "Existen etiquetas de material, pero aun no se aprueba una model card supervisada para publicacion."
+      }
+    },
+    {
+      "step": "validation",
+      "status": "prototype",
+      "note": {
+        "en": "Perplexity and clustering agreement exist in local-core results, but validation is still nested in a deep benchmark payload.",
+        "es": "La perplejidad y el acuerdo de clustering existen en resultados local-core, pero la validacion sigue anidada en un payload de benchmark profundo."
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "dataset_id": "usgs-splib07",
+      "dataset_name": "USGS Spectral Library Version 7",
+      "modality": "Spectral library",
+      "band_count": null,
+      "spatial_shape": null,
+      "preview_image_path": null,
+      "label_scope": "material and group labels are available for curated compact samples",
+      "measurement_scope": "none",
+      "summary": {
+        "en": "Closer to mineral and clay interpretation workflows than remote-sensing scenes. Excellent for one-dimensional spectral corpora.",
+        "es": "Mas cercano a flujos de interpretacion mineral y de arcillas que las escenas de teledeteccion. Excelente para corpus espectrales unidimensionales."
+      }
+    }
+  ],
+  "corpus": [
+    {
+      "recipe_id": "magnitude-phrase",
+      "recipe_title": {
+        "en": "Magnitude alphabet, spectrum phrase",
+        "es": "Alfabeto de magnitud, frase espectral"
+      },
+      "dataset_id": "usgs-splib07",
+      "vocabulary_size": 12,
+      "document_count": 12,
+      "document_length_quartiles": [
+        224.0,
+        224.0,
+        224.0,
+        224.0,
+        224.0
+      ],
+      "sample_tokens": [
+        "q10",
+        "q11",
+        "q09",
+        "q08",
+        "q07",
+        "q06",
+        "q02",
+        "q05"
+      ]
+    },
+    {
+      "recipe_id": "band-frequency",
+      "recipe_title": {
+        "en": "Band alphabet, magnitude frequency",
+        "es": "Alfabeto de bandas, frecuencia de magnitud"
+      },
+      "dataset_id": "usgs-splib07",
+      "vocabulary_size": 224,
+      "document_count": 12,
+      "document_length_quartiles": [
+        1621.0,
+        1621.0,
+        1931.0,
+        2297.0,
+        2297.0
+      ],
+      "sample_tokens": [
+        "1681nm",
+        "1690nm",
+        "1700nm",
+        "1709nm",
+        "1718nm",
+        "1634nm",
+        "1671nm",
+        "1737nm"
+      ]
+    }
+  ],
+  "topics": {
+    "representation_id": null,
+    "K": null,
+    "topics": [],
+    "stability_score": null,
+    "seeds_compared": null
+  },
+  "validation": [
+    {
+      "block_id": "corpus-integrity",
+      "status": "ready",
+      "detail": {
+        "en": "The public repo already ships deterministic corpus previews for this slice.",
+        "es": "El repo publico ya publica previews de corpus deterministas para este corte."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "spectral-library-alignment",
+      "status": "prototype",
+      "detail": {
+        "en": "Reference-group alignment exists in the local-core benchmark, but the app still needs a compact explicit summary.",
+        "es": "El alineamiento con grupos de referencia existe en el benchmark local-core, pero la app aun necesita un resumen compacto y explicito."
+      },
+      "metric_name": null,
+      "metric_value": null
+    },
+    {
+      "block_id": "supervision-association",
+      "status": "blocked",
+      "detail": {
+        "en": "No public supervised benchmark card is exposed yet for material-label prediction.",
+        "es": "Aun no se expone una tarjeta de benchmark supervisado para prediccion de etiquetas de material."
+      },
+      "metric_name": null,
+      "metric_value": null
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "library-samples",
+      "title": {
+        "en": "Compact spectral-library samples",
+        "es": "Muestras compactas de libreria espectral"
+      },
+      "path": "/api/spectral-library",
+      "purpose": {
+        "en": "Provide inspectable real spectra and compact material groups.",
+        "es": "Entregar espectros reales inspeccionables y grupos compactos de materiales."
+      }
+    },
+    {
+      "id": "corpus-previews",
+      "title": {
+        "en": "USGS corpus previews",
+        "es": "Previews de corpus USGS"
+      },
+      "path": "/api/corpus-previews",
+      "purpose": {
+        "en": "Show how one-spectrum documents become discrete corpora under two tokenization strategies.",
+        "es": "Mostrar como los documentos de un solo espectro se vuelven corpus discretos bajo dos estrategias de tokenizacion."
+      }
+    },
+    {
+      "id": "library-benchmark",
+      "title": {
+        "en": "Spectral-library benchmark summary",
+        "es": "Resumen de benchmark de libreria espectral"
+      },
+      "path": "/api/local-core-benchmarks",
+      "purpose": {
+        "en": "Expose compact topic-token and clustering diagnostics for the reference slice.",
+        "es": "Exponer diagnosticos compactos de tokens de topicos y clustering para el corte de referencia."
+      }
+    }
+  ],
+  "next_steps": [
+    {
+      "en": "Add a compact Family A topic-card payload extracted from the local-core benchmark.",
+      "es": "Agregar un payload compacto de tarjetas de topicos para Familia A extraido del benchmark local-core."
+    },
+    {
+      "en": "Decide whether one small supervised material-label benchmark deserves public exposure.",
+      "es": "Decidir si un benchmark supervisado pequeno de etiquetas de material merece exposicion publica."
+    }
+  ],
+  "generated_at": "2026-05-02"
+}
