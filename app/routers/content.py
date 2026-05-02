@@ -17,6 +17,7 @@ from app.models.schemas import (
     HidsagPreprocessingSensitivityPayload,
     HidsagRegionDocumentsPayload,
     HidsagSubsetInventoryPayload,
+    InteractiveSubsetsPayload,
     LocalCoreBenchmarksPayload,
     LocalDatasetInventoryPayload,
     LocalValidationMatrixPayload,
@@ -40,6 +41,7 @@ from app.services.content import (
     get_hidsag_preprocessing_sensitivity,
     get_hidsag_region_documents,
     get_hidsag_subset_inventory,
+    get_interactive_subsets,
     get_local_core_benchmarks,
     get_local_dataset_inventory,
     get_local_validation_matrix,
@@ -72,6 +74,11 @@ def data_families() -> DataFamiliesPayload:
 @router.get("/corpus-recipes", response_model=CorpusRecipesPayload)
 def corpus_recipes() -> CorpusRecipesPayload:
     return get_corpus_recipes()
+
+
+@router.get("/interactive-subsets", response_model=InteractiveSubsetsPayload)
+def interactive_subsets() -> InteractiveSubsetsPayload:
+    return get_interactive_subsets()
 
 
 @router.get("/corpus-previews", response_model=CorpusPreviewsPayload)

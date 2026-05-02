@@ -158,6 +158,60 @@ export interface CorpusRecipesPayload {
   validation_blocks: ValidationBlock[];
 }
 
+export interface InteractiveSubsetWorkflowStep {
+  step: string;
+  status: string;
+  note: LocalizedText;
+}
+
+export interface InteractiveSubsetValidationStatus {
+  block_id: string;
+  status: string;
+  note: LocalizedText;
+}
+
+export interface InteractiveSubsetArtifact {
+  id: string;
+  kind: string;
+  title: LocalizedText;
+  path: string;
+  entity_ids: string[];
+  purpose: LocalizedText;
+}
+
+export interface InteractiveSubsetClaim {
+  id: string;
+  title: LocalizedText;
+  detail: LocalizedText;
+}
+
+export interface InteractiveSubset {
+  id: string;
+  status: string;
+  family_id: string;
+  primary_dataset_id: string;
+  dataset_ids: string[];
+  recipe_ids: string[];
+  baseline_ids: string[];
+  title: LocalizedText;
+  summary: LocalizedText;
+  public_goal: LocalizedText;
+  workflow_steps: InteractiveSubsetWorkflowStep[];
+  validation_status: InteractiveSubsetValidationStatus[];
+  artifacts: InteractiveSubsetArtifact[];
+  supported_claims: InteractiveSubsetClaim[];
+  blocked_claims: InteractiveSubsetClaim[];
+  caveats: LocalizedText[];
+  next_steps: LocalizedText[];
+  last_validated: string;
+}
+
+export interface InteractiveSubsetsPayload {
+  source: string;
+  generated_at: string;
+  subsets: InteractiveSubset[];
+}
+
 export interface CorpusDefinition {
   alphabet: string;
   word: string;
@@ -642,6 +696,7 @@ export function pickText(value: LocalizedText, language: string): string {
 export const api = {
   getDataFamilies: () => getJson<DataFamiliesPayload>("/api/data-families"),
   getCorpusRecipes: () => getJson<CorpusRecipesPayload>("/api/corpus-recipes"),
+  getInteractiveSubsets: () => getJson<InteractiveSubsetsPayload>("/api/interactive-subsets"),
   getCorpusPreviews: () => getJson<CorpusPreviewsPayload>("/api/corpus-previews"),
   getSegmentationBaselines: () => getJson<SegmentationBaselinesPayload>("/api/segmentation-baselines"),
   getLocalValidationMatrix: () => getJson<LocalValidationMatrixPayload>("/api/local-validation-matrix"),

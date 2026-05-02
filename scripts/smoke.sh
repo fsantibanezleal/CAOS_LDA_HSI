@@ -9,6 +9,7 @@ paths=(
   "/api/app-data"
   "/api/data-families"
   "/api/corpus-recipes"
+  "/api/interactive-subsets"
   "/api/corpus-previews"
   "/api/segmentation-baselines"
   "/api/local-validation-matrix"

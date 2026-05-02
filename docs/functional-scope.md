@@ -154,6 +154,7 @@ it does not mean.
 The current reset depends on the following payload families:
 
 - dataset taxonomy and supervision
+- interactive subset descriptors with readiness and claim boundaries
 - corpus recipes and corpus previews
 - segmentation and baseline payloads
 - local validation matrix

@@ -54,6 +54,7 @@ new local-core reset payloads.
 - `GET /api/datasets`
 - `GET /api/data-families`
 - `GET /api/corpus-recipes`
+- `GET /api/interactive-subsets`
 - `GET /api/corpus-previews`
 - `GET /api/segmentation-baselines`
 - `GET /api/local-validation-matrix`
@@ -67,9 +68,11 @@ new local-core reset payloads.
 - `GET /api/demo`
 - `GET /api/app-data`
 
-The first six reset endpoints are the ones that now define the intended
-product flow. The older `app-data` aggregate remains as a compatibility
-surface for the current technical checkpoint.
+The first seven reset endpoints are the ones that now define the intended
+product flow. `interactive-subsets` adds the public gating layer that says
+which compact slices are actually ready, prototype-only, or blocked for
+the rebuilt app. The older `app-data` aggregate remains as a
+compatibility surface for the current technical checkpoint.
 
 ## Derived Asset Policy
 

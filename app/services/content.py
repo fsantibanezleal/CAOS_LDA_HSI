@@ -19,6 +19,7 @@ from app.models.schemas import (
     HidsagPreprocessingSensitivityPayload,
     HidsagRegionDocumentsPayload,
     HidsagSubsetInventoryPayload,
+    InteractiveSubsetsPayload,
     LocalCoreBenchmarksPayload,
     LocalDatasetInventoryPayload,
     LocalValidationMatrixPayload,
@@ -61,6 +62,13 @@ def get_corpus_recipes() -> CorpusRecipesPayload:
     settings = get_settings()
     data = _load_json(str(settings.manifests_path / "corpus_recipes.json"))
     return CorpusRecipesPayload.model_validate(data)
+
+
+@lru_cache
+def get_interactive_subsets() -> InteractiveSubsetsPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.manifests_path / "interactive_subsets.json"))
+    return InteractiveSubsetsPayload.model_validate(data)
 
 
 @lru_cache

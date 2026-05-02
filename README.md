@@ -23,6 +23,8 @@ The repository now includes:
 - a local validation package in `research_core/`
 - curated manifests for datasets, families, corpus recipes, and workflow
   rules
+- curated interactive subset descriptors that define what is actually
+  publishable in the rebuilt app
 - reproducible acquisition scripts for public raw data under
   `data-pipeline/`
 - deterministic derived assets for scenes, field data, spectral-library
@@ -71,6 +73,7 @@ The repository now includes:
 - `data/derived/real/real_samples.json`
 - `data/derived/field/field_samples.json`
 - `data/derived/spectral/library_samples.json`
+- `data/manifests/interactive_subsets.json`
 
 ## Local Workflow
 
@@ -180,3 +183,8 @@ Useful commands:
 3. curate compact interactive subsets for publication
 4. rebuild the app around `Context` and `Workspace`
 5. keep production deploys gated behind local build and smoke checks
+
+The first public subset registry now lives in
+`data/manifests/interactive_subsets.json` and is exposed through
+`/api/interactive-subsets`. It defines which compact slices are `ready`,
+`prototype`, or still blocked for the rebuilt workflow.

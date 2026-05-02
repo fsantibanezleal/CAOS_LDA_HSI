@@ -1,0 +1,968 @@
+{
+  "source": "Curated interactive subset descriptors for the public workflow rebuild",
+  "generated_at": "2026-05-02",
+  "subsets": [
+    {
+      "id": "usgs-material-reference-slice",
+      "status": "prototype",
+      "family_id": "individual-spectra",
+      "primary_dataset_id": "usgs-splib07",
+      "dataset_ids": ["usgs-splib07"],
+      "recipe_ids": ["magnitude-phrase", "band-frequency"],
+      "baseline_ids": ["sam-reference"],
+      "title": {
+        "en": "USGS Material-Reference Slice",
+        "es": "Corte de referencia de materiales USGS"
+      },
+      "summary": {
+        "en": "Compact AVIRIS and Sentinel-2-convolved reference spectra used to inspect one-spectrum documents, tokenization, and reference alignment without shipping the full library.",
+        "es": "Espectros de referencia compactos con AVIRIS y Sentinel-2 usados para inspeccionar documentos de un espectro, tokenizacion y alineamiento de referencias sin publicar la libreria completa."
+      },
+      "public_goal": {
+        "en": "Give the app a compact Family A workflow where one spectrum is one document and topic tokens can be compared with known reference groups.",
+        "es": "Dar a la app un flujo compacto de Familia A donde un espectro sea un documento y los tokens de topicos puedan compararse con grupos de referencia conocidos."
+      },
+      "workflow_steps": [
+        {
+          "step": "evidence",
+          "status": "ready",
+          "note": {
+            "en": "Compact spectral-library samples already expose real material-reference spectra.",
+            "es": "Las muestras compactas de la libreria espectral ya exponen espectros reales de referencia de materiales."
+          }
+        },
+        {
+          "step": "corpus",
+          "status": "ready",
+          "note": {
+            "en": "Both magnitude-phrase and band-frequency corpus previews are already versioned.",
+            "es": "Los previews de corpus de tipo magnitude-phrase y band-frequency ya estan versionados."
+          }
+        },
+        {
+          "step": "topics",
+          "status": "prototype",
+          "note": {
+            "en": "Topic tokens exist inside the local-core spectral-library benchmark, but they still need a dedicated compact card for the rebuilt GUI.",
+            "es": "Los tokens de topicos existen dentro del benchmark local-core de la libreria espectral, pero aun necesitan una tarjeta compacta dedicada para la GUI reconstruida."
+          }
+        },
+        {
+          "step": "baselines",
+          "status": "prototype",
+          "note": {
+            "en": "Reference alignment is meaningful, but the app still lacks a compact Family A baseline summary card.",
+            "es": "El alineamiento de referencias es significativo, pero la app aun no tiene una tarjeta compacta de resumen de baselines para Familia A."
+          }
+        },
+        {
+          "step": "inference",
+          "status": "blocked",
+          "note": {
+            "en": "Material labels exist, but no public supervised model card is approved yet.",
+            "es": "Existen etiquetas de material, pero aun no se aprueba una model card supervisada para publicacion."
+          }
+        },
+        {
+          "step": "validation",
+          "status": "prototype",
+          "note": {
+            "en": "Perplexity and clustering agreement exist in local-core results, but validation is still nested in a deep benchmark payload.",
+            "es": "La perplejidad y el acuerdo de clustering existen en resultados local-core, pero la validacion sigue anidada en un payload de benchmark profundo."
+          }
+        }
+      ],
+      "validation_status": [
+        {
+          "block_id": "corpus-integrity",
+          "status": "ready",
+          "note": {
+            "en": "The public repo already ships deterministic corpus previews for this slice.",
+            "es": "El repo publico ya publica previews de corpus deterministas para este corte."
+          }
+        },
+        {
+          "block_id": "spectral-library-alignment",
+          "status": "prototype",
+          "note": {
+            "en": "Reference-group alignment exists in the local-core benchmark, but the app still needs a compact explicit summary.",
+            "es": "El alineamiento con grupos de referencia existe en el benchmark local-core, pero la app aun necesita un resumen compacto y explicito."
+          }
+        },
+        {
+          "block_id": "supervision-association",
+          "status": "blocked",
+          "note": {
+            "en": "No public supervised benchmark card is exposed yet for material-label prediction.",
+            "es": "Aun no se expone una tarjeta de benchmark supervisado para prediccion de etiquetas de material."
+          }
+        }
+      ],
+      "artifacts": [
+        {
+          "id": "library-samples",
+          "kind": "api",
+          "title": {
+            "en": "Compact spectral-library samples",
+            "es": "Muestras compactas de libreria espectral"
+          },
+          "path": "/api/spectral-library",
+          "entity_ids": ["usgs-splib07"],
+          "purpose": {
+            "en": "Provide inspectable real spectra and compact material groups.",
+            "es": "Entregar espectros reales inspeccionables y grupos compactos de materiales."
+          }
+        },
+        {
+          "id": "corpus-previews",
+          "kind": "api",
+          "title": {
+            "en": "USGS corpus previews",
+            "es": "Previews de corpus USGS"
+          },
+          "path": "/api/corpus-previews",
+          "entity_ids": [
+            "usgs-splib07__magnitude-phrase",
+            "usgs-splib07__band-frequency"
+          ],
+          "purpose": {
+            "en": "Show how one-spectrum documents become discrete corpora under two tokenization strategies.",
+            "es": "Mostrar como los documentos de un solo espectro se vuelven corpus discretos bajo dos estrategias de tokenizacion."
+          }
+        },
+        {
+          "id": "library-benchmark",
+          "kind": "api",
+          "title": {
+            "en": "Spectral-library benchmark summary",
+            "es": "Resumen de benchmark de libreria espectral"
+          },
+          "path": "/api/local-core-benchmarks",
+          "entity_ids": ["usgs-splib07"],
+          "purpose": {
+            "en": "Expose compact topic-token and clustering diagnostics for the reference slice.",
+            "es": "Exponer diagnosticos compactos de tokens de topicos y clustering para el corte de referencia."
+          }
+        }
+      ],
+      "supported_claims": [
+        {
+          "id": "usgs-one-spectrum-documents",
+          "title": {
+            "en": "One-spectrum documents are reproducible and inspectable.",
+            "es": "Los documentos de un espectro son reproducibles e inspeccionables."
+          },
+          "detail": {
+            "en": "The repo already exposes real reference spectra together with deterministic corpus previews.",
+            "es": "El repo ya expone espectros reales de referencia junto con previews de corpus deterministas."
+          }
+        },
+        {
+          "id": "usgs-topic-token-bridge",
+          "title": {
+            "en": "Compact topic tokens can be compared with known reference groups.",
+            "es": "Los tokens compactos de topicos pueden compararse con grupos de referencia conocidos."
+          },
+          "detail": {
+            "en": "Local-core results already contain topic-token summaries and group-level clustering diagnostics.",
+            "es": "Los resultados local-core ya contienen resumenes de tokens de topicos y diagnosticos de clustering a nivel de grupos."
+          }
+        }
+      ],
+      "blocked_claims": [
+        {
+          "id": "usgs-no-identification-claim",
+          "title": {
+            "en": "Nearest references are not material identifications.",
+            "es": "Las referencias mas cercanas no son identificaciones de material."
+          },
+          "detail": {
+            "en": "This slice supports comparison and vocabulary inspection, not definitive material labeling.",
+            "es": "Este corte apoya comparacion e inspeccion de vocabulario, no etiquetado definitivo de materiales."
+          }
+        },
+        {
+          "id": "usgs-no-public-predictive-claim",
+          "title": {
+            "en": "No public predictive claim is approved yet.",
+            "es": "Aun no se aprueba ninguna afirmacion predictiva publica."
+          },
+          "detail": {
+            "en": "Material labels exist, but supervised model cards are still missing from the public contract.",
+            "es": "Existen etiquetas de material, pero aun faltan model cards supervisadas dentro del contrato publico."
+          }
+        }
+      ],
+      "caveats": [
+        {
+          "en": "This slice is compact on purpose and does not represent the full USGS library.",
+          "es": "Este corte es compacto a proposito y no representa la libreria completa USGS."
+        },
+        {
+          "en": "Family A still lacks a dedicated compact topic-result payload outside the deep local-core benchmark.",
+          "es": "Familia A aun carece de un payload compacto dedicado de resultados de topicos fuera del benchmark profundo local-core."
+        }
+      ],
+      "next_steps": [
+        {
+          "en": "Add a compact Family A topic-card payload extracted from the local-core benchmark.",
+          "es": "Agregar un payload compacto de tarjetas de topicos para Familia A extraido del benchmark local-core."
+        },
+        {
+          "en": "Decide whether one small supervised material-label benchmark deserves public exposure.",
+          "es": "Decidir si un benchmark supervisado pequeno de etiquetas de material merece exposicion publica."
+        }
+      ],
+      "last_validated": "2026-04-30"
+    },
+    {
+      "id": "salinas-labeled-scene-pack",
+      "status": "ready",
+      "family_id": "labeled-spectral-image",
+      "primary_dataset_id": "salinas-a-corrected",
+      "dataset_ids": ["salinas-a-corrected", "salinas-corrected"],
+      "recipe_ids": ["band-magnitude", "region-documents"],
+      "baseline_ids": [
+        "slic-superpixels",
+        "raw-spectra-model",
+        "pca-feature-model",
+        "kmeans-clustering",
+        "topic-mixture-model"
+      ],
+      "title": {
+        "en": "Salinas Labeled Scene Pack",
+        "es": "Paquete de escena etiquetada Salinas"
+      },
+      "summary": {
+        "en": "Compact agricultural HSI evidence, corpus previews, topic summaries, and label-aware benchmarks organized around Salinas-A for footprint and Salinas corrected for validation depth.",
+        "es": "Evidencia agricola HSI compacta, previews de corpus, resumenes de topicos y benchmarks conscientes de etiquetas organizados alrededor de Salinas-A por huella y Salinas corrected por profundidad de validacion."
+      },
+      "public_goal": {
+        "en": "Give the rebuilt app one publishable Family B workflow where evidence, corpus definition, topics, baselines, inference, and validation all have a compact anchor.",
+        "es": "Dar a la app reconstruida un flujo publicable de Familia B donde evidencia, definicion de corpus, topicos, baselines, inferencia y validacion tengan un ancla compacta."
+      },
+      "workflow_steps": [
+        {
+          "step": "evidence",
+          "status": "ready",
+          "note": {
+            "en": "Compact real-scene summaries already exist for both Salinas-A and Salinas corrected.",
+            "es": "Ya existen resumenes compactos de escena real para Salinas-A y Salinas corrected."
+          }
+        },
+        {
+          "step": "corpus",
+          "status": "ready",
+          "note": {
+            "en": "Salinas-A covers a footprint-friendly band-magnitude preview, while Salinas corrected covers region documents.",
+            "es": "Salinas-A cubre un preview band-magnitude de baja huella, mientras Salinas corrected cubre documentos de region."
+          }
+        },
+        {
+          "step": "topics",
+          "status": "ready",
+          "note": {
+            "en": "Compact topic snapshots already ship in the real-scene payload and are suitable for an evidence-first Family B flow.",
+            "es": "Los snapshots compactos de topicos ya se publican en el payload de escenas reales y son adecuados para un flujo de Familia B centrado en evidencia."
+          }
+        },
+        {
+          "step": "baselines",
+          "status": "ready",
+          "note": {
+            "en": "The pack already combines SLIC regioning with labeled-scene baseline metrics from the local-core benchmark.",
+            "es": "El paquete ya combina regionamiento SLIC con metricas de baselines de escena etiquetada desde el benchmark local-core."
+          }
+        },
+        {
+          "step": "inference",
+          "status": "ready",
+          "note": {
+            "en": "Salinas corrected already has compact raw, PCA, and topic-mixture classification results in local-core benchmarks.",
+            "es": "Salinas corrected ya tiene resultados compactos de clasificacion raw, PCA y topic-mixture en benchmarks local-core."
+          }
+        },
+        {
+          "step": "validation",
+          "status": "ready",
+          "note": {
+            "en": "Topic stability and label-aware comparisons already exist for the larger Salinas corrected scene.",
+            "es": "La estabilidad de topicos y las comparaciones conscientes de etiquetas ya existen para la escena mas grande Salinas corrected."
+          }
+        }
+      ],
+      "validation_status": [
+        {
+          "block_id": "corpus-integrity",
+          "status": "ready",
+          "note": {
+            "en": "Both compact corpus previews are already deterministic and public.",
+            "es": "Ambos previews compactos de corpus ya son deterministas y publicos."
+          }
+        },
+        {
+          "block_id": "topic-stability",
+          "status": "ready",
+          "note": {
+            "en": "Salinas corrected already participates in the multi-seed labeled-scene stability benchmark.",
+            "es": "Salinas corrected ya participa en el benchmark multi-seed de estabilidad para escenas etiquetadas."
+          }
+        },
+        {
+          "block_id": "document-definition-sensitivity",
+          "status": "ready",
+          "note": {
+            "en": "The pack already spans band-magnitude pixel-style documents and region-document summaries.",
+            "es": "El paquete ya abarca documentos tipo pixel band-magnitude y resumenes de documentos de region."
+          }
+        },
+        {
+          "block_id": "supervision-association",
+          "status": "ready",
+          "note": {
+            "en": "Label-aware classification baselines already exist in the local-core payload.",
+            "es": "Los baselines de clasificacion conscientes de etiquetas ya existen en el payload local-core."
+          }
+        }
+      ],
+      "artifacts": [
+        {
+          "id": "real-scenes",
+          "kind": "api",
+          "title": {
+            "en": "Compact Salinas real-scene evidence",
+            "es": "Evidencia compacta de escenas reales Salinas"
+          },
+          "path": "/api/real-scenes",
+          "entity_ids": ["salinas-a-corrected", "salinas-corrected"],
+          "purpose": {
+            "en": "Provide real scene previews, class summaries, topic mixtures, and example documents.",
+            "es": "Entregar previews de escenas reales, resumenes por clase, mezclas de topicos y documentos de ejemplo."
+          }
+        },
+        {
+          "id": "corpus-previews",
+          "kind": "api",
+          "title": {
+            "en": "Salinas corpus previews",
+            "es": "Previews de corpus Salinas"
+          },
+          "path": "/api/corpus-previews",
+          "entity_ids": [
+            "salinas-a-corrected__band-magnitude",
+            "salinas-corrected__region-documents"
+          ],
+          "purpose": {
+            "en": "Expose compact corpus definitions for footprint-friendly pixel documents and richer region documents.",
+            "es": "Exponer definiciones compactas de corpus para documentos tipo pixel de baja huella y documentos de region mas ricos."
+          }
+        },
+        {
+          "id": "segmentation-baseline",
+          "kind": "api",
+          "title": {
+            "en": "Salinas-A SLIC baseline",
+            "es": "Baseline SLIC de Salinas-A"
+          },
+          "path": "/api/segmentation-baselines",
+          "entity_ids": ["salinas-a-corrected"],
+          "purpose": {
+            "en": "Show one compact spatial baseline for region creation.",
+            "es": "Mostrar un baseline espacial compacto para creacion de regiones."
+          }
+        },
+        {
+          "id": "labeled-benchmarks",
+          "kind": "api",
+          "title": {
+            "en": "Salinas corrected labeled-scene benchmark",
+            "es": "Benchmark de escena etiquetada Salinas corrected"
+          },
+          "path": "/api/local-core-benchmarks",
+          "entity_ids": ["salinas-corrected"],
+          "purpose": {
+            "en": "Expose label-aware baseline, topic-mixture, clustering, and stability diagnostics.",
+            "es": "Exponer diagnosticos de baselines conscientes de etiquetas, topic-mixture, clustering y estabilidad."
+          }
+        }
+      ],
+      "supported_claims": [
+        {
+          "id": "salinas-evidence-first-flow",
+          "title": {
+            "en": "A labeled HSI workflow can already be shown in an evidence-first order.",
+            "es": "Un flujo HSI etiquetado ya puede mostrarse en un orden centrado en evidencia."
+          },
+          "detail": {
+            "en": "This pack already covers evidence, corpus definition, topics, baselines, inference, and validation with compact assets.",
+            "es": "Este paquete ya cubre evidencia, definicion de corpus, topicos, baselines, inferencia y validacion con activos compactos."
+          }
+        },
+        {
+          "id": "salinas-label-aware-validation",
+          "title": {
+            "en": "Label-aware baselines and topic-mixture benchmarks already exist.",
+            "es": "Ya existen baselines conscientes de etiquetas y benchmarks topic-mixture."
+          },
+          "detail": {
+            "en": "The larger Salinas corrected scene already contributes local-core classification and topic-stability outputs.",
+            "es": "La escena mas grande Salinas corrected ya aporta salidas local-core de clasificacion y estabilidad de topicos."
+          }
+        }
+      ],
+      "blocked_claims": [
+        {
+          "id": "salinas-no-general-transfer",
+          "title": {
+            "en": "This pack does not validate transfer across all labeled HSI domains.",
+            "es": "Este paquete no valida transferencia a traves de todos los dominios HSI etiquetados."
+          },
+          "detail": {
+            "en": "Agricultural Salinas scenes are strong anchors, but they do not cover urban or wetland transfer by themselves.",
+            "es": "Las escenas agricolas de Salinas son anclas fuertes, pero no cubren por si solas la transferencia urbana o de humedales."
+          }
+        },
+        {
+          "id": "salinas-no-topic-equals-class",
+          "title": {
+            "en": "Topic maps are not semantic labels by themselves.",
+            "es": "Los mapas de topicos no son etiquetas semanticas por si mismos."
+          },
+          "detail": {
+            "en": "Labels support comparison and validation, not automatic topic naming.",
+            "es": "Las etiquetas apoyan comparacion y validacion, no el nombrado automatico de topicos."
+          }
+        }
+      ],
+      "caveats": [
+        {
+          "en": "Salinas-A provides compact inspection, while Salinas corrected carries the richer validation burden for this pack.",
+          "es": "Salinas-A entrega inspeccion compacta, mientras Salinas corrected carga la validacion mas rica de este paquete."
+        },
+        {
+          "en": "The current app still needs a dedicated compact validation panel instead of exposing deep local-core payload structure directly.",
+          "es": "La app actual aun necesita un panel compacto de validacion en vez de exponer directamente la estructura profunda del payload local-core."
+        }
+      ],
+      "next_steps": [
+        {
+          "en": "Extract a compact labeled-scene validation payload from the Salinas corrected local-core benchmark.",
+          "es": "Extraer un payload compacto de validacion de escena etiquetada desde el benchmark local-core de Salinas corrected."
+        },
+        {
+          "en": "Wire label overlays, corpus cards, and benchmark cards into the `Context + Workspace` shell.",
+          "es": "Conectar overlays de etiquetas, tarjetas de corpus y tarjetas de benchmarks dentro del shell `Context + Workspace`."
+        }
+      ],
+      "last_validated": "2026-05-01"
+    },
+    {
+      "id": "cuprite-exploratory-mineral-pack",
+      "status": "ready",
+      "family_id": "unlabeled-spectral-image",
+      "primary_dataset_id": "cuprite-upv-reflectance",
+      "dataset_ids": ["cuprite-upv-reflectance"],
+      "recipe_ids": ["band-magnitude", "band-frequency"],
+      "baseline_ids": [
+        "slic-superpixels",
+        "kmeans-clustering",
+        "gmm-clustering",
+        "hierarchical-clustering",
+        "sam-reference",
+        "nmf-unmixing"
+      ],
+      "title": {
+        "en": "Cuprite Exploratory Mineral Pack",
+        "es": "Paquete exploratorio mineral Cuprite"
+      },
+      "summary": {
+        "en": "Compact Cuprite evidence, corpus preview, topic summaries, spatial regioning, and reference-alignment diagnostics for an explicitly exploratory unlabeled workflow.",
+        "es": "Evidencia compacta de Cuprite, preview de corpus, resumenes de topicos, regionamiento espacial y diagnosticos de alineamiento con referencias para un flujo sin etiquetas explicitamente exploratorio."
+      },
+      "public_goal": {
+        "en": "Give the app a serious Family C workflow where topics, clusters, spatial grouping, and reference neighborhoods can be inspected without pretending there is ground truth.",
+        "es": "Dar a la app un flujo serio de Familia C donde topicos, clusters, agrupamiento espacial y vecindarios de referencia puedan inspeccionarse sin fingir que existe ground truth."
+      },
+      "workflow_steps": [
+        {
+          "step": "evidence",
+          "status": "ready",
+          "note": {
+            "en": "Compact Cuprite scene evidence already ships with example documents and topic summaries.",
+            "es": "La evidencia compacta de la escena Cuprite ya se publica con documentos de ejemplo y resumenes de topicos."
+          }
+        },
+        {
+          "step": "corpus",
+          "status": "ready",
+          "note": {
+            "en": "A compact band-magnitude corpus preview already exists for Cuprite.",
+            "es": "Ya existe un preview compacto de corpus band-magnitude para Cuprite."
+          }
+        },
+        {
+          "step": "topics",
+          "status": "ready",
+          "note": {
+            "en": "Compact topic snapshots ship in the real-scene payload and the local-core benchmark adds a deeper unlabeled topic model summary.",
+            "es": "Los snapshots compactos de topicos se publican en el payload de escenas reales y el benchmark local-core agrega un resumen mas profundo del modelo de topicos sin etiquetas."
+          }
+        },
+        {
+          "step": "baselines",
+          "status": "ready",
+          "note": {
+            "en": "SLIC, clustering, reference alignment, and unmixing-oriented diagnostics are all already represented in compact form.",
+            "es": "SLIC, clustering, alineamiento con referencias y diagnosticos orientados a unmixing ya estan representados en forma compacta."
+          }
+        },
+        {
+          "step": "inference",
+          "status": "blocked",
+          "note": {
+            "en": "This workflow is intentionally unlabeled and should not expose a supervised inference surface.",
+            "es": "Este flujo es intencionalmente sin etiquetas y no debe exponer una superficie de inferencia supervisada."
+          }
+        },
+        {
+          "step": "validation",
+          "status": "prototype",
+          "note": {
+            "en": "Reference alignment and exploratory clustering are available, but Cuprite still lacks a compact topic-stability export.",
+            "es": "El alineamiento con referencias y el clustering exploratorio estan disponibles, pero Cuprite aun carece de una exportacion compacta de estabilidad de topicos."
+          }
+        }
+      ],
+      "validation_status": [
+        {
+          "block_id": "corpus-integrity",
+          "status": "ready",
+          "note": {
+            "en": "The public repo already ships a deterministic Cuprite corpus preview.",
+            "es": "El repo publico ya publica un preview determinista de corpus para Cuprite."
+          }
+        },
+        {
+          "block_id": "spectral-library-alignment",
+          "status": "ready",
+          "note": {
+            "en": "Local-core results already include compact reference-alignment diagnostics against USGS-derived centroids.",
+            "es": "Los resultados local-core ya incluyen diagnosticos compactos de alineamiento con referencias contra centroides derivados de USGS."
+          }
+        },
+        {
+          "block_id": "document-definition-sensitivity",
+          "status": "prototype",
+          "note": {
+            "en": "The pack compares pixel-style documents with spatial grouping, but it still lacks a dedicated sensitivity card.",
+            "es": "El paquete compara documentos tipo pixel con agrupamiento espacial, pero aun carece de una tarjeta dedicada de sensibilidad."
+          }
+        },
+        {
+          "block_id": "topic-stability",
+          "status": "blocked",
+          "note": {
+            "en": "No compact multi-seed Cuprite topic-stability payload is exported yet.",
+            "es": "Aun no se exporta un payload compacto de estabilidad multi-seed para Cuprite."
+          }
+        }
+      ],
+      "artifacts": [
+        {
+          "id": "real-scene",
+          "kind": "api",
+          "title": {
+            "en": "Compact Cuprite scene evidence",
+            "es": "Evidencia compacta de escena Cuprite"
+          },
+          "path": "/api/real-scenes",
+          "entity_ids": ["cuprite-aviris-reflectance"],
+          "purpose": {
+            "en": "Provide the compact scene preview, topic snapshots, and example documents.",
+            "es": "Entregar el preview compacto de escena, snapshots de topicos y documentos de ejemplo."
+          }
+        },
+        {
+          "id": "corpus-preview",
+          "kind": "api",
+          "title": {
+            "en": "Cuprite corpus preview",
+            "es": "Preview de corpus Cuprite"
+          },
+          "path": "/api/corpus-previews",
+          "entity_ids": ["cuprite-upv-reflectance__band-magnitude"],
+          "purpose": {
+            "en": "Show a compact, inspectable tokenization path for the unlabeled scene.",
+            "es": "Mostrar una ruta de tokenizacion compacta e inspeccionable para la escena sin etiquetas."
+          }
+        },
+        {
+          "id": "segmentation-baseline",
+          "kind": "api",
+          "title": {
+            "en": "Cuprite SLIC baseline",
+            "es": "Baseline SLIC de Cuprite"
+          },
+          "path": "/api/segmentation-baselines",
+          "entity_ids": ["cuprite-aviris-reflectance"],
+          "purpose": {
+            "en": "Expose a compact spatial grouping baseline for exploratory region creation.",
+            "es": "Exponer un baseline compacto de agrupamiento espacial para creacion exploratoria de regiones."
+          }
+        },
+        {
+          "id": "unlabeled-benchmark",
+          "kind": "api",
+          "title": {
+            "en": "Cuprite unlabeled-scene benchmark",
+            "es": "Benchmark de escena sin etiquetas Cuprite"
+          },
+          "path": "/api/local-core-benchmarks",
+          "entity_ids": ["cuprite-upv-reflectance"],
+          "purpose": {
+            "en": "Expose topic, clustering, and reference-alignment diagnostics for the exploratory mineral workflow.",
+            "es": "Exponer diagnosticos de topicos, clustering y alineamiento con referencias para el flujo exploratorio mineral."
+          }
+        }
+      ],
+      "supported_claims": [
+        {
+          "id": "cuprite-exploratory-regimes",
+          "title": {
+            "en": "Unlabeled spectral regimes can be inspected without pretending there is ground truth.",
+            "es": "Los regimenes espectrales sin etiquetas pueden inspeccionarse sin fingir que existe ground truth."
+          },
+          "detail": {
+            "en": "The pack already combines evidence, topics, clustering, and reference neighborhoods under explicit caveats.",
+            "es": "El paquete ya combina evidencia, topicos, clustering y vecindarios de referencia bajo advertencias explicitas."
+          }
+        },
+        {
+          "id": "cuprite-reference-comparison",
+          "title": {
+            "en": "Reference alignment can support exploratory interpretation.",
+            "es": "El alineamiento con referencias puede apoyar interpretacion exploratoria."
+          },
+          "detail": {
+            "en": "Local-core diagnostics already compare compact Cuprite outputs against USGS-derived reference groups.",
+            "es": "Los diagnosticos local-core ya comparan salidas compactas de Cuprite contra grupos de referencia derivados de USGS."
+          }
+        }
+      ],
+      "blocked_claims": [
+        {
+          "id": "cuprite-no-mineral-identification",
+          "title": {
+            "en": "No mineral or clay identification claim is acceptable yet.",
+            "es": "Aun no es aceptable ninguna afirmacion de identificacion mineral o de arcillas."
+          },
+          "detail": {
+            "en": "Compact topics and nearest references are evidence only, not final semantic labels.",
+            "es": "Los topicos compactos y las referencias mas cercanas son solo evidencia, no etiquetas semanticas finales."
+          }
+        },
+        {
+          "id": "cuprite-no-supervised-metrics",
+          "title": {
+            "en": "No supervised inference surface should be exposed.",
+            "es": "No debe exponerse ninguna superficie de inferencia supervisada."
+          },
+          "detail": {
+            "en": "This dataset is intentionally tracked as unlabeled in the app contract.",
+            "es": "Este dataset se rastrea intencionalmente como no etiquetado dentro del contrato de la app."
+          }
+        }
+      ],
+      "caveats": [
+        {
+          "en": "The public corpus preview uses band-magnitude words, while the deeper unlabeled benchmark currently uses a band-frequency representation.",
+          "es": "El preview publico de corpus usa palabras band-magnitude, mientras el benchmark sin etiquetas mas profundo usa actualmente una representacion band-frequency."
+        },
+        {
+          "en": "Approximate wavelength axes are not enough for absorption-based mineral claims.",
+          "es": "Los ejes aproximados de longitud de onda no bastan para afirmaciones minerales basadas en absorciones."
+        }
+      ],
+      "next_steps": [
+        {
+          "en": "Export a compact Cuprite topic-stability payload for the validation panel.",
+          "es": "Exportar un payload compacto de estabilidad de topicos para Cuprite dentro del panel de validacion."
+        },
+        {
+          "en": "Add a compact absorption-feature summary only after calibrated wavelength handling is explicit.",
+          "es": "Agregar un resumen compacto de rasgos de absorcion solo despues de explicitar el manejo de longitudes de onda calibradas."
+        }
+      ],
+      "last_validated": "2026-05-01"
+    },
+    {
+      "id": "hidsag-family-d-validation-window",
+      "status": "prototype",
+      "family_id": "regions-with-measurements",
+      "primary_dataset_id": "hidsag-geometallurgy",
+      "dataset_ids": ["hidsag-geometallurgy"],
+      "recipe_ids": ["region-documents", "hierarchical-documents", "absorption-shape"],
+      "baseline_ids": [
+        "raw-spectra-model",
+        "pca-feature-model",
+        "topic-mixture-model",
+        "topic-routed-model"
+      ],
+      "title": {
+        "en": "HIDSAG Family D Validation Window",
+        "es": "Ventana de validacion HIDSAG Familia D"
+      },
+      "summary": {
+        "en": "A prototype public window over five downloaded HIDSAG subsets, compact curated spectra, region-document summaries, measured-target benchmarks, and preprocessing diagnostics.",
+        "es": "Una ventana publica prototipo sobre cinco subconjuntos HIDSAG descargados, espectros compactos curados, resumenes de documentos de region, benchmarks de objetivos medidos y diagnosticos de preprocesamiento."
+      },
+      "public_goal": {
+        "en": "Define the first serious measured-target workflow for the rebuilt app without exposing raw archives or unsupported mineral and geochemical claims.",
+        "es": "Definir el primer flujo serio con objetivos medidos para la app reconstruida sin exponer archivos crudos ni afirmaciones minerales o geoquimicas no soportadas."
+      },
+      "workflow_steps": [
+        {
+          "step": "evidence",
+          "status": "prototype",
+          "note": {
+            "en": "Compact curated spectra and subset inventory already exist, but they are still benchmark-oriented rather than public card-oriented.",
+            "es": "Los espectros compactos curados y el inventario de subconjuntos ya existen, pero aun estan orientados a benchmarks y no a tarjetas publicas."
+          }
+        },
+        {
+          "step": "corpus",
+          "status": "prototype",
+          "note": {
+            "en": "Region-document summaries exist, but the app still lacks a compact Family D corpus preview contract.",
+            "es": "Existen resumenes de documentos de region, pero la app aun carece de un contrato compacto de preview de corpus para Familia D."
+          }
+        },
+        {
+          "step": "topics",
+          "status": "prototype",
+          "note": {
+            "en": "Measured-target runs already contain topic models, but the public app still needs compact topic cards per subset.",
+            "es": "Las corridas con objetivos medidos ya contienen modelos de topicos, pero la app publica aun necesita tarjetas compactas de topicos por subconjunto."
+          }
+        },
+        {
+          "step": "baselines",
+          "status": "prototype",
+          "note": {
+            "en": "Raw, PCA, topic-mixture, and topic-routed comparisons already exist in local-core benchmarks.",
+            "es": "Las comparaciones raw, PCA, topic-mixture y topic-routed ya existen en los benchmarks local-core."
+          }
+        },
+        {
+          "step": "inference",
+          "status": "prototype",
+          "note": {
+            "en": "Measured-target classification and regression metrics exist, but no compact public target cards or model cards have been approved yet.",
+            "es": "Existen metricas de clasificacion y regresion con objetivos medidos, pero aun no se aprueban tarjetas publicas compactas de targets ni model cards."
+          }
+        },
+        {
+          "step": "validation",
+          "status": "prototype",
+          "note": {
+            "en": "Band-quality and preprocessing-sensitivity outputs exist, but source-aware bad-band masks and stronger split cards are still pending.",
+            "es": "Existen salidas de calidad de bandas y sensibilidad al preprocesamiento, pero aun faltan mascaras de bandas malas conscientes de la fuente y tarjetas mas fuertes de splits."
+          }
+        }
+      ],
+      "validation_status": [
+        {
+          "block_id": "corpus-integrity",
+          "status": "prototype",
+          "note": {
+            "en": "Region-document artifacts are versioned, but not yet distilled into a compact public corpus card.",
+            "es": "Los artefactos de documentos de region estan versionados, pero aun no se destilan en una tarjeta publica compacta de corpus."
+          }
+        },
+        {
+          "block_id": "document-definition-sensitivity",
+          "status": "prototype",
+          "note": {
+            "en": "Sample, cube, and fixed-grid region documents already coexist in the local-core benchmark.",
+            "es": "Los documentos de muestra, cubo y region fija ya coexisten en el benchmark local-core."
+          }
+        },
+        {
+          "block_id": "supervision-association",
+          "status": "prototype",
+          "note": {
+            "en": "Measured-target metrics exist across five subsets, but public target cards are still missing.",
+            "es": "Existen metricas con objetivos medidos a traves de cinco subconjuntos, pero aun faltan tarjetas publicas de targets."
+          }
+        },
+        {
+          "block_id": "quantization-sensitivity",
+          "status": "blocked",
+          "note": {
+            "en": "No compact Family D quantization-sensitivity export is versioned yet.",
+            "es": "Aun no se versiona una exportacion compacta de sensibilidad a la cuantizacion para Familia D."
+          }
+        }
+      ],
+      "artifacts": [
+        {
+          "id": "subset-inventory",
+          "kind": "api",
+          "title": {
+            "en": "HIDSAG subset inventory",
+            "es": "Inventario de subconjuntos HIDSAG"
+          },
+          "path": "/api/hidsag-subset-inventory",
+          "entity_ids": ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"],
+          "purpose": {
+            "en": "Expose provenance, sample counts, and subset-level structure.",
+            "es": "Exponer procedencia, conteos de muestras y estructura a nivel de subconjunto."
+          }
+        },
+        {
+          "id": "curated-subset",
+          "kind": "api",
+          "title": {
+            "en": "HIDSAG curated subset",
+            "es": "Subconjunto curado HIDSAG"
+          },
+          "path": "/api/hidsag-curated-subset",
+          "entity_ids": ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"],
+          "purpose": {
+            "en": "Expose compact per-cube spectra and wavelength metadata without publishing raw ZIP archives.",
+            "es": "Exponer espectros compactos por cubo y metadata de longitudes de onda sin publicar archivos ZIP crudos."
+          }
+        },
+        {
+          "id": "region-documents",
+          "kind": "api",
+          "title": {
+            "en": "HIDSAG region-document summary",
+            "es": "Resumen de documentos de region HIDSAG"
+          },
+          "path": "/api/hidsag-region-documents",
+          "entity_ids": ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"],
+          "purpose": {
+            "en": "Expose fixed-grid region-document structure for hierarchical validation.",
+            "es": "Exponer la estructura de documentos de region en grilla fija para validacion jerarquica."
+          }
+        },
+        {
+          "id": "measured-target-benchmarks",
+          "kind": "api",
+          "title": {
+            "en": "Measured-target benchmark summary",
+            "es": "Resumen de benchmark con objetivos medidos"
+          },
+          "path": "/api/local-core-benchmarks",
+          "entity_ids": ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"],
+          "purpose": {
+            "en": "Expose sample, cube, and region-level benchmark comparisons for Family D.",
+            "es": "Exponer comparaciones de benchmark a nivel de muestra, cubo y region para Familia D."
+          }
+        },
+        {
+          "id": "band-quality",
+          "kind": "api",
+          "title": {
+            "en": "HIDSAG band-quality summary",
+            "es": "Resumen de calidad de bandas HIDSAG"
+          },
+          "path": "/api/hidsag-band-quality",
+          "entity_ids": ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"],
+          "purpose": {
+            "en": "Expose current heuristic bad-band evidence before source-aware masks replace it.",
+            "es": "Exponer la evidencia heuristica actual de bandas malas antes de que la reemplacen mascaras conscientes de la fuente."
+          }
+        },
+        {
+          "id": "preprocessing-sensitivity",
+          "kind": "api",
+          "title": {
+            "en": "HIDSAG preprocessing sensitivity",
+            "es": "Sensibilidad al preprocesamiento HIDSAG"
+          },
+          "path": "/api/hidsag-preprocessing-sensitivity",
+          "entity_ids": ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"],
+          "purpose": {
+            "en": "Expose how preprocessing policy changes downstream Family D results.",
+            "es": "Exponer como la politica de preprocesamiento cambia los resultados descendentes de Familia D."
+          }
+        }
+      ],
+      "supported_claims": [
+        {
+          "id": "hidsag-local-family-d-exists",
+          "title": {
+            "en": "A real Family D validation core already exists locally.",
+            "es": "Ya existe localmente un core real de validacion para Familia D."
+          },
+          "detail": {
+            "en": "Five HIDSAG subsets already support sample, cube, and region-level measured-target benchmarks.",
+            "es": "Cinco subconjuntos HIDSAG ya soportan benchmarks con objetivos medidos a nivel de muestra, cubo y region."
+          }
+        },
+        {
+          "id": "hidsag-split-and-preprocessing-matter",
+          "title": {
+            "en": "Split policy and preprocessing materially change Family D conclusions.",
+            "es": "La politica de splits y el preprocesamiento cambian materialmente las conclusiones de Familia D."
+          },
+          "detail": {
+            "en": "The current benchmark already shows that optimistic readings collapse under stronger splits and different preprocessing choices.",
+            "es": "El benchmark actual ya muestra que lecturas optimistas colapsan bajo splits mas fuertes y distintas decisiones de preprocesamiento."
+          }
+        }
+      ],
+      "blocked_claims": [
+        {
+          "id": "hidsag-no-production-claim",
+          "title": {
+            "en": "No production mineral or geochemical claim is acceptable yet.",
+            "es": "Aun no es aceptable ninguna afirmacion productiva mineral o geoquimica."
+          },
+          "detail": {
+            "en": "The current outputs are research benchmarks, not public prediction products.",
+            "es": "Las salidas actuales son benchmarks de investigacion, no productos publicos de prediccion."
+          }
+        },
+        {
+          "id": "hidsag-no-public-model-artifact",
+          "title": {
+            "en": "No public model artifact should ship without subset-specific model cards.",
+            "es": "No debe publicarse ningun artefacto de modelo sin model cards especificas por subconjunto."
+          },
+          "detail": {
+            "en": "Measured-target metrics exist, but target cards, failure notes, and source-aware preprocessing contracts are still missing.",
+            "es": "Existen metricas con objetivos medidos, pero aun faltan tarjetas de targets, notas de falla y contratos de preprocesamiento conscientes de la fuente."
+          }
+        }
+      ],
+      "caveats": [
+        {
+          "en": "Current HIDSAG outputs are still too dense and benchmark-oriented for direct GUI exposure.",
+          "es": "Las salidas actuales de HIDSAG aun son demasiado densas y orientadas a benchmarks para exponerlas directamente en la GUI."
+        },
+        {
+          "en": "Heuristic bad-band handling is versioned only as a temporary gate before source-aware masks exist.",
+          "es": "El manejo heuristico de bandas malas se versiona solo como puerta temporal antes de que existan mascaras conscientes de la fuente."
+        }
+      ],
+      "next_steps": [
+        {
+          "en": "Extract compact subset cards with one or two publishable targets each.",
+          "es": "Extraer tarjetas compactas por subconjunto con uno o dos targets publicables cada una."
+        },
+        {
+          "en": "Replace heuristic bad-band handling with source-aware masks and record the change in validation cards.",
+          "es": "Reemplazar el manejo heuristico de bandas malas por mascaras conscientes de la fuente y registrar el cambio en tarjetas de validacion."
+        },
+        {
+          "en": "Export compact topic cards and residual summaries for the rebuilt Family D GUI.",
+          "es": "Exportar tarjetas compactas de topicos y resumenes de residuales para la GUI reconstruida de Familia D."
+        }
+      ],
+      "last_validated": "2026-05-01"
+    }
+  ]
+}

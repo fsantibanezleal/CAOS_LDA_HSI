@@ -198,6 +198,72 @@ class CorpusRecipesPayload(BaseModel):
     validation_blocks: list[ValidationBlock]
 
 
+class InteractiveSubsetWorkflowStep(BaseModel):
+    """Readiness of one workflow step for a compact public subset."""
+
+    step: str
+    status: str
+    note: LocalizedText
+
+
+class InteractiveSubsetValidationStatus(BaseModel):
+    """Readiness of one validation block for a compact public subset."""
+
+    block_id: str
+    status: str
+    note: LocalizedText
+
+
+class InteractiveSubsetArtifact(BaseModel):
+    """Concrete compact artifact that supports one public subset."""
+
+    id: str
+    kind: str
+    title: LocalizedText
+    path: str
+    entity_ids: list[str]
+    purpose: LocalizedText
+
+
+class InteractiveSubsetClaim(BaseModel):
+    """Supported or blocked public claim for one subset."""
+
+    id: str
+    title: LocalizedText
+    detail: LocalizedText
+
+
+class InteractiveSubset(BaseModel):
+    """Curated compact public subset descriptor for the rebuilt workflow."""
+
+    id: str
+    status: str
+    family_id: str
+    primary_dataset_id: str
+    dataset_ids: list[str]
+    recipe_ids: list[str]
+    baseline_ids: list[str]
+    title: LocalizedText
+    summary: LocalizedText
+    public_goal: LocalizedText
+    workflow_steps: list[InteractiveSubsetWorkflowStep]
+    validation_status: list[InteractiveSubsetValidationStatus]
+    artifacts: list[InteractiveSubsetArtifact]
+    supported_claims: list[InteractiveSubsetClaim]
+    blocked_claims: list[InteractiveSubsetClaim]
+    caveats: list[LocalizedText]
+    next_steps: list[LocalizedText]
+    last_validated: str
+
+
+class InteractiveSubsetsPayload(BaseModel):
+    """Compact public subset registry used by the rebuilt web workflow."""
+
+    source: str
+    generated_at: str
+    subsets: list[InteractiveSubset]
+
+
 class CorpusDefinition(BaseModel):
     """Concrete PTM/LDA mapping for one generated corpus preview."""
 
