@@ -1,128 +1,153 @@
 # Architecture
 
-CAOS LDA HSI is a local-first research stack. The primary product is not
-the deployed SPA; it is the reproducible backend, data pipeline, local
-experiments, and dense methodology that validate PTM/LDA-style spectral
-workflows over real datasets. The web app is a secondary interactive
-projection of compact, versioned subsets of those validated outputs.
+This document is the **repo-local map** of CAOS_LDA_HSI. It is shorter
+and more operational than the public wiki page
+[Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads),
+which remains the canonical extended description.
 
-## Repository Roles
+## Local-first principle
 
-- `research_core/`: local validation core for inventory building, raw
-  scene loading, experiment wiring, and reusable offline utilities
-- `data-pipeline/`: deterministic acquisition, derivation, corpus,
-  segmentation, and benchmark scripts
-- `data/raw/`: ignored local raw downloads and extracted third-party
-  files used for validation
-- `data/manifests/`: curated methodological, dataset, and workflow
-  metadata
-- `data/derived/core/`: local-first validation outputs such as dataset
-  inventory and offline benchmarks, including topic stability,
-  reference-alignment, and NMF/unmixing comparisons
-- `data/derived/corpus/`: deterministic corpus previews that expose
-  alphabet, word, document, vocabulary, and caveats
-- `data/derived/baselines/`: deterministic segmentation and comparison
-  payloads generated from local raw scenes
-- `data/derived/real/`, `field/`, `spectral/`, `analysis/`: compact
-  publishable assets or intermediate evidence for the web projection
-- `app/`: FastAPI API that serves manifests, derived assets, and the
-  built SPA in production
-- `frontend/`: React + Vite client for the interactive presentation
-  layer
-- `deploy/`: VPS deployment templates for the compact public app
+The product is not the FastAPI server alone. The product is the local
+research stack made of three layers, in order of scientific importance:
 
-## Primary Workflow
+1. **Data pipeline** (`data-pipeline/`, `research_core/`) — acquires
+   raw third-party data, derives compact reproducible JSON, runs LDA
+   and baseline benchmarks.
+2. **Backend** (`app/`) — FastAPI service that loads the compact
+   derived JSON, validates it against typed Pydantic schemas, and
+   serves the public API and the SPA shell.
+3. **Frontend** (`frontend/`) — React + Vite single-page application,
+   bilingual (EN / ES), light / dark theme, that consumes the API and
+   renders the public Workspace.
 
-1. Acquire and organize raw datasets locally.
-2. Preprocess spectra, labels, measurements, and wavelength metadata.
-3. Build document/corpus representations.
-4. Run SLIC, clustering, PTM/LDA, and supervised baselines offline.
-5. Validate stability, sensitivity, alignment, and predictive value.
-6. Export only compact, versioned subsets for the public web app.
+Heavy computation always lives in layer 1. The backend is read-only at
+runtime. The frontend never reads the deep benchmarks file directly;
+it goes through the typed payloads.
 
-This ordering is mandatory. No web-facing screen should invent structure
-that is not already justified by the local validation core.
+## Top-level tree
 
-## API Surface
+```
+CAOS_LDA_HSI/
+├── app/                FastAPI backend
+│   ├── main.py         ASGI entrypoint
+│   ├── config.py       Pydantic Settings + payload paths
+│   ├── models/
+│   │   └── schemas.py  Typed payload models (single source of truth)
+│   ├── routers/
+│   │   └── content.py  /api/* endpoint declarations
+│   └── services/
+│       └── content.py  LRU-cached payload loaders
+├── frontend/           React + Vite SPA
+├── research_core/      Reusable Python utilities (paths, raw scenes, spectral, unmixing, inventory)
+├── data/
+│   ├── manifests/      Static cards (datasets, families, recipes, interactive_subsets, ...)
+│   ├── derived/        Compact reproducible JSON + previews
+│   ├── raw/            Ignored — third-party scenes locally
+│   └── samples/        Example pointers
+├── data-pipeline/      Acquisition + derivation scripts (one Python file per step)
+├── docs/               Repo-local technical documentation (this file)
+├── deploy/             systemd + nginx + certbot templates
+├── scripts/            local.ps1 / local.sh / smoke runners
+└── legacy/             Source paper + proof-of-concept notebook (frozen reference)
+```
 
-The API currently exposes both the legacy compact app payloads and the
-new local-core reset payloads.
+## Two virtual environments
 
-- `GET /health`
-- `GET /healthz`
-- `GET /api/overview`
-- `GET /api/datasets`
-- `GET /api/data-families`
-- `GET /api/corpus-recipes`
-- `GET /api/interactive-subsets`
-- `GET /api/corpus-previews`
-- `GET /api/segmentation-baselines`
-- `GET /api/local-validation-matrix`
-- `GET /api/local-dataset-inventory`
-- `GET /api/local-core-benchmarks`
-- `GET /api/methodology`
-- `GET /api/real-scenes`
-- `GET /api/field-samples`
-- `GET /api/spectral-library`
-- `GET /api/analysis`
-- `GET /api/demo`
-- `GET /api/app-data`
+The repo deliberately ships two Python venvs — one for runtime
+(`.venv`, light) and one for the data pipeline (`.venv-pipeline`,
+heavy). The split keeps the production deploy small while the local
+pipeline can pull in scientific stacks (numpy, scipy, scikit-learn,
+scikit-image, h5py, tifffile) without bloating the deploy image.
 
-The first seven reset endpoints are the ones that now define the intended
-product flow. `interactive-subsets` adds the public gating layer that says
-which compact slices are actually ready, prototype-only, or blocked for
-the rebuilt app. The older `app-data` aggregate remains as a
-compatibility surface for the current technical checkpoint and for the
-first local shell rebuild now under active development on the work
-branch.
+The full contract is in
+[`_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md).
 
-## Derived Asset Policy
+## API endpoints
 
-FastAPI mounts `data/derived/` under `/generated/`.
+The complete endpoint table lives on the wiki page
+[Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads).
+A repo-local quick reference:
 
-Representative outputs:
+```
+GET /api/app-data                                aggregated payload
+GET /api/overview                                project overview
+GET /api/datasets                                dataset catalogue
+GET /api/data-families                           four-family taxonomy
+GET /api/corpus-recipes                          registered recipes
+GET /api/corpus-previews                         per-(dataset, recipe) previews
+GET /api/segmentation-baselines                  SLIC outputs
+GET /api/real-scenes                             Family B / C scene evidence
+GET /api/field-samples                           MicaSense field MSI evidence
+GET /api/spectral-library                        Family A USGS / ECOSTRESS samples
+GET /api/analysis                                PCA / KMeans diagnostics
+GET /api/local-validation-matrix                 validation block coverage
+GET /api/local-dataset-inventory                 unified inventory
+GET /api/local-core-benchmarks                   deep benchmarks (frontend should NOT depend on this)
+GET /api/interactive-subsets                     subset registry
+GET /api/subset-cards                            compact public subset card index   (NEW)
+GET /api/subset-cards/{subset_id}                compact public subset card          (NEW)
+GET /api/hidsag-subset-inventory                 HIDSAG ZIP-level metadata
+GET /api/hidsag-curated-subset                   HIDSAG curated cubes
+GET /api/hidsag-region-documents                 HIDSAG patch documents
+GET /api/hidsag-band-quality                     HIDSAG bad-band heuristic
+GET /api/hidsag-preprocessing-sensitivity        HIDSAG preprocessing benchmark
+GET /api/methodology                             methodology metadata
+GET /api/demo                                    synthetic deterministic LDA demo
+GET /healthz                                     smoke check
+GET /generated/...                               static PNG / JSON delivery
+```
 
-- `/generated/core/local_dataset_inventory.json`
-- `/generated/core/local_core_benchmarks.json`
-- `/generated/corpus/corpus_previews.json`
-- `/generated/baselines/segmentation_baselines.json`
-- `/generated/real/real_samples.json`
-- `/generated/spectral/library_samples.json`
+## Subset cards (the decoupling layer)
 
-Important distinction:
+`/api/subset-cards/{id}` and the index at `/api/subset-cards` are the
+**decoupling boundary** between the deep benchmark file and the public
+frontend. The extractor `data-pipeline/build_subset_cards.py` reads:
 
-- local validation outputs may be large enough to justify raw-local
-  regeneration and should not be constrained by web deployment concerns
-- public app assets must stay compact, versioned, attributable, and
-  explainable
-- preview images may exist as auxiliary context, but the accepted app
-  direction requires interactive spectral curves, band-selectable scenes,
-  and overlay switching rather than screenshot-style evidence
+- `data/manifests/interactive_subsets.json`
+- `data/manifests/datasets.json`, `corpus_recipes.json`
+- `data/derived/corpus/corpus_previews.json`
+- `data/derived/real/real_samples.json`
+- `data/derived/field/field_samples.json`
+- `data/derived/spectral/library_samples.json`
+- `data/derived/core/local_core_benchmarks.json`
 
-## Frontend Direction
+…and writes one compact JSON per subset to `data/derived/subsets/`.
+Each card bundles per-dataset evidence, per-recipe corpus preview,
+top topics, validation block status with selected metrics, and the
+artifact pointers the frontend should follow. The frontend therefore
+never has to parse the deep benchmark file to render a Workspace
+view.
 
-The current branch frontend is moving away from the earlier scene-first
-workbench and into a family-gated scientific shell:
+## Static asset serving
 
-1. family selection
-2. interactive subset selection
-3. workflow-step routing
-4. evidence, corpus, topics, baselines, inference, and validation as
-   separate surfaces
-5. explicit claim and caveat inspection in the right panel
+`main.py` mounts:
 
-This shell still needs smaller family-specific summary payloads and
-deeper evidence controls, but the structural reset is already in place
-locally.
+- `/assets/...`     → `frontend/dist/assets/` (Vite-hashed bundles)
+- `/generated/...`  → `data/` (preview PNGs and selected JSONs)
+- `/{path:path}`    → `frontend/dist/index.html` (SPA fallback)
 
-## Why JSON Plus Local Raw
+Cache-control on `index.html` is `no-store`; the rest is hashed.
 
-The repo needs three layers, not one:
+## Where the science lives
 
-1. editorial and methodological manifests
-2. local raw data plus offline experiment code
-3. compact exported assets for the app
+| Concern | Layer | Path |
+|---|---|---|
+| Acquisition | data-pipeline | `data-pipeline/fetch_*` |
+| Derivation | data-pipeline | `data-pipeline/build_*` |
+| Benchmarks | data-pipeline + research_core | `data-pipeline/run_*` + `research_core/*.py` |
+| Subset cards | data-pipeline | `data-pipeline/build_subset_cards.py` |
+| Schemas | backend | `app/models/schemas.py` |
+| Loaders | backend | `app/services/content.py` |
+| Routes | backend | `app/routers/content.py` |
+| Visual primitives | frontend | `frontend/src/components/` |
+| Routes / pages | frontend | `frontend/src/routes/` (target) |
+| State | frontend | `frontend/src/store/useStore.ts` |
+| Translation | frontend | `frontend/src/i18n/` |
+| Theme | frontend | `frontend/src/styles/theme.css` |
 
-The current reset work makes layer 2 explicit through `research_core/`
-and `data/derived/core/`. That is the architectural correction the repo
-needed.
+## Deployment topology
+
+The single FastAPI process serves the API and the built SPA. Behind
+nginx + certbot on `lda-hsi.fasl-work.com`, port `127.0.0.1:8105`.
+Detailed deployment procedure is intentionally **not** in this public
+repo; it lives in the management repo `_CAOS_MANAGE`.

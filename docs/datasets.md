@@ -1,223 +1,113 @@
-# Dataset Scope And Expansion
+# Datasets — repo-local snapshot
 
-This document records how data should be handled after the reset.
+This is the **repo-local short reference** of the project's dataset
+layer. The canonical extended description lives on the wiki page
+[Dataset Families and Sources](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Dataset-Families-and-Sources)
+and the HIDSAG-specific page
+[HIDSAG Family D Workflows](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/HIDSAG-Family-D-Workflows).
 
-The repo is local-first. Real spectral datasets should be downloaded and
-organized locally whenever licensing and access permit it. Git and the
-public app are not the place for full raw archives. They are the place
-for manifests, acquisition logic, validation code, and compact exported
-subsets.
+## The four families
 
-## Data Policy
+| Family | Definition | Supervision | Valid recipes | Public claims allowed |
+|---|---|---|---|---|
+| **A** | individual labelled or measured spectra | material label / sample ID / response variable | V1, V2, V3, V4, V5 | material similarity, library alignment, supervised tasks if targets exist |
+| **B** | spectral images with pixel labels | per-pixel / per-region labels | V1, V3, V4, V6, V7 | classification baselines, topic-vs-cluster comparison |
+| **C** | spectral images without labels | none | V1, V3, V4, V7 | exploratory regimes only — explicit caveat layer |
+| **D** | regions / samples with measured response variables | per-sample / per-region targets | V1, V3, V4, V7, V8 | hierarchical topic-routed regression and classification |
 
-Three different constraints must not be confused:
+Every dataset registered in `data/manifests/datasets.json` carries a
+family tag through its `supervision.family_id` field. The frontend
+filters by family before showing dataset cards.
 
-1. `Local validation`
-   Raw files may be large if they are useful and reproducible.
-2. `Git repository`
-   Full archives should not be committed blindly.
-3. `Public app`
-   Only compact, versioned, inspectable subsets belong there.
+## Active local datasets
 
-The older per-file 100 MB heuristic is no longer the controlling design
-rule for research work. It can still influence what gets committed or
-shipped publicly, but it must not block local scientific validation.
+Snapshot from `data/derived/core/local_dataset_inventory.json`
+(2026-05-02): 21 catalogued datasets, 10 with local raw evidence,
+~31.6 GB local raw footprint.
 
-## Current Local Inventory
+### Family A
 
-The current local-core inventory is generated into:
+- **USGS Spectral Library v7** — AVIRIS (224 bands) and Sentinel-2
+  convolutions of the official USGS material reference library.
+  Compact JSON in `data/derived/spectral/library_samples.json` (26
+  samples). Pipeline: `fetch_public_spectral_libraries.py` →
+  `build_spectral_library_samples.py`.
+- **ECOSTRESS** — public catalogue metadata reproduced through
+  `fetch_ecostress_metadata.py`. Bulk download is currently login-gated
+  and is the dominant blocker for a full Family A reproduction.
 
-- `data/derived/core/local_dataset_inventory.json`
+### Family B
 
-Current first-pass summary:
+- **Indian Pines (corrected)**, **Salinas**, **Salinas-A**,
+  **Pavia University**, **Kennedy Space Center**, **Botswana** —
+  classic UPV/EHU GIC research-public scenes. Pipeline:
+  `fetch_public_hsi.py` → `build_real_samples.py`.
 
-- cataloged datasets: 21
-- datasets with local raw evidence: 10
-- local raw footprint currently indexed: about 31.595 GB
-- current source groups with local evidence:
-  - UPV/EHU scenes
-  - Borsoi unmixing ROIs
-  - MicaSense samples
-  - USGS Spectral Library compact archives
-  - HIDSAG `GEOMET`, `MINERAL1`, `MINERAL2`, `GEOCHEM`, and `PORPHYRY`
+### Family C
 
-This file is now the authoritative high-level inventory of what is truly
-available for local validation.
+- **Cuprite AVIRIS reflectance** — UPV/EHU slice (224 bands).
+- **Borsoi Samson / Jasper Ridge / Urban** — public unmixing ROIs
+  (`ricardoborsoi/MUA_GIST_release`).
+- **MicaSense RedEdge field samples** — official MicaSense public MSI
+  examples (5 bands).
 
-## Current Local Validation Assets
+### Family D
 
-### Labeled Spectral Images
+- **HIDSAG** — Santibáñez-Leal et al., *Scientific Data* 2023, CC-BY
+  4.0. Subsets used locally: `GEOMET`, `MINERAL1`, `MINERAL2`,
+  `GEOCHEM`, `PORPHYRY`. Modalities: `SWIR_low`, `VNIR_low`,
+  `VNIR_high`. Pipeline:
+  `fetch_hidsag.py` → `inspect_hidsag_zip.py` →
+  `build_hidsag_curated_subset.py` → `build_hidsag_band_quality.py` →
+  `build_hidsag_region_documents.py` →
+  `run_hidsag_preprocessing_sensitivity.py`.
 
-Already available locally with raw evidence and ready for offline
-validation:
+## Acquisition discipline
 
-| Dataset | Theme | Bands | Current role |
-|---|---|---:|---|
-| Indian Pines corrected | agriculture, vegetation | 200 | labeled benchmark for pixel/class experiments |
-| Salinas corrected | agriculture, vegetation, soil, vineyards | 204 | richer agricultural validation scene |
-| Salinas-A corrected | agriculture, vegetation | 204 | tiny reproducible benchmark |
-| Pavia University | urban materials | 103 | urban labeled comparison |
-| Kennedy Space Center | wetlands, vegetation, water | 176 | wetland label-alignment benchmark |
-| Botswana | wetlands, vegetation, soil | 145 | wetland/soil benchmark |
+Every dataset card in the public app records:
 
-### Unlabeled Spectral Images
+- direct source URL or DOI
+- license note
+- file size
+- access mode (direct / login-gated / request-only / private)
+- supervision status
+- acquisition mode (sensor, wavelength range, spatial resolution)
+- recipe compatibility
+- baseline applicability
+- date accessed
+- bad-band notes
+- redistribution policy (compact-derived only / not redistributable)
 
-Available locally for exploratory topic, clustering, and unmixing-style
-workflows:
+The schema is enforced by
+`DatasetEntry`, `DatasetSupervision` and `DatasetAcquisition` in
+`app/models/schemas.py`.
 
-| Dataset | Theme | Bands | Current role |
-|---|---|---:|---|
-| Cuprite AVIRIS reflectance | minerals, clays, geology | 224 | mineral/clay exploratory benchmark |
-| Samson ROI | unmixing | 156 | compact mixture comparison |
-| Jasper Ridge ROI | vegetation, soil, water | 198 | compact mixture comparison |
-| Urban ROI | urban materials | 162 | compact mixture comparison |
+## Why some datasets are catalogued but not active
 
-### Field MSI
+- **license unclear** — for example several commercial UAV scenes are
+  catalogued but excluded from public app payloads.
+- **size-prohibitive** — full SpectralEarth (3.3 TB), full WHU-Hi
+  cubes, and several airborne archives are too large for direct repo
+  redistribution. Sampled tiles are planned.
+- **access-gated** — ECOSTRESS bulk export currently requires a
+  session.
+- **wavelength calibration weak** — some public scenes lack documented
+  calibration metadata for serious mineral comparison.
 
-Available locally:
+## Where to add a new dataset
 
-| Dataset | Theme | Bands | Current role |
-|---|---|---:|---|
-| MicaSense Example 1 | field vegetation | 4 | field MSI transfer and NDVI comparison |
-| MicaSense Example 2 | field vegetation | 4 | larger field MSI reference |
-| MicaSense Example 3 raw capture | field acquisition | varies | raw-support evidence for local workflows |
+1. Append the dataset record to `data/manifests/datasets.json` with
+   the full metadata above.
+2. Implement (or extend) a `data-pipeline/fetch_*` script.
+3. Implement (or extend) a `data-pipeline/build_*` script that produces
+   the compact derived asset.
+4. Run `scripts/local.* run-core` so the dataset enters the validation
+   benchmarks where applicable.
+5. If the dataset is ready for public exposure, register it inside an
+   `interactive_subsets.json` entry and run
+   `scripts/local.* build-subset-cards`.
 
-### Spectral Libraries
-
-Available locally:
-
-| Dataset | Current local form | Current role |
-|---|---|---|
-| USGS Spectral Library v7 | compact AVIRIS and Sentinel-2 slices | material-reference and library-alignment workflows |
-
-## Local-Core Benchmarks
-
-The repo now generates:
-
-- `data/derived/core/local_core_benchmarks.json`
-
-This first-pass file already records offline evidence over real local
-data:
-
-- LDA over band-frequency corpora
-- logistic-regression classification baselines
-- KMeans, GMM, and hierarchical clustering comparisons in raw and
-  topic-space feature views
-- multi-seed topic-stability diagnostics on labeled scenes
-- SAM-style reference alignment against compact spectral references
-- NMF/unmixing comparisons on Borsoi ROIs and Cuprite alignment probes
-- exploratory unlabeled clustering summaries
-- compact spectral-library grouping diagnostics
-- first supervised Family D runs over `HIDSAG MINERAL1`, `MINERAL2`,
-  `GEOMET`, `GEOCHEM`, and `PORPHYRY`
-- patch-level HIDSAG region-document export with `3 x 3` fixed-grid
-  supports per measurement
-- wavelength metadata preserved directly from HIDSAG HDF5 attributes
-- heuristic HIDSAG bad-band policy in
-  `data/derived/core/hidsag_band_quality.json`
-- HIDSAG preprocessing-sensitivity benchmark in
-  `data/derived/core/hidsag_preprocessing_sensitivity.json`
-
-Current HIDSAG reading:
-
-- `MINERAL1` is now a good example of why stronger split design matters:
-  under process-aware `P1/P2/P3` group splits, several earlier
-  optimistic scores collapse, and only a few tasks remain clearly above
-  trivial baselines
-- raw or PCA-compressed spectra are currently stronger than topic-only
-  features for balanced presence/absence classification tasks such as
-  pyrophyllite, orthoclase, alunite, and kaolin-group presence
-- `MINERAL2` remains small, but patch-region topic mixtures now improve
-  the current pass slightly for targets such as Phengite and Quartz;
-  the subset is still too small for strong topic-routing claims
-- `GEOMET` is already materially stronger for supervised Family D
-  validation: raw/PCA classification reaches about `0.71-0.77` accuracy
-  on median-threshold tasks, raw/PLS regression reaches positive `R^2`
-  across all five measured targets, and the patch-region topic model
-  activates `4/6` topics without beating the raw baselines
-- `GEOCHEM` now validates the multi-measurement case: `106`
-  measurement supports across `28` samples, `954` patch-region
-  documents, and positive `R^2` on targets such as Fe, Ca, S, and Cu
-  for routed or region-topic regressors
-- `PORPHYRY` is now local and benchmarked with group-aware validation:
-  `56` measurement supports across `28` samples and `504` patch-region
-  documents, but the current mineral-regression results are still weak
-  and mostly negative under ore-group splits
-- first explicit preprocessing-sensitivity evidence is now versioned:
-  the local heuristic mask removes about `12-17` SWIR bands and `27-51`
-  VNIR bands per modality, depending on subset
-- preprocessing choice now clearly matters:
-  - `MINERAL1` classification over the selected chalcopyrite task
-    improves from about `0.955` to `0.985` balanced accuracy with the
-    mask-only policy, while regression remains weak but less negative
-  - `MINERAL2` reacts strongly to mask + SNV, lifting the selected
-    pyrophyllite classification task from about `0.780` to `0.890`
-    balanced accuracy and turning the selected pyrophyllite regression
-    target slightly positive (`R^2 ~ 0.117`)
-  - `GEOMET` also improves under mask + SNV, with the selected `Cu rec`
-    regression target rising from about `0.336` to `0.471` `R^2`
-  - `GEOCHEM` shows that preprocessing can dominate the result: the
-    selected sulfur target moves from negative baseline behavior to
-    `R^2 ~ 0.716` under mask + Savitzky-Golay + SNV, while sample-topic
-    activity still remains collapsed at `1/5`
-  - `PORPHYRY` is the strongest sensitivity case so far: the selected
-    `Bt (%)` regression target rises from about `0.179` to `0.878`
-    `R^2` under mask + SNV / Savitzky-Golay + SNV, and sample-topic
-    activity improves from `2/6` to `3/6`
-- topic-routed, cube-topic, and region-topic variants still show
-  collapse or inconsistent gains on several subsets, so hierarchical
-  Family D topic documents remain an open research item rather than a
-  finished method
-
-This is the correct direction: validate offline first, then decide what
-small subset deserves web publication.
-
-## Cataloged High-Value Candidates
-
-These remain important, but they are not local validation assets until
-their acquisition path is reproduced.
-
-| Source | Role | Constraint | Intended use |
-|---|---|---|---|
-| ECOSTRESS Spectral Library | Family A extension | public category metadata is reproducible, but bulk checkout currently routes to login | mineral, vegetation, soil, and man-made references |
-| HIDSAG | Family D anchor | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY are local and benchmarked, with patch-region exports, wavelength metadata, heuristic bad-band masks, and preprocessing-sensitivity evidence now versioned; official sensor-specific masks and stronger split design are still pending | regression/classification over measured regions |
-| WHU-Hi | UAV labeled imagery | source/licensing verification pending | fine-grained crop and high-resolution UAV validation |
-| HyRANK | cross-scene HSI | canonical source and split reproduction pending | domain-transfer validation |
-| HySpecNet-11k | large HSI patch collection | license and subset policy needed | unsupervised transfer and patch workflows |
-| EuroSAT | MSI patch dataset | subset curation needed | compact Sentinel-2 thematic groups |
-| BigEarthNet v2.0 | large multi-label archive | archive too large for direct commit | metadata-driven selected patches |
-| Houston 2013 | multimodal urban benchmark | access-gated | spectral + LiDAR comparison |
-| cross-scene wetland archive | wetland/domain adaptation | archive too large for direct publication | curated wetland patch subsets |
-| Landsat Collection 2 Level-2 | query-based external source | geospatial ingestion not built yet | index and transfer workflows |
-| CAVE multispectral | laboratory reference | stable acquisition path still pending | controlled lab/object scenes |
-
-## Publication Rule
-
-Only a compact subset should ever reach the app or Git-tracked public
-artifacts. A candidate asset is publishable only when:
-
-- provenance is recorded
-- license and attribution are clear
-- the local validation workflow is reproducible
-- the exported subset is compact
-- the resulting view is interpretable inside the app
-
-## What Must Not Be Claimed
-
-- cataloged datasets are not implemented datasets
-- unlabeled scenes do not support semantic claims by themselves
-- nearest spectral-library matches are evidence, not identification
-- first-pass clustering is comparison evidence, not semantic truth
-- field MSI strata remain heuristic until linked to real measurements or
-  labels
-
-## Near-Term Data Work
-
-1. reproduce an ECOSTRESS session-backed or per-spectrum export path
-   before claiming Family A expansion
-2. strengthen the current five local HIDSAG subsets with sensor-aware
-   bad-band policies, richer wavelength-aware region documents, and more
-   defendible split design
-3. verify at least one cross-scene dataset for transfer experiments
-4. add calibrated wavelength vectors wherever they are reliable
-5. define publishable interactive subsets for the future web projection
+The wiki page
+[Public Interactive Subset Layer](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Public-Interactive-Subset-Layer)
+describes the gating between local-only datasets and public-app
+datasets.

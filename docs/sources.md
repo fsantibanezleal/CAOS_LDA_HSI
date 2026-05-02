@@ -1,101 +1,101 @@
 # Sources
 
-The following sources informed the current app structure, dataset
-selection, and theoretical framing.
+Repo-local short reference. The canonical extended bibliography lives
+on the wiki page
+[References](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/References)
+and in
+[`legacy/papers/CITATIONS.md`](../legacy/papers/CITATIONS.md).
 
-## Topic Modelling
+## Primary citation for this repository
 
-- Blei, Ng, Jordan. *Latent Dirichlet Allocation*.
-  <https://jmlr.csail.mit.edu/papers/v3/blei03a.html>
-- Wahabzada et al. *Latent Dirichlet Allocation Uncovers Spectral
-  Characteristics of Drought Stressed Plants*.
-  <https://arxiv.org/abs/1210.4919>
-- Zou and Zare. *Hyperspectral Unmixing with Endmember Variability using
-  Partial Membership Latent Dirichlet Allocation*.
-  <https://arxiv.org/abs/1609.03500>
-- Zou and Zare. *Hyperspectral Unmixing with Endmember Variability using
-  Semi-supervised Partial Membership Latent Dirichlet Allocation*.
-  <https://arxiv.org/abs/1703.06151>
+> Santibáñez-Leal, F. A., Ehrenfeld, A., Garrido, F., Navarro, F.,
+> Egaña, Á. (2022). *Geometallurgical estimation of mineral samples
+> from hyperspectral images and statistical topic modelling*. 18th
+> International Conference on Mineral Processing and Geometallurgy
+> (Procemin Geomet).
+> [ResearchGate](https://www.researchgate.net/publication/369708272)
 
-## Spectral Variability
+## Public dataset citation
 
-- Borsoi et al. *Spectral Variability in Hyperspectral Data Unmixing: A
-  Comprehensive Review*.
-  <https://arxiv.org/abs/2001.07307>
-- Borsoi. *MUA_SparseUnmixing real_data* repository assets used for
-  compact Samson, Jasper Ridge, and Urban ROI examples.
-  <https://github.com/ricardoborsoi/MUA_SparseUnmixing/tree/master/real_data>
-- Egana et al. *A Robust Stochastic Approach to Mineral Hyperspectral
-  Analysis for Geometallurgy*.
-  <https://www.mdpi.com/2075-163X/10/12/1139>
-- Sciarretta et al. *Using wordification to characterize adaptive
-  genetic diversity*.
-  <https://www.nature.com/articles/srep22482>
+> Santibáñez-Leal, F. A., Ehrenfeld, A., Garrido, F., Navarro, F.,
+> Egaña, Á. (2023). *HIDSAG: Hyperspectral Image Database for
+> Supervised Analysis in Geometallurgy*. **Scientific Data** 10, 154.
+> [doi:10.1038/s41597-023-02061-x](https://doi.org/10.1038/s41597-023-02061-x).
 
-## Clustering And Diagnostics
+## Methodology line
 
-- scikit-learn. *LatentDirichletAllocation*.
-  <https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.LatentDirichletAllocation.html>
-- scikit-learn. *PCA*.
-  <https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html>
-- scikit-learn. *KMeans*.
-  <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>
-- scikit-learn. *GaussianMixture*.
-  <https://sklearn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html>
-- scikit-learn. *Clustering user guide*.
-  <https://sklearn.org/stable/modules/clustering.html>
-- scikit-learn. *metrics API*.
-  <https://scikit-learn.org/stable/api/sklearn.metrics.html>
-- scikit-learn. *silhouette_score*.
-  <https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html>
-- scikit-image. *SLIC segmentation API*.
-  <https://scikit-image.org/docs/stable/api/skimage.segmentation.html>
-- Achanta et al. *SLIC Superpixels*.
-  <https://www.iro.umontreal.ca/~mignotte/IFT6150/Articles/SLIC_Superpixels.pdf>
-- NMF review for hyperspectral unmixing.
-  <https://arxiv.org/abs/2205.09933>
+- Egaña, A. F., Santibáñez-Leal, F. A. et al. (2020). *A Robust
+  Stochastic Approach to Mineral Hyperspectral Analysis for
+  Geometallurgy*. **Minerals** 10(12), 1139.
+  [doi](https://doi.org/10.3390/min10121139)
+- Santibáñez-Leal, F. A. et al. (2020). *Multi Pixel Stochastic
+  Approach to Mineral Samples Spectral Analysis for Geometallurgical
+  Modeling*. Procemin Geomet 2020.
 
-## Public Data Sources
+## LDA / topic modelling foundations
 
-- UPV/EHU. *Hyperspectral Remote Sensing Scenes*.
-  <https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes>
-- MicaSense. *RedEdge Sample Data*.
-  <https://sample.micasense.com/>
-- Helber et al. *EuroSAT* paper and repository.
-  <https://arxiv.org/abs/1709.00029>
-  <https://github.com/phelber/EuroSAT>
-- BigEarthNet. *A Large-Scale Sentinel Benchmark Archive*.
-  <https://bigearth.net/>
-- WHU-Hi. *UAV-borne hyperspectral with high spatial resolution benchmark*.
-  <https://arxiv.org/abs/2012.13920>
-- HySpecNet-11k. *A Large-Scale Hyperspectral Benchmark Dataset*.
-  <https://hyspecnet.rsim.berlin/>
-- HyRANK benchmark summary in ISPRS reporting.
-  <https://www.isprs.org/society/si/SI-2017/ISPRS-SI2017-TC3_WG4_Karantzalos_Report.pdf>
-- IEEE GRSS. *2013 Data Fusion Contest: Hyperspectral and LiDAR Data*.
-  <https://machinelearning.ee.uh.edu/2013-ieee-grss-data-fusion-contest/>
-- Zenodo. *Cross-Scene Hyperspectral Remote Sensing Wetland image data*.
-  <https://zenodo.org/records/8105220>
-- USGS. *Landsat Collection 2 Level-2 Science Products*.
-  <https://www.usgs.gov/landsat-missions/landsat-collection-2-level-2-science-products>
-- ESA. *Sentinel-2 operations*.
-  <https://www.esa.int/Enabling_Support/Operations/Sentinel-2_operations>
-- Columbia CAVE image index.
-  <https://www.cs.columbia.edu/CAVE/databases/multispectral/images/>
-- USGS. *USGS Spectral Library Version 7 data*.
-  <https://www.usgs.gov/data/usgs-spectral-library-version-7-data>
-- USGS ScienceBase. *Spectra of materials in ASCII format*.
-  <https://www.sciencebase.gov/catalog/item/586e8c88e4b0f5ce109fccae>
-- NASA/JPL. *ECOSTRESS Spectral Library v1.0*.
-  <https://speclib.jpl.nasa.gov/>
-- NASA/JPL. *ECOSTRESS Spectral Library public download surface*.
-  <https://speclib.jpl.nasa.gov/download>
-- NASA/JPL. *ECOSTRESS Spectral Library checkout surface*.
-  <https://speclib.jpl.nasa.gov/download/checkout-form>
-- Ehrenfeld et al. *HIDSAG: Hyperspectral Image Database for Supervised
-  Analysis in Geometallurgy*.
-  <https://www.nature.com/articles/s41597-023-02061-x>
-- HIDSAG dataset collection DOI cited by the article.
-  <https://doi.org/10.6084/m9.figshare.c.5983921.v1>
-- Figshare collection API for HIDSAG article/package discovery.
-  <https://api.figshare.com/v2/collections/5983921/articles?page_size=20>
+- Blei, D. M., Ng, A. Y., Jordan, M. I. (2003). *Latent Dirichlet
+  Allocation*. **JMLR** 3, 993–1022.
+- Heinrich, G. (2005). *Parameter estimation for text analysis*.
+- Hoffman, M., Blei, D., Bach, F. (2010). *Online Learning for Latent
+  Dirichlet Allocation*. **NIPS 2010**.
+- Rehurek, R., Sojka, P. (2010). *gensim — Software Framework for
+  Topic Modelling with Large Corpora*. LREC NLP frameworks workshop.
+- Sievert, C., Shirley, K. (2014). *LDAvis*. ACL Workshop.
+- Röder, M., Both, A., Hinneburg, A. (2015). *Exploring the Space of
+  Topic Coherence Measures*. WSDM.
+- Teh, Y. W., Jordan, M. I., Beal, M. J., Blei, D. M. (2006).
+  *Hierarchical Dirichlet Processes*. JASA.
+- Zhai, K., Boyd-Graber, J. (2013). *Online LDA with Infinite
+  Vocabulary*. ICML.
+- Dieng, A. B., Ruiz, F. J. R., Blei, D. M. (2020). *Topic Modeling in
+  Embedding Spaces*. TACL.
+
+## PTM on hyperspectral — modern line
+
+- Wahabzada, M., Mahlein, A.-K., Bauckhage, C., Steiner, U.,
+  Oerke, E.-C., Kersting, K. — plant phenotyping LDA work.
+- Zou, S., Zare, A. (2017). *Partial-Membership LDA* (PM-LDA) for
+  hyperspectral unmixing.
+- Borsoi, R. A. et al. (2021). *Spectral Variability in Hyperspectral
+  Data Unmixing: A Comprehensive Review*. **IEEE GRSM**.
+- Mantripragada, K. et al. (2024). *LDVAE / SpACNN-LDVAE*. IEEE TGRS
+  and follow-on arXiv work.
+
+## Hyperspectral / spectral foundations
+
+- Achanta, R. et al. (2012). *SLIC superpixels*. IEEE TPAMI.
+- Clark, R. N., Roush, T. L. (1984). *Reflectance Spectroscopy*. JGR.
+- Kruse, F. A. (2012). *Spectral-feature-based analysis*. SPIE.
+- Tarabalka, Y., Benediktsson, J. A., Chanussot, J. (2009 / 2010).
+  *Spectral–spatial classification* and *Watershed segmentation*.
+- Theiler, J. P., Gisler, G. (1997). *Contiguity-enhanced k-means*.
+- Villa, A., Chanussot, J., Benediktsson, J. A. (2013). *Unsupervised
+  classification of HSI*. Pattern Recognition.
+
+## Public datasets
+
+- Kokaly, R. F. et al. (2017). *USGS Spectral Library Version 7*.
+  USGS DS 1035. [doi](https://doi.org/10.3133/ds1035)
+- ECOSTRESS Spectral Library (Caltech / NASA).
+- UPV/EHU GIC public HSI scenes
+  ([ehu.eus](https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes)).
+- Borsoi unmixing examples
+  ([github.com/ricardoborsoi](https://github.com/ricardoborsoi)).
+- HIDSAG Figshare release (this project).
+- WHU-Hi, HyRANK, Houston 2013/2018/2020, EuroSAT — tracked.
+
+## Software stack
+
+- Backend: Python 3.12, FastAPI, uvicorn, ORJSON, pydantic-settings.
+- Frontend: TypeScript, React 18, Vite, react-i18next, Zustand.
+- Pipeline: numpy, scipy, scikit-learn, scikit-image, h5py, tifffile,
+  Pillow, requests.
+
+## Author
+
+- ORCID: [0000-0002-0150-3246](https://orcid.org/0000-0002-0150-3246)
+- Publications page:
+  [fsantibanezleal.github.io/publications](https://fsantibanezleal.github.io/publications/)
+- GitHub:
+  [github.com/fsantibanezleal](https://github.com/fsantibanezleal)

@@ -1,240 +1,92 @@
 # Technical Roadmap
 
-This roadmap now treats the repo as a local scientific validation system
-with a secondary interactive presentation layer.
-
-## Current Reset Status
-
-Status: active reset in progress.
-
-The deployed SPA is a technical checkpoint only. The accepted direction
-is:
-
-1. local acquisition and organization of real spectral data
-2. offline representations, segmentation, PTM/LDA, clustering, and
-   supervised modeling
-3. dense methodological documentation
-4. compact interactive export into the web app
-
-## Phase 0: Historical Recovery Baseline
-
-Status: complete.
-
-Delivered historically:
-
-- FastAPI backend serving a React SPA
-- public repo and VPS deployment
-- bilingual UI and theme support
-- compact demo and first derived scene assets
-
-Limitation:
-
-- the UI direction was rejected because it behaved like a confused
-  workbench/report hybrid and did not express the real methodological
-  flow
-
-## Phase 1: Method Review And Product Reset
-
-Status: first pass delivered, ongoing expansion.
-
-Delivered:
-
-- `docs/product-reset-research.md`
-- `data/manifests/data_families.json`
-- `data/manifests/corpus_recipes.json`
-- `data/manifests/local_validation_matrix.json`
-- explicit supervision and acquisition metadata in
-  `data/manifests/datasets.json`
-
-Acceptance:
-
-- every product-visible method must state alphabet, word, document,
-  corpus, feature space, supervision, and caveat
-
-## Phase 2: Local Data Acquisition And Inventory
-
-Status: first pass delivered.
-
-Delivered:
-
-- reproducible raw acquisition scripts in `data-pipeline/`
-- unified local inventory in `data/derived/core/local_dataset_inventory.json`
-- local raw evidence currently indexed across UPV/EHU, Borsoi MUA,
-  MicaSense, and USGS compact spectral-library archives
-
-Next work:
-
-- reproduce a session-backed ECOSTRESS export path beyond the current
-  public metadata manifest
-- harden the current HIDSAG `GEOMET` + `MINERAL1` + `MINERAL2` +
-  `GEOCHEM` + `PORPHYRY` supervised benchmarks with sensor-aware
-  bad-band handling, stronger group-aware split design, and
-  wavelength-aware region documents
-- reproduce at least one cross-scene transfer dataset
-- keep raw-local, git-public, and web-public policies clearly separated
-
-## Phase 3: Representation And Corpus Engine
-
-Status: first pass delivered.
-
-Delivered:
-
-- deterministic corpus previews in
-  `data/derived/corpus/corpus_previews.json`
-- first-pass recipes for magnitude phrase, band frequency,
-  band-magnitude words, and region-style documents
-- first compact HIDSAG patch-region export in
-  `data/derived/core/hidsag_region_documents.json` +
-  `hidsag_region_documents.npz`
-- wavelength vectors preserved in the compact HIDSAG subset from raw h5
-  metadata
-- heuristic HIDSAG band-quality summary in
-  `data/derived/core/hidsag_band_quality.json`
-
-Next work:
-
-- absorption/shape vocabularies
-- hierarchical documents for measured regions with sensor-aware
-  bad-band handling
-- stronger token diagnostics and reversibility metadata
-
-## Phase 4: Segmentation, Clustering, And Topic Benchmarks
-
-Status: first pass delivered and now extended.
-
-Delivered:
-
-- SLIC baseline payload in
-  `data/derived/baselines/segmentation_baselines.json`
-- offline benchmark payload in
-  `data/derived/core/local_core_benchmarks.json`
-- first-pass LDA runs over real local scenes
-- first-pass supervised baselines on labeled scenes
-- KMeans, GMM, and hierarchical clustering comparisons in raw and
-  topic-space views
-- first-pass topic-stability diagnostics across multiple seeds
-- first-pass SAM-style reference alignment
-- first-pass NMF/unmixing comparisons on Borsoi ROIs and Cuprite
-  alignment probes
-
-Current limitation:
-
-- semantic segmentation overlays are still planned
-- PM-LDA and semi-supervised PM-LDA are still pending
-- topic stability is still compact-sample-based and not yet a full
-  quantization/document-definition sensitivity study
-
-## Phase 5: Measured-Target Training And Validation
-
-Status: first pass delivered.
-
-Scope:
-
-- regression and classification over measured datasets such as HIDSAG,
-  now covering `GEOMET`, `MINERAL1`, `MINERAL2`, `GEOCHEM`, and
-  `PORPHYRY`
-- topic-routed and hierarchical models
-- split definitions, model cards, residual/error analysis
-- topic stability and sensitivity studies
-
-Delivered:
-
-- first supervised Family D benchmark over `HIDSAG MINERAL1`
-- first supervised Family D benchmark over `HIDSAG MINERAL2`
-- second supervised Family D benchmark over `HIDSAG GEOMET`
-- third supervised Family D benchmark over `HIDSAG GEOCHEM`
-- fourth supervised Family D benchmark over `HIDSAG PORPHYRY`
-- leave-one-out classification/regression tasks for `MINERAL2`
-- five-fold classification/regression tasks for `GEOMET` and `GEOCHEM`
-- group-aware process split for `MINERAL1`
-- group-aware ore-group split for `PORPHYRY`
-- sample-level, cube-aggregated, and patch-region topic-mixture
-  comparisons across all five current subsets
-- explicit evidence that current Family D topic documents still collapse
-  unevenly under the current formulation, even after patch-region
-  aggregation
-- heuristic bad-band summary and preprocessing-sensitivity benchmark now
-  versioned across all five current HIDSAG subsets
-- explicit evidence that preprocessing choice can dominate selected
-  Family D tasks, especially on `MINERAL2`, `GEOCHEM`, and `PORPHYRY`
-- positive `R^2` geochemical regression signal on `GEOCHEM` for routed
-  or region-topic variants on targets such as Fe, Ca, S, and Cu
-- explicit evidence that stronger split design can invalidate earlier
-  optimistic readings, especially on `MINERAL1` and `PORPHYRY`
-
-Next work:
-
-- move from the current grouped CV setup to broader split designs with
-  particle-size awareness and repeated-measurement blocking
-- replace the current heuristic bad-band policy with sensor-aware masks
-  wherever the source metadata permits it
-- add model cards and failure-case summaries before any web-facing
-  narrative
-
-Acceptance:
-
-- no trained model becomes product-visible without split definition,
-  metrics, caveats, and provenance
-
-## Phase 6: Publishable Interactive Subsets
-
-Status: planned.
-
-Scope:
-
-- select only compact, high-value subsets from the local core
-- export band metadata, spectral samples, overlays, topic maps, and
-  comparison summaries in app-friendly form
-- version those subsets independently from raw local archives
-
-Acceptance:
-
-- every exported subset must link back to a validated local workflow
-- static screenshots are auxiliary only, never the primary evidence
-
-## Phase 7: Web App Rebuild
-
-Status: blocked on Phase 6 assets, but the target structure is already
-defined.
-
-Target product structure:
-
-- `Context` surface for explanation and conceptual framing
-- `Workspace` surface with left method scope, central interactive
-  evidence, and right inference/validation
-
-Mandatory capabilities:
-
-- interactive spectral plots
-- band-selectable image views
-- overlay switching for labels, SLIC, topics, clusters, and semantic
-  maps where available
-- explicit comparison and caveat panels
-
-## Phase 8: Scientific Validation Layer
-
-Status: planned.
-
-Scope:
-
-- repeated fits across seeds
-- quantization sensitivity
-- document-definition sensitivity
-- spectral-library alignment
-- label/measurement association
-- cross-scene transfer validation
-
-Acceptance:
-
-- the app must distinguish exploratory evidence from validated evidence
-- the docs must distinguish demo assets from publishable scientific
-  claims
-
-## Immediate Engineering Focus
-
-1. keep growing the local validation core
-2. deepen acquisition for real high-value datasets
-3. extend offline method comparisons beyond the first SAM/NMF/stability
-   layer
-4. export only compact subsets with interactive value
-5. rebuild the app only after the above is materially in place
+Repo-local phase map. The canonical detailed reset plan and pending
+backlog live in `_CAOS_MANAGE/wip/caos-lda-hsi/`:
+
+- [`product-reset-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/product-reset-plan.md)
+- [`offline-validation-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/offline-validation-plan.md)
+- [`web-app-projection-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/web-app-projection-plan.md)
+- [`local-environments-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md)
+- [`pending.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/pending.md)
+
+This file is a short repo-local snapshot for contributors who already
+cloned the repo and need to know where to start.
+
+## Where the project stands today
+
+- **Methodology and documentation** — published. The wiki has been
+  rebuilt with full mathematical depth, four-family taxonomy, recipe
+  catalogue, validation framework, dataset inventory, and web app
+  design baseline.
+- **Legacy material** — anchored. The A39 paper, the proof-of-concept
+  notebook, and the full citation trail are now informative reference
+  material under `legacy/`.
+- **Local pipeline** — solid. UPV/EHU scenes, Borsoi unmixing ROIs,
+  USGS spectral library, MicaSense field samples, HIDSAG curated and
+  region documents, preprocessing-sensitivity benchmark, SLIC baselines
+  are all reproducible from `scripts/local.* fetch-all` +
+  `scripts/local.* build-local-core`.
+- **Backend** — typed and stable. All payloads served through Pydantic
+  schemas. New endpoints `/api/subset-cards` and
+  `/api/subset-cards/{subset_id}` decouple the frontend from the deep
+  benchmarks file.
+- **Frontend** — checkpoint. The shipped SPA is the rejected workbench
+  layout from the previous cycle. The work branch has a
+  `Context + Workspace` first attempt but the file is still a
+  2096-line `App.tsx` monolith; it must be split into the six-tab
+  architecture before the rebuild is mergeable to `main`.
+- **Deployment** — frozen on the checkpoint until the frontend rebuild
+  passes the acceptance criteria.
+
+## Phase map
+
+The phases below are aligned with `product-reset-plan.md`. Statuses
+reflect repo state as of 2026-05-02.
+
+| Phase | Topic | Status |
+|---|---|---|
+| 0 | Freeze and reset | done |
+| 1 | Deep research and method review | done — see `docs/research-memo-2026-05.md` |
+| 2 | Verified real data acquisition | done for Family A / B / C / D anchors |
+| 3 | Representation and corpus experiments | partial — V1, V2, V3 active; V4–V8 planned |
+| 4 | SLIC, clustering and baseline experiments | partial — SLIC, KMeans, GMM, SAM, NMF active |
+| 5 | Model training on real data | partial — Family D HIDSAG benchmarks active |
+| 6 | Publishable sample and model selection | partial — first 4 interactive subsets registered |
+| 7 | Data taxonomy payload | done — `/api/data-families` + `/api/datasets` |
+| 8 | Corpus recipe engine | partial — V1 / V2 / V3 implemented in static previews |
+| 9 | Workflow UI rebuild | **next priority** — six-tab architecture decomposition |
+| 10 | PTM/LDA and clustering comparison | partial — comparison metrics in benchmarks |
+| 11 | Inference module | partial — Family D supervised metrics |
+| 12 | Scientific validation layer | partial — eight of nine validation blocks have first-pass coverage |
+
+## Next concrete steps
+
+1. **Frontend rebuild step 1** — Header + Landing + theme/language
+   scaffolding. Visible commit, smoke verification, no loss of
+   functionality.
+2. **Frontend rebuild step 2** — Overview tab (Concept, Theory,
+   Representations, Methodology, References). Mostly content, easy
+   acceptance test.
+3. **Frontend rebuild step 3** — Datasets tab consuming
+   `/api/data-families` and `/api/datasets`.
+4. **Frontend rebuild step 4-6** — Workspace tab consuming
+   `/api/subset-cards/{id}` (DataStep + CorpusStep, then TopicsStep +
+   ComparisonStep, then InferenceStep + ValidationStep).
+5. **Frontend rebuild step 7** — Benchmarks tab.
+6. **Frontend rebuild step 8** — Usage tab.
+7. **Source-aware HIDSAG bad-band masks** to replace the heuristic
+   policy used today.
+8. **Cross-scene transfer benchmark** (validation block 9).
+9. **Absorption / shape token recipes** (V5 / V6) for serious
+   mineral / clay analysis.
+10. **ECOSTRESS reproducible compact export** to unblock a public
+    Family A library beyond USGS.
+
+## What is explicitly not on the roadmap
+
+- Reusing the rejected chart system or previous theme.
+- Production redeploy without the rebuilt frontend acceptance criteria.
+- Mineral / class identification claims from topic alone without
+  external evidence.
+- New documentation surfaces beyond `docs/`, the wiki, and
+  `_CAOS_MANAGE/wip/caos-lda-hsi/`.
