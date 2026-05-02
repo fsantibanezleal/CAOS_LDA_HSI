@@ -235,6 +235,16 @@ Current local benchmark reading:
 - topic-routed, cube-topic, and region-topic local models are not yet
   defendable as a finished method because topic activity remains uneven
   across subsets
+- a first heuristic bad-band policy is now versioned separately from the
+  main benchmark, along with a preprocessing-sensitivity pass over all
+  five subsets
+- that sensitivity pass shows two things at once:
+  - preprocessing choice can materially change downstream results,
+    including large gains on selected `MINERAL2`, `GEOMET`, `GEOCHEM`,
+    and `PORPHYRY` targets
+  - those gains do not automatically validate topic routing, because
+    some of the strongest improvements still come from raw/PLS-style
+    baselines while topic activity remains partially collapsed
 
 Source:
 
@@ -385,13 +395,19 @@ Purpose:
 
 Current local assets:
 
-- none
+- HIDSAG curated subset with five local downloaded subsets:
+  `GEOMET`, `MINERAL1`, `MINERAL2`, `GEOCHEM`, and `PORPHYRY`
+- compact per-cube mean/std spectral export with preserved measurement
+  hierarchy and wavelength vectors
+- compact `3 x 3` patch-region document export for all five subsets
+- heuristic bad-band summary and first preprocessing-sensitivity
+  benchmark
 
 Planned assets:
 
 | Dataset | Supervision | Main blocker | Decision |
 |---|---|---|---|
-| HIDSAG curated subset | geochemical, mineralogical, metallurgical variables | file size, subset design, response-variable selection | highest-value Family D target |
+| HIDSAG curated subset | geochemical, mineralogical, metallurgical variables | source-aware bad-band masks, stronger split design, and model-card discipline | highest-value current Family D target |
 | future field samples with XRF/mineralogy/moisture/yield | measurements | not available in current repo | future manifest only |
 
 Valid recipes:
@@ -453,7 +469,7 @@ Rejected for now:
 |---|---|---|---|---|---|
 | USGS Spectral Library v7 | A | compact local subset | USGS data release | public USGS data release | expand curated mineral/clay/soil/vegetation slices |
 | ECOSTRESS Spectral Library | A | public metadata reproduced; raw export still blocked | JPL spectral library | bulk checkout currently login-gated | build session-backed or per-spectrum export proof of concept |
-| HIDSAG | D | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY downloaded locally; compact spectral exports, wavelength metadata, and patch-region documents versioned; supervised benchmarks running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | add bad-band handling and stronger hierarchical split design |
+| HIDSAG | D | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY downloaded locally; compact spectral exports, wavelength metadata, patch-region documents, heuristic bad-band masks, and preprocessing-sensitivity outputs versioned; supervised benchmarks running | Nature/Figshare API and direct files | article CC BY 4.0; current subset metadata reports CC0 | replace heuristic masks with source-aware masks and strengthen hierarchical split design |
 | Indian Pines | B | local derived | UPV/EHU | public benchmark attribution | use for pixel/class recipe experiments |
 | Salinas / Salinas-A | B | local derived | UPV/EHU | public benchmark attribution | use for first label-topic validation |
 | Pavia University | B | local derived | UPV/EHU | public benchmark attribution | use for urban material comparison |

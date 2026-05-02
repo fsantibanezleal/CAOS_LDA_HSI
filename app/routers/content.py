@@ -11,8 +11,10 @@ from app.models.schemas import (
     DataFamiliesPayload,
     DatasetCatalog,
     DemoPayload,
+    HidsagBandQualityPayload,
     FieldScenesPayload,
     HidsagCuratedSubsetPayload,
+    HidsagPreprocessingSensitivityPayload,
     HidsagRegionDocumentsPayload,
     HidsagSubsetInventoryPayload,
     LocalCoreBenchmarksPayload,
@@ -33,7 +35,9 @@ from app.services.content import (
     get_datasets,
     get_demo,
     get_field_samples,
+    get_hidsag_band_quality,
     get_hidsag_curated_subset,
+    get_hidsag_preprocessing_sensitivity,
     get_hidsag_region_documents,
     get_hidsag_subset_inventory,
     get_local_core_benchmarks,
@@ -108,6 +112,16 @@ def hidsag_curated_subset() -> HidsagCuratedSubsetPayload:
 @router.get("/hidsag-region-documents", response_model=HidsagRegionDocumentsPayload)
 def hidsag_region_documents() -> HidsagRegionDocumentsPayload:
     return get_hidsag_region_documents()
+
+
+@router.get("/hidsag-band-quality", response_model=HidsagBandQualityPayload)
+def hidsag_band_quality() -> HidsagBandQualityPayload:
+    return get_hidsag_band_quality()
+
+
+@router.get("/hidsag-preprocessing-sensitivity", response_model=HidsagPreprocessingSensitivityPayload)
+def hidsag_preprocessing_sensitivity() -> HidsagPreprocessingSensitivityPayload:
+    return get_hidsag_preprocessing_sensitivity()
 
 
 @router.get("/methodology", response_model=Methodology)

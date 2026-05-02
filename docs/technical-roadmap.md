@@ -67,9 +67,9 @@ Next work:
 - reproduce a session-backed ECOSTRESS export path beyond the current
   public metadata manifest
 - harden the current HIDSAG `GEOMET` + `MINERAL1` + `MINERAL2` +
-  `GEOCHEM` + `PORPHYRY` supervised benchmarks with bad-band handling,
-  stronger group-aware split design, and wavelength-aware region
-  documents
+  `GEOCHEM` + `PORPHYRY` supervised benchmarks with sensor-aware
+  bad-band handling, stronger group-aware split design, and
+  wavelength-aware region documents
 - reproduce at least one cross-scene transfer dataset
 - keep raw-local, git-public, and web-public policies clearly separated
 
@@ -88,11 +88,14 @@ Delivered:
   `hidsag_region_documents.npz`
 - wavelength vectors preserved in the compact HIDSAG subset from raw h5
   metadata
+- heuristic HIDSAG band-quality summary in
+  `data/derived/core/hidsag_band_quality.json`
 
 Next work:
 
 - absorption/shape vocabularies
-- hierarchical documents for measured regions with bad-band handling
+- hierarchical documents for measured regions with sensor-aware
+  bad-band handling
 - stronger token diagnostics and reversibility metadata
 
 ## Phase 4: Segmentation, Clustering, And Topic Benchmarks
@@ -119,7 +122,7 @@ Current limitation:
 - semantic segmentation overlays are still planned
 - PM-LDA and semi-supervised PM-LDA are still pending
 - topic stability is still compact-sample-based and not yet a full
-  preprocessing-sensitivity study
+  quantization/document-definition sensitivity study
 
 ## Phase 5: Measured-Target Training And Validation
 
@@ -150,6 +153,10 @@ Delivered:
 - explicit evidence that current Family D topic documents still collapse
   unevenly under the current formulation, even after patch-region
   aggregation
+- heuristic bad-band summary and preprocessing-sensitivity benchmark now
+  versioned across all five current HIDSAG subsets
+- explicit evidence that preprocessing choice can dominate selected
+  Family D tasks, especially on `MINERAL2`, `GEOCHEM`, and `PORPHYRY`
 - positive `R^2` geochemical regression signal on `GEOCHEM` for routed
   or region-topic variants on targets such as Fe, Ca, S, and Cu
 - explicit evidence that stronger split design can invalidate earlier
@@ -159,8 +166,8 @@ Next work:
 
 - move from the current grouped CV setup to broader split designs with
   particle-size awareness and repeated-measurement blocking
-- add explicit bad-band handling on top of the new wavelength-aware
-  cube/region documents
+- replace the current heuristic bad-band policy with sensor-aware masks
+  wherever the source metadata permits it
 - add model cards and failure-case summaries before any web-facing
   narrative
 

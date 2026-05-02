@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-hidsag", "fetch-ecostress", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "inspect-hidsag", "build-hidsag", "run-core", "build-local-core", "smoke", "clean", "stop", "help")]
+    [ValidateSet("dev", "build", "preview", "demo", "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing", "fetch-hidsag", "fetch-ecostress", "fetch-all", "build-real", "build-field", "build-spectral", "build-analysis", "build-corpus", "build-baselines", "build-inventory", "inspect-hidsag", "build-hidsag", "build-hidsag-band-quality", "run-core", "run-hidsag-sensitivity", "build-local-core", "smoke", "clean", "stop", "help")]
     [string]$Command = "help"
 )
 
@@ -36,7 +36,9 @@ function Show-Help {
     Write-Host "  build-inventory Build unified local dataset/raw inventory for the validation backend"
     Write-Host "  inspect-hidsag Inspect downloaded HIDSAG ZIP subsets without full extraction"
     Write-Host "  build-hidsag Build compact HIDSAG spectral subset from downloaded ZIP archives"
+    Write-Host "  build-hidsag-band-quality Build heuristic HIDSAG bad-band summary from compact subset"
     Write-Host "  run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks"
+    Write-Host "  run-hidsag-sensitivity Run HIDSAG preprocessing-sensitivity benchmark"
     Write-Host "  build-local-core Run inventory + full local-core benchmarks"
     Write-Host "  smoke       Smoke test a running local app at http://127.0.0.1:8105"
     Write-Host "  clean       Remove build outputs and Python caches"
@@ -226,15 +228,27 @@ switch ($Command) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_curated_subset.py
     }
 
+    "build-hidsag-band-quality" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_band_quality.py
+    }
+
     "run-core" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\run_local_core_benchmarks.py
+    }
+
+    "run-hidsag-sensitivity" {
+        Ensure-PipelineVenv
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\run_hidsag_preprocessing_sensitivity.py
     }
 
     "build-local-core" {
         Ensure-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_local_inventory.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\run_local_core_benchmarks.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_band_quality.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\run_hidsag_preprocessing_sensitivity.py
     }
 
     "smoke" {

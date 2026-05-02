@@ -407,6 +407,24 @@ class HidsagRegionDocumentsPayload(BaseModel):
     subsets: list[dict[str, Any]]
 
 
+class HidsagBandQualityPayload(BaseModel):
+    """Heuristic band-quality summary for local HIDSAG subsets."""
+
+    source: str
+    generated_at: str
+    policy: dict[str, Any]
+    subsets: list[dict[str, Any]]
+
+
+class HidsagPreprocessingSensitivityPayload(BaseModel):
+    """Sensitivity benchmark over heuristic bad-band and preprocessing policies."""
+
+    source: str
+    generated_at: str
+    methods: dict[str, Any]
+    subsets: list[dict[str, Any]]
+
+
 class WorkflowStep(BaseModel):
     """Ordered methodology step."""
 

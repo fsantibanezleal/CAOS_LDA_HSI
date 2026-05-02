@@ -113,6 +113,10 @@ data:
 - patch-level HIDSAG region-document export with `3 x 3` fixed-grid
   supports per measurement
 - wavelength metadata preserved directly from HIDSAG HDF5 attributes
+- heuristic HIDSAG bad-band policy in
+  `data/derived/core/hidsag_band_quality.json`
+- HIDSAG preprocessing-sensitivity benchmark in
+  `data/derived/core/hidsag_preprocessing_sensitivity.json`
 
 Current HIDSAG reading:
 
@@ -139,6 +143,27 @@ Current HIDSAG reading:
   `56` measurement supports across `28` samples and `504` patch-region
   documents, but the current mineral-regression results are still weak
   and mostly negative under ore-group splits
+- first explicit preprocessing-sensitivity evidence is now versioned:
+  the local heuristic mask removes about `12-17` SWIR bands and `27-51`
+  VNIR bands per modality, depending on subset
+- preprocessing choice now clearly matters:
+  - `MINERAL1` classification over the selected chalcopyrite task
+    improves from about `0.955` to `0.985` balanced accuracy with the
+    mask-only policy, while regression remains weak but less negative
+  - `MINERAL2` reacts strongly to mask + SNV, lifting the selected
+    pyrophyllite classification task from about `0.780` to `0.890`
+    balanced accuracy and turning the selected pyrophyllite regression
+    target slightly positive (`R^2 ~ 0.117`)
+  - `GEOMET` also improves under mask + SNV, with the selected `Cu rec`
+    regression target rising from about `0.336` to `0.471` `R^2`
+  - `GEOCHEM` shows that preprocessing can dominate the result: the
+    selected sulfur target moves from negative baseline behavior to
+    `R^2 ~ 0.716` under mask + Savitzky-Golay + SNV, while sample-topic
+    activity still remains collapsed at `1/5`
+  - `PORPHYRY` is the strongest sensitivity case so far: the selected
+    `Bt (%)` regression target rises from about `0.179` to `0.878`
+    `R^2` under mask + SNV / Savitzky-Golay + SNV, and sample-topic
+    activity improves from `2/6` to `3/6`
 - topic-routed, cube-topic, and region-topic variants still show
   collapse or inconsistent gains on several subsets, so hierarchical
   Family D topic documents remain an open research item rather than a
@@ -155,7 +180,7 @@ their acquisition path is reproduced.
 | Source | Role | Constraint | Intended use |
 |---|---|---|---|
 | ECOSTRESS Spectral Library | Family A extension | public category metadata is reproducible, but bulk checkout currently routes to login | mineral, vegetation, soil, and man-made references |
-| HIDSAG | Family D anchor | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY are local and benchmarked, with patch-region exports and wavelength metadata now versioned; stronger split design and bad-band handling are still pending | regression/classification over measured regions |
+| HIDSAG | Family D anchor | GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY are local and benchmarked, with patch-region exports, wavelength metadata, heuristic bad-band masks, and preprocessing-sensitivity evidence now versioned; official sensor-specific masks and stronger split design are still pending | regression/classification over measured regions |
 | WHU-Hi | UAV labeled imagery | source/licensing verification pending | fine-grained crop and high-resolution UAV validation |
 | HyRANK | cross-scene HSI | canonical source and split reproduction pending | domain-transfer validation |
 | HySpecNet-11k | large HSI patch collection | license and subset policy needed | unsupervised transfer and patch workflows |
@@ -190,8 +215,8 @@ artifacts. A candidate asset is publishable only when:
 
 1. reproduce an ECOSTRESS session-backed or per-spectrum export path
    before claiming Family A expansion
-2. strengthen the current five local HIDSAG subsets with bad-band
-   handling, richer wavelength-aware region documents, and more
+2. strengthen the current five local HIDSAG subsets with sensor-aware
+   bad-band policies, richer wavelength-aware region documents, and more
    defendible split design
 3. verify at least one cross-scene dataset for transfer experiments
 4. add calibrated wavelength vectors wherever they are reliable

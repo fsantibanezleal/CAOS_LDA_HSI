@@ -29,7 +29,9 @@ Subcommands:
   build-inventory Build unified local dataset/raw inventory for the validation backend
   inspect-hidsag Inspect downloaded HIDSAG ZIP subsets without full extraction
   build-hidsag Build compact HIDSAG spectral subset from downloaded ZIP archives
+  build-hidsag-band-quality Build heuristic HIDSAG bad-band summary from compact subset
   run-core    Run local PTM/LDA, clustering, stability, SAM, NMF, and supervised benchmarks
+  run-hidsag-sensitivity Run HIDSAG preprocessing-sensitivity benchmark
   build-local-core Run inventory + full local-core benchmarks
   smoke      Smoke test a running local app at http://127.0.0.1:8105
   clean       Remove build outputs and Python caches
@@ -203,14 +205,24 @@ case "$command_name" in
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_hidsag_curated_subset.py
     ;;
+  build-hidsag-band-quality)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/build_hidsag_band_quality.py
+    ;;
   run-core)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/run_local_core_benchmarks.py
+    ;;
+  run-hidsag-sensitivity)
+    ensure_pipeline_venv
+    .venv-pipeline/bin/python data-pipeline/run_hidsag_preprocessing_sensitivity.py
     ;;
   build-local-core)
     ensure_pipeline_venv
     .venv-pipeline/bin/python data-pipeline/build_local_inventory.py
     .venv-pipeline/bin/python data-pipeline/run_local_core_benchmarks.py
+    .venv-pipeline/bin/python data-pipeline/build_hidsag_band_quality.py
+    .venv-pipeline/bin/python data-pipeline/run_hidsag_preprocessing_sensitivity.py
     ;;
   smoke)
     scripts/smoke.sh "http://127.0.0.1:8105"

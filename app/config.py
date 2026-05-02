@@ -100,6 +100,14 @@ class Settings(BaseSettings):
         return self.data_path / "derived" / "core" / "hidsag_region_documents.json"
 
     @property
+    def hidsag_band_quality_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "hidsag_band_quality.json"
+
+    @property
+    def hidsag_preprocessing_sensitivity_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "hidsag_preprocessing_sensitivity.json"
+
+    @property
     def derived_path(self) -> Path:
         return self.data_path / "derived"
 

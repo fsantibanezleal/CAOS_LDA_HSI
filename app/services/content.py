@@ -15,6 +15,8 @@ from app.models.schemas import (
     DemoPayload,
     FieldScenesPayload,
     HidsagCuratedSubsetPayload,
+    HidsagBandQualityPayload,
+    HidsagPreprocessingSensitivityPayload,
     HidsagRegionDocumentsPayload,
     HidsagSubsetInventoryPayload,
     LocalCoreBenchmarksPayload,
@@ -115,6 +117,20 @@ def get_hidsag_region_documents() -> HidsagRegionDocumentsPayload:
     settings = get_settings()
     data = _load_json(str(settings.hidsag_region_documents_path))
     return HidsagRegionDocumentsPayload.model_validate(data)
+
+
+@lru_cache
+def get_hidsag_band_quality() -> HidsagBandQualityPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.hidsag_band_quality_path))
+    return HidsagBandQualityPayload.model_validate(data)
+
+
+@lru_cache
+def get_hidsag_preprocessing_sensitivity() -> HidsagPreprocessingSensitivityPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.hidsag_preprocessing_sensitivity_path))
+    return HidsagPreprocessingSensitivityPayload.model_validate(data)
 
 
 @lru_cache

@@ -329,6 +329,20 @@ export interface HidsagRegionDocumentsPayload {
   subsets: Array<Record<string, unknown>>;
 }
 
+export interface HidsagBandQualityPayload {
+  source: string;
+  generated_at: string;
+  policy: Record<string, unknown>;
+  subsets: Array<Record<string, unknown>>;
+}
+
+export interface HidsagPreprocessingSensitivityPayload {
+  source: string;
+  generated_at: string;
+  methods: Record<string, unknown>;
+  subsets: Array<Record<string, unknown>>;
+}
+
 export interface WorkflowStep {
   order: number;
   title: LocalizedText;
@@ -636,6 +650,8 @@ export const api = {
   getHidsagSubsetInventory: () => getJson<HidsagSubsetInventoryPayload>("/api/hidsag-subset-inventory"),
   getHidsagCuratedSubset: () => getJson<HidsagCuratedSubsetPayload>("/api/hidsag-curated-subset"),
   getHidsagRegionDocuments: () => getJson<HidsagRegionDocumentsPayload>("/api/hidsag-region-documents"),
+  getHidsagBandQuality: () => getJson<HidsagBandQualityPayload>("/api/hidsag-band-quality"),
+  getHidsagPreprocessingSensitivity: () => getJson<HidsagPreprocessingSensitivityPayload>("/api/hidsag-preprocessing-sensitivity"),
   getFieldSamples: () => getJson<FieldScenesPayload>("/api/field-samples"),
   getSpectralLibrary: () => getJson<SpectralLibraryPayload>("/api/spectral-library"),
   getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),

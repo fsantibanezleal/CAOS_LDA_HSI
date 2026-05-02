@@ -62,6 +62,8 @@ The repository now includes:
 - `data/derived/core/local_core_benchmarks.json`
 - `data/derived/core/hidsag_subset_inventory.json`
 - `data/derived/core/hidsag_curated_subset.json`
+- `data/derived/core/hidsag_band_quality.json`
+- `data/derived/core/hidsag_preprocessing_sensitivity.json`
 - `data/derived/corpus/corpus_previews.json`
 - `data/derived/baselines/segmentation_baselines.json`
 - `data/derived/real/real_samples.json`
@@ -90,6 +92,8 @@ Current first-pass local-core evidence now includes:
 - HIDSAG patch-level region-document export
   (`hidsag_region_documents.json` + `.npz`) for local hierarchical
   validation
+- HIDSAG heuristic bad-band summary and preprocessing-sensitivity
+  benchmark over the five current local subsets
 - supervised Family D benchmarks on `HIDSAG GEOMET`, `MINERAL1`,
   `MINERAL2`, `GEOCHEM`, and `PORPHYRY`, including cross-validated
   classification/regression baselines, group-aware splits where
@@ -115,7 +119,9 @@ Useful commands:
 .\scripts\local.ps1 build-inventory
 .\scripts\local.ps1 inspect-hidsag
 .\scripts\local.ps1 build-hidsag
+.\scripts\local.ps1 build-hidsag-band-quality
 .\scripts\local.ps1 run-core
+.\scripts\local.ps1 run-hidsag-sensitivity
 .\scripts\local.ps1 build-local-core
 .\scripts\local.ps1 smoke
 .\scripts\local.ps1 demo
@@ -139,7 +145,9 @@ Useful commands:
 ./scripts/local.sh build-inventory
 ./scripts/local.sh inspect-hidsag
 ./scripts/local.sh build-hidsag
+./scripts/local.sh build-hidsag-band-quality
 ./scripts/local.sh run-core
+./scripts/local.sh run-hidsag-sensitivity
 ./scripts/local.sh build-local-core
 ./scripts/local.sh smoke
 ./scripts/local.sh demo
