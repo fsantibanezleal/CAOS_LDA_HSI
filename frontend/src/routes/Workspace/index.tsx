@@ -1,127 +1,66 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { api, type SubsetCardsIndex, pickText } from "../../lib/api";
+import { SubTabBar } from "../../components/chrome/SubTabBar";
+import {
+  api,
+  type DataFamiliesPayload,
+  type SubsetCard,
+  type SubsetCardsIndex,
+  type SubsetCardSummary,
+  pickText
+} from "../../lib/api";
+import {
+  useStore,
+  WORKSPACE_STEPS,
+  type WorkspaceStep
+} from "../../store/useStore";
+import { ComparisonStep } from "./ComparisonStep";
+import { CorpusStep } from "./CorpusStep";
+import { DataStep } from "./DataStep";
+import { InferenceStep } from "./InferenceStep";
+import { TopicsStep } from "./TopicsStep";
+import { ValidationStep } from "./ValidationStep";
 
-type StepStatus = "ready" | "prototype" | "blocked";
-
-interface StepCard {
-  id: string;
-  title: string;
-  description: string;
-  status: StepStatus;
-}
-
-const STEPS_EN: StepCard[] = [
-  {
-    id: "data",
-    title: "Data",
-    description:
-      "Scene preview, spectral curves, labels and measurements for the selected subset.",
-    status: "prototype"
-  },
-  {
-    id: "corpus",
-    title: "Corpus",
-    description:
-      "Recipe selector with alphabet, word and document declarations plus document-length distribution.",
-    status: "prototype"
-  },
-  {
-    id: "topics",
-    title: "Topics",
-    description:
-      "Topic-word distributions, document-topic mixtures, multi-seed stability metrics, topic maps.",
-    status: "prototype"
-  },
-  {
-    id: "comparison",
-    title: "Comparison",
-    description:
-      "Topic outputs versus SLIC superpixels, KMeans, GMM, SAM reference alignment, NMF unmixing.",
-    status: "prototype"
-  },
-  {
-    id: "inference",
-    title: "Inference",
-    description:
-      "Hidden when the subset has no labels or measurements. Otherwise: target selector, splits, baselines, topic-routed metrics.",
-    status: "blocked"
-  },
-  {
-    id: "validation",
-    title: "Validation",
-    description:
-      "Per-block status with metrics, caveats, and the supported / blocked claims for the selected subset.",
-    status: "prototype"
-  }
-];
-
-const STEPS_ES: StepCard[] = [
-  {
-    id: "data",
-    title: "Datos",
-    description:
-      "Preview de la escena, curvas espectrales, etiquetas y mediciones del subset elegido.",
-    status: "prototype"
-  },
-  {
-    id: "corpus",
-    title: "Corpus",
-    description:
-      "Selector de receta con declaraciones de alfabeto, palabra y documento, mas distribucion de largo.",
-    status: "prototype"
-  },
-  {
-    id: "topics",
-    title: "Topicos",
-    description:
-      "Distribuciones topico-palabra, mezclas documento-topico, estabilidad multi-seed, mapas de topicos.",
-    status: "prototype"
-  },
-  {
-    id: "comparison",
-    title: "Comparacion",
-    description:
-      "Salidas de topicos vs SLIC, KMeans, GMM, SAM y NMF unmixing.",
-    status: "prototype"
-  },
-  {
-    id: "inference",
-    title: "Inferencia",
-    description:
-      "Oculto si el subset no tiene etiquetas ni mediciones. En caso contrario: targets, splits, baselines y modelos topic-routed.",
-    status: "blocked"
-  },
-  {
-    id: "validation",
-    title: "Validacion",
-    description:
-      "Estado por bloque con metricas, caveats y claims soportados o bloqueados para el subset elegido.",
-    status: "prototype"
-  }
-];
-
-const STATUS_LABEL: Record<StepStatus, { en: string; es: string }> = {
-  ready: { en: "ready", es: "listo" },
-  prototype: { en: "in build", es: "en construccion" },
-  blocked: { en: "gated", es: "gateado" }
+const STEP_LABEL_EN: Record<WorkspaceStep, string> = {
+  data: "Data",
+  corpus: "Corpus",
+  topics: "Topics",
+  comparison: "Comparison",
+  inference: "Inference",
+  validation: "Validation"
 };
 
-const STATUS_CLASS: Record<StepStatus, string> = {
-  ready: "overview-status-active",
-  prototype: "overview-status-prototype",
-  blocked: "overview-status-research"
+const STEP_LABEL_ES: Record<WorkspaceStep, string> = {
+  data: "Datos",
+  corpus: "Corpus",
+  topics: "Topicos",
+  comparison: "Comparacion",
+  inference: "Inferencia",
+  validation: "Validacion"
 };
 
 export function Workspace() {
   const { t, i18n } = useTranslation();
   const language = i18n.language.startsWith("en") ? "en" : "es";
-  const steps = language === "en" ? STEPS_EN : STEPS_ES;
+
+  const selectedFamilyId = useStore((s) => s.selectedFamilyId);
+  const setSelectedFamilyId = useStore((s) => s.setSelectedFamilyId);
+  const selectedSubsetId = useStore((s) => s.selectedSubsetId);
+  const setSelectedSubsetId = useStore((s) => s.setSelectedSubsetId);
+  const workspaceStep = useStore((s) => s.workspaceStep);
+  const setWorkspaceStep = useStore((s) => s.setWorkspaceStep);
+  const selectedRecipeId = useStore((s) => s.selectedRecipeId);
+  const setSelectedRecipeId = useStore((s) => s.setSelectedRecipeId);
+
+  const [families, setFamilies] = useState<DataFamiliesPayload | null>(null);
   const [index, setIndex] = useState<SubsetCardsIndex | null>(null);
+  const [card, setCard] = useState<SubsetCard | null>(null);
   const [missing, setMissing] = useState(false);
+  const [loadingCard, setLoadingCard] = useState(false);
 
   useEffect(() => {
+    void api.getDataFamilies().then(setFamilies);
     void api
       .getSubsetCardsIndex()
       .then((idx) => {
@@ -134,42 +73,238 @@ export function Workspace() {
       });
   }, []);
 
+  useEffect(() => {
+    if (!selectedSubsetId) {
+      setCard(null);
+      return;
+    }
+    setLoadingCard(true);
+    void api
+      .getSubsetCard(selectedSubsetId)
+      .then((c) => {
+        setCard(c);
+        if (
+          selectedRecipeId === null &&
+          c.corpus.length > 0
+        ) {
+          setSelectedRecipeId(c.corpus[0].recipe_id);
+        }
+      })
+      .catch(() => setCard(null))
+      .finally(() => setLoadingCard(false));
+  }, [selectedSubsetId, selectedRecipeId, setSelectedRecipeId]);
+
+  const subsetsByFamily = useMemo(() => {
+    if (!index) return new Map<string, SubsetCardSummary[]>();
+    const map = new Map<string, SubsetCardSummary[]>();
+    for (const summary of index.cards) {
+      const list = map.get(summary.family_id) ?? [];
+      list.push(summary);
+      map.set(summary.family_id, list);
+    }
+    return map;
+  }, [index]);
+
+  const familiesWithSubsets = useMemo(() => {
+    if (!families || !index) return [];
+    return families.families.filter((f) =>
+      subsetsByFamily.has(f.id) && (subsetsByFamily.get(f.id)?.length ?? 0) > 0
+    );
+  }, [families, index, subsetsByFamily]);
+
+  const visibleSubsets = useMemo(() => {
+    if (!selectedFamilyId) return [];
+    return subsetsByFamily.get(selectedFamilyId) ?? [];
+  }, [selectedFamilyId, subsetsByFamily]);
+
+  const stepLabels = language === "en" ? STEP_LABEL_EN : STEP_LABEL_ES;
+
+  const stepStatusById = useMemo(() => {
+    const map = new Map<string, string>();
+    if (card) {
+      for (const entry of card.workflow_steps) {
+        map.set(entry.step, entry.status);
+      }
+    }
+    return map;
+  }, [card]);
+
+  const renderStep = () => {
+    if (!card) return null;
+    switch (workspaceStep) {
+      case "data":
+        return <DataStep card={card} language={language} />;
+      case "corpus":
+        return (
+          <CorpusStep
+            card={card}
+            language={language}
+            selectedRecipeId={selectedRecipeId}
+            onRecipeChange={setSelectedRecipeId}
+          />
+        );
+      case "topics":
+        return <TopicsStep card={card} language={language} />;
+      case "comparison":
+        return <ComparisonStep card={card} language={language} />;
+      case "inference":
+        return <InferenceStep card={card} language={language} />;
+      case "validation":
+        return <ValidationStep card={card} language={language} />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <section className="workspace-placeholder section">
+    <section className="workspace section">
       <div>
         <h2 className="section-title">{t("tabWorkspace")}</h2>
         <p className="section-lead">{t("workspaceLead")}</p>
       </div>
 
-      {missing ? (
-        <p className="benchmarks-callout">{t("benchmarksMissing")}</p>
-      ) : (
-        <div className="workspace-subset-row">
-          {(index?.cards ?? []).map((card) => (
-            <span key={card.id} className="subset-pill">
-              <span
-                className={`subset-pill-dot ${card.status}`}
-                aria-hidden="true"
-              />
-              {pickText(card.title, language)}
+      {/* ============= Selection block ============= */}
+      <div className="workspace-selection">
+        <div className="workspace-selection-step">
+          <span className="workspace-step-marker">1</span>
+          <div className="workspace-selection-body">
+            <span className="workspace-selection-label">
+              {language === "en" ? "Pick a family" : "Elige una familia"}
             </span>
-          ))}
+            {missing ? (
+              <p className="benchmarks-callout">{t("benchmarksMissing")}</p>
+            ) : (
+              <div className="datasets-family-row">
+                {familiesWithSubsets.map((family) => {
+                  const supervision = family.supervision_states.join(", ");
+                  return (
+                    <button
+                      key={family.id}
+                      type="button"
+                      className={
+                        family.id === selectedFamilyId
+                          ? "family-pill is-active"
+                          : "family-pill"
+                      }
+                      onClick={() => {
+                        setSelectedFamilyId(family.id);
+                        setSelectedSubsetId(null);
+                        setCard(null);
+                        setSelectedRecipeId(null);
+                      }}
+                    >
+                      <span className="family-pill-code">Family {family.code}</span>
+                      <span className="family-pill-name">
+                        {pickText(family.title, language)}
+                      </span>
+                      <span className="family-pill-supervision">
+                        {language === "en" ? "Supervision: " : "Supervision: "}
+                        {supervision || (language === "en" ? "none" : "ninguna")}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
-      )}
 
-      <div className="workspace-step-board">
-        {steps.map((step) => (
-          <article key={step.id} className="workspace-step-card">
-            <span
-              className={`workspace-step-card-status overview-status ${STATUS_CLASS[step.status]}`}
-            >
-              {STATUS_LABEL[step.status][language]}
+        <div className="workspace-selection-step">
+          <span className="workspace-step-marker">2</span>
+          <div className="workspace-selection-body">
+            <span className="workspace-selection-label">
+              {language === "en" ? "Pick a subset" : "Elige un subset"}
             </span>
-            <h4>{step.title}</h4>
-            <p>{step.description}</p>
-          </article>
-        ))}
+            {!selectedFamilyId ? (
+              <p className="workspace-selection-empty">
+                {language === "en"
+                  ? "Pick a family above first."
+                  : "Elige una familia arriba primero."}
+              </p>
+            ) : visibleSubsets.length === 0 ? (
+              <p className="workspace-selection-empty">
+                {language === "en"
+                  ? "No public subsets available for this family yet."
+                  : "Aun no hay subsets publicos para esta familia."}
+              </p>
+            ) : (
+              <div className="workspace-subset-grid">
+                {visibleSubsets.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={
+                      s.id === selectedSubsetId
+                        ? "workspace-subset-card is-active"
+                        : "workspace-subset-card"
+                    }
+                    onClick={() => {
+                      setSelectedSubsetId(s.id);
+                      setSelectedRecipeId(null);
+                    }}
+                  >
+                    <span className="workspace-subset-card-head">
+                      <span className={`subset-pill-dot ${s.status}`} aria-hidden />
+                      <span className="workspace-subset-status">{s.status}</span>
+                    </span>
+                    <span className="workspace-subset-card-title">
+                      {pickText(s.title, language)}
+                    </span>
+                    <span className="workspace-subset-card-id">{s.id}</span>
+                    <span className="workspace-subset-card-foot">
+                      {language === "en" ? "Validated" : "Validado"}{" "}
+                      {s.last_validated ?? "—"}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* ============= Step canvas ============= */}
+      {selectedSubsetId && card ? (
+        <div className="workspace-canvas">
+          <div className="workspace-canvas-head">
+            <span className="workspace-canvas-eyebrow">
+              {language === "en" ? "Active subset" : "Subset activo"}
+            </span>
+            <h3 className="workspace-canvas-title">
+              {pickText(card.title, language)}
+            </h3>
+            <p className="workspace-canvas-lead">{pickText(card.summary, language)}</p>
+          </div>
+
+          <SubTabBar<WorkspaceStep>
+            tabs={WORKSPACE_STEPS.map((s) => ({
+              id: s,
+              label:
+                stepStatusById.get(s) === "blocked"
+                  ? `${stepLabels[s]} ·`
+                  : stepLabels[s]
+            }))}
+            active={workspaceStep}
+            onChange={setWorkspaceStep}
+          />
+
+          <div className="workspace-step-canvas">
+            {loadingCard ? (
+              <p className="benchmarks-loading">{t("loading")}</p>
+            ) : (
+              renderStep()
+            )}
+          </div>
+        </div>
+      ) : selectedSubsetId && loadingCard ? (
+        <p className="benchmarks-loading">{t("loading")}</p>
+      ) : (
+        <p className="workspace-selection-empty">
+          {language === "en"
+            ? "Pick a family and a subset above to start."
+            : "Elige una familia y un subset arriba para empezar."}
+        </p>
+      )}
     </section>
   );
 }

@@ -18,6 +18,23 @@ export type OverviewSubTab =
   | "methodology"
   | "references";
 
+export type WorkspaceStep =
+  | "data"
+  | "corpus"
+  | "topics"
+  | "comparison"
+  | "inference"
+  | "validation";
+
+export const WORKSPACE_STEPS: WorkspaceStep[] = [
+  "data",
+  "corpus",
+  "topics",
+  "comparison",
+  "inference",
+  "validation"
+];
+
 export const APP_TABS: AppTab[] = [
   "landing",
   "overview",
@@ -46,6 +63,10 @@ interface StoreState {
   setSelectedFamilyId: (id: string | null) => void;
   selectedSubsetId: string | null;
   setSelectedSubsetId: (id: string | null) => void;
+  workspaceStep: WorkspaceStep;
+  setWorkspaceStep: (step: WorkspaceStep) => void;
+  selectedRecipeId: string | null;
+  setSelectedRecipeId: (id: string | null) => void;
   selectedRepresentation: string;
   setSelectedRepresentation: (id: string) => void;
   selectedSampleId: string | null;
@@ -71,6 +92,10 @@ export const useStore = create<StoreState>()(
       setSelectedFamilyId: (id) => set({ selectedFamilyId: id }),
       selectedSubsetId: null,
       setSelectedSubsetId: (id) => set({ selectedSubsetId: id }),
+      workspaceStep: "data",
+      setWorkspaceStep: (step) => set({ workspaceStep: step }),
+      selectedRecipeId: null,
+      setSelectedRecipeId: (id) => set({ selectedRecipeId: id }),
       selectedRepresentation: "a",
       setSelectedRepresentation: (id) => set({ selectedRepresentation: id }),
       selectedSampleId: null,
@@ -86,6 +111,8 @@ export const useStore = create<StoreState>()(
         overviewSubTab: state.overviewSubTab,
         selectedFamilyId: state.selectedFamilyId,
         selectedSubsetId: state.selectedSubsetId,
+        workspaceStep: state.workspaceStep,
+        selectedRecipeId: state.selectedRecipeId,
         selectedRepresentation: state.selectedRepresentation
       })
     }
