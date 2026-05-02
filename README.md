@@ -42,6 +42,8 @@ The repository now includes:
 - the repo is being rebuilt around a local scientific workflow first
 - the new accepted app direction is interactive-only for spectral and
   scene evidence
+- persistent branch, plan, and deploy state lives in
+  `../_CAOS_MANAGE/wip/caos-lda-hsi/`
 
 ## Repository Layout
 
@@ -163,6 +165,12 @@ Useful commands:
 - `docs/product-reset-research.md`
 - `docs/technical-roadmap.md`
 - `docs/sources.md`
+- public wiki:
+  <https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki>
+- `../_CAOS_MANAGE/wip/caos-lda-hsi/README.md`
+- `../_CAOS_MANAGE/wip/caos-lda-hsi/current-state.md`
+- `../_CAOS_MANAGE/wip/caos-lda-hsi/offline-validation-plan.md`
+- `../_CAOS_MANAGE/wip/caos-lda-hsi/web-app-projection-plan.md`
 
 ## Immediate Next Steps
 
