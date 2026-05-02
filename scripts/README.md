@@ -118,12 +118,31 @@ laptop.
 
 | Subcommand | Effect |
 |---|---|
-| `clean` | Remove `frontend/dist`, `frontend/.vite`, `__pycache__` |
+| `logs` | Tail the most recent backend dev log under `.runtime/logs/` |
+| `clean` | Remove `frontend/dist`, `frontend/.vite`, `__pycache__`, `.runtime/`, and any stray `uvicorn-*.log` from the repo root |
 | `stop` | Kill local Python and Node processes started from this repo |
 | `help` | Print the same reference |
 
 The venvs (`.venv`, `.venv-pipeline`) and `data/raw/` are **not**
 removed by `clean`. Delete them manually for a fully clean slate.
+
+## Where do logs go?
+
+Backend dev logs live under `.runtime/logs/uvicorn-dev-<timestamp>.{out,err}.log`.
+This folder is git-ignored (`.runtime/`) so logs **never** leak to the
+repo root or to any commit.
+
+- `dev` redirects uvicorn stdout / stderr there explicitly. The
+  PowerShell runner uses `Start-Process -RedirectStandardOutput`; the
+  bash runner uses `>file 2>file`.
+- `preview` runs uvicorn in the foreground so logs go to your terminal,
+  not to a file.
+- Production (VPS) is launched by systemd; logs go to
+  `journalctl -u fasl-lda-hsi.service`, never to disk in the repo.
+
+If older tooling created stray `uvicorn-*.log` files at the repo root,
+`clean` purges them along with `.runtime/`. Run `scripts/local.* logs`
+to tail the most recent dev log without paging through the directory.
 
 ## End-to-end clean install in one paragraph
 

@@ -10,7 +10,7 @@ param(
         # setup
         "setup-web", "setup-pipeline", "setup-frontend", "setup-all",
         # web
-        "dev", "build", "preview", "demo", "smoke",
+        "dev", "build", "preview", "demo", "smoke", "logs",
         # pipeline -- fetch
         "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing",
         "fetch-hidsag", "fetch-ecostress", "fetch-all",
@@ -48,6 +48,7 @@ function Show-Help {
     Write-Host "  preview                     Build the frontend, regenerate demo, run FastAPI on :8105"
     Write-Host "  demo                        Rebuild the synthetic demo payload"
     Write-Host "  smoke                       Smoke-test a running local app at http://127.0.0.1:8105"
+    Write-Host "  logs                        Tail the most recent backend dev log under .runtime/logs/"
     Write-Host ""
     Write-Host "Pipeline -- fetch:" -ForegroundColor Yellow
     Write-Host "  fetch                       UPV/EHU public HSI scenes"
@@ -159,9 +160,17 @@ switch ($Command) {
         Initialize-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_demo.py | Out-Null
         Update-DerivedIfMissing
-        Write-Host "[backend] uvicorn :8105 (in background)" -ForegroundColor Green
+        # Route backend logs to .runtime/logs/ so nothing leaks into the repo root.
+        if (-not (Test-Path ".runtime\logs")) {
+            New-Item -ItemType Directory -Path ".runtime\logs" -Force | Out-Null
+        }
+        $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+        $outLog = ".runtime\logs\uvicorn-dev-$stamp.out.log"
+        $errLog = ".runtime\logs\uvicorn-dev-$stamp.err.log"
+        Write-Host "[backend] uvicorn :8105 -> $outLog" -ForegroundColor Green
         $back = Start-Process -PassThru -NoNewWindow -FilePath ".\.venv\Scripts\python.exe" `
-            -ArgumentList "-m","uvicorn","app.main:app","--reload","--host","127.0.0.1","--port","8105"
+            -ArgumentList "-m","uvicorn","app.main:app","--reload","--host","127.0.0.1","--port","8105" `
+            -RedirectStandardOutput $outLog -RedirectStandardError $errLog
         Start-Sleep -Seconds 1
         Push-Location frontend
         try {
@@ -171,6 +180,22 @@ switch ($Command) {
             Pop-Location
             if ($back -and -not $back.HasExited) { Stop-Process -Id $back.Id -Force }
         }
+    }
+
+    "logs" {
+        if (-not (Test-Path ".runtime\logs")) {
+            Write-Host "No logs yet. Run dev first." -ForegroundColor DarkGray
+            break
+        }
+        $latest = Get-ChildItem ".runtime\logs" -Filter "*.out.log" |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+        if (-not $latest) {
+            Write-Host "No .out.log files in .runtime/logs/." -ForegroundColor DarkGray
+            break
+        }
+        Write-Host "Tailing $($latest.FullName) ..." -ForegroundColor Green
+        Get-Content -Path $latest.FullName -Tail 50 -Wait
     }
 
     "build" {
@@ -261,7 +286,10 @@ switch ($Command) {
         Get-ChildItem -Recurse -Force -Directory -Filter "__pycache__" | Remove-Item -Recurse -Force
         if (Test-Path "frontend\dist") { Remove-Item -Recurse -Force "frontend\dist" }
         if (Test-Path "frontend\.vite") { Remove-Item -Recurse -Force "frontend\.vite" }
-        Write-Host "Cleaned build outputs." -ForegroundColor Green
+        if (Test-Path ".runtime") { Remove-Item -Recurse -Force ".runtime" }
+        # Purge any stray uvicorn-*.log files that older tooling may have left in repo root.
+        Get-ChildItem -File -Filter "uvicorn-*.log" -ErrorAction SilentlyContinue | Remove-Item -Force
+        Write-Host "Cleaned build outputs and runtime logs." -ForegroundColor Green
     }
 
     "stop" {

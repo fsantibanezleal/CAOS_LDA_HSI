@@ -30,6 +30,7 @@ Web:
   preview                     Build the frontend, regenerate demo, run FastAPI on :8105
   demo                        Rebuild the synthetic demo payload
   smoke                       Smoke-test a running local app at http://127.0.0.1:8105
+  logs                        Tail the most recent backend dev log under .runtime/logs/
 
 Pipeline -- fetch:
   fetch                       UPV/EHU public HSI scenes
@@ -144,14 +145,34 @@ case "$cmd" in
     ensure_pipeline_venv
     "$PVENV/bin/python" data-pipeline/build_demo.py >/dev/null
     update_derived_if_missing
-    echo "[backend] uvicorn :8105 (in background)"
-    "$VENV/bin/python" -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8105 &
+    # Route backend logs to .runtime/logs/ so nothing leaks into the repo root.
+    mkdir -p .runtime/logs
+    STAMP=$(date +%Y%m%d-%H%M%S)
+    OUT_LOG=".runtime/logs/uvicorn-dev-${STAMP}.out.log"
+    ERR_LOG=".runtime/logs/uvicorn-dev-${STAMP}.err.log"
+    echo "[backend] uvicorn :8105 -> ${OUT_LOG}"
+    "$VENV/bin/python" -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8105 \
+      >"${OUT_LOG}" 2>"${ERR_LOG}" &
     BACK=$!
     trap 'kill $BACK 2>/dev/null || true' EXIT
     sleep 1
     pushd frontend >/dev/null
     if command -v pnpm >/dev/null 2>&1; then pnpm dev; else npm run dev; fi
     popd >/dev/null
+    ;;
+
+  logs)
+    if [ ! -d .runtime/logs ]; then
+      echo "No logs yet. Run dev first."
+      exit 0
+    fi
+    LATEST=$(ls -1t .runtime/logs/*.out.log 2>/dev/null | head -1)
+    if [ -z "${LATEST}" ]; then
+      echo "No .out.log files in .runtime/logs/."
+      exit 0
+    fi
+    echo "Tailing ${LATEST} ..."
+    tail -n 50 -F "${LATEST}"
     ;;
 
   build)
@@ -238,8 +259,10 @@ case "$cmd" in
   # ---- maintenance -----------------------------------------------------
   clean)
     find . -type d -name "__pycache__" -prune -exec rm -rf {} +
-    rm -rf frontend/dist frontend/.vite
-    echo "Cleaned build outputs."
+    rm -rf frontend/dist frontend/.vite .runtime
+    # Purge any stray uvicorn-*.log files that older tooling may have left in repo root.
+    find . -maxdepth 1 -type f -name "uvicorn-*.log" -delete 2>/dev/null || true
+    echo "Cleaned build outputs and runtime logs."
     ;;
 
   stop)
