@@ -676,6 +676,15 @@ def topic_spatial_continuous(scene_id: str) -> dict:
         raise HTTPException(status_code=404, detail=f"topic_spatial_continuous for '{scene_id}' not generated yet") from exc
 
 
+@router.get("/topic-spatial-full/{scene_id}")
+def topic_spatial_full(scene_id: str) -> dict:
+    from app.services.content import get_topic_spatial_full
+    try:
+        return get_topic_spatial_full(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_spatial_full for '{scene_id}' not generated yet") from exc
+
+
 @router.get("/endmember-baseline/{scene_id}")
 def endmember_baseline(scene_id: str) -> dict:
     from app.services.content import get_endmember_baseline

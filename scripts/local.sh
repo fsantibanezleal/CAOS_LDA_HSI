@@ -291,6 +291,7 @@ case "$cmd" in
   build-topic-to-usgs-v7)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_to_usgs_v7.py ;;
   build-topic-anomaly)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_anomaly.py ;;
   build-topic-spatial-continuous) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_spatial_continuous.py ;;
+  build-topic-spatial-full) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_spatial_full.py ;;
   build-endmember-baseline) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_endmember_baseline.py ;;
   build-cross-scene-transfer) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_cross_scene_transfer.py ;;
   build-bayesian-classification-labelled) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_bayesian_classification_labelled.py ;;

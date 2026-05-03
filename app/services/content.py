@@ -451,6 +451,10 @@ def get_topic_spatial_continuous(scene_id: str) -> dict:
     return _load_or_404(get_settings().topic_spatial_continuous_path(scene_id))
 
 
+def get_topic_spatial_full(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_spatial_full_path(scene_id))
+
+
 def get_endmember_baseline(scene_id: str) -> dict:
     return _load_or_404(get_settings().endmember_baseline_path(scene_id))
 

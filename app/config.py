@@ -262,6 +262,9 @@ class Settings(BaseSettings):
     def topic_spatial_continuous_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_spatial_continuous" / f"{scene_id}.json"
 
+    def topic_spatial_full_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_spatial_full" / f"{scene_id}.json"
+
     def endmember_baseline_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "endmember_baseline" / f"{scene_id}.json"
 

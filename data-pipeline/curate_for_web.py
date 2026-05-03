@@ -68,6 +68,7 @@ BUILDER_DIRS = [
     ("build_topic_to_usgs_v7", "topic_to_usgs_v7"),
     ("build_topic_anomaly", "topic_anomaly"),
     ("build_topic_spatial_continuous", "topic_spatial_continuous"),
+    ("build_topic_spatial_full", "topic_spatial_full"),
     ("build_endmember_baseline", "endmember_baseline"),
     ("build_cross_scene_transfer", "cross_scene_transfer"),
     ("build_bayesian_classification_labelled", "method_statistics_labelled"),
@@ -338,8 +339,13 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "topic_spatial_continuous",
-        "description": "B-10 (Addendum B Axis B): Moran's I and Geary's C on the *continuous* per-topic theta_k abundance map with 4-neighbour rook contiguity, complementing the categorical-map Moran's I in build_spatial_validation. BDE deferred (requires per-pixel theta over the full labelled mask, not only the sampled subset).",
+        "description": "B-10 (Addendum B Axis B): Moran's I and Geary's C on the *continuous* per-topic theta_k abundance map with 4-neighbour rook contiguity, complementing the categorical-map Moran's I in build_spatial_validation. Computed on the canonical 220-per-class subsampled positions (matches other builders' theta basis).",
         "source_pattern": "topic_spatial_continuous/<scene>.json",
+    },
+    {
+        "id": "topic_spatial_full",
+        "description": "B-10 follow-up: Moran's I, Geary's C, and Boundary Displacement Error on a *full-pixel* refit of LDA. Each scene's LDA is refit at the canonical K on every labelled pixel (not the 220-per-class subsample) so the abundance maps are dense and BDE has contiguous boundaries. Reveals that KSC's 'topic collapse' (subsampled mean Moran's I = 0.064) is a pipeline artifact of the stratified sampling — the full-pixel refit recovers spatially-coherent topics (mean I = 0.837). The topic basis differs slightly from the canonical fit, so this reading is kept side by side with topic_spatial_continuous rather than replacing it.",
+        "source_pattern": "topic_spatial_full/<scene>.json",
     },
     {
         "id": "endmember_baseline",

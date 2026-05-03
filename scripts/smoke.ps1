@@ -76,6 +76,7 @@ $paths = @(
     "/api/topic-to-usgs-v7/indian-pines-corrected",
     "/api/topic-anomaly/indian-pines-corrected",
     "/api/topic-spatial-continuous/indian-pines-corrected",
+    "/api/topic-spatial-full/indian-pines-corrected",
     "/api/endmember-baseline/indian-pines-corrected",
     "/api/cross-scene-transfer",
     "/api/bayesian-comparison/classification-labelled",
