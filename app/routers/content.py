@@ -645,3 +645,30 @@ def topic_to_usgs_v7(scene_id: str) -> dict:
         return get_topic_to_usgs_v7(scene_id)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=f"topic_to_usgs_v7 for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/topic-anomaly/{scene_id}")
+def topic_anomaly(scene_id: str) -> dict:
+    from app.services.content import get_topic_anomaly
+    try:
+        return get_topic_anomaly(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_anomaly for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/topic-spatial-continuous/{scene_id}")
+def topic_spatial_continuous(scene_id: str) -> dict:
+    from app.services.content import get_topic_spatial_continuous
+    try:
+        return get_topic_spatial_continuous(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_spatial_continuous for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/endmember-baseline/{scene_id}")
+def endmember_baseline(scene_id: str) -> dict:
+    from app.services.content import get_endmember_baseline
+    try:
+        return get_endmember_baseline(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"endmember_baseline for '{scene_id}' not generated yet") from exc

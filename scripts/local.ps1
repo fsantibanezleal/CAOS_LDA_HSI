@@ -35,7 +35,8 @@ param(
         "build-linear-probe-panel", "build-mutual-information",
         "build-rate-distortion-curve", "build-topic-routed-classifier",
         "build-embedded-baseline", "build-topic-stability",
-        "build-topic-to-usgs-v7",
+        "build-topic-to-usgs-v7", "build-topic-anomaly",
+        "build-topic-spatial-continuous", "build-endmember-baseline",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -331,6 +332,9 @@ switch ($Command) {
     "build-embedded-baseline" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_embedded_baseline.py }
     "build-topic-stability"   { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_stability.py }
     "build-topic-to-usgs-v7"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_usgs_v7.py }
+    "build-topic-anomaly"     { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_anomaly.py }
+    "build-topic-spatial-continuous" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_spatial_continuous.py }
+    "build-endmember-baseline" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_endmember_baseline.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv

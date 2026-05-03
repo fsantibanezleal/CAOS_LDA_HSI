@@ -66,6 +66,9 @@ BUILDER_DIRS = [
     ("build_embedded_baseline", "embedded_baseline"),
     ("build_topic_stability", "topic_stability"),
     ("build_topic_to_usgs_v7", "topic_to_usgs_v7"),
+    ("build_topic_anomaly", "topic_anomaly"),
+    ("build_topic_spatial_continuous", "topic_spatial_continuous"),
+    ("build_endmember_baseline", "endmember_baseline"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -325,6 +328,21 @@ CLAIMS_ALLOWED = [
         "id": "topic_to_usgs_v7",
         "description": "B-7 (Addendum B Axis B): topic ↔ full USGS Spectral Library v7 (AVIRIS-Classic 1997 convolution, 2450 spectra across 7 chapters: artificial / coatings / liquids / minerals / organics / soils / vegetation). Per-topic top-20 nearest USGS spectra by cosine and SAM, plus best-match-per-chapter and chapter histogram of the top-50.",
         "source_pattern": "topic_to_usgs_v7/<scene>.json",
+    },
+    {
+        "id": "topic_anomaly",
+        "description": "B-9 (Addendum B Axis B): topic-anomaly indicators 1 - max(theta) (softmax confidence) and reconstruction NLL = -sum_w doc_w * log((theta @ phi)_w). Per-class median / p95 + Spearman correlation between each anomaly score and theta_logistic misclassification.",
+        "source_pattern": "topic_anomaly/<scene>.json",
+    },
+    {
+        "id": "topic_spatial_continuous",
+        "description": "B-10 (Addendum B Axis B): Moran's I and Geary's C on the *continuous* per-topic theta_k abundance map with 4-neighbour rook contiguity, complementing the categorical-map Moran's I in build_spatial_validation. BDE deferred (requires per-pixel theta over the full labelled mask, not only the sampled subset).",
+        "source_pattern": "topic_spatial_continuous/<scene>.json",
+    },
+    {
+        "id": "endmember_baseline",
+        "description": "B-11 (Addendum B Axis G + Axis B): NFINDR (Winter 1999, custom implementation since pysptools' NFINDR is broken on current scipy) and ATGP (Ren-Chang 2003) endmember extractors + scipy.optimize.nnls unmixing with sum-to-one penalty. Per-endmember best-matched topic from canonical LDA fit; reconstruction RMSE on the labelled-pixel subset. Fair HSI baseline alongside NMF and LDA.",
+        "source_pattern": "endmember_baseline/<scene>.json",
     },
 ]
 

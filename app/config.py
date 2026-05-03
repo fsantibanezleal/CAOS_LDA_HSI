@@ -256,6 +256,15 @@ class Settings(BaseSettings):
     def topic_to_usgs_v7_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_to_usgs_v7" / f"{scene_id}.json"
 
+    def topic_anomaly_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_anomaly" / f"{scene_id}.json"
+
+    def topic_spatial_continuous_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_spatial_continuous" / f"{scene_id}.json"
+
+    def endmember_baseline_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "endmember_baseline" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:
