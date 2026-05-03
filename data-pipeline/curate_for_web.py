@@ -38,11 +38,15 @@ MANIFEST_PATH = MANIFEST_DIR / "index.json"
 # Builders + the set of derived directories they own
 BUILDER_DIRS = [
     ("build_eda_per_scene", "eda/per_scene"),
+    ("build_eda_hidsag", "eda/hidsag"),
     ("build_topic_views", "topic_views"),
     ("build_topic_to_data", "topic_to_data"),
+    ("build_topic_to_library", "topic_to_library"),
     ("build_spectral_browser", "spectral_browser"),
     ("build_spectral_density", "spectral_density"),
     ("build_validation_blocks", "validation_blocks"),
+    ("build_wordifications", "wordifications"),
+    ("build_spatial_validation", "spatial"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -167,6 +171,26 @@ CLAIMS_ALLOWED = [
         "id": "validation_block_supervision_association",
         "description": "ARI/NMI of K-means(theta) vs label, plus 5-fold logistic regression macro F1 on theta",
         "source_pattern": "validation_blocks/<scene>.blocks[supervision-association].metrics",
+    },
+    {
+        "id": "hidsag_eda_per_subset",
+        "description": "Per-subset HIDSAG measurement EDA: numeric variable distributions, Pearson and Spearman correlation matrices, dominant targets, modality band counts",
+        "source_pattern": "eda/hidsag/<subset_code>.json",
+    },
+    {
+        "id": "topic_to_library_top_n",
+        "description": "Top-5 USGS / AVIRIS spectral-library samples per topic by cosine and SAM, plus the full topic x library distance matrices",
+        "source_pattern": "topic_to_library/<scene>.{top_n_per_topic,topic_x_library_*}",
+    },
+    {
+        "id": "spatial_validation_morans_I_iou",
+        "description": "Moran's I of dominant-topic map, connected-component sizes per topic, and best-IoU label for each topic",
+        "source_pattern": "spatial/<scene>.{morans_I_*,connected_components_per_topic,topic_label_iou}",
+    },
+    {
+        "id": "wordifications_v1_v2_v3_grid",
+        "description": "V1, V2, V3 recipes (V3 = band-bin ordered, the previously-missing Procemin recipe) at 3 quantization schemes (uniform, quantile, lloyd_max) x 3 Q values (8, 16, 32). Per-config vocab stats, document-length distribution, zero-token-doc rate, corpus-marginal entropy bits, top-20 tokens.",
+        "source_pattern": "wordifications/<scene>_<recipe>_<scheme>_Q<q>.json",
     },
 ]
 
