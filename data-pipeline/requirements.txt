@@ -1,30 +1,129 @@
 # Pinned dependencies for the CAOS LDA HSI data pipeline (.venv-pipeline).
 #
-# This file is the heavy scientific stack. The runtime backend (.venv) lives
-# under the repo-root requirements.txt and is intentionally smaller.
+# Heavy scientific stack for the precompute layer (master plan section 18 / 19).
+# The runtime backend lives under the repo-root requirements.txt.
 #
-# When upgrading: bump versions in lockstep, regenerate compact derived
-# assets, and run `scripts/local.ps1 build-local-core` plus the local
-# smoke checks before committing.
-#
-# The active pipeline uses scikit-learn's LatentDirichletAllocation
-# (online variational Bayes) — gensim / pyLDAvis are only relevant for
-# the historical notebook in legacy/notebooks/ and are not pinned here.
+# Reproducible install:
+#   scripts/local.ps1 setup-pipeline    # creates .venv-pipeline and installs this file
 
-# Core numerics
+# ===========================================================================
+# Core numerics / data / parallel
+# ===========================================================================
 numpy==2.2.0
 scipy==1.14.1
-
-# Storage backends
-h5py==3.16.0
-tifffile==2026.4.11
-
-# Imaging
-Pillow==12.2.0
-scikit-image==0.26.0
-
-# ML and topic modelling
-scikit-learn==1.6.0
-
-# Acquisition utilities
+pandas==2.3.3
+polars==1.40.1
+numba==0.62.1
+dask==2026.3.0
+distributed==2026.3.0
+joblib==1.5.3
+pyarrow==23.0.1
+cloudpickle==3.1.2
+tqdm==4.67.3
 requests==2.33.1
+einops==0.8.2
+
+# ===========================================================================
+# Hyperspectral I/O / geospatial
+# ===========================================================================
+spectral==0.24                # SPy — ENVI / HDR / ECOSTRESS / USGS readers
+rasterio==1.5.0               # GDAL bindings — georeferenced HSI
+rioxarray==0.22.0             # xarray + rasterio for CRS-aware cubes
+xarray==2026.4.0              # labelled multi-dim arrays
+h5py==3.16.0                  # HDF5 (PRISMA, EnMAP, custom)
+tifffile==2026.4.11           # TIFF / OME-TIFF / BigTIFF
+pymatreader==1.2.2            # MATLAB v7.3 .mat readers (HIDSAG)
+geopandas==1.1.3
+shapely==2.1.2
+pyproj==3.7.2
+earthpy==0.9.4
+
+# ===========================================================================
+# Spectral processing / quantization tooling
+# ===========================================================================
+pysptools==0.15.0             # SAM / SID / NFINDR / PPI / ATGP / MNF / unmixing
+spectres==2.2.2               # flux-conserving spectral resampling
+PyWavelets==1.9.0             # discrete wavelet transforms (V6 recipe)
+ssqueezepy==0.6.6             # synchrosqueezing transforms
+scikit-image==0.26.0          # SLIC / Felzenszwalb / watershed / regionprops
+jenkspy==0.4.1                # Jenks natural breaks (1D quantization)
+astropy==7.2.0                # astropy.stats.bayesian_blocks for variable-Q
+astropy-iers-data==0.2026.4.27.1.3.2
+nanopq==0.2.2                 # product quantization (codebook tokens)
+
+# ===========================================================================
+# General ML
+# ===========================================================================
+scikit-learn==1.6.0
+sklearn-compat==0.1.5
+imbalanced-learn==0.14.1      # SMOTE / ADASYN / undersampling
+shap==0.51.0                  # interpretability of theta-feature classifiers
+optuna==4.8.0                 # Bayesian hyperparameter search (replaces failed octis)
+Pillow==12.2.0
+
+# ===========================================================================
+# Multivariate / factor analysis (non-LDA reference factorisations)
+# ===========================================================================
+prince==0.17.2                # PCA / MCA / CA / FAMD / MFA
+factor-analyzer==0.3.1        # rotated FA (varimax, promax)
+
+# ===========================================================================
+# Statistics
+# ===========================================================================
+statsmodels==0.14.6
+pingouin==0.6.1               # Cohen d / Cliff δ / paired tests / Holm
+scikit-posthocs==0.12.0       # Nemenyi / Conover-Iman / Dunn post-hoc tests
+pymc==5.28.5                  # Bayesian hierarchical method comparison
+arviz==0.23.4                 # ArviZ diagnostics + comparison helpers
+
+# ===========================================================================
+# Probabilistic topic modelling — classical
+# ===========================================================================
+gensim==4.4.0                 # LdaModel / LdaMulticore / HdpModel / EnsembleLda / CoherenceModel
+tomotopy==0.14.0              # primary engine: LDA / HDP / CT / PA / sLDA / DMR / DT / PT in C++
+pyLDAvis==3.4.1               # LDAvis-faithful HTML/JSON output
+corextopic==1.1               # Correlation Explanation + anchor words
+lda==3.0.2                    # Riddell collapsed Gibbs LDA reference
+
+# ===========================================================================
+# Probabilistic topic modelling — neural / probabilistic programming
+# ===========================================================================
+torch==2.11.0
+torchvision==0.26.0
+torchmetrics==1.9.0
+pytorch-lightning==2.6.1
+lightning-utilities==0.15.3
+pyro-ppl==1.9.1               # ProdLDA / ETM / VAE in Pyro
+pyro-api==0.1.2
+numpyro==0.21.0               # JAX-backed Bayesian programming
+jax==0.10.0
+jaxlib==0.10.0
+contextualized-topic-models==2.6.1   # CombinedTM / ZeroShotTM (Bianchi 2021)
+nltk==3.9.4
+
+# ===========================================================================
+# Embedding-based topics
+# ===========================================================================
+bertopic==0.17.4
+sentence-transformers==5.4.1
+transformers==5.7.0
+top2vec==1.0.36
+faiss-cpu==1.13.2
+
+# ===========================================================================
+# Dimensionality reduction / clustering
+# ===========================================================================
+umap-learn==0.5.12
+openTSNE==1.0.4
+pacmap==0.9.1
+hdbscan==0.8.42
+
+# ===========================================================================
+# Experiment tracking
+# ===========================================================================
+mlflow==3.11.1
+
+# ===========================================================================
+# Headless figures (PNGs the web app may serve; no interactive viz here)
+# ===========================================================================
+matplotlib==3.10.0

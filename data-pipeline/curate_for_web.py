@@ -49,6 +49,12 @@ BUILDER_DIRS = [
     ("build_spatial_validation", "spatial"),
     ("build_groupings", "groupings"),
     ("build_cross_method_agreement", "cross_method_agreement"),
+    ("build_quantization_sensitivity", "quantization_sensitivity"),
+    ("build_topic_model_variants", "topic_variants"),
+    ("build_method_statistics_hidsag", "method_statistics_hidsag"),
+    ("build_external_validation", "external_validation"),
+    ("build_narratives", "narratives"),
+    ("build_interpretability", "interpretability"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -203,6 +209,51 @@ CLAIMS_ALLOWED = [
         "id": "cross_method_agreement_matrix",
         "description": "Pairwise ARI / NMI / V-measure matrix between every grouping method (label, dominant LDA topic, every method from build_groupings) per scene. Quantifies how different ways of grouping spectra agree or disagree.",
         "source_pattern": "cross_method_agreement/<scene>.{ari_matrix,nmi_matrix,v_measure_matrix}",
+    },
+    {
+        "id": "quantization_sensitivity",
+        "description": "Per-scene Hungarian-matched cosine and ARI of the canonical LDA fit vs probe fits over recipe x scheme x Q grid. Closes the validation block 'quantization-sensitivity'.",
+        "source_pattern": "quantization_sensitivity/<scene>.{probes,summary}",
+    },
+    {
+        "id": "topic_model_variants",
+        "description": "Multi-library topic-model variants (sklearn online / sparse, NMF, gensim VB / multicore, tomotopy LDA / HDP / CTM, ProdLDA via Pyro). Each variant produces phi, theta, top_words, NPMI coherence, JS-MDS 2D coords and pairwise distance matrices.",
+        "source_pattern": "topic_variants/<variant>/<scene>.json",
+    },
+    {
+        "id": "method_statistics_hidsag",
+        "description": "Per-HIDSAG-subset statistical enrichment of the existing measured-target benchmarks: bootstrap CI95, pairwise Wilcoxon signed-rank with Holm correction, Cliff's delta, Friedman chi-square + Nemenyi post-hoc on R2 and macro F1 across targets, plus per-target rank and win-rate.",
+        "source_pattern": "method_statistics_hidsag/<subset>.json",
+    },
+    {
+        "id": "external_validation_literature",
+        "description": "Per-scene topic alignment to canonical literature signatures (kaolinite / alunite / hematite / calcite / chlorite / muscovite / illite-smectite / concrete / asphalt / vegetation) using AVIRIS-resampled cosine matching against the shipped USGS subset.",
+        "source_pattern": "external_validation/<scene>_literature.json",
+    },
+    {
+        "id": "external_validation_hidsag_methods",
+        "description": "Per-HIDSAG-subset best-method headline (regression and classification) extracted from method_statistics_hidsag for the eventual web app's headline panel.",
+        "source_pattern": "external_validation/<subset>_methods.json",
+    },
+    {
+        "id": "narratives",
+        "description": "Per-scene 'captures / separates / unites / enables' rollup across every method present in cross_method_agreement, fed by EDA, topic_views, topic_to_data, topic_to_library, spatial, validation_blocks, external_validation. The eventual web app's method comparison panel reads from here.",
+        "source_pattern": "narratives/<scene>.json",
+    },
+    {
+        "id": "interpretability_topic_cards",
+        "description": "Per-topic interpretability card: peak wavelength, FWHM, top words at lambda 0.5/0.7, P(label|topic) top-3, KL to label prior, closest USGS top-3, closest literature category, spatial best-IoU label and connected components.",
+        "source_pattern": "interpretability/<scene>/topic_cards.json",
+    },
+    {
+        "id": "interpretability_band_cards",
+        "description": "Per-band interpretability card: Fisher ratio, ANOVA F + p, mutual information vs label, contribution per topic.",
+        "source_pattern": "interpretability/<scene>/band_cards.json",
+    },
+    {
+        "id": "interpretability_document_cards",
+        "description": "Per-top-document interpretability card: theta vector, dominant topic, label, location.",
+        "source_pattern": "interpretability/<scene>/document_cards.json",
     },
 ]
 
