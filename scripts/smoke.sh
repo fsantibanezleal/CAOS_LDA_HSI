@@ -15,6 +15,8 @@ paths=(
   "/api/local-validation-matrix"
   "/api/local-dataset-inventory"
   "/api/local-core-benchmarks"
+  "/api/exploration-views"
+  "/api/method-statistics"
   "/api/subset-cards"
   "/api/subset-cards/salinas-labeled-scene-pack"
   "/api/subset-cards/cuprite-exploratory-mineral-pack"
