@@ -37,6 +37,8 @@ param(
         "build-embedded-baseline", "build-topic-stability",
         "build-topic-to-usgs-v7", "build-topic-anomaly",
         "build-topic-spatial-continuous", "build-endmember-baseline",
+        "build-cross-scene-transfer",
+        "build-bayesian-classification-labelled",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -335,6 +337,8 @@ switch ($Command) {
     "build-topic-anomaly"     { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_anomaly.py }
     "build-topic-spatial-continuous" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_spatial_continuous.py }
     "build-endmember-baseline" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_endmember_baseline.py }
+    "build-cross-scene-transfer" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_cross_scene_transfer.py }
+    "build-bayesian-classification-labelled" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_bayesian_classification_labelled.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv

@@ -69,6 +69,8 @@ BUILDER_DIRS = [
     ("build_topic_anomaly", "topic_anomaly"),
     ("build_topic_spatial_continuous", "topic_spatial_continuous"),
     ("build_endmember_baseline", "endmember_baseline"),
+    ("build_cross_scene_transfer", "cross_scene_transfer"),
+    ("build_bayesian_classification_labelled", "method_statistics_labelled"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -343,6 +345,16 @@ CLAIMS_ALLOWED = [
         "id": "endmember_baseline",
         "description": "B-11 (Addendum B Axis G + Axis B): NFINDR (Winter 1999, custom implementation since pysptools' NFINDR is broken on current scipy) and ATGP (Ren-Chang 2003) endmember extractors + scipy.optimize.nnls unmixing with sum-to-one penalty. Per-endmember best-matched topic from canonical LDA fit; reconstruction RMSE on the labelled-pixel subset. Fair HSI baseline alongside NMF and LDA.",
         "source_pattern": "endmember_baseline/<scene>.json",
+    },
+    {
+        "id": "cross_scene_transfer",
+        "description": "B-8 (Addendum B Axis E): cross-scene topic transfer via fit-on-A-infer-on-B on a common AVIRIS-1997 wavelength grid (400-2500 nm, 224 bands). Five AVIRIS-class scenes (Pavia U excluded as ROSIS) — Indian Pines, Salinas, Salinas-A, KSC, Botswana — resampled to the shared grid; per-source LDA at canonical K; per-target 5-fold StratifiedKFold theta-logistic macro F1. The diagonal is the within-scene baseline; off-diagonals quantify how transferable the source's topic structure is.",
+        "source_pattern": "cross_scene_transfer/transfer_matrix.json",
+    },
+    {
+        "id": "bayesian_classification_labelled",
+        "description": "Bayesian hierarchical normal model on labelled-scene per-fold macro F1 across raw_logistic / theta_logistic / pca_K_logistic / topic_routed_hard / topic_routed_soft. 30 observations per method (6 scenes × 5 folds); pools across scenes via offset_scene[s], folds via fold_re[f]. Reports per-method posterior mean + HDI94 + pairwise P(mu_a > mu_b). Closes the follow-up from B-3: include the soft-routed embedded readout in a Bayesian dominance reading on labelled scenes (the existing cross_classification_bayesian is HIDSAG-only and predates B-3).",
+        "source_pattern": "method_statistics_labelled/cross_classification_bayesian.json",
     },
 ]
 

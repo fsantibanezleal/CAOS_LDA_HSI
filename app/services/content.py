@@ -453,3 +453,11 @@ def get_topic_spatial_continuous(scene_id: str) -> dict:
 
 def get_endmember_baseline(scene_id: str) -> dict:
     return _load_or_404(get_settings().endmember_baseline_path(scene_id))
+
+
+def get_cross_scene_transfer() -> dict:
+    return _load_or_404(get_settings().cross_scene_transfer_path)
+
+
+def get_bayesian_classification_labelled() -> dict:
+    return _load_or_404(get_settings().bayesian_classification_labelled_path)
