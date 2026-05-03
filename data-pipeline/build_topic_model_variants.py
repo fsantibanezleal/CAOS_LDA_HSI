@@ -109,31 +109,58 @@ def topk_words(phi_row: np.ndarray, vocab: list[str], top_n: int = TOP_N_WORDS) 
     ]
 
 
-def npmi_coherence(phi: np.ndarray, doc_term: np.ndarray, top_n: int = TOP_N_NPMI) -> float:
+def gensim_coherence(
+    phi: np.ndarray,
+    vocab: list[str],
+    doc_term: np.ndarray,
+    top_n: int = TOP_N_NPMI,
+) -> dict:
+    """Gensim CoherenceModel for c_v, c_npmi, u_mass on the same corpus.
+
+    Band-frequency tokens are dense (almost every doc contains every
+    token), so doc-cooccurrence-based c_npmi degenerates to ~0. The
+    sliding-window c_v metric (Roder 2015) and the within-corpus UMass
+    handle this case better. We compute all three so the eventual web
+    app can show how each metric behaves.
+    """
+    from gensim import corpora
+    from gensim.models import CoherenceModel
+
     K = phi.shape[0]
-    D = doc_term.shape[0]
-    bin_dt = (doc_term > 0).astype(np.float32)
-    eps = 1e-12
-    npmi_per_topic = []
+    # Reconstruct each document as a list of tokens (with multiplicity)
+    # for c_v / c_npmi which need a "texts" iterable.
+    texts = []
+    for d in range(doc_term.shape[0]):
+        nz = np.flatnonzero(doc_term[d])
+        tokens = []
+        for i in nz:
+            count = int(doc_term[d, int(i)])
+            if count > 0:
+                tokens.extend([vocab[int(i)]] * count)
+        texts.append(tokens or [vocab[0]])  # never empty
+
+    dictionary = corpora.Dictionary([[t] for t in vocab])
+    dictionary.token2id = {t: i for i, t in enumerate(vocab)}
+    dictionary.id2token = {i: t for i, t in enumerate(vocab)}
+
+    top_topics_tokens: list[list[str]] = []
     for k in range(K):
-        top_idx = np.argsort(phi[k])[::-1][:top_n]
-        pairs = []
-        for i in range(top_n):
-            for j in range(i + 1, top_n):
-                wi, wj = int(top_idx[i]), int(top_idx[j])
-                p_i = float(bin_dt[:, wi].sum() / D)
-                p_j = float(bin_dt[:, wj].sum() / D)
-                p_ij = float((bin_dt[:, wi] * bin_dt[:, wj]).sum() / D)
-                if p_i < eps or p_j < eps or p_ij < eps or p_ij > 1.0 - eps:
-                    continue
-                pmi = np.log(p_ij / (p_i * p_j))
-                denom = -np.log(p_ij)
-                if denom < eps:
-                    continue
-                pairs.append(float(pmi / denom))
-        if pairs:
-            npmi_per_topic.append(float(np.mean(pairs)))
-    return float(np.mean(npmi_per_topic)) if npmi_per_topic else 0.0
+        order = np.argsort(phi[k])[::-1][:top_n]
+        top_topics_tokens.append([vocab[int(i)] for i in order])
+
+    out = {"top_n": int(top_n)}
+    for metric in ("c_v", "c_npmi", "u_mass"):
+        try:
+            cm = CoherenceModel(
+                topics=top_topics_tokens,
+                texts=texts,
+                dictionary=dictionary,
+                coherence=metric,
+            )
+            out[metric] = round(float(cm.get_coherence()), 6)
+        except Exception:
+            out[metric] = None
+    return out
 
 
 def jensen_shannon_matrix(distributions: np.ndarray) -> np.ndarray:
@@ -384,7 +411,7 @@ def write_outputs(
     with (local_dir / "vocab.json").open("w", encoding="utf-8") as h:
         json.dump({"vocab": vocab, "K": int(K)}, h)
 
-    npmi = npmi_coherence(phi, doc_term)
+    coh = gensim_coherence(phi, vocab, doc_term)
     js = jensen_shannon_matrix(phi)
     coords_2d = mds_2d(js)
     top_words = [topk_words(phi[k], vocab) for k in range(K)]
@@ -400,7 +427,7 @@ def write_outputs(
         "top_words_per_topic": top_words,
         "perplexity": fit_result.get("perplexity"),
         "reconstruction_err": fit_result.get("reconstruction_err"),
-        "npmi_coherence": round(float(npmi), 6),
+        "coherence": coh,
         "topic_distance_js": [[round(float(v), 6) for v in row] for row in js],
         "topic_intertopic_2d_js": [[round(float(v), 6) for v in row] for row in coords_2d],
         "K_live": fit_result.get("K_live"),
@@ -417,7 +444,8 @@ def write_outputs(
         "variant": variant,
         "K": int(K),
         "perplexity": fit_result.get("perplexity"),
-        "npmi": round(float(npmi), 6),
+        "coherence_c_v": coh.get("c_v"),
+        "coherence_u_mass": coh.get("u_mass"),
     }
 
 
@@ -461,10 +489,13 @@ def build_for_scene(scene_id: str) -> list[dict]:
         try:
             result = fn()
             summary = write_outputs(name, scene_id, result, vocab, doc_term, wavelengths)
+            cv = summary.get('coherence_c_v')
+            um = summary.get('coherence_u_mass')
             print(
                 f"    K={summary['K']:2d} "
-                f"NPMI={summary['npmi']:+.3f} "
-                f"perp={(summary['perplexity'] or 0):.2f}",
+                f"c_v={cv:+.3f} u_mass={um:+.3f} perp={(summary['perplexity'] or 0):.2f}"
+                if cv is not None and um is not None else
+                f"    K={summary['K']:2d} c_v=None u_mass=None perp={(summary['perplexity'] or 0):.2f}",
                 flush=True,
             )
             summaries.append(summary)

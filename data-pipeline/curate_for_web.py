@@ -57,6 +57,8 @@ BUILDER_DIRS = [
     ("build_interpretability", "interpretability"),
     ("build_representations", "representations"),
     ("build_lda_sweep", "lda_sweep"),
+    ("build_dmr_lda_hidsag", "topic_variants/dmr_lda_hidsag"),
+    ("build_optuna_hyperparam_search", "lda_hyperparam_search"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -266,6 +268,21 @@ CLAIMS_ALLOWED = [
         "id": "lda_sweep",
         "description": "K x seed grid (K in {4, 6, 8, 10, 12, 16}, 5 seeds) on canonical band-frequency recipe. Per-K: perplexity train/test, NPMI coherence, topic diversity, Hungarian-matched cosine stability across seeds. Recommends K maximising (-perplexity_norm + npmi + matched_cos).",
         "source_pattern": "lda_sweep/<scene>.json",
+    },
+    {
+        "id": "dmr_lda_hidsag",
+        "description": "Dirichlet-Multinomial Regression LDA (Mimno-McCallum 2008) per HIDSAG subset using measurement-tag covariates. Per-covariate topic prior, plus the standard phi/theta/top_words/perplexity. Natural geometallurgical extension of plain LDA on Procemin-style HIDSAG samples.",
+        "source_pattern": "topic_variants/dmr_lda_hidsag/<subset>.json",
+    },
+    {
+        "id": "bayesian_method_comparison",
+        "description": "PyMC hierarchical normal model pooling per-target per-method R^2 (regression) or macro-F1 (classification) across all HIDSAG subsets. Reports per-method posterior mean + HDI94 + pairwise P(mu_a > mu_b). Replaces the frequentist Friedman / Nemenyi reading with a Bayesian dominance probability the eventual web app can render directly.",
+        "source_pattern": "method_statistics_hidsag/cross_<task>_bayesian.json",
+    },
+    {
+        "id": "lda_hyperparam_search",
+        "description": "Optuna TPE Bayesian hyperparameter search per labelled scene over (K in [4, 16], alpha log-uniform, eta log-uniform). Objective = c_v(top_15) - 0.001 * perplexity_test. 30 trials per scene. Replaces the failed octis benchmarking route.",
+        "source_pattern": "lda_hyperparam_search/<scene>.json",
     },
 ]
 

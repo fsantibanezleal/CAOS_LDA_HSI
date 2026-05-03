@@ -373,3 +373,39 @@ def get_topic_variants_index() -> dict:
                 "bytes": path.stat().st_size,
             })
     return {"count": len(items), "items": items}
+
+
+def get_lda_sweep(scene_id: str) -> dict:
+    return _load_or_404(get_settings().lda_sweep_path(scene_id))
+
+
+def get_representation(method: str, scene_id: str) -> dict:
+    return _load_or_404(get_settings().representations_path(method, scene_id))
+
+
+def get_representations_index() -> dict:
+    base = get_settings().representations_dir
+    if not base.exists():
+        raise FileNotFoundError(str(base))
+    items = []
+    for method_dir in sorted(p for p in base.iterdir() if p.is_dir()):
+        for path in sorted(method_dir.glob("*.json")):
+            items.append({
+                "method": method_dir.name,
+                "scene_id": path.stem,
+                "path": str(path.relative_to(get_settings().data_path.parent)).replace("\\", "/"),
+                "bytes": path.stat().st_size,
+            })
+    return {"count": len(items), "items": items}
+
+
+def get_dmr_lda_hidsag(subset_code: str) -> dict:
+    return _load_or_404(get_settings().dmr_lda_hidsag_path(subset_code))
+
+
+def get_bayesian_comparison(task_type: str) -> dict:
+    return _load_or_404(get_settings().bayesian_comparison_path(task_type))
+
+
+def get_optuna_search(scene_id: str) -> dict:
+    return _load_or_404(get_settings().optuna_search_path(scene_id))

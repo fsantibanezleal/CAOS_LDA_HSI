@@ -517,3 +517,59 @@ def topic_variant(variant: str, scene_id: str) -> dict:
             status_code=404,
             detail=f"topic variant {variant}/{scene_id} not generated yet",
         ) from exc
+
+
+@router.get("/lda-sweep/{scene_id}")
+def lda_sweep(scene_id: str) -> dict:
+    from app.services.content import get_lda_sweep
+    try:
+        return get_lda_sweep(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"lda_sweep for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/representations")
+def representations_index() -> dict:
+    from app.services.content import get_representations_index
+    try:
+        return get_representations_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="representations not generated yet") from exc
+
+
+@router.get("/representations/{method}/{scene_id}")
+def representation(method: str, scene_id: str) -> dict:
+    from app.services.content import get_representation
+    try:
+        return get_representation(method, scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"representation {method}/{scene_id} not generated yet") from exc
+
+
+@router.get("/dmr-lda-hidsag/{subset_code}")
+def dmr_lda_hidsag(subset_code: str) -> dict:
+    from app.services.content import get_dmr_lda_hidsag
+    try:
+        return get_dmr_lda_hidsag(subset_code)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"dmr_lda_hidsag for '{subset_code}' not generated yet") from exc
+
+
+@router.get("/bayesian-comparison/{task_type}")
+def bayesian_comparison(task_type: str) -> dict:
+    from app.services.content import get_bayesian_comparison
+    if task_type not in ("regression", "classification"):
+        raise HTTPException(status_code=400, detail="task_type must be regression | classification")
+    try:
+        return get_bayesian_comparison(task_type)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"bayesian_comparison for '{task_type}' not generated yet") from exc
+
+
+@router.get("/optuna-search/{scene_id}")
+def optuna_search(scene_id: str) -> dict:
+    from app.services.content import get_optuna_search
+    try:
+        return get_optuna_search(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"optuna_search for '{scene_id}' not generated yet") from exc

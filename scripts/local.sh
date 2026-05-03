@@ -276,6 +276,12 @@ case "$cmd" in
   build-external-validation) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_external_validation.py ;;
   build-narratives)        ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_narratives.py ;;
   build-interpretability)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_interpretability.py ;;
+  build-representations)   ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_representations.py ;;
+  build-lda-sweep)         ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_lda_sweep.py ;;
+  build-neural-topic-models) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_neural_topic_models.py ;;
+  build-dmr-lda-hidsag)    ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_dmr_lda_hidsag.py ;;
+  build-bayesian-method-comparison) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_bayesian_method_comparison.py ;;
+  build-optuna-hyperparam-search) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_optuna_hyperparam_search.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
   build-precompute-all)
     ensure_pipeline_venv

@@ -213,6 +213,25 @@ class Settings(BaseSettings):
     def topic_variants_dir(self) -> Path:
         return self.data_path / "derived" / "topic_variants"
 
+    def lda_sweep_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "lda_sweep" / f"{scene_id}.json"
+
+    def representations_path(self, method: str, scene_id: str) -> Path:
+        return self.data_path / "derived" / "representations" / method / f"{scene_id}.json"
+
+    @property
+    def representations_dir(self) -> Path:
+        return self.data_path / "derived" / "representations"
+
+    def dmr_lda_hidsag_path(self, subset_code: str) -> Path:
+        return self.data_path / "derived" / "topic_variants" / "dmr_lda_hidsag" / f"{subset_code}.json"
+
+    def bayesian_comparison_path(self, task_type: str) -> Path:
+        return self.data_path / "derived" / "method_statistics_hidsag" / f"cross_{task_type}_bayesian.json"
+
+    def optuna_search_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "lda_hyperparam_search" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

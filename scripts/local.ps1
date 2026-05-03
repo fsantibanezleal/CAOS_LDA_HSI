@@ -29,6 +29,9 @@ param(
         "build-quantization-sensitivity", "build-topic-model-variants",
         "build-method-statistics-hidsag", "build-external-validation",
         "build-narratives", "build-interpretability",
+        "build-representations", "build-lda-sweep",
+        "build-neural-topic-models", "build-dmr-lda-hidsag",
+        "build-bayesian-method-comparison", "build-optuna-hyperparam-search",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -311,6 +314,12 @@ switch ($Command) {
     "build-external-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_external_validation.py }
     "build-narratives"        { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_narratives.py }
     "build-interpretability"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_interpretability.py }
+    "build-representations"   { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_representations.py }
+    "build-lda-sweep"         { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_lda_sweep.py }
+    "build-neural-topic-models" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_neural_topic_models.py }
+    "build-dmr-lda-hidsag"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_dmr_lda_hidsag.py }
+    "build-bayesian-method-comparison" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_bayesian_method_comparison.py }
+    "build-optuna-hyperparam-search" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_optuna_hyperparam_search.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv
