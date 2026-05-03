@@ -12,6 +12,7 @@ import { Workspace } from "./routes/Workspace";
 import { useStore, type AppTab } from "./store/useStore";
 
 import "./styles/shell.css";
+import "./styles/workspace-shell.css";
 
 const TAB_RENDERERS: Record<AppTab, () => JSX.Element> = {
   landing: () => <Landing />,
