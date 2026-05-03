@@ -30,6 +30,8 @@ from app.models.schemas import (
     SpectralLibraryPayload,
     SubsetCard,
     SubsetCardsIndex,
+    ExplorationViewsPayload,
+    MethodStatisticsPayload,
 )
 
 
@@ -197,6 +199,20 @@ def get_subset_card(subset_id: str) -> SubsetCard:
     settings = get_settings()
     data = _load_json(str(settings.subset_card_path(subset_id)))
     return SubsetCard.model_validate(data)
+
+
+@lru_cache
+def get_exploration_views() -> ExplorationViewsPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.exploration_views_path))
+    return ExplorationViewsPayload.model_validate(data)
+
+
+@lru_cache
+def get_method_statistics() -> MethodStatisticsPayload:
+    settings = get_settings()
+    data = _load_json(str(settings.method_statistics_path))
+    return MethodStatisticsPayload.model_validate(data)
 
 
 @lru_cache

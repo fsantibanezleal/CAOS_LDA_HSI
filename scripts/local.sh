@@ -50,6 +50,8 @@ Pipeline -- build derived:
   build-baselines             SLIC segmentation baselines
   build-inventory             Unified local dataset / raw inventory
   build-subset-cards          Compact per-subset cards under data/derived/subsets/
+  build-exploration-views     Topic similarity, intertopic 2D, class loadings -> exploration_views.json
+  build-method-stats          k-fold + multi-seed paired stats -> method_statistics.json (heavy)
   inspect-hidsag              Inspect HIDSAG ZIP subsets without full extraction
   build-hidsag                Compact HIDSAG curated subset
   build-hidsag-band-quality   Heuristic HIDSAG bad-band summary
@@ -232,6 +234,8 @@ case "$cmd" in
   build-baselines)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_segmentation_baselines.py ;;
   build-inventory)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_local_inventory.py ;;
   build-subset-cards) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_subset_cards.py ;;
+  build-exploration-views) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_exploration_views.py ;;
+  build-method-stats) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_method_statistics.py ;;
   inspect-hidsag)   ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/inspect_hidsag_zip.py ;;
   build-hidsag)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hidsag_curated_subset.py ;;
   build-hidsag-band-quality)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hidsag_band_quality.py ;;

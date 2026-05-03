@@ -946,4 +946,148 @@ class SubsetCardsIndex(BaseModel):
     cards: list[SubsetCardSummary]
 
 
+# ---------------------------------------------------------------------------
+# Exploration views — precomputed payload for the interactive Workspace.
+# ---------------------------------------------------------------------------
+
+
+class ExplorationTopicMeta(BaseModel):
+    id: str | None = None
+    name: str | None = None
+    topic_index: int
+    top_words: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class ExplorationClassSummary(BaseModel):
+    label_id: int | None = None
+    name: str | None = None
+    count: int | None = None
+    dominant_topic: int | None = None
+    topic_entropy: float | None = None
+
+
+class ExplorationSceneView(BaseModel):
+    scene_id: str | None = None
+    scene_name: str | None = None
+    modality: str | None = None
+    sensor: str | None = None
+    rgb_preview_path: str | None = None
+    label_preview_path: str | None = None
+    wavelengths_nm: list[float] = Field(default_factory=list)
+    topic_count: int
+    topics: list[ExplorationTopicMeta] = Field(default_factory=list)
+    topic_band_profiles: list[list[float]] = Field(default_factory=list)
+    topic_cosine_sim: list[list[float]] = Field(default_factory=list)
+    topic_hellinger_dist: list[list[float]] = Field(default_factory=list)
+    topic_word_jaccard: list[list[float]] = Field(default_factory=list)
+    topic_intertopic_xy: list[list[float]] = Field(default_factory=list)
+    topic_peak_wavelength_nm: list[float] = Field(default_factory=list)
+    topic_top10_concentration: list[float] = Field(default_factory=list)
+    topic_band_entropy: list[float] = Field(default_factory=list)
+    topic_word_cloud: list[dict[str, Any]] = Field(default_factory=list)
+    class_summaries: list[ExplorationClassSummary] = Field(default_factory=list)
+    class_topic_loadings: list[list[float]] = Field(default_factory=list)
+    topic_class_loadings_ranked: list[list[dict[str, Any]]] = Field(default_factory=list)
+    class_spectral_cosine: list[list[float]] | None = None
+    class_mean_spectra: list[list[float]] = Field(default_factory=list)
+
+
+class ExplorationLibraryGroup(BaseModel):
+    band_count: int
+    wavelengths_nm: list[float] = Field(default_factory=list)
+    samples: list[dict[str, Any]] = Field(default_factory=list)
+    sample_spectra: list[list[float]] = Field(default_factory=list)
+    sample_cosine_sim: list[list[float]] = Field(default_factory=list)
+    sample_pca_xy: list[list[float]] = Field(default_factory=list)
+    nearest_neighbours_top3: list[list[dict[str, Any]]] = Field(default_factory=list)
+
+
+class ExplorationLibraryView(BaseModel):
+    library_id: str
+    groups: list[ExplorationLibraryGroup] = Field(default_factory=list)
+
+
+class ExplorationHidsagSubset(BaseModel):
+    subset_id: str | None = None
+    modality: str | None = None
+    wavelengths_nm: list[float] = Field(default_factory=list)
+    samples: list[dict[str, Any]] = Field(default_factory=list)
+    sample_spectra: list[list[float]] = Field(default_factory=list)
+    sample_cosine_sim: list[list[float]] = Field(default_factory=list)
+    sample_pca_xy: list[list[float]] = Field(default_factory=list)
+
+
+class ExplorationHidsagView(BaseModel):
+    subsets: list[ExplorationHidsagSubset] = Field(default_factory=list)
+
+
+class ExplorationViewsPayload(BaseModel):
+    source: str
+    generated_at: str
+    scenes: list[ExplorationSceneView] = Field(default_factory=list)
+    spectral_library: ExplorationLibraryView | None = None
+    hidsag: ExplorationHidsagView | None = None
+
+
+# ---------------------------------------------------------------------------
+# Method statistics — k-fold + multi-seed paired statistics.
+# ---------------------------------------------------------------------------
+
+
+class MethodMetricSummary(BaseModel):
+    mean: float
+    std: float
+    median: float | None = None
+    ci95_lo: float | None = None
+    ci95_hi: float | None = None
+    min: float | None = None
+    max: float | None = None
+    values: list[float] = Field(default_factory=list)
+
+
+class MethodMetricsBlock(BaseModel):
+    n_evaluations: int
+    accuracy: MethodMetricSummary
+    balanced_accuracy: MethodMetricSummary
+    macro_f1: MethodMetricSummary
+
+
+class PairedComparison(BaseModel):
+    a: str
+    b: str
+    metric: str | None = None
+    delta_mean: float
+    delta_std: float
+    delta_min: float
+    delta_max: float
+    delta_values: list[float] = Field(default_factory=list)
+    wilcoxon_p: float | None = None
+    cohens_d: float | None = None
+    win_rate: float | None = None
+    significance: str
+    direction: str
+    verdict: str
+
+
+class MethodStatisticsScene(BaseModel):
+    dataset_id: str
+    dataset_name: str | None = None
+    family_id: str | None = None
+    split_protocol: dict[str, Any] = Field(default_factory=dict)
+    scene_summary: dict[str, Any] = Field(default_factory=dict)
+    fold_summaries: list[dict[str, Any]] = Field(default_factory=list)
+    methods: dict[str, MethodMetricsBlock] = Field(default_factory=dict)
+    paired_comparisons: dict[str, list[PairedComparison]] = Field(default_factory=dict)
+    ranking: dict[str, Any] = Field(default_factory=dict)
+
+
+class MethodStatisticsPayload(BaseModel):
+    source: str
+    generated_at: str
+    method_definitions: dict[str, str] = Field(default_factory=dict)
+    alpha_significance: float
+    labeled_scenes: list[MethodStatisticsScene] = Field(default_factory=list)
+    cross_dataset: dict[str, Any] | None = None
+
+
 JSONDict = dict[str, Any]

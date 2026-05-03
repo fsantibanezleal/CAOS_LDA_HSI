@@ -28,6 +28,8 @@ from app.models.schemas import (
     SpectralLibraryPayload,
     SubsetCard,
     SubsetCardsIndex,
+    ExplorationViewsPayload,
+    MethodStatisticsPayload,
 )
 from app.services.content import (
     get_analysis,
@@ -54,6 +56,8 @@ from app.services.content import (
     get_spectral_library,
     get_subset_card,
     get_subset_cards_index,
+    get_exploration_views,
+    get_method_statistics,
 )
 
 
@@ -184,6 +188,28 @@ def subset_card(subset_id: str) -> SubsetCard:
         raise HTTPException(
             status_code=404,
             detail=f"subset card '{subset_id}' not generated yet; run scripts/local.* build-subset-cards",
+        ) from exc
+
+
+@router.get("/exploration-views", response_model=ExplorationViewsPayload)
+def exploration_views() -> ExplorationViewsPayload:
+    try:
+        return get_exploration_views()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="exploration views not generated yet; run scripts/local.* build-exploration-views",
+        ) from exc
+
+
+@router.get("/method-statistics", response_model=MethodStatisticsPayload)
+def method_statistics() -> MethodStatisticsPayload:
+    try:
+        return get_method_statistics()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="method statistics not generated yet; run scripts/local.* build-method-stats",
         ) from exc
 
 

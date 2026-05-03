@@ -17,7 +17,7 @@ param(
         # pipeline -- build derived
         "build-real", "build-field", "build-spectral", "build-analysis",
         "build-corpus", "build-baselines", "build-inventory",
-        "build-subset-cards",
+        "build-subset-cards", "build-exploration-views", "build-method-stats",
         "inspect-hidsag", "build-hidsag", "build-hidsag-band-quality",
         "build-hidsag-region-documents",
         # pipeline -- benchmarks
@@ -68,6 +68,8 @@ function Show-Help {
     Write-Host "  build-baselines             SLIC segmentation baselines"
     Write-Host "  build-inventory             Unified local dataset / raw inventory"
     Write-Host "  build-subset-cards          Compact per-subset cards under data/derived/subsets/"
+    Write-Host "  build-exploration-views     Topic similarity, intertopic 2D, class loadings -> data/derived/core/exploration_views.json"
+    Write-Host "  build-method-stats          k-fold + multi-seed paired stats -> data/derived/core/method_statistics.json (heavy)"
     Write-Host "  inspect-hidsag              Inspect HIDSAG ZIP subsets without full extraction"
     Write-Host "  build-hidsag                Compact HIDSAG curated subset"
     Write-Host "  build-hidsag-band-quality   Heuristic HIDSAG bad-band summary"
@@ -257,6 +259,8 @@ switch ($Command) {
     "build-baselines" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_segmentation_baselines.py }
     "build-inventory" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_local_inventory.py }
     "build-subset-cards" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_subset_cards.py }
+    "build-exploration-views" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_exploration_views.py }
+    "build-method-stats" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_method_statistics.py }
     "inspect-hidsag"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\inspect_hidsag_zip.py }
     "build-hidsag"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_curated_subset.py }
     "build-hidsag-band-quality"     { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_band_quality.py }

@@ -112,6 +112,14 @@ class Settings(BaseSettings):
         return self.data_path / "derived"
 
     @property
+    def exploration_views_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "exploration_views.json"
+
+    @property
+    def method_statistics_path(self) -> Path:
+        return self.data_path / "derived" / "core" / "method_statistics.json"
+
+    @property
     def subset_cards_dir(self) -> Path:
         return self.data_path / "derived" / "subsets"
 
