@@ -25,6 +25,7 @@ param(
         "build-topic-to-data", "build-spectral-browser", "build-spectral-density",
         "build-validation-blocks", "build-wordifications",
         "build-topic-to-library", "build-spatial-validation",
+        "build-groupings", "build-cross-method-agreement",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -92,6 +93,8 @@ function Show-Help {
     Write-Host "  build-wordifications        V1, V2, V3 recipes (incl. missing Procemin V3) at 3 schemes x 3 Q (162 configs)"
     Write-Host "  build-topic-to-library      Match each topic profile to closest USGS / AVIRIS library samples"
     Write-Host "  build-spatial-validation    Moran's I, connected components, IoU vs ground-truth labels"
+    Write-Host "  build-groupings             SLIC / patch / Felzenszwalb document constructors with ARI/NMI vs label"
+    Write-Host "  build-cross-method-agreement   Pairwise ARI / NMI / V-measure between every grouping method"
     Write-Host "  curate-for-web              Generate data/derived/manifests/index.json (the contract the web app reads)"
     Write-Host "  build-precompute-all        Run every precompute builder in order"
     Write-Host ""
@@ -297,6 +300,8 @@ switch ($Command) {
     "build-wordifications"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications.py }
     "build-topic-to-library"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_library.py }
     "build-spatial-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py }
+    "build-groupings"         { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_groupings.py }
+    "build-cross-method-agreement" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_cross_method_agreement.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv
@@ -309,6 +314,8 @@ switch ($Command) {
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_library.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_groupings.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_cross_method_agreement.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_validation_blocks.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py
     }

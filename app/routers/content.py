@@ -383,3 +383,39 @@ def wordification(scene_id: str, recipe: str, scheme: str, q: int) -> dict:
             status_code=404,
             detail=f"wordification {scene_id}/{recipe}/{scheme}/Q{q} not generated yet",
         ) from exc
+
+
+@router.get("/groupings")
+def groupings_index() -> dict:
+    from app.services.content import get_groupings_index
+    try:
+        return get_groupings_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="groupings not generated yet; run scripts/local.* build-groupings",
+        ) from exc
+
+
+@router.get("/groupings/{method}/{scene_id}")
+def grouping(method: str, scene_id: str) -> dict:
+    from app.services.content import get_grouping
+    try:
+        return get_grouping(method, scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"grouping {method}/{scene_id} not generated yet",
+        ) from exc
+
+
+@router.get("/cross-method-agreement/{scene_id}")
+def cross_method_agreement(scene_id: str) -> dict:
+    from app.services.content import get_cross_method_agreement
+    try:
+        return get_cross_method_agreement(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"cross-method agreement for '{scene_id}' not generated yet",
+        ) from exc

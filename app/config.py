@@ -174,6 +174,16 @@ class Settings(BaseSettings):
     def wordifications_dir(self) -> Path:
         return self.data_path / "derived" / "wordifications"
 
+    def grouping_path(self, method: str, scene_id: str) -> Path:
+        return self.data_path / "derived" / "groupings" / method / f"{scene_id}.json"
+
+    @property
+    def groupings_dir(self) -> Path:
+        return self.data_path / "derived" / "groupings"
+
+    def cross_method_agreement_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "cross_method_agreement" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

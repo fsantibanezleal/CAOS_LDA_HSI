@@ -305,3 +305,27 @@ def get_wordifications_index() -> dict:
             "bytes": path.stat().st_size,
         })
     return {"count": len(items), "items": items}
+
+
+def get_grouping(method: str, scene_id: str) -> dict:
+    return _load_or_404(get_settings().grouping_path(method, scene_id))
+
+
+def get_groupings_index() -> dict:
+    base = get_settings().groupings_dir
+    if not base.exists():
+        raise FileNotFoundError(str(base))
+    items = []
+    for method_dir in sorted(p for p in base.iterdir() if p.is_dir()):
+        for path in sorted(method_dir.glob("*.json")):
+            items.append({
+                "method": method_dir.name,
+                "scene_id": path.stem,
+                "path": str(path.relative_to(get_settings().data_path.parent)).replace("\\", "/"),
+                "bytes": path.stat().st_size,
+            })
+    return {"count": len(items), "items": items}
+
+
+def get_cross_method_agreement(scene_id: str) -> dict:
+    return _load_or_404(get_settings().cross_method_agreement_path(scene_id))

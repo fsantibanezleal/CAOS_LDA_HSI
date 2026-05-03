@@ -68,6 +68,8 @@ Pipeline -- precompute layer (master-plan section 18):
   build-wordifications        V1, V2, V3 (incl. missing Procemin V3) at 3 schemes x 3 Q
   build-topic-to-library      Match each topic profile to closest USGS / AVIRIS library
   build-spatial-validation    Moran's I, connected components, IoU vs ground truth
+  build-groupings             SLIC / patch / Felzenszwalb document constructors with ARI / NMI
+  build-cross-method-agreement   Pairwise ARI / NMI / V between every grouping
   curate-for-web              Generate data/derived/manifests/index.json (the contract)
   build-precompute-all        Run every precompute builder in order
 
@@ -266,6 +268,8 @@ case "$cmd" in
   build-wordifications)    ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_wordifications.py ;;
   build-topic-to-library)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_to_library.py ;;
   build-spatial-validation) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_spatial_validation.py ;;
+  build-groupings)         ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_groupings.py ;;
+  build-cross-method-agreement) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_cross_method_agreement.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
   build-precompute-all)
     ensure_pipeline_venv
@@ -278,6 +282,8 @@ case "$cmd" in
     "$PVENV/bin/python" data-pipeline/build_wordifications.py
     "$PVENV/bin/python" data-pipeline/build_topic_to_library.py
     "$PVENV/bin/python" data-pipeline/build_spatial_validation.py
+    "$PVENV/bin/python" data-pipeline/build_groupings.py
+    "$PVENV/bin/python" data-pipeline/build_cross_method_agreement.py
     "$PVENV/bin/python" data-pipeline/build_validation_blocks.py
     "$PVENV/bin/python" data-pipeline/curate_for_web.py
     ;;
