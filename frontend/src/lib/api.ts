@@ -778,6 +778,136 @@ export interface SubsetCardsIndex {
   cards: SubsetCardSummary[];
 }
 
+// ---------------------------------------------------------------------------
+// Exploration views — precomputed payload for the interactive Workspace.
+// ---------------------------------------------------------------------------
+
+export interface ExplorationTopicMeta {
+  id: string | null;
+  name: string | null;
+  topic_index: number;
+  top_words: Array<{ token: string; weight: number }>;
+}
+
+export interface ExplorationClassSummary {
+  label_id: number | null;
+  name: string | null;
+  count: number | null;
+  dominant_topic: number | null;
+  topic_entropy: number | null;
+}
+
+export interface ExplorationSceneView {
+  scene_id: string | null;
+  scene_name: string | null;
+  modality: string | null;
+  sensor: string | null;
+  rgb_preview_path: string | null;
+  label_preview_path: string | null;
+  wavelengths_nm: number[];
+  topic_count: number;
+  topics: ExplorationTopicMeta[];
+  topic_band_profiles: number[][];
+  topic_cosine_sim: number[][];
+  topic_hellinger_dist: number[][];
+  topic_word_jaccard: number[][];
+  topic_intertopic_xy: number[][];
+  topic_peak_wavelength_nm: number[];
+  topic_top10_concentration: number[];
+  topic_band_entropy: number[];
+  topic_word_cloud: Array<{ token: string; weight: number }>;
+  class_summaries: ExplorationClassSummary[];
+  class_topic_loadings: number[][];
+  topic_class_loadings_ranked: Array<
+    Array<{ label_id: number | null; name: string | null; count: number | null; weight: number }>
+  >;
+  class_spectral_cosine: number[][] | null;
+  class_mean_spectra: number[][];
+}
+
+export interface ExplorationLibraryGroup {
+  band_count: number;
+  wavelengths_nm: number[];
+  samples: Array<Record<string, unknown>>;
+  sample_spectra: number[][];
+  sample_cosine_sim: number[][];
+  sample_pca_xy: number[][];
+  nearest_neighbours_top3: Array<Array<{ id: string; name: string; similarity: number }>>;
+}
+
+export interface ExplorationLibraryView {
+  library_id: string;
+  groups: ExplorationLibraryGroup[];
+}
+
+export interface ExplorationViewsPayload {
+  source: string;
+  generated_at: string;
+  scenes: ExplorationSceneView[];
+  spectral_library: ExplorationLibraryView | null;
+  hidsag: { subsets: Array<Record<string, unknown>> } | null;
+}
+
+// ---------------------------------------------------------------------------
+// Method statistics
+// ---------------------------------------------------------------------------
+
+export interface MethodMetricSummary {
+  mean: number;
+  std: number;
+  median: number | null;
+  ci95_lo: number | null;
+  ci95_hi: number | null;
+  min: number | null;
+  max: number | null;
+  values: number[];
+}
+
+export interface MethodMetricsBlock {
+  n_evaluations: number;
+  accuracy: MethodMetricSummary;
+  balanced_accuracy: MethodMetricSummary;
+  macro_f1: MethodMetricSummary;
+}
+
+export interface PairedComparison {
+  a: string;
+  b: string;
+  metric?: string;
+  delta_mean: number;
+  delta_std: number;
+  delta_min: number;
+  delta_max: number;
+  delta_values: number[];
+  wilcoxon_p: number | null;
+  cohens_d: number | null;
+  win_rate: number | null;
+  significance: string;
+  direction: string;
+  verdict: string;
+}
+
+export interface MethodStatisticsScene {
+  dataset_id: string;
+  dataset_name: string | null;
+  family_id: string | null;
+  split_protocol: Record<string, unknown>;
+  scene_summary: Record<string, unknown>;
+  fold_summaries: Array<Record<string, unknown>>;
+  methods: Record<string, MethodMetricsBlock>;
+  paired_comparisons: Record<string, PairedComparison[]>;
+  ranking: Record<string, unknown>;
+}
+
+export interface MethodStatisticsPayload {
+  source: string;
+  generated_at: string;
+  method_definitions: Record<string, string>;
+  alpha_significance: number;
+  labeled_scenes: MethodStatisticsScene[];
+  cross_dataset: Record<string, unknown> | null;
+}
+
 export const api = {
   getDataFamilies: () => getJson<DataFamiliesPayload>("/api/data-families"),
   getCorpusRecipes: () => getJson<CorpusRecipesPayload>("/api/corpus-recipes"),
@@ -798,5 +928,7 @@ export const api = {
   getAnalysis: () => getJson<AnalysisPayload>("/api/analysis"),
   getAppData: () => getJson<AppPayload>("/api/app-data"),
   getSubsetCardsIndex: () => getJson<SubsetCardsIndex>("/api/subset-cards"),
-  getSubsetCard: (id: string) => getJson<SubsetCard>(`/api/subset-cards/${encodeURIComponent(id)}`)
+  getSubsetCard: (id: string) => getJson<SubsetCard>(`/api/subset-cards/${encodeURIComponent(id)}`),
+  getExplorationViews: () => getJson<ExplorationViewsPayload>("/api/exploration-views"),
+  getMethodStatistics: () => getJson<MethodStatisticsPayload>("/api/method-statistics")
 };
