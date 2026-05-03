@@ -18,6 +18,10 @@ $paths = @(
     "/api/local-validation-matrix",
     "/api/local-dataset-inventory",
     "/api/local-core-benchmarks",
+    "/api/subset-cards",
+    "/api/subset-cards/salinas-labeled-scene-pack",
+    "/api/subset-cards/cuprite-exploratory-mineral-pack",
+    "/api/subset-cards/usgs-material-reference-slice",
     "/api/spectral-library",
     "/api/analysis",
     "/generated/real/previews/cuprite-aviris-reflectance-rgb.png",
@@ -27,6 +31,8 @@ $paths = @(
     "/generated/baselines/segmentation_baselines.json",
     "/generated/core/local_dataset_inventory.json",
     "/generated/core/local_core_benchmarks.json",
+    "/generated/subsets/index.json",
+    "/generated/subsets/salinas-labeled-scene-pack.json",
     "/generated/baselines/previews/cuprite-aviris-reflectance-slic.png",
     "/"
 )

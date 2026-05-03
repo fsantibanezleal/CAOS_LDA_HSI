@@ -208,6 +208,36 @@
   border-bottom-color: var(--accent);
 }
 
+.subtab-item.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.subtab-item.is-disabled:hover {
+  color: var(--text-secondary);
+}
+
+.subtab-status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.subtab-status-ready {
+  background: var(--status-ok);
+}
+
+.subtab-status-prototype {
+  background: var(--status-stale);
+}
+
+.subtab-status-blocked {
+  background: var(--status-missing);
+}
+
 /* ---------- Footer ---------- */
 
 .app-footer {

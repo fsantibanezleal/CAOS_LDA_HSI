@@ -277,13 +277,23 @@ export function Workspace() {
           </div>
 
           <SubTabBar<WorkspaceStep>
-            tabs={WORKSPACE_STEPS.map((s) => ({
-              id: s,
-              label:
-                stepStatusById.get(s) === "blocked"
-                  ? `${stepLabels[s]} ·`
-                  : stepLabels[s]
-            }))}
+            tabs={WORKSPACE_STEPS.map((s) => {
+              const status = stepStatusById.get(s);
+              const isBlocked = status === "blocked";
+              return {
+                id: s,
+                label: stepLabels[s],
+                status:
+                  status === "ready"
+                    ? "ready"
+                    : status === "prototype"
+                      ? "prototype"
+                      : status === "blocked"
+                        ? "blocked"
+                        : null,
+                disabled: isBlocked
+              };
+            })}
             active={workspaceStep}
             onChange={setWorkspaceStep}
           />
