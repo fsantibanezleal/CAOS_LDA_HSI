@@ -272,3 +272,36 @@ def get_validation_blocks(scene_id: str) -> dict:
 
 def get_derived_manifest() -> dict:
     return _load_or_404(get_settings().derived_manifest_path)
+
+
+def get_eda_hidsag(subset_code: str) -> dict:
+    return _load_or_404(get_settings().eda_hidsag_path(subset_code))
+
+
+def get_topic_to_library(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_to_library_path(scene_id))
+
+
+def get_spatial_validation(scene_id: str) -> dict:
+    return _load_or_404(get_settings().spatial_validation_path(scene_id))
+
+
+def get_wordification(scene_id: str, recipe: str, scheme: str, q: int) -> dict:
+    return _load_or_404(get_settings().wordification_path(scene_id, recipe, scheme, q))
+
+
+def get_wordifications_index() -> dict:
+    """Walk the wordifications directory and return an index of available
+    (scene, recipe, scheme, Q) configurations."""
+    base = get_settings().wordifications_dir
+    if not base.exists():
+        raise FileNotFoundError(str(base))
+    items = []
+    for path in sorted(base.glob("*.json")):
+        stem = path.stem  # scene_id_RECIPE_scheme_Qn
+        items.append({
+            "id": stem,
+            "path": str(path.relative_to(get_settings().data_path.parent)).replace("\\", "/"),
+            "bytes": path.stat().st_size,
+        })
+    return {"count": len(items), "items": items}

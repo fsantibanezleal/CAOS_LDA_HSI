@@ -153,6 +153,27 @@ class Settings(BaseSettings):
     def validation_blocks_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "validation_blocks" / f"{scene_id}.json"
 
+    def eda_hidsag_path(self, subset_code: str) -> Path:
+        return self.data_path / "derived" / "eda" / "hidsag" / f"{subset_code}.json"
+
+    def topic_to_library_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_to_library" / f"{scene_id}.json"
+
+    def spatial_validation_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "spatial" / f"{scene_id}.json"
+
+    def wordification_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return (
+            self.data_path
+            / "derived"
+            / "wordifications"
+            / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+        )
+
+    @property
+    def wordifications_dir(self) -> Path:
+        return self.data_path / "derived" / "wordifications"
+
 
 @lru_cache
 def get_settings() -> Settings:

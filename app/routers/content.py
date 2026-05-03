@@ -323,3 +323,63 @@ def validation_blocks(scene_id: str) -> dict:
             status_code=404,
             detail=f"validation blocks for '{scene_id}' not generated yet; run scripts/local.* build-validation-blocks",
         ) from exc
+
+
+@router.get("/eda/hidsag/{subset_code}")
+def eda_hidsag(subset_code: str) -> dict:
+    from app.services.content import get_eda_hidsag
+    try:
+        return get_eda_hidsag(subset_code)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"HIDSAG EDA for '{subset_code}' not generated yet; run scripts/local.* build-eda-hidsag",
+        ) from exc
+
+
+@router.get("/topic-to-library/{scene_id}")
+def topic_to_library(scene_id: str) -> dict:
+    from app.services.content import get_topic_to_library
+    try:
+        return get_topic_to_library(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"topic-to-library for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-library",
+        ) from exc
+
+
+@router.get("/spatial/{scene_id}")
+def spatial_validation(scene_id: str) -> dict:
+    from app.services.content import get_spatial_validation
+    try:
+        return get_spatial_validation(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"spatial validation for '{scene_id}' not generated yet; run scripts/local.* build-spatial-validation",
+        ) from exc
+
+
+@router.get("/wordifications")
+def wordifications_index() -> dict:
+    from app.services.content import get_wordifications_index
+    try:
+        return get_wordifications_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="wordifications not generated yet; run scripts/local.* build-wordifications",
+        ) from exc
+
+
+@router.get("/wordifications/{scene_id}/{recipe}/{scheme}/{q}")
+def wordification(scene_id: str, recipe: str, scheme: str, q: int) -> dict:
+    from app.services.content import get_wordification
+    try:
+        return get_wordification(scene_id, recipe, scheme, q)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"wordification {scene_id}/{recipe}/{scheme}/Q{q} not generated yet",
+        ) from exc
