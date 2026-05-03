@@ -57,6 +57,16 @@ Pipeline -- build derived:
   build-hidsag-band-quality   Heuristic HIDSAG bad-band summary
   build-hidsag-region-documents   HIDSAG patch-level region documents
 
+Pipeline -- precompute layer (master-plan section 18):
+  build-eda-per-scene         EDA: class distribution, percentile envelopes, F-stat / MI per band
+  build-topic-views           LDAvis-faithful topic views: JS-MDS 2D+3D, real corpus-marginal lambda
+  build-topic-to-data         Posterior interpretation: P(label|topic), top docs, dominant_topic_map
+  build-spectral-browser      Sampled spectra (binary float32) + metadata
+  build-spectral-density      Precomputed band x reflectance density heatmaps per group
+  build-validation-blocks     Real metrics replacing null in subset cards
+  curate-for-web              Generate data/derived/manifests/index.json (the contract)
+  build-precompute-all        Run every precompute builder in order
+
 Pipeline -- benchmarks:
   run-core                    Local PTM/LDA, clustering, stability, SAM, NMF, supervised
   run-hidsag-sensitivity      HIDSAG preprocessing-sensitivity benchmark
@@ -240,6 +250,25 @@ case "$cmd" in
   build-hidsag)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hidsag_curated_subset.py ;;
   build-hidsag-band-quality)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hidsag_band_quality.py ;;
   build-hidsag-region-documents) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hidsag_region_documents.py ;;
+
+  # ---- pipeline -- precompute layer (master-plan section 18) ----------
+  build-eda-per-scene)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_eda_per_scene.py ;;
+  build-topic-views)       ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_views.py ;;
+  build-topic-to-data)     ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_to_data.py ;;
+  build-spectral-browser)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_spectral_browser.py ;;
+  build-spectral-density)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_spectral_density.py ;;
+  build-validation-blocks) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_validation_blocks.py ;;
+  curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
+  build-precompute-all)
+    ensure_pipeline_venv
+    "$PVENV/bin/python" data-pipeline/build_eda_per_scene.py
+    "$PVENV/bin/python" data-pipeline/build_topic_views.py
+    "$PVENV/bin/python" data-pipeline/build_topic_to_data.py
+    "$PVENV/bin/python" data-pipeline/build_spectral_browser.py
+    "$PVENV/bin/python" data-pipeline/build_spectral_density.py
+    "$PVENV/bin/python" data-pipeline/build_validation_blocks.py
+    "$PVENV/bin/python" data-pipeline/curate_for_web.py
+    ;;
 
   # ---- pipeline -- benchmarks ------------------------------------------
   run-core)

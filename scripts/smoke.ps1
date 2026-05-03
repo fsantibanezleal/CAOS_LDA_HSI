@@ -36,6 +36,21 @@ $paths = @(
     "/generated/subsets/index.json",
     "/generated/subsets/salinas-labeled-scene-pack.json",
     "/generated/baselines/previews/cuprite-aviris-reflectance-slic.png",
+    # ---- precompute layer (master-plan section 18) ----
+    "/api/manifest",
+    "/api/eda/per-scene/indian-pines-corrected",
+    "/api/topic-views/indian-pines-corrected",
+    "/api/topic-to-data/indian-pines-corrected",
+    "/api/spectral-browser/indian-pines-corrected",
+    "/api/spectral-density/indian-pines-corrected",
+    "/api/validation-blocks/indian-pines-corrected",
+    "/generated/spectral_browser/indian-pines-corrected/spectra.bin",
+    "/generated/spectral_density/indian-pines-corrected/density_global.bin",
+    "/generated/eda/per_scene/indian-pines-corrected.json",
+    "/generated/topic_views/indian-pines-corrected.json",
+    "/generated/topic_to_data/indian-pines-corrected.json",
+    "/generated/validation_blocks/indian-pines-corrected.json",
+    "/generated/manifests/index.json",
     "/"
 )
 
