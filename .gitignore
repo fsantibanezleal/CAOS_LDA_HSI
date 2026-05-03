@@ -14,3 +14,9 @@ frontend/*.tsbuildinfo
 .runtime/
 data/demo/*.tmp
 data/raw/
+# Heavy precompute artifacts: full phi / theta matrices, full embeddings,
+# full pipeline-run state. They live locally and are reproducible by
+# running the builders documented in the master plan. Only the curated
+# data/derived/ tier is versioned.
+data/local/
+data/pipeline-runs/
