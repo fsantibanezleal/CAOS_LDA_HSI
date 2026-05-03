@@ -286,6 +286,9 @@ case "$cmd" in
   build-mutual-information) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_mutual_information.py ;;
   build-rate-distortion-curve) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_rate_distortion_curve.py ;;
   build-topic-routed-classifier) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_routed_classifier.py ;;
+  build-embedded-baseline) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_embedded_baseline.py ;;
+  build-topic-stability)   ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_stability.py ;;
+  build-topic-to-usgs-v7)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_to_usgs_v7.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
   build-precompute-all)
     ensure_pipeline_venv

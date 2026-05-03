@@ -247,6 +247,15 @@ class Settings(BaseSettings):
     def topic_routed_classifier_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_routed_classifier" / f"{scene_id}.json"
 
+    def embedded_baseline_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "embedded_baseline" / f"{scene_id}.json"
+
+    def topic_stability_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_stability" / f"{scene_id}.json"
+
+    def topic_to_usgs_v7_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_to_usgs_v7" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

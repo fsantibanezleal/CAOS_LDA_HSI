@@ -429,3 +429,15 @@ def get_rate_distortion_curve(scene_id: str) -> dict:
 
 def get_topic_routed_classifier(scene_id: str) -> dict:
     return _load_or_404(get_settings().topic_routed_classifier_path(scene_id))
+
+
+def get_embedded_baseline(scene_id: str) -> dict:
+    return _load_or_404(get_settings().embedded_baseline_path(scene_id))
+
+
+def get_topic_stability(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_stability_path(scene_id))
+
+
+def get_topic_to_usgs_v7(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_to_usgs_v7_path(scene_id))

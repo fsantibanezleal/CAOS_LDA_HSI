@@ -34,6 +34,8 @@ param(
         "build-bayesian-method-comparison", "build-optuna-hyperparam-search",
         "build-linear-probe-panel", "build-mutual-information",
         "build-rate-distortion-curve", "build-topic-routed-classifier",
+        "build-embedded-baseline", "build-topic-stability",
+        "build-topic-to-usgs-v7",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -326,6 +328,9 @@ switch ($Command) {
     "build-mutual-information" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_mutual_information.py }
     "build-rate-distortion-curve" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_rate_distortion_curve.py }
     "build-topic-routed-classifier" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_routed_classifier.py }
+    "build-embedded-baseline" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_embedded_baseline.py }
+    "build-topic-stability"   { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_stability.py }
+    "build-topic-to-usgs-v7"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_usgs_v7.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv

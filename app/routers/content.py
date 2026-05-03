@@ -618,3 +618,30 @@ def topic_routed_classifier(scene_id: str) -> dict:
         return get_topic_routed_classifier(scene_id)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=f"topic_routed_classifier for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/embedded-baseline/{scene_id}")
+def embedded_baseline(scene_id: str) -> dict:
+    from app.services.content import get_embedded_baseline
+    try:
+        return get_embedded_baseline(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"embedded_baseline for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/topic-stability/{scene_id}")
+def topic_stability(scene_id: str) -> dict:
+    from app.services.content import get_topic_stability
+    try:
+        return get_topic_stability(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_stability for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/topic-to-usgs-v7/{scene_id}")
+def topic_to_usgs_v7(scene_id: str) -> dict:
+    from app.services.content import get_topic_to_usgs_v7
+    try:
+        return get_topic_to_usgs_v7(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_to_usgs_v7 for '{scene_id}' not generated yet") from exc

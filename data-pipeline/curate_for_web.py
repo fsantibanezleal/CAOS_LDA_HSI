@@ -63,6 +63,9 @@ BUILDER_DIRS = [
     ("build_mutual_information", "mutual_information"),
     ("build_rate_distortion_curve", "rate_distortion_curve"),
     ("build_topic_routed_classifier", "topic_routed_classifier"),
+    ("build_embedded_baseline", "embedded_baseline"),
+    ("build_topic_stability", "topic_stability"),
+    ("build_topic_to_usgs_v7", "topic_to_usgs_v7"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -307,6 +310,21 @@ CLAIMS_ALLOWED = [
         "id": "topic_routed_classifier",
         "description": "B-3 (Addendum B): per-topic specialists (logistic regression on raw spectrum, sample_weight = theta_d(k)) with soft theta gating at test time. Compared against raw_logistic, theta_logistic (naive), pca_K_logistic, and topic_routed_hard. 5-fold StratifiedKFold macro F1 with bootstrap CI95. The embedded / hierarchical use of theta the user specified — not modelling on theta directly.",
         "source_pattern": "topic_routed_classifier/<scene>.json",
+    },
+    {
+        "id": "embedded_baseline",
+        "description": "B-5 (Addendum B Axis C-3): does theta add signal beyond PCA at the same K? Compares logistic regression on theta-only / PCA_K-only / [theta | PCA_K] concatenation / raw spectrum on labelled scenes. 5-fold StratifiedKFold macro F1 with bootstrap CI95; Wilcoxon-Holm + Cliff's delta on the (concat - PCA) pair.",
+        "source_pattern": "embedded_baseline/<scene>.json",
+    },
+    {
+        "id": "topic_stability",
+        "description": "B-6 (Addendum B Axis A): topic stability via Hungarian-matched cosine across N_SEEDS=7 LDA refits at the canonical K per scene. Per-topic median / min / std vs seed 0; full N x N seed-pair agreement matrix; off-diagonal scene-level summary. Greene-O'Callaghan-Cunningham 2014 / ACM CSUR 2024 stability protocol.",
+        "source_pattern": "topic_stability/<scene>.json",
+    },
+    {
+        "id": "topic_to_usgs_v7",
+        "description": "B-7 (Addendum B Axis B): topic ↔ full USGS Spectral Library v7 (AVIRIS-Classic 1997 convolution, 2450 spectra across 7 chapters: artificial / coatings / liquids / minerals / organics / soils / vegetation). Per-topic top-20 nearest USGS spectra by cosine and SAM, plus best-match-per-chapter and chapter histogram of the top-50.",
+        "source_pattern": "topic_to_usgs_v7/<scene>.json",
     },
 ]
 
