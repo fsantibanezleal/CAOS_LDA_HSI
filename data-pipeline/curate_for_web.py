@@ -47,6 +47,8 @@ BUILDER_DIRS = [
     ("build_validation_blocks", "validation_blocks"),
     ("build_wordifications", "wordifications"),
     ("build_spatial_validation", "spatial"),
+    ("build_groupings", "groupings"),
+    ("build_cross_method_agreement", "cross_method_agreement"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -191,6 +193,16 @@ CLAIMS_ALLOWED = [
         "id": "wordifications_v1_v2_v3_grid",
         "description": "V1, V2, V3 recipes (V3 = band-bin ordered, the previously-missing Procemin recipe) at 3 quantization schemes (uniform, quantile, lloyd_max) x 3 Q values (8, 16, 32). Per-config vocab stats, document-length distribution, zero-token-doc rate, corpus-marginal entropy bits, top-20 tokens.",
         "source_pattern": "wordifications/<scene>_<recipe>_<scheme>_Q<q>.json",
+    },
+    {
+        "id": "groupings_alternative_document_constructors",
+        "description": "Alternative document constructors per scene: pixel baseline, SLIC at 500 / 2000 superpixels, fixed patches at 7 / 15 px, Felzenszwalb graph segmentation. Per-method group sizes, per-group mean spectra, between/within variance ratio, ARI / NMI / V-measure vs ground-truth label.",
+        "source_pattern": "groupings/<method>/<scene>.json",
+    },
+    {
+        "id": "cross_method_agreement_matrix",
+        "description": "Pairwise ARI / NMI / V-measure matrix between every grouping method (label, dominant LDA topic, every method from build_groupings) per scene. Quantifies how different ways of grouping spectra agree or disagree.",
+        "source_pattern": "cross_method_agreement/<scene>.{ari_matrix,nmi_matrix,v_measure_matrix}",
     },
 ]
 
