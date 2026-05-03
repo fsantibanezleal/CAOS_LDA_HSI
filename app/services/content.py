@@ -231,3 +231,44 @@ def get_app_payload() -> AppPayload:
         methodology=get_methodology(),
         demo=get_demo(),
     )
+
+
+# ============================================================================
+# Master-plan §18 precompute layer — generic JSON loaders for the new derived
+# files. Returns plain dicts because the schemas are large and the frontend
+# already declares its own TypeScript types.
+# ============================================================================
+
+
+def _load_or_404(path) -> dict:
+    if not path.exists():
+        raise FileNotFoundError(str(path))
+    return _load_json(str(path))
+
+
+def get_eda_per_scene(scene_id: str) -> dict:
+    return _load_or_404(get_settings().eda_per_scene_path(scene_id))
+
+
+def get_topic_views(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_views_path(scene_id))
+
+
+def get_topic_to_data(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_to_data_path(scene_id))
+
+
+def get_spectral_browser_metadata(scene_id: str) -> dict:
+    return _load_or_404(get_settings().spectral_browser_metadata_path(scene_id))
+
+
+def get_spectral_density_manifest(scene_id: str) -> dict:
+    return _load_or_404(get_settings().spectral_density_manifest_path(scene_id))
+
+
+def get_validation_blocks(scene_id: str) -> dict:
+    return _load_or_404(get_settings().validation_blocks_path(scene_id))
+
+
+def get_derived_manifest() -> dict:
+    return _load_or_404(get_settings().derived_manifest_path)

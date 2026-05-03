@@ -216,3 +216,110 @@ def method_statistics() -> MethodStatisticsPayload:
 @router.get("/app-data", response_model=AppPayload)
 def app_data() -> AppPayload:
     return get_app_payload()
+
+
+# ============================================================================
+# Master-plan §18 precompute layer — endpoints for the new derived files.
+# These return plain dicts (no Pydantic model) because the schemas are large
+# and the frontend declares its own TypeScript interfaces.
+# ============================================================================
+
+
+def _serve_or_404(loader, scene_id: str | None, hint: str):
+    from app.services.content import (
+        get_eda_per_scene,
+        get_topic_views,
+        get_topic_to_data,
+        get_spectral_browser_metadata,
+        get_spectral_density_manifest,
+        get_validation_blocks,
+        get_derived_manifest,
+    )
+    try:
+        return loader(scene_id) if scene_id else loader()
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=hint) from exc
+
+
+@router.get("/manifest")
+def derived_manifest() -> dict:
+    from app.services.content import get_derived_manifest
+    try:
+        return get_derived_manifest()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="manifest not generated yet; run scripts/local.* curate-for-web",
+        ) from exc
+
+
+@router.get("/eda/per-scene/{scene_id}")
+def eda_per_scene(scene_id: str) -> dict:
+    from app.services.content import get_eda_per_scene
+    try:
+        return get_eda_per_scene(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"eda views for '{scene_id}' not generated yet; run scripts/local.* build-eda-per-scene",
+        ) from exc
+
+
+@router.get("/topic-views/{scene_id}")
+def topic_views(scene_id: str) -> dict:
+    from app.services.content import get_topic_views
+    try:
+        return get_topic_views(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"topic views for '{scene_id}' not generated yet; run scripts/local.* build-topic-views",
+        ) from exc
+
+
+@router.get("/topic-to-data/{scene_id}")
+def topic_to_data(scene_id: str) -> dict:
+    from app.services.content import get_topic_to_data
+    try:
+        return get_topic_to_data(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"topic-to-data for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-data",
+        ) from exc
+
+
+@router.get("/spectral-browser/{scene_id}")
+def spectral_browser(scene_id: str) -> dict:
+    from app.services.content import get_spectral_browser_metadata
+    try:
+        return get_spectral_browser_metadata(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"spectral browser for '{scene_id}' not generated yet; run scripts/local.* build-spectral-browser",
+        ) from exc
+
+
+@router.get("/spectral-density/{scene_id}")
+def spectral_density(scene_id: str) -> dict:
+    from app.services.content import get_spectral_density_manifest
+    try:
+        return get_spectral_density_manifest(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"spectral density for '{scene_id}' not generated yet; run scripts/local.* build-spectral-density",
+        ) from exc
+
+
+@router.get("/validation-blocks/{scene_id}")
+def validation_blocks(scene_id: str) -> dict:
+    from app.services.content import get_validation_blocks
+    try:
+        return get_validation_blocks(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"validation blocks for '{scene_id}' not generated yet; run scripts/local.* build-validation-blocks",
+        ) from exc

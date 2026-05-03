@@ -130,6 +130,29 @@ class Settings(BaseSettings):
     def subset_card_path(self, subset_id: str) -> Path:
         return self.subset_cards_dir / f"{subset_id}.json"
 
+    # ------- new precompute layer (master-plan §18) -------
+    @property
+    def derived_manifest_path(self) -> Path:
+        return self.data_path / "derived" / "manifests" / "index.json"
+
+    def eda_per_scene_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "eda" / "per_scene" / f"{scene_id}.json"
+
+    def topic_views_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_views" / f"{scene_id}.json"
+
+    def topic_to_data_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_to_data" / f"{scene_id}.json"
+
+    def spectral_browser_metadata_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "spectral_browser" / scene_id / "metadata.json"
+
+    def spectral_density_manifest_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "spectral_density" / scene_id / "manifest.json"
+
+    def validation_blocks_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "validation_blocks" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:
