@@ -59,6 +59,10 @@ BUILDER_DIRS = [
     ("build_lda_sweep", "lda_sweep"),
     ("build_dmr_lda_hidsag", "topic_variants/dmr_lda_hidsag"),
     ("build_optuna_hyperparam_search", "lda_hyperparam_search"),
+    ("build_linear_probe_panel", "linear_probe_panel"),
+    ("build_mutual_information", "mutual_information"),
+    ("build_rate_distortion_curve", "rate_distortion_curve"),
+    ("build_topic_routed_classifier", "topic_routed_classifier"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -283,6 +287,26 @@ CLAIMS_ALLOWED = [
         "id": "lda_hyperparam_search",
         "description": "Optuna TPE Bayesian hyperparameter search per labelled scene over (K in [4, 16], alpha log-uniform, eta log-uniform). Objective = c_v(top_15) - 0.001 * perplexity_test. 30 trials per scene. Replaces the failed octis benchmarking route.",
         "source_pattern": "lda_hyperparam_search/<scene>.json",
+    },
+    {
+        "id": "linear_probe_panel",
+        "description": "B-1 (Addendum B): logistic-regression linear probe macro F1 / accuracy / balanced accuracy with bootstrap CI95 across compressions (theta vs PCA-K, NMF-K, ICA-K, dense-AE-K). 5-fold StratifiedKFold; pairwise Wilcoxon-Holm + Cliff's delta against theta. Fair-baseline reading on Axis C (downstream task) of the multi-axis topic evaluation framework.",
+        "source_pattern": "linear_probe_panel/<scene>.json",
+    },
+    {
+        "id": "mutual_information",
+        "description": "B-4 (Addendum B): mutual information MI(theta; label) and MI(other K-dim compression; label) per labelled scene; for HIDSAG subsets with DMR-LDA fits, MI(theta; numeric_target) per measurement. Per-feature MI vector, sum, max, label entropy and joint clip. Information-theoretic axis (D) of the framework.",
+        "source_pattern": "mutual_information/<scene>.json | mutual_information/hidsag/<subset>.json",
+    },
+    {
+        "id": "rate_distortion_curve",
+        "description": "B-2 (Addendum B): K -> RMSE curves on the canonical band-frequency document-term matrix for LDA, NMF, PCA on a held-out 20%% test split. Reconstruction quality axis (G) of the framework — the fair K-dim reconstruction comparison.",
+        "source_pattern": "rate_distortion_curve/<scene>.json",
+    },
+    {
+        "id": "topic_routed_classifier",
+        "description": "B-3 (Addendum B): per-topic specialists (logistic regression on raw spectrum, sample_weight = theta_d(k)) with soft theta gating at test time. Compared against raw_logistic, theta_logistic (naive), pca_K_logistic, and topic_routed_hard. 5-fold StratifiedKFold macro F1 with bootstrap CI95. The embedded / hierarchical use of theta the user specified — not modelling on theta directly.",
+        "source_pattern": "topic_routed_classifier/<scene>.json",
     },
 ]
 

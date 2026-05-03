@@ -32,6 +32,8 @@ param(
         "build-representations", "build-lda-sweep",
         "build-neural-topic-models", "build-dmr-lda-hidsag",
         "build-bayesian-method-comparison", "build-optuna-hyperparam-search",
+        "build-linear-probe-panel", "build-mutual-information",
+        "build-rate-distortion-curve", "build-topic-routed-classifier",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -320,6 +322,10 @@ switch ($Command) {
     "build-dmr-lda-hidsag"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_dmr_lda_hidsag.py }
     "build-bayesian-method-comparison" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_bayesian_method_comparison.py }
     "build-optuna-hyperparam-search" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_optuna_hyperparam_search.py }
+    "build-linear-probe-panel" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_linear_probe_panel.py }
+    "build-mutual-information" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_mutual_information.py }
+    "build-rate-distortion-curve" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_rate_distortion_curve.py }
+    "build-topic-routed-classifier" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_routed_classifier.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv

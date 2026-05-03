@@ -232,6 +232,21 @@ class Settings(BaseSettings):
     def optuna_search_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "lda_hyperparam_search" / f"{scene_id}.json"
 
+    def linear_probe_panel_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "linear_probe_panel" / f"{scene_id}.json"
+
+    def mutual_information_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "mutual_information" / f"{scene_id}.json"
+
+    def mutual_information_hidsag_path(self, subset_code: str) -> Path:
+        return self.data_path / "derived" / "mutual_information" / "hidsag" / f"{subset_code}.json"
+
+    def rate_distortion_curve_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "rate_distortion_curve" / f"{scene_id}.json"
+
+    def topic_routed_classifier_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_routed_classifier" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

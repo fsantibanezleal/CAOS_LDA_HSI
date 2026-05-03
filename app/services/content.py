@@ -409,3 +409,23 @@ def get_bayesian_comparison(task_type: str) -> dict:
 
 def get_optuna_search(scene_id: str) -> dict:
     return _load_or_404(get_settings().optuna_search_path(scene_id))
+
+
+def get_linear_probe_panel(scene_id: str) -> dict:
+    return _load_or_404(get_settings().linear_probe_panel_path(scene_id))
+
+
+def get_mutual_information(scene_id: str) -> dict:
+    return _load_or_404(get_settings().mutual_information_path(scene_id))
+
+
+def get_mutual_information_hidsag(subset_code: str) -> dict:
+    return _load_or_404(get_settings().mutual_information_hidsag_path(subset_code))
+
+
+def get_rate_distortion_curve(scene_id: str) -> dict:
+    return _load_or_404(get_settings().rate_distortion_curve_path(scene_id))
+
+
+def get_topic_routed_classifier(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_routed_classifier_path(scene_id))

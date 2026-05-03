@@ -282,6 +282,10 @@ case "$cmd" in
   build-dmr-lda-hidsag)    ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_dmr_lda_hidsag.py ;;
   build-bayesian-method-comparison) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_bayesian_method_comparison.py ;;
   build-optuna-hyperparam-search) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_optuna_hyperparam_search.py ;;
+  build-linear-probe-panel) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_linear_probe_panel.py ;;
+  build-mutual-information) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_mutual_information.py ;;
+  build-rate-distortion-curve) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_rate_distortion_curve.py ;;
+  build-topic-routed-classifier) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_routed_classifier.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
   build-precompute-all)
     ensure_pipeline_venv

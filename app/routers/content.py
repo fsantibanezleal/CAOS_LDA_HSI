@@ -573,3 +573,48 @@ def optuna_search(scene_id: str) -> dict:
         return get_optuna_search(scene_id)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=f"optuna_search for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/linear-probe-panel/{scene_id}")
+def linear_probe_panel(scene_id: str) -> dict:
+    from app.services.content import get_linear_probe_panel
+    try:
+        return get_linear_probe_panel(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"linear_probe_panel for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/mutual-information/{scene_id}")
+def mutual_information(scene_id: str) -> dict:
+    from app.services.content import get_mutual_information
+    try:
+        return get_mutual_information(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"mutual_information for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/mutual-information/hidsag/{subset_code}")
+def mutual_information_hidsag(subset_code: str) -> dict:
+    from app.services.content import get_mutual_information_hidsag
+    try:
+        return get_mutual_information_hidsag(subset_code)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"mutual_information for HIDSAG '{subset_code}' not generated yet") from exc
+
+
+@router.get("/rate-distortion-curve/{scene_id}")
+def rate_distortion_curve(scene_id: str) -> dict:
+    from app.services.content import get_rate_distortion_curve
+    try:
+        return get_rate_distortion_curve(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"rate_distortion_curve for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/topic-routed-classifier/{scene_id}")
+def topic_routed_classifier(scene_id: str) -> dict:
+    from app.services.content import get_topic_routed_classifier
+    try:
+        return get_topic_routed_classifier(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_routed_classifier for '{scene_id}' not generated yet") from exc
