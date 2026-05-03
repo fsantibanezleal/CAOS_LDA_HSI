@@ -329,3 +329,47 @@ def get_groupings_index() -> dict:
 
 def get_cross_method_agreement(scene_id: str) -> dict:
     return _load_or_404(get_settings().cross_method_agreement_path(scene_id))
+
+
+def get_method_statistics_hidsag(subset_code: str) -> dict:
+    return _load_or_404(get_settings().method_statistics_hidsag_path(subset_code))
+
+
+def get_external_validation_literature(scene_id: str) -> dict:
+    return _load_or_404(get_settings().external_validation_literature_path(scene_id))
+
+
+def get_external_validation_hidsag_methods(subset_code: str) -> dict:
+    return _load_or_404(get_settings().external_validation_hidsag_methods_path(subset_code))
+
+
+def get_narratives(scene_id: str) -> dict:
+    return _load_or_404(get_settings().narratives_path(scene_id))
+
+
+def get_interpretability(scene_id: str, card_type: str) -> dict:
+    return _load_or_404(get_settings().interpretability_path(scene_id, card_type))
+
+
+def get_quantization_sensitivity(scene_id: str) -> dict:
+    return _load_or_404(get_settings().quantization_sensitivity_path(scene_id))
+
+
+def get_topic_variant(variant: str, scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_variant_path(variant, scene_id))
+
+
+def get_topic_variants_index() -> dict:
+    base = get_settings().topic_variants_dir
+    if not base.exists():
+        raise FileNotFoundError(str(base))
+    items = []
+    for variant_dir in sorted(p for p in base.iterdir() if p.is_dir()):
+        for path in sorted(variant_dir.glob("*.json")):
+            items.append({
+                "variant": variant_dir.name,
+                "scene_id": path.stem,
+                "path": str(path.relative_to(get_settings().data_path.parent)).replace("\\", "/"),
+                "bytes": path.stat().st_size,
+            })
+    return {"count": len(items), "items": items}

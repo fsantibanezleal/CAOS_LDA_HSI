@@ -1,0 +1,16 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv-pipeline/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}",
+    "${workspaceFolder}/data-pipeline",
+    "${workspaceFolder}/research_core"
+  ],
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.analysis.typeCheckingMode": "basic",
+  "[python]": {
+    "editor.formatOnSave": false
+  }
+}

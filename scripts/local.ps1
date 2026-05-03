@@ -26,6 +26,9 @@ param(
         "build-validation-blocks", "build-wordifications",
         "build-topic-to-library", "build-spatial-validation",
         "build-groupings", "build-cross-method-agreement",
+        "build-quantization-sensitivity", "build-topic-model-variants",
+        "build-method-statistics-hidsag", "build-external-validation",
+        "build-narratives", "build-interpretability",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -302,6 +305,12 @@ switch ($Command) {
     "build-spatial-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py }
     "build-groupings"         { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_groupings.py }
     "build-cross-method-agreement" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_cross_method_agreement.py }
+    "build-quantization-sensitivity" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_quantization_sensitivity.py }
+    "build-topic-model-variants" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_model_variants.py }
+    "build-method-statistics-hidsag" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_method_statistics_hidsag.py }
+    "build-external-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_external_validation.py }
+    "build-narratives"        { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_narratives.py }
+    "build-interpretability"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_interpretability.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv

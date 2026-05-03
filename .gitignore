@@ -1,6 +1,8 @@
 .env
 .venv/
 .venv-pipeline/
+.vscode/launch.json
+.vscode/tasks.json
 *.pyc
 __pycache__/
 .pytest_cache/

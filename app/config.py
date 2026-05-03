@@ -184,6 +184,35 @@ class Settings(BaseSettings):
     def cross_method_agreement_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "cross_method_agreement" / f"{scene_id}.json"
 
+    def method_statistics_hidsag_path(self, subset_code: str) -> Path:
+        return self.data_path / "derived" / "method_statistics_hidsag" / f"{subset_code}.json"
+
+    def external_validation_literature_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "external_validation" / f"{scene_id}_literature.json"
+
+    def external_validation_hidsag_methods_path(self, subset_code: str) -> Path:
+        return self.data_path / "derived" / "external_validation" / f"{subset_code}_methods.json"
+
+    def narratives_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "narratives" / f"{scene_id}.json"
+
+    def interpretability_path(self, scene_id: str, card_type: str) -> Path:
+        return (
+            self.data_path / "derived" / "interpretability" / scene_id / f"{card_type}.json"
+        )
+
+    def quantization_sensitivity_path(self, scene_id: str) -> Path:
+        return (
+            self.data_path / "derived" / "quantization_sensitivity" / f"{scene_id}.json"
+        )
+
+    def topic_variant_path(self, variant: str, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_variants" / variant / f"{scene_id}.json"
+
+    @property
+    def topic_variants_dir(self) -> Path:
+        return self.data_path / "derived" / "topic_variants"
+
 
 @lru_cache
 def get_settings() -> Settings:

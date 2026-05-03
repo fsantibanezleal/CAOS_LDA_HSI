@@ -1,0 +1,40 @@
+{
+  "venvPath": ".",
+  "venv": ".venv-pipeline",
+  "pythonVersion": "3.12",
+  "include": [
+    "data-pipeline",
+    "research_core",
+    "app"
+  ],
+  "exclude": [
+    ".venv",
+    ".venv-pipeline",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "frontend",
+    "data/raw",
+    "data/local",
+    "data/pipeline-runs"
+  ],
+  "reportMissingImports": "warning",
+  "reportMissingTypeStubs": "none",
+  "useLibraryCodeForTypes": true,
+  "executionEnvironments": [
+    {
+      "root": "data-pipeline",
+      "venv": ".venv-pipeline",
+      "extraPaths": ["..", "../research_core"]
+    },
+    {
+      "root": "research_core",
+      "venv": ".venv-pipeline",
+      "extraPaths": [".."]
+    },
+    {
+      "root": "app",
+      "venv": ".venv",
+      "extraPaths": [".."]
+    }
+  ]
+}

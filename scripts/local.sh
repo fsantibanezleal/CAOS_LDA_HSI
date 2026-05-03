@@ -270,6 +270,12 @@ case "$cmd" in
   build-spatial-validation) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_spatial_validation.py ;;
   build-groupings)         ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_groupings.py ;;
   build-cross-method-agreement) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_cross_method_agreement.py ;;
+  build-quantization-sensitivity) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_quantization_sensitivity.py ;;
+  build-topic-model-variants) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_model_variants.py ;;
+  build-method-statistics-hidsag) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_method_statistics_hidsag.py ;;
+  build-external-validation) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_external_validation.py ;;
+  build-narratives)        ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_narratives.py ;;
+  build-interpretability)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_interpretability.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
   build-precompute-all)
     ensure_pipeline_venv

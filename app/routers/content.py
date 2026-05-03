@@ -419,3 +419,101 @@ def cross_method_agreement(scene_id: str) -> dict:
             status_code=404,
             detail=f"cross-method agreement for '{scene_id}' not generated yet",
         ) from exc
+
+
+@router.get("/method-statistics-hidsag/{subset_code}")
+def method_statistics_hidsag(subset_code: str) -> dict:
+    from app.services.content import get_method_statistics_hidsag
+    try:
+        return get_method_statistics_hidsag(subset_code)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"method statistics for HIDSAG '{subset_code}' not generated yet",
+        ) from exc
+
+
+@router.get("/external-validation/{scene_id}/literature")
+def external_validation_literature(scene_id: str) -> dict:
+    from app.services.content import get_external_validation_literature
+    try:
+        return get_external_validation_literature(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"literature alignment for '{scene_id}' not generated yet",
+        ) from exc
+
+
+@router.get("/external-validation/hidsag/{subset_code}/methods")
+def external_validation_hidsag_methods(subset_code: str) -> dict:
+    from app.services.content import get_external_validation_hidsag_methods
+    try:
+        return get_external_validation_hidsag_methods(subset_code)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"HIDSAG method summary for '{subset_code}' not generated yet",
+        ) from exc
+
+
+@router.get("/narratives/{scene_id}")
+def narratives(scene_id: str) -> dict:
+    from app.services.content import get_narratives
+    try:
+        return get_narratives(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"narrative for '{scene_id}' not generated yet",
+        ) from exc
+
+
+@router.get("/interpretability/{scene_id}/{card_type}")
+def interpretability(scene_id: str, card_type: str) -> dict:
+    from app.services.content import get_interpretability
+    if card_type not in ("topic_cards", "band_cards", "document_cards"):
+        raise HTTPException(status_code=400, detail="card_type must be topic_cards | band_cards | document_cards")
+    try:
+        return get_interpretability(scene_id, card_type)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"interpretability {card_type} for '{scene_id}' not generated yet",
+        ) from exc
+
+
+@router.get("/quantization-sensitivity/{scene_id}")
+def quantization_sensitivity(scene_id: str) -> dict:
+    from app.services.content import get_quantization_sensitivity
+    try:
+        return get_quantization_sensitivity(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"quantization sensitivity for '{scene_id}' not generated yet",
+        ) from exc
+
+
+@router.get("/topic-variants")
+def topic_variants_index() -> dict:
+    from app.services.content import get_topic_variants_index
+    try:
+        return get_topic_variants_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="topic variants not generated yet",
+        ) from exc
+
+
+@router.get("/topic-variants/{variant}/{scene_id}")
+def topic_variant(variant: str, scene_id: str) -> dict:
+    from app.services.content import get_topic_variant
+    try:
+        return get_topic_variant(variant, scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"topic variant {variant}/{scene_id} not generated yet",
+        ) from exc
