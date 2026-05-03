@@ -21,9 +21,11 @@ param(
         "inspect-hidsag", "build-hidsag", "build-hidsag-band-quality",
         "build-hidsag-region-documents",
         # pipeline -- precompute layer (master-plan §18)
-        "build-eda-per-scene", "build-topic-views", "build-topic-to-data",
-        "build-spectral-browser", "build-spectral-density",
-        "build-validation-blocks", "curate-for-web", "build-precompute-all",
+        "build-eda-per-scene", "build-eda-hidsag", "build-topic-views",
+        "build-topic-to-data", "build-spectral-browser", "build-spectral-density",
+        "build-validation-blocks", "build-wordifications",
+        "build-topic-to-library", "build-spatial-validation",
+        "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
         # maintenance
@@ -81,11 +83,15 @@ function Show-Help {
     Write-Host ""
     Write-Host "Pipeline -- precompute layer (master-plan ?18):" -ForegroundColor Yellow
     Write-Host "  build-eda-per-scene         EDA: class distribution, percentile envelopes, F-stat / MI per band, class-class distances"
+    Write-Host "  build-eda-hidsag            HIDSAG measurement EDA: variable distributions, correlations, dominant targets"
     Write-Host "  build-topic-views           LDAvis-faithful topic views: JS-MDS 2D+3D, real corpus-marginal lambda, log-odds tokens"
     Write-Host "  build-topic-to-data         Posterior interpretation: P(label|topic), top docs per topic, dominant_topic_map"
     Write-Host "  build-spectral-browser      Sampled spectra (binary float32) + metadata for thousands-of-spectra rendering"
     Write-Host "  build-spectral-density      Precomputed band x reflectance density heatmaps per group"
     Write-Host "  build-validation-blocks     Real metrics for corpus-integrity / topic-stability / supervision-association blocks"
+    Write-Host "  build-wordifications        V1, V2, V3 recipes (incl. missing Procemin V3) at 3 schemes x 3 Q (162 configs)"
+    Write-Host "  build-topic-to-library      Match each topic profile to closest USGS / AVIRIS library samples"
+    Write-Host "  build-spatial-validation    Moran's I, connected components, IoU vs ground-truth labels"
     Write-Host "  curate-for-web              Generate data/derived/manifests/index.json (the contract the web app reads)"
     Write-Host "  build-precompute-all        Run every precompute builder in order"
     Write-Host ""
@@ -282,19 +288,27 @@ switch ($Command) {
 
     # ---- pipeline -- precompute layer (master-plan §18) -----------------
     "build-eda-per-scene"     { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_eda_per_scene.py }
+    "build-eda-hidsag"        { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_eda_hidsag.py }
     "build-topic-views"       { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_views.py }
     "build-topic-to-data"     { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_data.py }
     "build-spectral-browser"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_browser.py }
     "build-spectral-density"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_density.py }
     "build-validation-blocks" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_validation_blocks.py }
+    "build-wordifications"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications.py }
+    "build-topic-to-library"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_library.py }
+    "build-spatial-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_eda_per_scene.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_eda_hidsag.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_views.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_data.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_browser.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_density.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_library.py
+        & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_validation_blocks.py
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py
     }
