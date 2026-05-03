@@ -55,6 +55,8 @@ BUILDER_DIRS = [
     ("build_external_validation", "external_validation"),
     ("build_narratives", "narratives"),
     ("build_interpretability", "interpretability"),
+    ("build_representations", "representations"),
+    ("build_lda_sweep", "lda_sweep"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -254,6 +256,16 @@ CLAIMS_ALLOWED = [
         "id": "interpretability_document_cards",
         "description": "Per-top-document interpretability card: theta vector, dominant topic, label, location.",
         "source_pattern": "interpretability/<scene>/document_cards.json",
+    },
+    {
+        "id": "representations",
+        "description": "Per-method spectral representations: PCA at 3/10/30 components, NMF at 8/20, ICA at 10, dense autoencoder at latent dim 8. Each method: latent features (in local), reconstruction RMSE, K-means(latent) ARI/NMI vs label, PCA-3D scatter sampled to 2k points.",
+        "source_pattern": "representations/<method>/<scene>.json",
+    },
+    {
+        "id": "lda_sweep",
+        "description": "K x seed grid (K in {4, 6, 8, 10, 12, 16}, 5 seeds) on canonical band-frequency recipe. Per-K: perplexity train/test, NPMI coherence, topic diversity, Hungarian-matched cosine stability across seeds. Recommends K maximising (-perplexity_norm + npmi + matched_cos).",
+        "source_pattern": "lda_sweep/<scene>.json",
     },
 ]
 
