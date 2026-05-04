@@ -28,6 +28,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
 from research_core.class_catalog import has_labels
 from research_core.paths import DATA_DIR, DERIVED_DIR
 from research_core.raw_scenes import (
@@ -36,6 +40,7 @@ from research_core.raw_scenes import (
     stratified_sample_indices,
     valid_spectra_mask,
 )
+from _mlflow_helper import mlflow_run
 
 
 DERIVED_OUT_DIR = DERIVED_DIR / "lda_sweep"
@@ -245,28 +250,56 @@ def main() -> int:
     written = 0
     for scene_id in LABELLED_SCENES:
         print(f"[lda_sweep] {scene_id} ...", flush=True)
-        try:
-            payload = build_for_scene(scene_id)
-        except Exception as exc:
-            print(f"  FAILED: {exc}", flush=True)
-            import traceback
-            traceback.print_exc()
-            continue
-        if payload is None:
-            print("  skipped", flush=True)
-            continue
-        out_path = DERIVED_OUT_DIR / f"{scene_id}.json"
-        with out_path.open("w", encoding="utf-8") as handle:
-            json.dump(payload, handle, separators=(",", ":"))
-        # Show brief grid
-        for r in payload["grid"]:
-            print(
-                f"  K={r['K']:2d}  perp_test={r['perplexity_test_mean']:.2f} "
-                f"NPMI={r['npmi_mean']:+.3f}  stability={r['matched_cosine_mean']:.3f}",
-                flush=True,
-            )
-        print(f"  -> recommended K = {payload['recommended_K']}", flush=True)
-        written += 1
+        with mlflow_run(
+            "build_lda_sweep",
+            scene_id=scene_id,
+            params={
+                "K_grid": ",".join(str(k) for k in K_GRID),
+                "n_seeds": len(SEEDS),
+                "samples_per_class": SAMPLES_PER_CLASS,
+                "wordification": "band-frequency",
+                "quantization_scale": SCALE,
+                "train_fraction": TRAIN_FRAC,
+            },
+        ) as run:
+            try:
+                payload = build_for_scene(scene_id)
+            except Exception as exc:
+                print(f"  FAILED: {exc}", flush=True)
+                import traceback
+                traceback.print_exc()
+                continue
+            if payload is None:
+                print("  skipped", flush=True)
+                continue
+            out_path = DERIVED_OUT_DIR / f"{scene_id}.json"
+            with out_path.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, separators=(",", ":"))
+            # Log headline metrics: best K and per-K aggregates
+            run.log_metric("recommended_K", float(payload["recommended_K"]))
+            for r in payload["grid"]:
+                K = r["K"]
+                if r["perplexity_test_mean"] is not None:
+                    run.log_metric(
+                        "perplexity_test_mean", r["perplexity_test_mean"], step=K
+                    )
+                run.log_metric("npmi_mean", r["npmi_mean"], step=K)
+                run.log_metric(
+                    "matched_cosine_mean", r["matched_cosine_mean"], step=K
+                )
+                run.log_metric(
+                    "topic_diversity_mean", r["topic_diversity_mean"], step=K
+                )
+            run.log_artifact(str(out_path))
+            # Show brief grid
+            for r in payload["grid"]:
+                print(
+                    f"  K={r['K']:2d}  perp_test={r['perplexity_test_mean']:.2f} "
+                    f"NPMI={r['npmi_mean']:+.3f}  stability={r['matched_cosine_mean']:.3f}",
+                    flush=True,
+                )
+            print(f"  -> recommended K = {payload['recommended_K']}", flush=True)
+            written += 1
     print(f"[lda_sweep] done — {written} scenes written.", flush=True)
     return 0
 

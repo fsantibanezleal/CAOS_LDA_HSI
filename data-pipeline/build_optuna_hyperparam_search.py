@@ -33,6 +33,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
 from research_core.class_catalog import has_labels
 from research_core.paths import DATA_DIR, DERIVED_DIR
 from research_core.raw_scenes import (
@@ -42,6 +46,7 @@ from research_core.raw_scenes import (
     stratified_sample_indices,
     valid_spectra_mask,
 )
+from _mlflow_helper import mlflow_run
 
 warnings.filterwarnings("ignore")
 optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -200,26 +205,42 @@ def main() -> int:
     written = 0
     for scene_id in LABELLED_SCENES:
         print(f"[optuna] {scene_id} ...", flush=True)
-        try:
-            payload = build_for_scene(scene_id)
-        except Exception as exc:
-            print(f"  FAILED: {exc}", flush=True)
-            import traceback
-            traceback.print_exc()
-            continue
-        if payload is None:
-            print("  skipped", flush=True)
-            continue
-        out_path = DERIVED_OUT_DIR / f"{scene_id}.json"
-        with out_path.open("w", encoding="utf-8") as h:
-            json.dump(payload, h, separators=(",", ":"))
-        bp = payload["best_params"]
-        print(
-            f"  best K={bp['K']} alpha={bp['alpha']:.3f} eta={bp['eta']:.3f} "
-            f"objective={payload['best_value']:.4f}",
-            flush=True,
-        )
-        written += 1
+        with mlflow_run(
+            "build_optuna_hyperparam_search",
+            scene_id=scene_id,
+            params={
+                "n_trials": N_TRIALS,
+                "samples_per_class": SAMPLES_PER_CLASS,
+                "scale": SCALE,
+                "train_fraction": TRAIN_FRAC,
+                "random_state": RANDOM_STATE,
+            },
+        ) as run:
+            try:
+                payload = build_for_scene(scene_id)
+            except Exception as exc:
+                print(f"  FAILED: {exc}", flush=True)
+                import traceback
+                traceback.print_exc()
+                continue
+            if payload is None:
+                print("  skipped", flush=True)
+                continue
+            out_path = DERIVED_OUT_DIR / f"{scene_id}.json"
+            with out_path.open("w", encoding="utf-8") as h:
+                json.dump(payload, h, separators=(",", ":"))
+            bp = payload["best_params"]
+            run.log_metric("best_value", float(payload["best_value"]))
+            run.log_metric("best_K", float(bp["K"]))
+            run.log_metric("best_alpha", float(bp["alpha"]))
+            run.log_metric("best_eta", float(bp["eta"]))
+            run.log_artifact(str(out_path))
+            print(
+                f"  best K={bp['K']} alpha={bp['alpha']:.3f} eta={bp['eta']:.3f} "
+                f"objective={payload['best_value']:.4f}",
+                flush=True,
+            )
+            written += 1
     print(f"[optuna] done — {written} scenes written.", flush=True)
     return 0
 
