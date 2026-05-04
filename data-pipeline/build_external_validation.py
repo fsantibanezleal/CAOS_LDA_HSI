@@ -30,7 +30,12 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
 from research_core.paths import DATA_DIR, DERIVED_DIR
+from _mlflow_helper import mlflow_run
 
 
 METHOD_STATS_DIR = DERIVED_DIR / "method_statistics_hidsag"
@@ -221,57 +226,78 @@ def main() -> int:
         library_samples = json.load(LIBRARY_PATH.open("r", encoding="utf-8")).get("samples", [])
         for scene_id in LABELLED_SCENES:
             print(f"[external_validation] {scene_id} (literature) ...", flush=True)
-            try:
-                payload = topic_to_literature_for_scene(scene_id, library_samples)
-            except Exception as exc:
-                print(f"  FAILED: {exc}", flush=True)
-                continue
-            if payload is None:
-                print("  skipped", flush=True)
-                continue
-            out_path = OUTPUT_DIR / f"{scene_id}_literature.json"
-            with out_path.open("w", encoding="utf-8") as h:
-                json.dump(payload, h, separators=(",", ":"))
-            best = max(
-                payload["per_topic_alignment"],
-                key=lambda e: e["best_cosine"] if e.get("best_cosine") else 0.0,
-            )
-            print(
-                f"  K={payload['topic_count']} best topic={best['topic_k']} "
-                f"-> {best['best_literature_category']} ({best['best_cosine']:.3f})",
-                flush=True,
-            )
-            written += 1
+            with mlflow_run(
+                "build_external_validation",
+                scene_id=scene_id,
+                tags={"phase": "literature"},
+            ) as run:
+                try:
+                    payload = topic_to_literature_for_scene(scene_id, library_samples)
+                except Exception as exc:
+                    print(f"  FAILED: {exc}", flush=True)
+                    continue
+                if payload is None:
+                    print("  skipped", flush=True)
+                    continue
+                out_path = OUTPUT_DIR / f"{scene_id}_literature.json"
+                with out_path.open("w", encoding="utf-8") as h:
+                    json.dump(payload, h, separators=(",", ":"))
+                best = max(
+                    payload["per_topic_alignment"],
+                    key=lambda e: e["best_cosine"] if e.get("best_cosine") else 0.0,
+                )
+                run.log_metric("topic_count", float(payload["topic_count"]))
+                run.log_metric(
+                    "best_topic_cosine", float(best.get("best_cosine") or 0.0)
+                )
+                run.log_artifact(str(out_path))
+                print(
+                    f"  K={payload['topic_count']} best topic={best['topic_k']} "
+                    f"-> {best['best_literature_category']} ({best['best_cosine']:.3f})",
+                    flush=True,
+                )
+                written += 1
 
     # HIDSAG method comparison summary (Friedman + Nemenyi)
     for subset_code in HIDSAG_SUBSETS:
         print(f"[external_validation] {subset_code} (HIDSAG methods) ...", flush=True)
-        try:
-            payload = hidsag_method_summary(subset_code)
-        except Exception as exc:
-            print(f"  FAILED: {exc}", flush=True)
-            continue
-        if payload is None:
-            print("  skipped (no method_statistics_hidsag yet)", flush=True)
-            continue
-        out_path = OUTPUT_DIR / f"{subset_code}_methods.json"
-        with out_path.open("w", encoding="utf-8") as h:
-            json.dump(payload, h, separators=(",", ":"))
-        if payload.get("regression"):
-            r = payload["regression"]
-            print(
-                f"  REG  best={r['best_method']} R2={r['best_r2_mean']:.3f} "
-                f"CI95={r['best_r2_ci95']}",
-                flush=True,
-            )
-        if payload.get("classification"):
-            c = payload["classification"]
-            print(
-                f"  CLS  best={c['best_method']} F1={c['best_macro_f1_mean']:.3f} "
-                f"CI95={c['best_macro_f1_ci95']}",
-                flush=True,
-            )
-        written += 1
+        with mlflow_run(
+            "build_external_validation",
+            scene_id=subset_code,
+            tags={"phase": "hidsag_methods"},
+        ) as run:
+            try:
+                payload = hidsag_method_summary(subset_code)
+            except Exception as exc:
+                print(f"  FAILED: {exc}", flush=True)
+                continue
+            if payload is None:
+                print("  skipped (no method_statistics_hidsag yet)", flush=True)
+                continue
+            out_path = OUTPUT_DIR / f"{subset_code}_methods.json"
+            with out_path.open("w", encoding="utf-8") as h:
+                json.dump(payload, h, separators=(",", ":"))
+            if payload.get("regression"):
+                r = payload["regression"]
+                run.log_metric("regression_best_r2_mean", float(r["best_r2_mean"]))
+                print(
+                    f"  REG  best={r['best_method']} R2={r['best_r2_mean']:.3f} "
+                    f"CI95={r['best_r2_ci95']}",
+                    flush=True,
+                )
+            if payload.get("classification"):
+                c = payload["classification"]
+                run.log_metric(
+                    "classification_best_macro_f1_mean",
+                    float(c["best_macro_f1_mean"]),
+                )
+                print(
+                    f"  CLS  best={c['best_method']} F1={c['best_macro_f1_mean']:.3f} "
+                    f"CI95={c['best_macro_f1_ci95']}",
+                    flush=True,
+                )
+            run.log_artifact(str(out_path))
+            written += 1
 
     print(f"[external_validation] done — {written} payloads written.", flush=True)
     return 0

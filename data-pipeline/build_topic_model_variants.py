@@ -52,6 +52,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
 from research_core.class_catalog import has_labels
 from research_core.paths import DATA_DIR, DERIVED_DIR
 from research_core.raw_scenes import (
@@ -61,6 +65,7 @@ from research_core.raw_scenes import (
     stratified_sample_indices,
     valid_spectra_mask,
 )
+from _mlflow_helper import mlflow_run
 
 
 LOCAL_OUT_ROOT = DATA_DIR / "local" / "topic_variants"
@@ -525,14 +530,39 @@ def main() -> int:
     written_total = 0
     for scene_id in LABELLED_SCENES:
         print(f"[topic_variants] {scene_id} ...", flush=True)
-        try:
-            summaries = build_for_scene(scene_id)
-        except Exception as exc:
-            print(f"  FAILED: {exc}", flush=True)
-            import traceback
-            traceback.print_exc()
-            continue
-        written_total += len(summaries)
+        with mlflow_run(
+            "build_topic_model_variants",
+            scene_id=scene_id,
+            params={
+                "samples_per_class": SAMPLES_PER_CLASS,
+                "scale": SCALE,
+                "top_n_words": TOP_N_WORDS,
+                "top_n_npmi": TOP_N_NPMI,
+                "random_state": RANDOM_STATE,
+            },
+        ) as run:
+            try:
+                summaries = build_for_scene(scene_id)
+            except Exception as exc:
+                print(f"  FAILED: {exc}", flush=True)
+                import traceback
+                traceback.print_exc()
+                continue
+            for summary in summaries:
+                variant = summary.get("variant_id") or summary.get("variant") or "?"
+                cv = summary.get("coherence_c_v")
+                um = summary.get("coherence_u_mass")
+                npmi = summary.get("coherence_npmi")
+                perp = summary.get("perplexity")
+                if cv is not None:
+                    run.log_metric(f"{variant}_c_v", float(cv))
+                if um is not None:
+                    run.log_metric(f"{variant}_u_mass", float(um))
+                if npmi is not None:
+                    run.log_metric(f"{variant}_npmi", float(npmi))
+                if perp is not None:
+                    run.log_metric(f"{variant}_perplexity", float(perp))
+            written_total += len(summaries)
     print(
         f"[topic_variants] done — {written_total} (variant x scene) outputs.",
         flush=True,
