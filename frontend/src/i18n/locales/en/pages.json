@@ -1,0 +1,38 @@
+{
+  "overview": {
+    "title": "Overview",
+    "lead": "CAOS LDA HSI explores what probabilistic topic models can capture when documents are pixels, regions, or measurements drawn from hyperspectral imagery.",
+    "cta_workspace": "Open the workspace",
+    "cta_methodology": "Read the methodology"
+  },
+  "methodology": {
+    "title": "Methodology"
+  },
+  "methodology_theory": {
+    "title": "Theory — PTM, LDA, HSI"
+  },
+  "methodology_representations": {
+    "title": "Data types and document representations"
+  },
+  "methodology_pipeline": {
+    "title": "Local data-creation pipeline"
+  },
+  "methodology_application": {
+    "title": "Application to classification and regression via topics"
+  },
+  "databases": {
+    "title": "Databases"
+  },
+  "workspace": {
+    "title": "Workspace",
+    "step": {
+      "family": "Dataset family",
+      "subset": "Subset",
+      "representation": "Representation",
+      "explore": "Explore"
+    }
+  },
+  "benchmarks": {
+    "title": "Benchmarks"
+  }
+}

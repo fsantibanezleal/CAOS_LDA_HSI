@@ -1,0 +1,19 @@
+{
+  "site_title": "CAOS LDA HSI",
+  "site_tagline": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales",
+  "actions": {
+    "toggle_theme": "Alternar tema",
+    "toggle_language": "Cambiar idioma",
+    "open_external": "Abrir enlace externo"
+  },
+  "states": {
+    "loading": "Cargando…",
+    "rebuilding": "Esta sección se está reconstruyendo. Vuelve pronto.",
+    "endpoint_unavailable": "Endpoint no disponible todavía"
+  },
+  "external": {
+    "orcid": "ORCID",
+    "github": "GitHub",
+    "site": "fasl-work.com"
+  }
+}
