@@ -14,12 +14,14 @@ Implemented blocks (per scene where applicable):
 
 Blocks left as "blocked" pending dedicated builders:
 - quantization-sensitivity: needs the full Q grid from build_quantization_views
-- spectral-library-alignment: needs the USGS-aligned topic_to_library builder
 
 Wired blocks reading dedicated builders:
 - document-definition-sensitivity: build_cross_method_agreement payload
   (mean / min / max ARI and NMI across the 8 document constructors,
   plus per-method ARI/NMI vs label and vs topic-dominant)
+- spectral-library-alignment: build_topic_to_library + build_topic_to_usgs_v7
+  payload (per-topic best cosine summary on AVIRIS-Classic 1997 library
+  + USGS v7 plurality-chapter assignment per topic + chapter counts)
 
 Output: data/derived/validation_blocks/<scene>.json
 """
@@ -60,6 +62,8 @@ LOCAL_FIT_DIR = DATA_DIR / "local" / "lda_fits"
 LOCAL_STAB_DIR = DATA_DIR / "local" / "topic_stability"
 DERIVED_OUT_DIR = DERIVED_DIR / "validation_blocks"
 CROSS_METHOD_DIR = DERIVED_DIR / "cross_method_agreement"
+TOPIC_TO_LIBRARY_DIR = DERIVED_DIR / "topic_to_library"
+TOPIC_TO_USGS_V7_DIR = DERIVED_DIR / "topic_to_usgs_v7"
 
 LABELLED_SCENES = [
     "indian-pines-corrected",
@@ -289,6 +293,74 @@ def compute_document_definition_sensitivity_block(scene_id: str) -> dict:
     }
 
 
+def compute_spectral_library_alignment_block(scene_id: str) -> dict:
+    """Surface build_topic_to_library + build_topic_to_usgs_v7 as a
+    validation block. Reports per-topic best cosine on the AVIRIS-Classic
+    1997 library plus USGS v7 plurality-chapter assignment per topic
+    and overall chapter counts. Falls back to status=blocked when
+    neither file exists."""
+    lib_path = TOPIC_TO_LIBRARY_DIR / f"{scene_id}.json"
+    usgs_path = TOPIC_TO_USGS_V7_DIR / f"{scene_id}.json"
+    if not lib_path.is_file() and not usgs_path.is_file():
+        return make_blocked_block(
+            "spectral-library-alignment",
+            "Neither build_topic_to_library nor build_topic_to_usgs_v7 has produced an artifact for this scene yet",
+        )
+
+    metrics: dict = {}
+    sources: list[str] = []
+
+    if lib_path.is_file():
+        sources.append(
+            str(lib_path.relative_to(DERIVED_DIR.parent)).replace("\\", "/")
+        )
+        payload = json.loads(lib_path.read_text(encoding="utf-8"))
+        cos = np.asarray(payload.get("topic_x_library_cosine", []), dtype=np.float64)
+        if cos.size > 0:
+            best_per_topic = cos.max(axis=1)
+            metrics["library_aviris_classic"] = {
+                "library_subset": payload.get("library_sensor_subset"),
+                "library_sample_count": int(payload.get("library_sample_count", 0)),
+                "topic_count": int(cos.shape[0]),
+                "best_cosine_per_topic_mean": round(float(best_per_topic.mean()), 6),
+                "best_cosine_per_topic_min": round(float(best_per_topic.min()), 6),
+                "best_cosine_per_topic_max": round(float(best_per_topic.max()), 6),
+                "best_cosine_per_topic": [round(float(v), 6) for v in best_per_topic],
+            }
+
+    if usgs_path.is_file():
+        sources.append(
+            str(usgs_path.relative_to(DERIVED_DIR.parent)).replace("\\", "/")
+        )
+        payload = json.loads(usgs_path.read_text(encoding="utf-8"))
+        chapter_counts = payload.get("library_chapter_counts", {}) or {}
+        # chapter_histogram_top50_per_topic is a list[K] of dicts
+        # {chapter: count_in_top_50}; pick each topic's plurality chapter.
+        chapter_top50 = payload.get("chapter_histogram_top50_per_topic", []) or []
+        chapter_top1_counts: dict[str, int] = {}
+        for histogram in chapter_top50:
+            if not isinstance(histogram, dict) or not histogram:
+                continue
+            best_chapter = max(histogram.items(), key=lambda kv: kv[1])[0]
+            chapter_top1_counts[best_chapter] = (
+                chapter_top1_counts.get(best_chapter, 0) + 1
+            )
+        metrics["library_usgs_v7"] = {
+            "library_subset": payload.get("library_subset"),
+            "library_sample_count": int(payload.get("library_sample_count", 0)),
+            "library_chapter_counts": chapter_counts,
+            "topic_count_with_top50_histogram": len(chapter_top50),
+            "best_chapter_count_per_topic": chapter_top1_counts,
+        }
+
+    return {
+        "block_id": "spectral-library-alignment",
+        "status": "ready",
+        "metrics": metrics,
+        "sources": sources,
+    }
+
+
 def make_blocked_block(block_id: str, reason: str) -> dict:
     return {
         "block_id": block_id,
@@ -335,10 +407,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             "Pending build_quantization_views: needs the full scheme x Q grid",
         ),
         compute_document_definition_sensitivity_block(scene_id),
-        make_blocked_block(
-            "spectral-library-alignment",
-            "Pending build_topic_to_library: needs USGS / ECOSTRESS alignment",
-        ),
+        compute_spectral_library_alignment_block(scene_id),
     ]
 
     return {
@@ -346,7 +415,7 @@ def build_for_scene(scene_id: str) -> dict | None:
         "scene_name": config.name,
         "blocks": blocks,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "builder_version": "build_validation_blocks v0.3",
+        "builder_version": "build_validation_blocks v0.4",
     }
 
 
