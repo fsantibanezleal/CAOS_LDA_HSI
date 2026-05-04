@@ -7,7 +7,9 @@ type Props = {
   block?: boolean;
 };
 
-export function Math({ tex, block = false }: Props) {
+// Renamed from `Math` to avoid shadowing the global Math object in
+// modules that also use Math.floor / Math.PI / etc.
+export function Equation({ tex, block = false }: Props) {
   const ref = useRef<HTMLSpanElement | HTMLDivElement | null>(null);
 
   useEffect(() => {

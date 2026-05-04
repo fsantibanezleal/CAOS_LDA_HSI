@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import { Figure } from "@/components/Figure";
-import { Math } from "@/components/Math";
+import { Equation } from "@/components/Equation";
 import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
 
@@ -21,15 +21,15 @@ export default function MethodologyTheory() {
           Bajo el modelo más popular — Latent Dirichlet Allocation (Blei, Ng &amp;
           Jordan, 2003) — un corpus de <em>D</em> documentos sobre un vocabulario
           de tamaño <em>V</em> se explica con dos colecciones de distribuciones:{" "}
-          <Math tex="\theta_d \in \Delta^{K-1}" /> es la mezcla de tópicos del
-          documento <em>d</em>, y <Math tex="\phi_k \in \Delta^{V-1}" /> es la
+          <Equation tex="\theta_d \in \Delta^{K-1}" /> es la mezcla de tópicos del
+          documento <em>d</em>, y <Equation tex="\phi_k \in \Delta^{V-1}" /> es la
           distribución de palabras del tópico <em>k</em>. Cada palabra observada
-          se genera tirando primero un tópico desde <Math tex="\theta_d" /> y
-          luego una palabra desde el <Math tex="\phi_k" /> correspondiente.
+          se genera tirando primero un tópico desde <Equation tex="\theta_d" /> y
+          luego una palabra desde el <Equation tex="\phi_k" /> correspondiente.
         </p>
         <p className="mt-3">
-          La inferencia recupera <Math tex="\theta" />, <Math tex="\phi" /> y la
-          asignación tópico-por-palabra <Math tex="z" />. El resultado es una
+          La inferencia recupera <Equation tex="\theta" />, <Equation tex="\phi" /> y la
+          asignación tópico-por-palabra <Equation tex="z" />. El resultado es una
           descomposición compacta, interpretable y mixta del corpus: cada
           documento es una mezcla de tópicos en lugar de pertenecer a una sola
           categoría dura.
@@ -47,10 +47,10 @@ export default function MethodologyTheory() {
 
         <p>
           La distribución conjunta del modelo factoriza así (con priors
-          Dirichlet sobre <Math tex="\theta_d" /> y <Math tex="\phi_k" />):
+          Dirichlet sobre <Equation tex="\theta_d" /> y <Equation tex="\phi_k" />):
         </p>
 
-        <Math
+        <Equation
           block
           tex="p(\theta, \phi, z, w \mid \alpha, \eta) = \prod_{k=1}^{K} p(\phi_k \mid \eta) \, \prod_{d=1}^{D} p(\theta_d \mid \alpha) \prod_{n=1}^{N_d} p(z_{d,n} \mid \theta_d) \, p(w_{d,n} \mid z_{d,n}, \phi_{1:K})"
         />
@@ -59,7 +59,7 @@ export default function MethodologyTheory() {
           La verosimilitud marginal del corpus se obtiene integrando los
           latentes continuos y sumando sobre las asignaciones discretas:
         </p>
-        <Math
+        <Equation
           block
           tex="p(w \mid \alpha, \eta) = \int \int \, \prod_{k} p(\phi_k \mid \eta) \, \prod_{d} p(\theta_d \mid \alpha) \prod_{n} \sum_{k=1}^{K} \theta_{d,k} \, \phi_{k, w_{d,n}} \, d\theta \, d\phi"
         />
@@ -78,9 +78,9 @@ export default function MethodologyTheory() {
       >
         <p>
           Una imagen hiperespectral (HSI) es un cubo{" "}
-          <Math tex="X \in \mathbb{R}^{H \times W \times B}" />, donde cada
-          píxel <Math tex="(i, j)" /> tiene un espectro{" "}
-          <Math tex="x_{ij} = (x_{ij,1}, \dots, x_{ij,B})" /> con la reflectancia
+          <Equation tex="X \in \mathbb{R}^{H \times W \times B}" />, donde cada
+          píxel <Equation tex="(i, j)" /> tiene un espectro{" "}
+          <Equation tex="x_{ij} = (x_{ij,1}, \dots, x_{ij,B})" /> con la reflectancia
           observada en cada una de las <em>B</em> bandas espectrales. Bandas
           típicas: 200 (Indian Pines AVIRIS-Classic) a 224 (Salinas) a más de
           2000 (HIDSAG).
@@ -93,7 +93,7 @@ export default function MethodologyTheory() {
           derivada, coeficiente wavelet, código VQ, etc.) y (iv) qué constituye
           un documento (un píxel, una región SLIC, un parche, una muestra
           completa). El resultado es una matriz documento-término{" "}
-          <Math tex="C \in \mathbb{N}^{D \times V}" /> sobre la cual LDA puede
+          <Equation tex="C \in \mathbb{N}^{D \times V}" /> sobre la cual LDA puede
           inferir.
         </p>
 
@@ -119,8 +119,8 @@ export default function MethodologyTheory() {
           clase — falla en HSI porque cada espectro es por construcción una
           mezcla. La descomposición mixta de LDA captura esa realidad
           directamente:{" "}
-          <Math tex="\theta_d" /> es la composición topical del píxel{" "}
-          <em>d</em>, y la suma <Math tex="\sum_{k} \theta_{d,k} \phi_k" /> es
+          <Equation tex="\theta_d" /> es la composición topical del píxel{" "}
+          <em>d</em>, y la suma <Equation tex="\sum_{k} \theta_{d,k} \phi_k" /> es
           la firma reconstruida que el modelo cree que produjo las palabras
           observadas.
         </p>
