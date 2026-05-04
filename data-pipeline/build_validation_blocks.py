@@ -14,8 +14,12 @@ Implemented blocks (per scene where applicable):
 
 Blocks left as "blocked" pending dedicated builders:
 - quantization-sensitivity: needs the full Q grid from build_quantization_views
-- document-definition-sensitivity: needs the groupings builder
 - spectral-library-alignment: needs the USGS-aligned topic_to_library builder
+
+Wired blocks reading dedicated builders:
+- document-definition-sensitivity: build_cross_method_agreement payload
+  (mean / min / max ARI and NMI across the 8 document constructors,
+  plus per-method ARI/NMI vs label and vs topic-dominant)
 
 Output: data/derived/validation_blocks/<scene>.json
 """
@@ -55,6 +59,7 @@ from research_core.raw_scenes import (
 LOCAL_FIT_DIR = DATA_DIR / "local" / "lda_fits"
 LOCAL_STAB_DIR = DATA_DIR / "local" / "topic_stability"
 DERIVED_OUT_DIR = DERIVED_DIR / "validation_blocks"
+CROSS_METHOD_DIR = DERIVED_DIR / "cross_method_agreement"
 
 LABELLED_SCENES = [
     "indian-pines-corrected",
@@ -228,6 +233,62 @@ def compute_supervision_association(theta: np.ndarray, labels: np.ndarray) -> di
     }
 
 
+def _off_diagonal_summary(matrix: list[list[float]]) -> dict:
+    """Mean / min / max of the off-diagonal entries of a symmetric matrix."""
+    arr = np.array(matrix, dtype=np.float64)
+    n = arr.shape[0]
+    if n < 2:
+        return {"mean": None, "min": None, "max": None, "n_pairs": 0}
+    iu = np.triu_indices(n, k=1)
+    vals = arr[iu]
+    return {
+        "mean": round(float(np.mean(vals)), 6),
+        "min": round(float(np.min(vals)), 6),
+        "max": round(float(np.max(vals)), 6),
+        "n_pairs": int(vals.size),
+    }
+
+
+def compute_document_definition_sensitivity_block(scene_id: str) -> dict:
+    """Surface the build_cross_method_agreement payload as a validation
+    block. Reports off-diagonal ARI/NMI mean/min/max across all eight
+    document-constructor methods (felzenszwalb, label, patch_15,
+    patch_7, pixel, slic_2000, slic_500, topic_dominant) plus the
+    per-method ARI/NMI summaries vs label and vs topic-dominant.
+    Falls back to status=blocked when the upstream file is absent."""
+    src = CROSS_METHOD_DIR / f"{scene_id}.json"
+    if not src.is_file():
+        return make_blocked_block(
+            "document-definition-sensitivity",
+            f"build_cross_method_agreement has not produced "
+            f"{src.relative_to(DERIVED_DIR.parent)} yet",
+        )
+    payload = json.loads(src.read_text(encoding="utf-8"))
+    methods = list(payload.get("method_names", []))
+    ari_off = _off_diagonal_summary(payload.get("ari_matrix", []))
+    nmi_off = _off_diagonal_summary(payload.get("nmi_matrix", []))
+    v_off = _off_diagonal_summary(payload.get("v_measure_matrix", []))
+    return {
+        "block_id": "document-definition-sensitivity",
+        "status": "ready",
+        "metrics": {
+            "n_methods_compared": len(methods),
+            "methods": methods,
+            "n_compared_pixels": payload.get("n_compared_pixels"),
+            "off_diagonal_ari": ari_off,
+            "off_diagonal_nmi": nmi_off,
+            "off_diagonal_v_measure": v_off,
+            "agreement_vs_label_summary": payload.get(
+                "agreement_vs_label_summary", []
+            ),
+            "agreement_vs_topic_dominant_summary": payload.get(
+                "agreement_vs_topic_dominant_summary", []
+            ),
+        },
+        "source": str(src.relative_to(DERIVED_DIR.parent)).replace("\\", "/"),
+    }
+
+
 def make_blocked_block(block_id: str, reason: str) -> dict:
     return {
         "block_id": block_id,
@@ -273,10 +334,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             "quantization-sensitivity",
             "Pending build_quantization_views: needs the full scheme x Q grid",
         ),
-        make_blocked_block(
-            "document-definition-sensitivity",
-            "Pending build_groupings: needs SLIC / patch / semantic-seg constructors",
-        ),
+        compute_document_definition_sensitivity_block(scene_id),
         make_blocked_block(
             "spectral-library-alignment",
             "Pending build_topic_to_library: needs USGS / ECOSTRESS alignment",
@@ -288,7 +346,7 @@ def build_for_scene(scene_id: str) -> dict | None:
         "scene_name": config.name,
         "blocks": blocks,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "builder_version": "build_validation_blocks v0.1",
+        "builder_version": "build_validation_blocks v0.3",
     }
 
 
@@ -316,11 +374,24 @@ def main() -> int:
         ci = block_map["corpus-integrity"]["metrics"]
         ts = block_map["topic-stability"]["metrics"]
         sa = block_map["supervision-association"]["metrics"]
+        dd_block = block_map.get("document-definition-sensitivity", {})
+        dd_metrics = (
+            dd_block.get("metrics") if dd_block.get("status") == "ready" else None
+        )
+        if dd_metrics:
+            ari_off = dd_metrics.get("off_diagonal_ari", {}) or {}
+            dd_summary = (
+                f"docdef_n={dd_metrics.get('n_methods_compared')} "
+                f"ARI_off={ari_off.get('mean', 0):.3f}"
+            )
+        else:
+            dd_summary = f"docdef={dd_block.get('status', '?')}"
         print(
             f"  D={ci['document_count']} V={ci['vocabulary_size']} "
             f"matched_cos={ts['matched_cosine_overall_mean']:.3f} "
             f"ARI={sa['ari_kmeans_theta_vs_label']:.3f} "
-            f"theta_F1={sa['logistic_regression_on_theta_macro_f1']['mean']:.3f}",
+            f"theta_F1={sa['logistic_regression_on_theta_macro_f1']['mean']:.3f} "
+            f"{dd_summary}",
             flush=True,
         )
         written += 1
