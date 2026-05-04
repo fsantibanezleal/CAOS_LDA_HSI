@@ -1,12 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
+import { App } from "./App";
+import "./styles.css";
 
-import { AppShell } from "./AppShell";
-import "./i18n";
-import "./styles/theme.css";
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("root element not found");
+createRoot(root).render(
   <React.StrictMode>
-    <AppShell />
+    <App />
   </React.StrictMode>
 );
