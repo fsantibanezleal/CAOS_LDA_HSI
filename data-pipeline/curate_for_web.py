@@ -363,8 +363,13 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "wordifications_v4_v5_v10",
-        "description": "Master plan §7 wordification recipes V4 (1st-derivative bin), V5 (2nd-derivative bin), V10 (band-group VNIR/SWIR-1/SWIR-2 + bin) sampled across the same scheme × Q grid as V1/V2/V3 (uniform/quantile/lloyd_max × Q in {8,16,32}). 162 new wordification configs across 6 labelled scenes, slotted directly into the existing /api/wordifications/{scene}/{recipe}/{scheme}/{q} endpoint. V6 / V7 / V8 / V9 / V11 / V12 still pending.",
+        "description": "Master plan §7 wordification recipes V4 (1st-derivative bin), V5 (2nd-derivative bin), V10 (band-group VNIR/SWIR-1/SWIR-2 + bin) sampled across the same scheme × Q grid as V1/V2/V3 (uniform/quantile/lloyd_max × Q in {8,16,32}). 162 new wordification configs across 6 labelled scenes, slotted directly into the existing /api/wordifications/{scene}/{recipe}/{scheme}/{q} endpoint.",
         "source_pattern": "wordifications/<scene>_V4_<scheme>_Q<q>.json | wordifications/<scene>_V5_<scheme>_Q<q>.json | wordifications/<scene>_V10_<scheme>_Q<q>.json",
+    },
+    {
+        "id": "wordifications_v6_v8_v9_v12",
+        "description": "Master plan §7 wordification recipes V6 (db4 wavelet-coefficient bin via pywavelets, level=4), V8 (NFINDR endmember-fraction bin via NNLS+sum-to-one, K endmembers from build_endmember_baseline), V9 (region-token via Felzenszwalb partitions + per-region SAM-quantised), V12 (GMM-token via sklearn.mixture.GaussianMixture(Q) on per-band intensities). 216 new wordification configs across 6 labelled scenes (4 recipes × 3 schemes × 3 Q values × 6 scenes), reachable via the existing /api/wordifications/{scene}/{recipe}/{scheme}/{q} endpoint. V7 (absorption-feature triplet via pysptools.spectro) and V11 (codebook-VQ via nanopq) still pending.",
+        "source_pattern": "wordifications/<scene>_V6_<scheme>_Q<q>.json | wordifications/<scene>_V8_<scheme>_Q<q>.json | wordifications/<scene>_V9_<scheme>_Q<q>.json | wordifications/<scene>_V12_<scheme>_Q<q>.json",
     },
     {
         "id": "bayesian_classification_labelled",

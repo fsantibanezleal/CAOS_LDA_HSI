@@ -267,6 +267,7 @@ case "$cmd" in
   build-validation-blocks) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_validation_blocks.py ;;
   build-wordifications)    ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_wordifications.py ;;
   build-wordifications-v4plus) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_wordifications_v4plus.py ;;
+  build-wordifications-v6plus) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_wordifications_v6plus.py ;;
   build-topic-to-library)  ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_topic_to_library.py ;;
   build-spatial-validation) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_spatial_validation.py ;;
   build-groupings)         ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_groupings.py ;;
