@@ -42,7 +42,7 @@ param(
         "build-endmember-baseline",
         "build-cross-scene-transfer",
         "build-bayesian-classification-labelled",
-        "curate-for-web", "build-precompute-all",
+        "curate-for-web", "audit-manifest", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
         # maintenance
@@ -112,6 +112,7 @@ function Show-Help {
     Write-Host "  build-groupings             SLIC / patch / Felzenszwalb document constructors with ARI/NMI vs label"
     Write-Host "  build-cross-method-agreement   Pairwise ARI / NMI / V-measure between every grouping method"
     Write-Host "  curate-for-web              Generate data/derived/manifests/index.json (the contract the web app reads)"
+    Write-Host "  audit-manifest              Verify every manifest claim resolves to artifacts on disk; flag drift and orphans"
     Write-Host "  build-precompute-all        Run every precompute builder in order"
     Write-Host ""
     Write-Host "Pipeline -- benchmarks:" -ForegroundColor Yellow
@@ -347,6 +348,7 @@ switch ($Command) {
     "build-cross-scene-transfer" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_cross_scene_transfer.py }
     "build-bayesian-classification-labelled" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_bayesian_classification_labelled.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
+    "audit-manifest"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\audit_manifest.py }
     "build-precompute-all" {
         Initialize-PipelineVenv
         & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_eda_per_scene.py

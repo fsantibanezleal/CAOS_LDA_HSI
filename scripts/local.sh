@@ -299,6 +299,7 @@ case "$cmd" in
   build-cross-scene-transfer) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_cross_scene_transfer.py ;;
   build-bayesian-classification-labelled) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_bayesian_classification_labelled.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
+  audit-manifest)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/audit_manifest.py ;;
   build-precompute-all)
     ensure_pipeline_venv
     "$PVENV/bin/python" data-pipeline/build_eda_per_scene.py
