@@ -24,6 +24,7 @@ param(
         "build-eda-per-scene", "build-eda-hidsag", "build-topic-views",
         "build-topic-to-data", "build-spectral-browser", "build-spectral-density",
         "build-validation-blocks", "build-wordifications",
+        "build-wordifications-v4plus",
         "build-topic-to-library", "build-spatial-validation",
         "build-groupings", "build-cross-method-agreement",
         "build-quantization-sensitivity", "build-topic-model-variants",
@@ -312,6 +313,7 @@ switch ($Command) {
     "build-spectral-density"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spectral_density.py }
     "build-validation-blocks" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_validation_blocks.py }
     "build-wordifications"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications.py }
+    "build-wordifications-v4plus" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications_v4plus.py }
     "build-topic-to-library"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_library.py }
     "build-spatial-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py }
     "build-groupings"         { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_groupings.py }

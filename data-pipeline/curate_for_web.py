@@ -46,6 +46,10 @@ BUILDER_DIRS = [
     ("build_spectral_density", "spectral_density"),
     ("build_validation_blocks", "validation_blocks"),
     ("build_wordifications", "wordifications"),
+    # build_wordifications_v4plus shares the wordifications/ output
+    # directory with V1/V2/V3, so it is *not* listed here to avoid
+    # double-counting. The recipe ids V4 / V5 / V10 are surfaced via
+    # claims_allowed below.
     ("build_spatial_validation", "spatial"),
     ("build_groupings", "groupings"),
     ("build_cross_method_agreement", "cross_method_agreement"),
@@ -356,6 +360,11 @@ CLAIMS_ALLOWED = [
         "id": "cross_scene_transfer",
         "description": "B-8 (Addendum B Axis E): cross-scene topic transfer via fit-on-A-infer-on-B on a common AVIRIS-1997 wavelength grid (400-2500 nm, 224 bands). Five AVIRIS-class scenes (Pavia U excluded as ROSIS) — Indian Pines, Salinas, Salinas-A, KSC, Botswana — resampled to the shared grid; per-source LDA at canonical K; per-target 5-fold StratifiedKFold theta-logistic macro F1. The diagonal is the within-scene baseline; off-diagonals quantify how transferable the source's topic structure is.",
         "source_pattern": "cross_scene_transfer/transfer_matrix.json",
+    },
+    {
+        "id": "wordifications_v4_v5_v10",
+        "description": "Master plan §7 wordification recipes V4 (1st-derivative bin), V5 (2nd-derivative bin), V10 (band-group VNIR/SWIR-1/SWIR-2 + bin) sampled across the same scheme × Q grid as V1/V2/V3 (uniform/quantile/lloyd_max × Q in {8,16,32}). 162 new wordification configs across 6 labelled scenes, slotted directly into the existing /api/wordifications/{scene}/{recipe}/{scheme}/{q} endpoint. V6 / V7 / V8 / V9 / V11 / V12 still pending.",
+        "source_pattern": "wordifications/<scene>_V4_<scheme>_Q<q>.json | wordifications/<scene>_V5_<scheme>_Q<q>.json | wordifications/<scene>_V10_<scheme>_Q<q>.json",
     },
     {
         "id": "bayesian_classification_labelled",
