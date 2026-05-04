@@ -368,8 +368,13 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "wordifications_v6_v8_v9_v12",
-        "description": "Master plan §7 wordification recipes V6 (db4 wavelet-coefficient bin via pywavelets, level=4), V8 (NFINDR endmember-fraction bin via NNLS+sum-to-one, K endmembers from build_endmember_baseline), V9 (region-token via Felzenszwalb partitions + per-region SAM-quantised), V12 (GMM-token via sklearn.mixture.GaussianMixture(Q) on per-band intensities). 216 new wordification configs across 6 labelled scenes (4 recipes × 3 schemes × 3 Q values × 6 scenes), reachable via the existing /api/wordifications/{scene}/{recipe}/{scheme}/{q} endpoint. V7 (absorption-feature triplet via pysptools.spectro) and V11 (codebook-VQ via nanopq) still pending.",
+        "description": "Master plan §7 wordification recipes V6 (db4 wavelet-coefficient bin via pywavelets, level=4), V8 (NFINDR endmember-fraction bin via NNLS+sum-to-one, K endmembers from build_endmember_baseline), V9 (region-token via Felzenszwalb partitions + per-region SAM-quantised), V12 (GMM-token via sklearn.mixture.GaussianMixture(Q) on per-band intensities). 216 new wordification configs across 6 labelled scenes (4 recipes × 3 schemes × 3 Q values × 6 scenes), reachable via the existing /api/wordifications/{scene}/{recipe}/{scheme}/{q} endpoint.",
         "source_pattern": "wordifications/<scene>_V6_<scheme>_Q<q>.json | wordifications/<scene>_V8_<scheme>_Q<q>.json | wordifications/<scene>_V9_<scheme>_Q<q>.json | wordifications/<scene>_V12_<scheme>_Q<q>.json",
+    },
+    {
+        "id": "wordifications_v7_v11",
+        "description": "Master plan §7 wordification recipes V7 (absorption-feature triplet — own convex-hull continuum-removal extractor, top-N features per spectrum quantised on (centroid_bucket, depth_bin, area_bin)) and V11 (codebook-VQ via nanopq.PQ(M=4, Ks=Q) — product quantisation partitions each B-band spectrum into 4 sub-vectors and k-means-encodes each independently). Closes the master plan §7 wordification roster (V1..V12 minus V11 and V7 originally — both shipped now). 108 new configs across 6 labelled scenes (2 recipes × 3 schemes × 3 Q × 6 scenes).",
+        "source_pattern": "wordifications/<scene>_V7_<scheme>_Q<q>.json | wordifications/<scene>_V11_<scheme>_Q<q>.json",
     },
     {
         "id": "bayesian_classification_labelled",

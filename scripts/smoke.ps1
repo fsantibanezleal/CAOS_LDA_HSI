@@ -56,6 +56,8 @@ $paths = @(
     "/api/wordifications/indian-pines-corrected/V8/uniform/8",
     "/api/wordifications/indian-pines-corrected/V9/uniform/8",
     "/api/wordifications/indian-pines-corrected/V12/uniform/16",
+    "/api/wordifications/indian-pines-corrected/V7/uniform/8",
+    "/api/wordifications/indian-pines-corrected/V11/uniform/8",
     "/api/groupings",
     "/api/groupings/felzenszwalb/indian-pines-corrected",
     "/api/cross-method-agreement/indian-pines-corrected",

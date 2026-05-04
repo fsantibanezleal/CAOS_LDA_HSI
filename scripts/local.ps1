@@ -25,6 +25,7 @@ param(
         "build-topic-to-data", "build-spectral-browser", "build-spectral-density",
         "build-validation-blocks", "build-wordifications",
         "build-wordifications-v4plus", "build-wordifications-v6plus",
+        "build-wordifications-v7v11",
         "build-topic-to-library", "build-spatial-validation",
         "build-groupings", "build-cross-method-agreement",
         "build-quantization-sensitivity", "build-topic-model-variants",
@@ -315,6 +316,7 @@ switch ($Command) {
     "build-wordifications"    { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications.py }
     "build-wordifications-v4plus" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications_v4plus.py }
     "build-wordifications-v6plus" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications_v6plus.py }
+    "build-wordifications-v7v11" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_wordifications_v7v11.py }
     "build-topic-to-library"  { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_topic_to_library.py }
     "build-spatial-validation" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_spatial_validation.py }
     "build-groupings"         { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_groupings.py }
