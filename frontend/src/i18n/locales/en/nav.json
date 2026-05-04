@@ -1,0 +1,13 @@
+{
+  "overview": "Overview",
+  "methodology": "Methodology",
+  "databases": "Databases",
+  "workspace": "Workspace",
+  "benchmarks": "Benchmarks",
+  "methodology_sub": {
+    "theory": "Theory",
+    "representations": "Representations",
+    "pipeline": "Local pipeline",
+    "application": "Application"
+  }
+}

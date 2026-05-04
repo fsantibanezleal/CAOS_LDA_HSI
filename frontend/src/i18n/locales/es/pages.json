@@ -1,0 +1,38 @@
+{
+  "overview": {
+    "title": "Visión general",
+    "lead": "CAOS LDA HSI explora qué pueden capturar los modelos probabilísticos de tópicos cuando los documentos son píxeles, regiones o mediciones de imágenes hiperespectrales.",
+    "cta_workspace": "Abrir el laboratorio",
+    "cta_methodology": "Leer la metodología"
+  },
+  "methodology": {
+    "title": "Metodología"
+  },
+  "methodology_theory": {
+    "title": "Teoría — PTM, LDA, HSI"
+  },
+  "methodology_representations": {
+    "title": "Tipos de datos y representaciones de documentos"
+  },
+  "methodology_pipeline": {
+    "title": "Pipeline local de creación de datos"
+  },
+  "methodology_application": {
+    "title": "Aplicación a clasificación y regresión vía tópicos"
+  },
+  "databases": {
+    "title": "Bases de datos"
+  },
+  "workspace": {
+    "title": "Laboratorio",
+    "step": {
+      "family": "Familia de datos",
+      "subset": "Conjunto",
+      "representation": "Representación",
+      "explore": "Explorar"
+    }
+  },
+  "benchmarks": {
+    "title": "Benchmarks"
+  }
+}

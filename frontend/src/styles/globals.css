@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* Light/dark theme tokens. The data-theme attribute is set on <html>
+   before first paint by an inline script in index.html. */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+:root,
+[data-theme="light"] {
+  --color-bg: #fafbfc;
+  --color-fg: #0b1220;
+  --color-fg-subtle: #4b5563;
+  --color-fg-faint: #6b7280;
+  --color-panel: #ffffff;
+  --color-border: #e5e7eb;
+  --color-accent: #0369a1;
+  --color-accent-fg: #ffffff;
+  --color-accent-soft: #dbeafe;
+  --color-warn: #b45309;
+  --color-success: #047857;
+  --color-shadow: 0 1px 2px rgba(11, 18, 32, 0.06),
+    0 4px 10px rgba(11, 18, 32, 0.04);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0b1220;
+  --color-fg: #e6edf3;
+  --color-fg-subtle: #9aa6b2;
+  --color-fg-faint: #6c7785;
+  --color-panel: #111827;
+  --color-border: #1f2937;
+  --color-accent: #38bdf8;
+  --color-accent-fg: #0b1220;
+  --color-accent-soft: #0c2233;
+  --color-warn: #fbbf24;
+  --color-success: #34d399;
+  --color-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+}
