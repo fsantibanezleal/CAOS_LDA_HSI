@@ -42,6 +42,7 @@ param(
         "build-endmember-baseline",
         "build-cross-scene-transfer",
         "build-bayesian-classification-labelled",
+        "build-hierarchical-super-topics",
         "curate-for-web", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -346,6 +347,7 @@ switch ($Command) {
     "build-endmember-baseline" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_endmember_baseline.py }
     "build-cross-scene-transfer" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_cross_scene_transfer.py }
     "build-bayesian-classification-labelled" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_bayesian_classification_labelled.py }
+    "build-hierarchical-super-topics" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hierarchical_super_topics.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "build-precompute-all" {
         Initialize-PipelineVenv
