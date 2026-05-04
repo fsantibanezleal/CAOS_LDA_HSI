@@ -484,6 +484,16 @@ def build_for_scene(scene_id: str) -> list[dict]:
         variant_funcs.append(("tomotopy_hdp", lambda: fit_tomotopy_hdp(doc_term, vocab, K)))
         variant_funcs.append(("tomotopy_ctm", lambda: fit_tomotopy_ctm(doc_term, vocab, K)))
 
+    # Optional comma-separated filter via env var (e.g.
+    # CAOS_VARIANT_FILTER=sklearn_online,nmf) so the builder can
+    # be re-run one variant at a time on memory-constrained boxes.
+    import os as _os
+    filter_env = _os.environ.get("CAOS_VARIANT_FILTER", "").strip()
+    if filter_env:
+        wanted = {n.strip() for n in filter_env.split(",") if n.strip()}
+        variant_funcs = [(n, fn) for (n, fn) in variant_funcs if n in wanted]
+        print(f"  variant filter active: {sorted(n for n, _ in variant_funcs)}", flush=True)
+
     for name, fn in variant_funcs:
         print(f"  fitting {name} ...", flush=True)
         try:
