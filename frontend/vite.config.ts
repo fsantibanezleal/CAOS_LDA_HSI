@@ -36,6 +36,7 @@ export default defineConfig({
             return "xstate";
           if (id.includes("node_modules/zustand")) return "zustand";
           if (id.includes("node_modules/lucide-react")) return "icons";
+          if (id.includes("node_modules/katex")) return "katex";
           return undefined;
         },
       },
