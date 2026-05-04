@@ -1,1 +1,0 @@
-export { Lab } from "./Lab";
