@@ -107,7 +107,6 @@ paths=(
   "/generated/spatial/indian-pines-corrected.json"
   "/generated/wordifications/indian-pines-corrected_V3_uniform_Q16.json"
   "/generated/manifests/index.json"
-  "/"
 )
 
 for path in "${paths[@]}"; do

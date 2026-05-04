@@ -15,12 +15,16 @@ git pull --ff-only
 
 .venv/bin/pip install -r requirements.txt
 
-if [ -f frontend/package-lock.json ]; then
-  (cd frontend && npm ci && npm run build)
-elif command -v pnpm >/dev/null 2>&1; then
-  (cd frontend && pnpm install --frozen-lockfile && pnpm build)
+if [ -f frontend/package.json ]; then
+  if [ -f frontend/package-lock.json ]; then
+    (cd frontend && npm ci && npm run build)
+  elif command -v pnpm >/dev/null 2>&1; then
+    (cd frontend && pnpm install --frozen-lockfile && pnpm build)
+  else
+    (cd frontend && npm install && npm run build)
+  fi
 else
-  (cd frontend && npm install && npm run build)
+  echo "[update.sh] no frontend/package.json — skipping frontend build"
 fi
 
 systemctl restart fasl-lda-hsi
