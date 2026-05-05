@@ -44,6 +44,7 @@ param(
         "build-bayesian-classification-labelled",
         "build-hierarchical-super-topics",
         "build-hidsag-cross-preprocessing-stability",
+        "build-b12-llm-tea-leaves",
         "curate-for-web", "audit-manifest", "build-precompute-all",
         # pipeline -- benchmarks
         "run-core", "run-hidsag-sensitivity", "build-local-core",
@@ -351,6 +352,7 @@ switch ($Command) {
     "build-bayesian-classification-labelled" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_bayesian_classification_labelled.py }
     "build-hierarchical-super-topics" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hierarchical_super_topics.py }
     "build-hidsag-cross-preprocessing-stability" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_hidsag_cross_preprocessing_stability.py }
+    "build-b12-llm-tea-leaves" { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\build_b12_llm_tea_leaves.py }
     "curate-for-web"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\curate_for_web.py }
     "audit-manifest"          { Initialize-PipelineVenv ; & .\.venv-pipeline\Scripts\python.exe data-pipeline\audit_manifest.py }
     "build-precompute-all" {

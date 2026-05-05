@@ -300,6 +300,7 @@ case "$cmd" in
   build-bayesian-classification-labelled) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_bayesian_classification_labelled.py ;;
   build-hierarchical-super-topics) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hierarchical_super_topics.py ;;
   build-hidsag-cross-preprocessing-stability) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_hidsag_cross_preprocessing_stability.py ;;
+  build-b12-llm-tea-leaves) ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/build_b12_llm_tea_leaves.py ;;
   curate-for-web)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/curate_for_web.py ;;
   audit-manifest)          ensure_pipeline_venv ; "$PVENV/bin/python" data-pipeline/audit_manifest.py ;;
   build-precompute-all)
