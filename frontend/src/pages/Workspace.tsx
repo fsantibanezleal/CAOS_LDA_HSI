@@ -6,6 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { api, type DatasetEntry } from "@/api/client";
 import { PageShell } from "@/components/PageShell";
 import { ClassDistributionBar } from "@/components/plots/ClassDistributionBar";
+import {
+  DominantTopicRaster,
+  type PickInfo,
+} from "@/components/plots/DominantTopicRaster";
 import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
@@ -399,7 +403,7 @@ function RepresentationPickerStep({
   );
 }
 
-type ExploreTab = "raw" | "topics" | "topiclabel" | "routed";
+type ExploreTab = "raw" | "topics" | "topiclabel" | "routed" | "raster";
 
 function ExploreStep({
   subsetId,
@@ -435,6 +439,12 @@ function ExploreStep({
     queryKey: ["topic-routed", subsetId],
     queryFn: () => api.topicRoutedClassifier(subsetId!),
     enabled: isLabelled && tab === "routed",
+  });
+
+  const rasterMeta = useQuery({
+    queryKey: ["raster-meta", subsetId],
+    queryFn: () => api.topicToData(subsetId!),
+    enabled: isLabelled && tab === "raster",
   });
 
   return (
@@ -516,6 +526,7 @@ function ExploreStep({
                 { id: "topics", label: "Tópicos · LDAvis" },
                 { id: "topiclabel", label: "Tópico vs etiqueta" },
                 { id: "routed", label: "Routed · ranking" },
+                { id: "raster", label: "Mapa espacial" },
               ] as { id: ExploreTab; label: string }[]
             ).map((opt) => {
               const isActive = tab === opt.id;
@@ -572,6 +583,13 @@ function ExploreStep({
               isLoading={routed.isLoading}
               error={routed.error as Error | null}
               data={routed.data ?? null}
+            />
+          )}
+          {tab === "raster" && (
+            <RasterTab
+              isLoading={rasterMeta.isLoading}
+              error={rasterMeta.error as Error | null}
+              meta={rasterMeta.data ?? null}
             />
           )}
         </>
@@ -1415,6 +1433,254 @@ function RoutedTab({
             </div>
           ))}
         </dl>
+      </div>
+    </div>
+  );
+}
+
+function RasterTab({
+  isLoading,
+  error,
+  meta,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  meta: import("@/api/client").TopicToData | null;
+}) {
+  const [pick, setPick] = useState<PickInfo | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+
+  // Derive served path from the JSON metadata. The pipeline writes a
+  // companion .bin in data/derived/topic_to_data/ so the frontend can
+  // request it via /generated/topic_to_data/<scene>_dominant_topic_map.bin.
+  const buf = useQuery({
+    queryKey: ["raster-bin", meta?.scene_id],
+    queryFn: () => {
+      const path = `/generated/topic_to_data/${meta!.scene_id}_dominant_topic_map.bin`;
+      return api.buffer(path);
+    },
+    enabled: meta !== null,
+    retry: false,
+  });
+
+  if (isLoading)
+    return (
+      <p style={{ color: "var(--color-fg-faint)" }}>Cargando metadata raster…</p>
+    );
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          No se pudo cargar topic_to_data.
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!meta) return null;
+
+  const labels =
+    selectedTopic !== null
+      ? meta.p_label_given_topic_dominant[selectedTopic]
+      : null;
+
+  return (
+    <div className="space-y-6">
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <header className="mb-3">
+          <h4
+            className="text-base font-semibold"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Mapa espacial — tópico dominante por píxel
+          </h4>
+          <p
+            className="text-sm mt-1"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Cada píxel etiquetado se colorea por su tópico dominante
+            (arg-max θ_d). Mueve el cursor sobre el raster para inspeccionar
+            row/col + tópico; click para fijar la lectura. Selecciona un
+            tópico abajo para aislar su huella espacial.
+          </p>
+        </header>
+
+        <div className="grid lg:grid-cols-[auto_1fr] gap-6 items-start">
+          {buf.isLoading && (
+            <p style={{ color: "var(--color-fg-faint)" }}>
+              Descargando raster ({meta.spatial_shape[0]}×
+              {meta.spatial_shape[1]} píxeles)…
+            </p>
+          )}
+          {buf.error && (
+            <p style={{ color: "var(--color-warn)" }}>
+              No se pudo cargar el raster: {String(buf.error)}
+            </p>
+          )}
+          {buf.data && (
+            <DominantTopicRaster
+              buffer={buf.data}
+              shape={meta.spatial_shape}
+              sentinelUnlabelled={255}
+              topicCount={meta.topic_count}
+              selectedTopic={selectedTopic}
+              onPick={(p) => setPick(p)}
+            />
+          )}
+
+          <div className="space-y-3">
+            <div
+              className="rounded-md border p-3 text-[13px] leading-relaxed"
+              style={{
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-bg)",
+                color: "var(--color-fg-subtle)",
+              }}
+            >
+              <div
+                className="text-[11px] uppercase tracking-wider mb-1"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                Píxel fijado
+              </div>
+              {pick ? (
+                <div className="font-mono">
+                  ({pick.row}, {pick.col}) → tópico{" "}
+                  {pick.topic === null ? "—" : pick.topic + 1}
+                </div>
+              ) : (
+                <span style={{ color: "var(--color-fg-faint)" }}>
+                  Click cualquier píxel del raster.
+                </span>
+              )}
+            </div>
+
+            <div>
+              <div
+                className="text-[11px] uppercase tracking-wider mb-2"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                Aislar un tópico
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTopic(null)}
+                  className="rounded-md border px-2.5 py-1 text-[12px]"
+                  style={{
+                    borderColor:
+                      selectedTopic === null
+                        ? "var(--color-accent)"
+                        : "var(--color-border)",
+                    backgroundColor:
+                      selectedTopic === null
+                        ? "var(--color-accent-soft)"
+                        : "var(--color-panel)",
+                    color:
+                      selectedTopic === null
+                        ? "var(--color-accent)"
+                        : "var(--color-fg-subtle)",
+                  }}
+                >
+                  Todos
+                </button>
+                {Array.from({ length: meta.topic_count }, (_, k) => {
+                  const isSel = selectedTopic === k;
+                  const color =
+                    TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() =>
+                        setSelectedTopic(isSel ? null : k)
+                      }
+                      className="rounded-md border px-2.5 py-1 text-[12px] inline-flex items-center gap-1.5"
+                      style={{
+                        borderColor: isSel
+                          ? "var(--color-accent)"
+                          : "var(--color-border)",
+                        backgroundColor: isSel
+                          ? "var(--color-accent-soft)"
+                          : "var(--color-panel)",
+                        color: isSel
+                          ? "var(--color-fg)"
+                          : "var(--color-fg-subtle)",
+                      }}
+                    >
+                      <span
+                        aria-hidden
+                        className="inline-block w-2.5 h-2.5 rounded-sm"
+                        style={{ backgroundColor: color }}
+                      />
+                      tópico {k + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {labels && (
+              <div
+                className="rounded-md border p-3 text-[13px]"
+                style={{
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--color-bg)",
+                }}
+              >
+                <div
+                  className="text-[11px] uppercase tracking-wider mb-2"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  Mezcla de etiquetas — tópico {selectedTopic! + 1}
+                </div>
+                <ul className="space-y-1">
+                  {[...labels]
+                    .sort((a, b) => b.p - a.p)
+                    .slice(0, 5)
+                    .map((l) => (
+                      <li
+                        key={l.label_id}
+                        className="flex items-center gap-2"
+                        style={{ color: "var(--color-fg-subtle)" }}
+                      >
+                        <span
+                          aria-hidden
+                          className="inline-block w-2.5 h-2.5 rounded-sm shrink-0"
+                          style={{ backgroundColor: l.color }}
+                        />
+                        <span className="flex-1 truncate">{l.name}</span>
+                        <span
+                          className="font-mono"
+                          style={{ color: "var(--color-fg)" }}
+                        >
+                          {(l.p * 100).toFixed(1)}%
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

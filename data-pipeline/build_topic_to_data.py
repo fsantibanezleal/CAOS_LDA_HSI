@@ -167,10 +167,16 @@ def build_for_scene(scene_id: str) -> dict | None:
         dominant_map[int(pixel_idx)] = int(dominant[d_idx])
     dominant_map_2d = dominant_map.reshape(h, w)
 
-    # Save dominant_topic_map locally as binary
+    # Save dominant_topic_map both locally (legacy) and under derived/
+    # so the public web app can read it via /generated/topic_to_data/.
     LOCAL_OUT_DIR.mkdir(parents=True, exist_ok=True)
     map_path = LOCAL_OUT_DIR / f"{scene_id}_dominant_topic_map.bin"
     map_path.write_bytes(dominant_map_2d.tobytes())
+    derived_map_path = (
+        DERIVED_DIR / "topic_to_data" / f"{scene_id}_dominant_topic_map.bin"
+    )
+    derived_map_path.parent.mkdir(parents=True, exist_ok=True)
+    derived_map_path.write_bytes(dominant_map_2d.tobytes())
 
     # Theta projection 2D via PCA — useful for the document-embedding panel
     theta_centered = theta - theta.mean(axis=0, keepdims=True)
@@ -202,6 +208,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             "shape": [int(h), int(w)],
             "sentinel_unlabelled": 255,
             "path": str(map_path.relative_to(ROOT)).replace("\\", "/"),
+            "served_path": str(derived_map_path.relative_to(ROOT)).replace("\\", "/"),
         },
         "theta_embedding_pca_2d": [
             {
