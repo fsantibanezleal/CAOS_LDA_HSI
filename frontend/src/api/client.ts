@@ -278,7 +278,33 @@ export const api = {
     request<SpectralBrowserMeta>(
       `/api/spectral-browser/${encodeURIComponent(sceneId)}`,
     ),
+  topicStability: (sceneId: string) =>
+    request<TopicStability>(
+      `/api/topic-stability/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type TopicStability = {
+  scene_id: string;
+  K: number;
+  seeds: number[];
+  wordification: string;
+  quantization_scale: number;
+  samples_per_class: number;
+  seed_pair_matched_cosine_mean: number[][];
+  seed_pair_matched_cosine_min: number[][];
+  per_topic_stability_summary: {
+    topic_id: number;
+    median_matched_cosine_vs_seed0: number;
+    min_matched_cosine_vs_seed0: number;
+    std_matched_cosine_vs_seed0: number;
+  }[];
+  scene_stability_summary: {
+    off_diagonal_mean: number;
+    off_diagonal_min: number;
+    off_diagonal_std: number;
+  };
 };
 
 export type HidsagPreprocessingSubset = {

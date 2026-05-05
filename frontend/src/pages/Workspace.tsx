@@ -13,6 +13,7 @@ import {
 import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { SpectralBrowser } from "@/components/plots/SpectralBrowser";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
+import { StabilityHeatmap } from "@/components/plots/StabilityHeatmap";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { workspaceMachine } from "@/state/workspaceMachine";
@@ -415,7 +416,8 @@ type ExploreTab =
   | "topiclabel"
   | "routed"
   | "raster"
-  | "embed3d";
+  | "embed3d"
+  | "stability";
 
 function ExploreStep({
   subsetId,
@@ -469,6 +471,12 @@ function ExploreStep({
     queryKey: ["browser-meta", subsetId],
     queryFn: () => api.spectralBrowserMeta(subsetId!),
     enabled: isLabelled && tab === "browser",
+  });
+
+  const stability = useQuery({
+    queryKey: ["topic-stability", subsetId],
+    queryFn: () => api.topicStability(subsetId!),
+    enabled: isLabelled && tab === "stability",
   });
 
   return (
@@ -553,6 +561,7 @@ function ExploreStep({
                 { id: "routed", label: "Routed · ranking" },
                 { id: "raster", label: "Mapa espacial" },
                 { id: "embed3d", label: "Embedding 3D · θ-PCA" },
+                { id: "stability", label: "Estabilidad · 7-seed" },
               ] as { id: ExploreTab; label: string }[]
             ).map((opt) => {
               const isActive = tab === opt.id;
@@ -630,6 +639,13 @@ function ExploreStep({
               isLoading={browserMeta.isLoading}
               error={browserMeta.error as Error | null}
               meta={browserMeta.data ?? null}
+            />
+          )}
+          {tab === "stability" && (
+            <StabilityTab
+              isLoading={stability.isLoading}
+              error={stability.error as Error | null}
+              data={stability.data ?? null}
             />
           )}
         </>
@@ -1721,6 +1737,218 @@ function RasterTab({
             )}
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function StabilityTab({
+  isLoading,
+  error,
+  data,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  data: import("@/api/client").TopicStability | null;
+}) {
+  if (isLoading)
+    return (
+      <p style={{ color: "var(--color-fg-faint)" }}>
+        Cargando estabilidad…
+      </p>
+    );
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          No se pudo cargar topic_stability.
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!data) return null;
+
+  const sceneSum = data.scene_stability_summary;
+  const perTopic = data.per_topic_stability_summary;
+
+  return (
+    <div className="space-y-6">
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <header className="mb-3">
+          <h4
+            className="text-base font-semibold"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Estabilidad de tópicos · matched-cosine entre {data.seeds.length}{" "}
+            seeds
+          </h4>
+          <p
+            className="text-sm mt-1"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Cada par de seeds (i, j) reporta la similitud Hungarian-matched
+            cosine entre las K={data.K} firmas tópicas φ ajustadas con el
+            mismo corpus pero distinta semilla. Diagonal = 1 (auto-match).
+            La estabilidad real está en las celdas off-diagonal.
+          </p>
+        </header>
+
+        <div
+          className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          <SceneStabilityStat
+            label="Off-diagonal mean"
+            value={sceneSum.off_diagonal_mean.toFixed(4)}
+          />
+          <SceneStabilityStat
+            label="Off-diagonal min"
+            value={sceneSum.off_diagonal_min.toFixed(4)}
+          />
+          <SceneStabilityStat
+            label="Off-diagonal std"
+            value={sceneSum.off_diagonal_std.toFixed(4)}
+          />
+        </div>
+
+        <StabilityHeatmap
+          matrix={data.seed_pair_matched_cosine_mean}
+          seeds={data.seeds}
+        />
+      </div>
+
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Estabilidad por tópico · matched-cosine vs seed 0
+        </h4>
+        <p
+          className="text-sm mb-4"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Para cada tópico, la mediana y mínimo del Hungarian-matched cosine
+          contra el ajuste de seed 0 a través de los demás seeds.
+          Tópicos cerca de 1.0 son robustos; los más bajos son los que la
+          inicialización aleatoria aún logra perturbar.
+        </p>
+        <div className="space-y-1.5">
+          {perTopic.map((t) => {
+            const color =
+              TOPIC_COLORS[(t.topic_id - 1) % TOPIC_COLORS.length] ?? "#0ea5e9";
+            return (
+              <div
+                key={t.topic_id}
+                className="flex items-center gap-3 text-[13px]"
+                style={{ color: "var(--color-fg-subtle)" }}
+              >
+                <span
+                  className="shrink-0 w-20 font-mono"
+                  style={{ color: "var(--color-fg)" }}
+                >
+                  tópico {t.topic_id}
+                </span>
+                <span
+                  className="flex-1 h-4 rounded-sm relative overflow-hidden"
+                  style={{ backgroundColor: "var(--color-bg)" }}
+                >
+                  <span
+                    className="absolute inset-y-0 left-0 rounded-sm"
+                    style={{
+                      width: `${t.median_matched_cosine_vs_seed0 * 100}%`,
+                      backgroundColor: color,
+                      opacity: 0.85,
+                    }}
+                  />
+                  <span
+                    className="absolute inset-y-0 left-0 border-r-2"
+                    style={{
+                      width: `${t.min_matched_cosine_vs_seed0 * 100}%`,
+                      borderColor: "var(--color-fg)",
+                      opacity: 0.55,
+                    }}
+                  />
+                </span>
+                <span
+                  className="shrink-0 w-16 text-right font-mono text-[11.5px]"
+                  style={{ color: "var(--color-fg)" }}
+                >
+                  {t.median_matched_cosine_vs_seed0.toFixed(3)}
+                </span>
+                <span
+                  className="shrink-0 w-12 text-right font-mono text-[11px]"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  ±{t.std_matched_cosine_vs_seed0.toFixed(3)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <p
+          className="mt-4 text-[12px]"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Barra coloreada = mediana; línea vertical interna = mínimo.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SceneStabilityStat({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div
+      className="rounded-md border p-3"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-bg)",
+      }}
+    >
+      <div
+        className="text-[11px] uppercase tracking-wider"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        {label}
+      </div>
+      <div
+        className="mt-0.5 text-base font-semibold tracking-tight font-mono"
+        style={{ color: "var(--color-fg)" }}
+      >
+        {value}
       </div>
     </div>
   );
