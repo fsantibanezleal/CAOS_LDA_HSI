@@ -286,7 +286,54 @@ export const api = {
     request<TopicToUsgsV7>(
       `/api/topic-to-usgs-v7/${encodeURIComponent(sceneId)}`,
     ),
+  rateDistortionCurve: (sceneId: string) =>
+    request<RateDistortionCurve>(
+      `/api/rate-distortion-curve/${encodeURIComponent(sceneId)}`,
+    ),
+  mutualInformation: (sceneId: string) =>
+    request<MutualInformation>(
+      `/api/mutual-information/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type RateDistortionCurvePoint = {
+  K: number;
+  rmse_train: number;
+  rmse_test: number;
+  rmse_test_normalised?: number;
+  perplexity_test?: number;
+};
+
+export type RateDistortionCurve = {
+  scene_id: string;
+  K_grid: number[];
+  doc_term_shape: [number, number];
+  method_curves: Record<string, RateDistortionCurvePoint[]>;
+};
+
+export type MutualInformationMethod = {
+  label_entropy_nats: number;
+  per_feature_mi_sum_nats: number;
+  joint_mi_clipped_to_label_entropy: number;
+  conditional_entropy_proxy_H_y_given_x: number;
+  per_feature_mi: number[];
+  latent_dim: number;
+};
+
+export type MutualInformation = {
+  scene_id: string;
+  topic_count: number;
+  n_documents: number;
+  label_entropy_nats: number;
+  label_entropy_bits: number;
+  method_mi: Record<string, MutualInformationMethod>;
+  ranking_by_joint_mi: {
+    method: string;
+    latent_dim: number;
+    joint_mi_clipped: number;
+    fraction_of_label_entropy_recovered: number;
+  }[];
 };
 
 export type UsgsMatch = {
