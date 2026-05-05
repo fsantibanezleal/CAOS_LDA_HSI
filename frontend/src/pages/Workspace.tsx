@@ -11,6 +11,7 @@ import {
   type PickInfo,
 } from "@/components/plots/DominantTopicRaster";
 import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
+import { SpectralBrowser } from "@/components/plots/SpectralBrowser";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
@@ -409,6 +410,7 @@ function RepresentationPickerStep({
 
 type ExploreTab =
   | "raw"
+  | "browser"
   | "topics"
   | "topiclabel"
   | "routed"
@@ -461,6 +463,12 @@ function ExploreStep({
     queryKey: ["embed3d", subsetId],
     queryFn: () => api.topicToData(subsetId!),
     enabled: isLabelled && tab === "embed3d",
+  });
+
+  const browserMeta = useQuery({
+    queryKey: ["browser-meta", subsetId],
+    queryFn: () => api.spectralBrowserMeta(subsetId!),
+    enabled: isLabelled && tab === "browser",
   });
 
   return (
@@ -539,6 +547,7 @@ function ExploreStep({
             {(
               [
                 { id: "raw", label: "Cruda · clases" },
+                { id: "browser", label: "Browser · 8000 espectros" },
                 { id: "topics", label: "Tópicos · LDAvis" },
                 { id: "topiclabel", label: "Tópico vs etiqueta" },
                 { id: "routed", label: "Routed · ranking" },
@@ -614,6 +623,13 @@ function ExploreStep({
               isLoading={embed3d.isLoading}
               error={embed3d.error as Error | null}
               data={embed3d.data ?? null}
+            />
+          )}
+          {tab === "browser" && (
+            <SpectralBrowserTab
+              isLoading={browserMeta.isLoading}
+              error={browserMeta.error as Error | null}
+              meta={browserMeta.data ?? null}
             />
           )}
         </>
@@ -1704,6 +1720,223 @@ function RasterTab({
               </div>
             )}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SpectralBrowserTab({
+  isLoading,
+  error,
+  meta,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  meta: import("@/api/client").SpectralBrowserMeta | null;
+}) {
+  const [isolatedLabel, setIsolatedLabel] = useState<number | null>(null);
+  const [maxLines, setMaxLines] = useState<number>(2000);
+
+  const buf = useQuery({
+    queryKey: ["browser-bin", meta?.scene_id],
+    queryFn: () => {
+      const path = `/generated/spectral_browser/${meta!.scene_id}/spectra.bin`;
+      return api.buffer(path);
+    },
+    enabled: meta !== null,
+    retry: false,
+    staleTime: 5 * 60_000,
+  });
+
+  const spectra = useMemo(() => {
+    if (!buf.data) return null;
+    return new Float32Array(buf.data);
+  }, [buf.data]);
+
+  const labels = useMemo(() => {
+    if (!meta) return [];
+    const seen = new Map<number, { label_id: number; name: string; color: string; count: number }>();
+    for (const r of meta.rows) {
+      const e = seen.get(r.label_id);
+      if (e) {
+        e.count += 1;
+      } else {
+        seen.set(r.label_id, {
+          label_id: r.label_id,
+          name: r.label_name,
+          color: r.color,
+          count: 1,
+        });
+      }
+    }
+    return Array.from(seen.values()).sort((a, b) => b.count - a.count);
+  }, [meta]);
+
+  if (isLoading)
+    return (
+      <p style={{ color: "var(--color-fg-faint)" }}>
+        Cargando metadata del browser…
+      </p>
+    );
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          No se pudo cargar /api/spectral-browser.
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!meta) return null;
+
+  return (
+    <div className="space-y-4">
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <header className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
+          <div>
+            <h4
+              className="text-base font-semibold"
+              style={{ color: "var(--color-fg)" }}
+            >
+              Browser espectral · {meta.N.toLocaleString()} espectros muestreados
+            </h4>
+            <p
+              className="text-sm mt-1"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Cada línea es un píxel real (no un promedio); muestreo{" "}
+              {meta.sampling_strategy}. {meta.B} bandas (
+              {Math.round(meta.wavelengths_nm[0]!)}–
+              {Math.round(meta.wavelengths_nm[meta.wavelengths_nm.length - 1]!)}{" "}
+              nm). Click una clase para aislarla; reduce las líneas
+              renderizadas si tu máquina sufre.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span
+              className="text-[11px] uppercase tracking-wider"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              líneas
+            </span>
+            <select
+              value={maxLines}
+              onChange={(e) => setMaxLines(parseInt(e.target.value, 10))}
+              className="rounded-md border px-2 py-1 text-sm"
+              style={{
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-bg)",
+                color: "var(--color-fg)",
+              }}
+            >
+              {[500, 1000, 2000, 4000, 8000].map((v) => (
+                <option key={v} value={v}>
+                  {v.toLocaleString()}
+                </option>
+              ))}
+            </select>
+          </div>
+        </header>
+
+        {buf.isLoading && (
+          <p style={{ color: "var(--color-fg-faint)" }}>
+            Descargando {(meta.N * meta.B * 4).toLocaleString()} bytes binarios…
+          </p>
+        )}
+        {buf.error && (
+          <p style={{ color: "var(--color-warn)" }}>
+            No se pudo cargar spectra.bin: {String(buf.error)}
+          </p>
+        )}
+        {spectra && (
+          <SpectralBrowser
+            meta={meta}
+            spectra={spectra}
+            isolatedLabel={isolatedLabel}
+            maxLines={maxLines}
+          />
+        )}
+
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          <button
+            type="button"
+            onClick={() => setIsolatedLabel(null)}
+            className="rounded-md border px-2.5 py-1 text-[12px]"
+            style={{
+              borderColor:
+                isolatedLabel === null
+                  ? "var(--color-accent)"
+                  : "var(--color-border)",
+              backgroundColor:
+                isolatedLabel === null
+                  ? "var(--color-accent-soft)"
+                  : "var(--color-panel)",
+              color:
+                isolatedLabel === null
+                  ? "var(--color-accent)"
+                  : "var(--color-fg-subtle)",
+            }}
+          >
+            Todas
+          </button>
+          {labels.map((l) => {
+            const isSel = isolatedLabel === l.label_id;
+            return (
+              <button
+                key={l.label_id}
+                type="button"
+                onClick={() =>
+                  setIsolatedLabel(isSel ? null : l.label_id)
+                }
+                className="rounded-md border px-2.5 py-1 text-[12px] inline-flex items-center gap-1.5"
+                style={{
+                  borderColor: isSel
+                    ? "var(--color-accent)"
+                    : "var(--color-border)",
+                  backgroundColor: isSel
+                    ? "var(--color-accent-soft)"
+                    : "var(--color-panel)",
+                  color: isSel
+                    ? "var(--color-fg)"
+                    : "var(--color-fg-subtle)",
+                }}
+                title={`${l.count} espectros`}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2.5 h-2.5 rounded-sm"
+                  style={{ backgroundColor: l.color }}
+                />
+                {l.name}
+                <span
+                  className="text-[10.5px] ml-1 opacity-70"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  ({l.count})
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
