@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 
 import { api, type DatasetEntry, type DatasetInventory } from "@/api/client";
 import { PageShell } from "@/components/PageShell";
-import { Section } from "@/components/Section";
+import { cn } from "@/lib/cn";
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -23,6 +23,12 @@ function fitColor(fit: string): string {
   return BADGE_PALETTE[fit] ?? "var(--color-fg-faint)";
 }
 
+function readHashFamily(): string | null {
+  if (typeof window === "undefined") return null;
+  const h = window.location.hash.replace(/^#/, "");
+  return h || null;
+}
+
 export default function Databases() {
   const { t } = useTranslation(["pages"]);
   const { data, isLoading, error } = useQuery({
@@ -31,8 +37,8 @@ export default function Databases() {
   });
 
   const groupedByFamily = useMemo(() => {
-    if (!data) return [];
-    const groups: { family: string; family_id: string; entries: DatasetEntry[] }[] = [];
+    if (!data)
+      return [] as { family_id: string; family: string; entries: DatasetEntry[] }[];
     const familyTitleMap = new Map(
       data.family_views.map((f) => [f.family_id, f.family_title]),
     );
@@ -41,15 +47,37 @@ export default function Databases() {
       if (!seen.has(ds.family_id)) seen.set(ds.family_id, []);
       seen.get(ds.family_id)!.push(ds);
     }
-    for (const [fid, entries] of seen.entries()) {
-      groups.push({
-        family_id: fid,
-        family: familyTitleMap.get(fid) ?? fid,
-        entries,
-      });
-    }
-    return groups;
+    return Array.from(seen.entries()).map(([fid, entries]) => ({
+      family_id: fid,
+      family: familyTitleMap.get(fid) ?? fid,
+      entries,
+    }));
   }, [data]);
+
+  const [activeFamily, setActiveFamily] = useState<string | null>(null);
+
+  // Default to the hash family if valid, else the first non-empty group.
+  useEffect(() => {
+    if (!groupedByFamily.length) return;
+    if (activeFamily && groupedByFamily.some((g) => g.family_id === activeFamily))
+      return;
+    const fromHash = readHashFamily();
+    const valid = fromHash
+      ? groupedByFamily.find((g) => g.family_id === fromHash)
+      : null;
+    setActiveFamily(valid ? valid.family_id : groupedByFamily[0]!.family_id);
+  }, [groupedByFamily, activeFamily]);
+
+  // Sync hash when active family changes from a click.
+  const onPickFamily = (fid: string) => {
+    setActiveFamily(fid);
+    if (typeof window !== "undefined") {
+      window.location.hash = fid;
+    }
+  };
+
+  const activeGroup =
+    groupedByFamily.find((g) => g.family_id === activeFamily) ?? null;
 
   return (
     <PageShell
@@ -88,20 +116,107 @@ export default function Databases() {
         <>
           <SummaryRow inventory={data} />
 
-          <div className="space-y-12 mt-10">
-            {groupedByFamily.map((g) => (
-              <Section key={g.family_id} id={g.family_id} title={g.family}>
-                <div className="grid sm:grid-cols-2 gap-4 mt-2">
-                  {g.entries.map((d) => (
-                    <DatasetCard key={d.id} dataset={d} />
-                  ))}
-                </div>
-              </Section>
-            ))}
-          </div>
+          <FamilyTabs
+            groups={groupedByFamily}
+            active={activeFamily}
+            onPick={onPickFamily}
+          />
+
+          {activeGroup && (
+            <section className="mt-6">
+              <header className="mb-4">
+                <h2
+                  className="text-xl md:text-2xl font-semibold tracking-tight"
+                  style={{ color: "var(--color-fg)" }}
+                >
+                  {activeGroup.family}
+                </h2>
+                <p
+                  className="mt-1 text-sm"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  {activeGroup.entries.length} datasets ·{" "}
+                  {
+                    activeGroup.entries.filter((e) => e.local_raw_available)
+                      .length
+                  }{" "}
+                  con raíz local
+                </p>
+              </header>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {activeGroup.entries.map((d) => (
+                  <DatasetCard key={d.id} dataset={d} />
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
     </PageShell>
+  );
+}
+
+function FamilyTabs({
+  groups,
+  active,
+  onPick,
+}: {
+  groups: { family_id: string; family: string; entries: DatasetEntry[] }[];
+  active: string | null;
+  onPick: (fid: string) => void;
+}) {
+  return (
+    <nav
+      role="tablist"
+      aria-label="Familias de datasets"
+      className="flex flex-wrap gap-2 mt-6 border-b pb-3"
+      style={{ borderColor: "var(--color-border)" }}
+    >
+      {groups.map((g) => {
+        const isActive = active === g.family_id;
+        const localCount = g.entries.filter((e) => e.local_raw_available).length;
+        return (
+          <button
+            key={g.family_id}
+            role="tab"
+            aria-selected={isActive}
+            type="button"
+            onClick={() => onPick(g.family_id)}
+            className={cn(
+              "rounded-md border px-4 py-2 text-sm transition-colors",
+              isActive ? "font-semibold" : "opacity-80 hover:opacity-100",
+            )}
+            style={{
+              borderColor: isActive
+                ? "var(--color-accent)"
+                : "var(--color-border)",
+              backgroundColor: isActive
+                ? "var(--color-accent-soft)"
+                : "var(--color-panel)",
+              color: isActive ? "var(--color-accent)" : "var(--color-fg)",
+            }}
+          >
+            <span className="mr-2">{g.family}</span>
+            <span
+              className="inline-block rounded-md px-1.5 py-0.5 text-[11px] font-mono"
+              style={{
+                backgroundColor: isActive
+                  ? "var(--color-accent)"
+                  : "var(--color-bg)",
+                color: isActive
+                  ? "var(--color-accent-fg)"
+                  : "var(--color-fg-faint)",
+              }}
+            >
+              {g.entries.length}
+              {localCount < g.entries.length && (
+                <span className="opacity-70"> · {localCount} local</span>
+              )}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }
 
