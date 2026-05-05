@@ -270,7 +270,32 @@ export const api = {
     request<HidsagMethodStatistics>(
       `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
     ),
+  spectralBrowserMeta: (sceneId: string) =>
+    request<SpectralBrowserMeta>(
+      `/api/spectral-browser/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type SpectralBrowserRow = {
+  i: number;
+  label_id: number;
+  label_name: string;
+  color: string;
+  xy: [number, number];
+};
+
+export type SpectralBrowserMeta = {
+  scene_id: string;
+  scene_name: string;
+  spatial_shape: [number, number];
+  sampling_strategy: string;
+  N: number;
+  B: number;
+  format: string;
+  spectra_path: string;
+  wavelengths_nm: number[];
+  rows: SpectralBrowserRow[];
 };
 
 export type HidsagDistribution = {
