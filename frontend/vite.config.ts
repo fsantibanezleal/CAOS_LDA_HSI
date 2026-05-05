@@ -37,6 +37,11 @@ export default defineConfig({
           if (id.includes("node_modules/zustand")) return "zustand";
           if (id.includes("node_modules/lucide-react")) return "icons";
           if (id.includes("node_modules/katex")) return "katex";
+          if (
+            id.includes("node_modules/three") ||
+            id.includes("node_modules/@react-three")
+          )
+            return "three";
           return undefined;
         },
       },

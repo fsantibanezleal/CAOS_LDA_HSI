@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMachine } from "@xstate/react";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +17,10 @@ import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily } from "@/state/useSelectionStore";
 import { cn } from "@/lib/cn";
+
+const Scatter3D = lazy(() =>
+  import("@/components/plots/Scatter3D").then((m) => ({ default: m.Scatter3D })),
+);
 
 const LABELLED_SCENES = new Set([
   "indian-pines-corrected",
@@ -403,7 +407,13 @@ function RepresentationPickerStep({
   );
 }
 
-type ExploreTab = "raw" | "topics" | "topiclabel" | "routed" | "raster";
+type ExploreTab =
+  | "raw"
+  | "topics"
+  | "topiclabel"
+  | "routed"
+  | "raster"
+  | "embed3d";
 
 function ExploreStep({
   subsetId,
@@ -445,6 +455,12 @@ function ExploreStep({
     queryKey: ["raster-meta", subsetId],
     queryFn: () => api.topicToData(subsetId!),
     enabled: isLabelled && tab === "raster",
+  });
+
+  const embed3d = useQuery({
+    queryKey: ["embed3d", subsetId],
+    queryFn: () => api.topicToData(subsetId!),
+    enabled: isLabelled && tab === "embed3d",
   });
 
   return (
@@ -527,6 +543,7 @@ function ExploreStep({
                 { id: "topiclabel", label: "Tópico vs etiqueta" },
                 { id: "routed", label: "Routed · ranking" },
                 { id: "raster", label: "Mapa espacial" },
+                { id: "embed3d", label: "Embedding 3D · θ-PCA" },
               ] as { id: ExploreTab; label: string }[]
             ).map((opt) => {
               const isActive = tab === opt.id;
@@ -590,6 +607,13 @@ function ExploreStep({
               isLoading={rasterMeta.isLoading}
               error={rasterMeta.error as Error | null}
               meta={rasterMeta.data ?? null}
+            />
+          )}
+          {tab === "embed3d" && (
+            <Embed3DTab
+              isLoading={embed3d.isLoading}
+              error={embed3d.error as Error | null}
+              data={embed3d.data ?? null}
             />
           )}
         </>
@@ -1680,6 +1704,208 @@ function RasterTab({
               </div>
             )}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Embed3DTab({
+  isLoading,
+  error,
+  data,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  data: import("@/api/client").TopicToData | null;
+}) {
+  const [colorBy, setColorBy] = useState<"topic" | "label">("topic");
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [pickedDoc, setPickedDoc] = useState<{ docId: number; index: number } | null>(
+    null,
+  );
+
+  if (isLoading)
+    return (
+      <p style={{ color: "var(--color-fg-faint)" }}>
+        Cargando embedding…
+      </p>
+    );
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          No se pudo cargar el embedding 3D.
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!data) return null;
+
+  const points = data.theta_embedding_pca_3d;
+  const ev = data.theta_embedding_explained_variance;
+  const totalEv = ev.reduce((a, b) => a + b, 0);
+
+  return (
+    <div className="space-y-6">
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <header className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
+          <div>
+            <h4
+              className="text-base font-semibold"
+              style={{ color: "var(--color-fg)" }}
+            >
+              Embedding 3D · θ-PCA
+            </h4>
+            <p
+              className="text-sm mt-1"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Cada punto es un documento de la muestra (n={points.length}).
+              Coordenadas: PCA(θ) en 3D.{" "}
+              {ev.length >= 3 && (
+                <>
+                  EV<sub>1..3</sub> = {ev[0]!.toFixed(3)} /{" "}
+                  {ev[1]!.toFixed(3)} / {ev[2]!.toFixed(3)} (total{" "}
+                  {(totalEv * 100).toFixed(1)}%).
+                </>
+              )}{" "}
+              Click un punto para fijar su <code>doc_id</code>.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span
+              className="text-[11px] uppercase tracking-wider"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              colorear por
+            </span>
+            <select
+              value={colorBy}
+              onChange={(e) => setColorBy(e.target.value as "topic" | "label")}
+              className="rounded-md border px-2 py-1 text-sm"
+              style={{
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-bg)",
+                color: "var(--color-fg)",
+              }}
+            >
+              <option value="topic">Tópico dominante</option>
+              <option value="label">Etiqueta</option>
+            </select>
+          </div>
+        </header>
+
+        <Suspense
+          fallback={
+            <p style={{ color: "var(--color-fg-faint)" }}>
+              Cargando renderizador 3D…
+            </p>
+          }
+        >
+          <Scatter3D
+            points={points}
+            colorBy={colorBy}
+            selectedTopic={selectedTopic}
+            onPick={(info) => setPickedDoc(info)}
+          />
+        </Suspense>
+
+        <div className="mt-3 flex flex-wrap items-baseline gap-4">
+          <div>
+            <div
+              className="text-[11px] uppercase tracking-wider mb-1.5"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Aislar tópico
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                onClick={() => setSelectedTopic(null)}
+                className="rounded-md border px-2.5 py-1 text-[12px]"
+                style={{
+                  borderColor:
+                    selectedTopic === null
+                      ? "var(--color-accent)"
+                      : "var(--color-border)",
+                  backgroundColor:
+                    selectedTopic === null
+                      ? "var(--color-accent-soft)"
+                      : "var(--color-panel)",
+                  color:
+                    selectedTopic === null
+                      ? "var(--color-accent)"
+                      : "var(--color-fg-subtle)",
+                }}
+              >
+                Todos
+              </button>
+              {Array.from({ length: data.topic_count }, (_, k) => {
+                const isSel = selectedTopic === k;
+                const color = TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+                return (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() =>
+                      setSelectedTopic(isSel ? null : k)
+                    }
+                    className="rounded-md border px-2.5 py-1 text-[12px] inline-flex items-center gap-1.5"
+                    style={{
+                      borderColor: isSel
+                        ? "var(--color-accent)"
+                        : "var(--color-border)",
+                      backgroundColor: isSel
+                        ? "var(--color-accent-soft)"
+                        : "var(--color-panel)",
+                      color: isSel
+                        ? "var(--color-fg)"
+                        : "var(--color-fg-subtle)",
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      className="inline-block w-2.5 h-2.5 rounded-sm"
+                      style={{ backgroundColor: color }}
+                    />
+                    tópico {k + 1}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          {pickedDoc && (
+            <div
+              className="rounded-md border p-2 text-[12.5px] font-mono"
+              style={{
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-bg)",
+                color: "var(--color-fg-subtle)",
+              }}
+            >
+              doc_id: {pickedDoc.docId} · index: {pickedDoc.index}
+            </div>
+          )}
         </div>
       </div>
     </div>

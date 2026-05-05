@@ -222,6 +222,19 @@ export type LabelCell = {
   p: number;
 };
 
+export type EmbeddingPoint2D = {
+  doc_id: number;
+  x: number;
+  y: number;
+  label_id?: number;
+  dominant_topic_k?: number;
+  confidence?: number;
+};
+
+export type EmbeddingPoint3D = EmbeddingPoint2D & {
+  z: number;
+};
+
 export type TopicToData = {
   scene_id: string;
   topic_count: number;
@@ -232,8 +245,8 @@ export type TopicToData = {
   docs_per_topic_dominant: number[];
   docs_per_topic_strict: number[];
   kl_to_label_prior_per_topic: number[];
-  theta_embedding_pca_2d: [number, number][];
-  theta_embedding_pca_3d: [number, number, number][];
+  theta_embedding_pca_2d: EmbeddingPoint2D[];
+  theta_embedding_pca_3d: EmbeddingPoint3D[];
   theta_embedding_explained_variance: number[];
 };
 
