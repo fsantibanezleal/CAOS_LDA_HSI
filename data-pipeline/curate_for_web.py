@@ -37,6 +37,7 @@ MANIFEST_PATH = MANIFEST_DIR / "index.json"
 
 # Builders + the set of derived directories they own
 BUILDER_DIRS = [
+    # ---- precompute layer ---------------------------------------------
     ("build_eda_per_scene", "eda/per_scene"),
     ("build_eda_hidsag", "eda/hidsag"),
     ("build_topic_views", "topic_views"),
@@ -76,6 +77,28 @@ BUILDER_DIRS = [
     ("build_endmember_baseline", "endmember_baseline"),
     ("build_cross_scene_transfer", "cross_scene_transfer"),
     ("build_bayesian_classification_labelled", "method_statistics_labelled"),
+    ("build_hierarchical_super_topics", "super_topics"),
+    # ---- pre-precompute ("foundational") layer ------------------------
+    # These directories pre-date the precompute waves but their outputs
+    # are still served by the public API (subset cards, dataset
+    # inventory, exploration views, …). Listing them here lets the
+    # manifest auditor reach zero orphans.
+    ("build_real_samples", "real"),
+    ("build_field_samples", "field"),
+    ("build_spectral_library_samples", "spectral"),
+    ("build_analysis_payload", "analysis"),
+    ("build_corpus_previews", "corpus"),
+    ("build_segmentation_baselines", "baselines"),
+    ("build_local_inventory", "core/local_dataset_inventory.json"),
+    ("run_local_core_benchmarks", "core/local_core_benchmarks.json"),
+    ("build_method_statistics", "core/method_statistics.json"),
+    ("build_exploration_views", "core/exploration_views.json"),
+    ("build_hidsag_curated_subset", "core/hidsag_curated_subset.json"),
+    ("build_hidsag_band_quality", "core/hidsag_band_quality.json"),
+    ("run_hidsag_preprocessing_sensitivity", "core/hidsag_preprocessing_sensitivity.json"),
+    ("build_hidsag_region_documents", "core/hidsag_region_documents.json"),
+    ("fetch_hidsag", "core/hidsag_subset_inventory.json"),
+    ("build_subset_cards", "subsets"),
 ]
 
 # What the web app is allowed to claim — must trace to one or more derived
@@ -391,38 +414,55 @@ def file_size(path: Path) -> int:
         return 0
 
 
+FORMAT_BY_EXT = {
+    ".json": "json",
+    ".bin": "binary",
+    ".npy": "numpy_npy",
+    ".npz": "numpy_npz",
+    ".png": "image_png",
+}
+
+
+def _make_entry(path: Path, builder_id: str) -> dict:
+    rel = path.relative_to(DERIVED_DIR)
+    ext = path.suffix.lower()
+    entry = {
+        "id": str(rel).replace("\\", "/"),
+        "builder": builder_id,
+        "path": "data/derived/" + str(rel).replace("\\", "/"),
+        "format": FORMAT_BY_EXT.get(ext, "raw"),
+        "bytes": file_size(path),
+    }
+    parts = rel.parts
+    if len(parts) >= 2:
+        guess = parts[1]
+        if guess.endswith(".json"):
+            guess = guess[:-5]
+        entry["scene_id"] = guess
+    return entry
+
+
 def collect_artifacts() -> list[dict]:
     artifacts: list[dict] = []
-    for builder_id, sub_dir in BUILDER_DIRS:
-        base = DERIVED_DIR / sub_dir
-        if not base.exists():
+    seen_paths: set[str] = set()
+    for builder_id, sub_path in BUILDER_DIRS:
+        base = DERIVED_DIR / sub_path
+        if base.is_file():
+            entry = _make_entry(base, builder_id)
+            if entry["path"] not in seen_paths:
+                artifacts.append(entry)
+                seen_paths.add(entry["path"])
+            continue
+        if not base.is_dir():
             continue
         for path in sorted(base.rglob("*")):
             if not path.is_file():
                 continue
-            rel = path.relative_to(DERIVED_DIR)
-            ext = path.suffix.lower()
-            fmt = {
-                ".json": "json",
-                ".bin": "binary",
-                ".npy": "numpy_npy",
-            }.get(ext, "raw")
-            entry = {
-                "id": str(rel).replace("\\", "/"),
-                "builder": builder_id,
-                "path": "data/derived/" + str(rel).replace("\\", "/"),
-                "format": fmt,
-                "bytes": file_size(path),
-            }
-            # Try to capture scene_id from the path, using folders/files.
-            parts = rel.parts
-            # patterns: <sub>/<scene>.json or <sub>/<scene>/<file>
-            if len(parts) >= 2:
-                guess = parts[1]
-                if guess.endswith(".json"):
-                    guess = guess[:-5]
-                entry["scene_id"] = guess
+            entry = _make_entry(path, builder_id)
+            if entry["path"] in seen_paths:
+                continue
             artifacts.append(entry)
+            seen_paths.add(entry["path"])
     return artifacts
 
 
