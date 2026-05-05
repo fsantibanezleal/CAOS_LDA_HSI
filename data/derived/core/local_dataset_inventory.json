@@ -1,13 +1,13 @@
 {
   "source": "Unified local inventory for the CAOS LDA HSI validation backend",
-  "generated_at": "2026-05-01",
+  "generated_at": "2026-05-05",
   "summary": {
     "cataloged_dataset_count": 21,
-    "datasets_with_local_raw": 10,
-    "raw_total_size_bytes": 33924924402,
-    "raw_total_size_gb": 31.595,
+    "datasets_with_local_raw": 11,
+    "raw_total_size_bytes": 34020244538,
+    "raw_total_size_gb": 31.6838,
     "source_group_counts": {
-      "upv_ehu": 6,
+      "upv_ehu": 7,
       "borsoi_mua": 3,
       "micasense": 3,
       "usgs_splib07": 2,
@@ -37,7 +37,7 @@
       "family_id": "unlabeled-spectral-image",
       "family_title": "Spectral images without reliable labels",
       "cataloged_count": 7,
-      "local_raw_count": 2
+      "local_raw_count": 3
     }
   ],
   "theme_groups": [
@@ -736,14 +736,27 @@
       "checksum_status": "not-recorded",
       "raw_asset_policy": "Commit only compact previews, topic summaries, and method metadata.",
       "last_verified": "2026-04-30",
-      "local_raw_available": false,
-      "raw_dataset_ids": [],
-      "raw_file_count": 0,
-      "raw_total_size_bytes": 0,
-      "raw_total_size_gb": 0.0,
-      "sha256_complete": false,
-      "raw_files": [],
-      "ready_for_local_validation": false
+      "local_raw_available": true,
+      "raw_dataset_ids": [
+        "cuprite-aviris-reflectance"
+      ],
+      "raw_file_count": 1,
+      "raw_total_size_bytes": 95320136,
+      "raw_total_size_gb": 0.0888,
+      "sha256_complete": true,
+      "raw_files": [
+        {
+          "raw_dataset_id": "cuprite-aviris-reflectance",
+          "source_group": "upv_ehu",
+          "source": "UPV/EHU Hyperspectral Remote Sensing Scenes",
+          "name": "Cuprite_f970619t01p02_r02_sc03.a.rfl.mat",
+          "kind": "reflectance_cube",
+          "url": "https://www.ehu.eus/ccwintco/uploads/7/7d/Cuprite_f970619t01p02_r02_sc03.a.rfl.mat",
+          "size_bytes": 95320136,
+          "sha256": "2c9fa8b09a7587e5ae9680ea0cb5763b214e9042c9950cdbadbdfeee6cff5086"
+        }
+      ],
+      "ready_for_local_validation": true
     },
     {
       "id": "unmixing-roi-suite",
@@ -1381,15 +1394,15 @@
         "sample_ids_candidate",
         "hierarchical_regions_candidate"
       ],
-      "label_scope": "sample ids and response targets are locally visible across GEOMET, MINERAL1, MINERAL2, and GEOCHEM metadata, with supervised subset benchmarks already running",
-      "measurement_scope": "geometallurgical, mineralogical, and geochemical responses are locally verified across four subsets; repeated-measurement support now exists for GEOCHEM",
-      "supervision_caveat": "This is now a real local multi-subset source, but no product claim is acceptable until wavelength handling, broader splits, richer documents, metrics, and model cards exist.",
+      "label_scope": "sample ids and response targets are locally visible across GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY metadata, with supervised subset benchmarks already running",
+      "measurement_scope": "geometallurgical, mineralogical, and geochemical responses are locally verified across five subsets; repeated-measurement support now exists for GEOCHEM and PORPHYRY",
+      "supervision_caveat": "This is now a real local multi-subset source, but no product claim is acceptable until bad-band handling, broader splits, richer documents, metrics, and model cards exist.",
       "acquisition_status": "local-raw-subset",
       "access": "public Figshare collection API and direct download URLs",
       "direct_download": true,
       "license_note": "The article is CC BY 4.0 and the current Figshare subset metadata reports CC0; keep full ZIPs local and publish only compact derived metadata or explicitly approved exports.",
       "checksum_status": "upstream-md5-and-local-sha256",
-      "raw_asset_policy": "Keep ZIPs local; version only manifests, compact derived metadata, and patch-region summaries. GEOMET, MINERAL1, MINERAL2, and GEOCHEM are the current downloaded subsets.",
+      "raw_asset_policy": "Keep ZIPs local; version only manifests, compact derived metadata, wavelength-aware summaries, and patch-region exports. GEOMET, MINERAL1, MINERAL2, GEOCHEM, and PORPHYRY are the current downloaded subsets.",
       "last_verified": "2026-05-01",
       "local_raw_available": true,
       "raw_dataset_ids": [
