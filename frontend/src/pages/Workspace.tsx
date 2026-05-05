@@ -8,6 +8,7 @@ import { PageShell } from "@/components/PageShell";
 import { ClassDistributionBar } from "@/components/plots/ClassDistributionBar";
 import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
+import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily } from "@/state/useSelectionStore";
@@ -398,7 +399,7 @@ function RepresentationPickerStep({
   );
 }
 
-type ExploreTab = "raw" | "topics";
+type ExploreTab = "raw" | "topics" | "topiclabel";
 
 function ExploreStep({
   subsetId,
@@ -422,6 +423,12 @@ function ExploreStep({
     queryKey: ["topic-views", subsetId],
     queryFn: () => api.topicViews(subsetId!),
     enabled: isLabelled && tab === "topics",
+  });
+
+  const topicToData = useQuery({
+    queryKey: ["topic-to-data", subsetId],
+    queryFn: () => api.topicToData(subsetId!),
+    enabled: isLabelled && tab === "topiclabel",
   });
 
   return (
@@ -501,6 +508,7 @@ function ExploreStep({
               [
                 { id: "raw", label: "Cruda · clases" },
                 { id: "topics", label: "Tópicos · LDAvis" },
+                { id: "topiclabel", label: "Tópico vs etiqueta" },
               ] as { id: ExploreTab; label: string }[]
             ).map((opt) => {
               const isActive = tab === opt.id;
@@ -543,6 +551,13 @@ function ExploreStep({
               isLoading={topicViews.isLoading}
               error={topicViews.error as Error | null}
               data={topicViews.data ?? null}
+            />
+          )}
+          {tab === "topiclabel" && (
+            <TopicLabelTab
+              isLoading={topicToData.isLoading}
+              error={topicToData.error as Error | null}
+              data={topicToData.data ?? null}
             />
           )}
         </>
@@ -922,6 +937,258 @@ function SceneStats({
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function TopicLabelTab({
+  isLoading,
+  error,
+  data,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  data: import("@/api/client").TopicToData | null;
+}) {
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+
+  if (isLoading)
+    return <p style={{ color: "var(--color-fg-faint)" }}>Cargando matriz tópico–etiqueta…</p>;
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          No se pudo cargar topic_to_data.
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!data) return null;
+
+  const matrix = data.p_label_given_topic_dominant;
+
+  return (
+    <div className="space-y-6">
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          P(etiqueta | tópico) · asignación dominante
+        </h4>
+        <p
+          className="text-sm mb-4"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Cada fila es un tópico; las celdas son la fracción de píxeles
+          asignados al tópico (por θ dominante) que tienen cada
+          etiqueta. La celda con borde es la dominante por fila.
+          Click en una fila para resaltarla y ver el detalle abajo.
+        </p>
+        <div className="overflow-x-auto">
+          <TopicLabelHeatmap
+            matrix={matrix}
+            selectedTopic={selectedTopic}
+            onSelectTopic={(k) =>
+              setSelectedTopic(k === selectedTopic ? null : k)
+            }
+          />
+        </div>
+      </div>
+
+      <div
+        className="grid lg:grid-cols-2 gap-5"
+        style={{ color: "var(--color-fg-subtle)" }}
+      >
+        <div
+          className="rounded-lg border p-5"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <h4
+            className="text-base font-semibold mb-2"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Documentos por tópico (asignación dominante)
+          </h4>
+          <p
+            className="text-[12.5px] mb-3"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Cuántos píxeles cae a cada tópico cuando aplicamos arg-max
+            sobre θ. La barra muestra el conteo absoluto.
+          </p>
+          <DocsPerTopicBar
+            counts={data.docs_per_topic_dominant}
+            selected={selectedTopic}
+            onSelect={(k) =>
+              setSelectedTopic(k === selectedTopic ? null : k)
+            }
+          />
+        </div>
+        <div
+          className="rounded-lg border p-5"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <h4
+            className="text-base font-semibold mb-2"
+            style={{ color: "var(--color-fg)" }}
+          >
+            KL(P(label | tópico) ‖ P(label))
+          </h4>
+          <p
+            className="text-[12.5px] mb-3"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Divergencia KL de la distribución de etiquetas dado el tópico
+            contra el prior global. Tópicos con alta KL son
+            informativos sobre la etiqueta; con KL ≈ 0 son inespecíficos.
+          </p>
+          <DocsPerTopicBar
+            counts={data.kl_to_label_prior_per_topic}
+            selected={selectedTopic}
+            onSelect={(k) =>
+              setSelectedTopic(k === selectedTopic ? null : k)
+            }
+            isFloat
+          />
+        </div>
+      </div>
+
+      {selectedTopic !== null && matrix[selectedTopic] && (
+        <div
+          className="rounded-lg border p-5"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <h4
+            className="text-base font-semibold mb-2"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Detalle del tópico {selectedTopic + 1}
+          </h4>
+          <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[13px]">
+            {[...matrix[selectedTopic]!]
+              .sort((a, b) => b.p - a.p)
+              .map((c) => (
+                <li
+                  key={c.label_id}
+                  className="flex items-center gap-2"
+                  style={{ color: "var(--color-fg-subtle)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="inline-block w-3 h-3 rounded-sm shrink-0"
+                    style={{ backgroundColor: c.color }}
+                  />
+                  <span className="flex-1 truncate">{c.name}</span>
+                  <span
+                    className="font-mono"
+                    style={{ color: "var(--color-fg)" }}
+                  >
+                    {(c.p * 100).toFixed(1)}%
+                  </span>
+                  <span
+                    className="font-mono text-[12px]"
+                    style={{ color: "var(--color-fg-faint)" }}
+                  >
+                    ({c.count})
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DocsPerTopicBar({
+  counts,
+  selected,
+  onSelect,
+  isFloat = false,
+}: {
+  counts: number[];
+  selected: number | null;
+  onSelect: (k: number) => void;
+  isFloat?: boolean;
+}) {
+  const max = Math.max(...counts, 1);
+  return (
+    <div className="space-y-1.5">
+      {counts.map((c, k) => {
+        const pct = (c / max) * 100;
+        const isSel = selected === k;
+        const color = TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+        return (
+          <button
+            key={k}
+            type="button"
+            onClick={() => onSelect(k)}
+            className="w-full flex items-center gap-2 text-left"
+            style={{ cursor: "pointer" }}
+          >
+            <span
+              className="text-[11.5px] font-mono shrink-0 w-16"
+              style={{
+                color: isSel ? "var(--color-accent)" : "var(--color-fg-subtle)",
+                fontWeight: isSel ? 600 : 400,
+              }}
+            >
+              tópico {k + 1}
+            </span>
+            <span
+              className="flex-1 h-4 rounded-sm relative overflow-hidden"
+              style={{ backgroundColor: "var(--color-bg)" }}
+            >
+              <span
+                className="absolute inset-y-0 left-0 rounded-sm"
+                style={{
+                  width: `${pct}%`,
+                  backgroundColor: color,
+                  opacity: isSel ? 0.95 : 0.65,
+                }}
+              />
+            </span>
+            <span
+              className="text-[11.5px] font-mono shrink-0 w-16 text-right"
+              style={{ color: "var(--color-fg-subtle)" }}
+            >
+              {isFloat ? c.toFixed(2) : c.toLocaleString()}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }

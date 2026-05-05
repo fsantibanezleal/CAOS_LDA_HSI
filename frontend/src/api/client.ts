@@ -214,6 +214,29 @@ export type TopicViews = {
   top_words_per_topic: Record<string, TopWord[][]>;
 };
 
+export type LabelCell = {
+  label_id: number;
+  name: string;
+  color: string;
+  count: number;
+  p: number;
+};
+
+export type TopicToData = {
+  scene_id: string;
+  topic_count: number;
+  document_count: number;
+  spatial_shape: [number, number];
+  p_label_given_topic_dominant: LabelCell[][];
+  p_label_given_topic_strict_theta_gt_0_5: LabelCell[][];
+  docs_per_topic_dominant: number[];
+  docs_per_topic_strict: number[];
+  kl_to_label_prior_per_topic: number[];
+  theta_embedding_pca_2d: [number, number][];
+  theta_embedding_pca_3d: [number, number, number][];
+  theta_embedding_explained_variance: number[];
+};
+
 export const api = {
   health: () => request<{ status: string }>("/api/healthz"),
   appData: () => request<unknown>("/api/app-data"),
@@ -224,5 +247,7 @@ export const api = {
     request<ScenePerScene>(`/api/eda/per-scene/${encodeURIComponent(sceneId)}`),
   topicViews: (sceneId: string) =>
     request<TopicViews>(`/api/topic-views/${encodeURIComponent(sceneId)}`),
+  topicToData: (sceneId: string) =>
+    request<TopicToData>(`/api/topic-to-data/${encodeURIComponent(sceneId)}`),
   buffer: (path: string) => requestBuffer(path),
 };
