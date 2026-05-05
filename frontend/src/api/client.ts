@@ -249,5 +249,36 @@ export const api = {
     request<TopicViews>(`/api/topic-views/${encodeURIComponent(sceneId)}`),
   topicToData: (sceneId: string) =>
     request<TopicToData>(`/api/topic-to-data/${encodeURIComponent(sceneId)}`),
+  topicRoutedClassifier: (sceneId: string) =>
+    request<TopicRoutedClassifier>(
+      `/api/topic-routed-classifier/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type RoutedFoldMetric = {
+  per_fold: number[];
+  mean: number;
+  std: number;
+  ci95_lo: number;
+  ci95_hi: number;
+};
+
+export type RoutedMethodMetrics = {
+  macro_f1: RoutedFoldMetric;
+  accuracy: RoutedFoldMetric;
+  balanced_accuracy?: RoutedFoldMetric;
+};
+
+export type TopicRoutedClassifier = {
+  scene_id: string;
+  K: number;
+  n_classes: number;
+  n_documents: number;
+  method_metrics: Record<string, RoutedMethodMetrics>;
+  ranking_by_macro_f1_mean: {
+    method: string;
+    macro_f1_mean: number;
+    macro_f1_ci95: [number, number];
+  }[];
 };
