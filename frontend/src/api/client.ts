@@ -282,7 +282,34 @@ export const api = {
     request<TopicStability>(
       `/api/topic-stability/${encodeURIComponent(sceneId)}`,
     ),
+  topicToUsgsV7: (sceneId: string) =>
+    request<TopicToUsgsV7>(
+      `/api/topic-to-usgs-v7/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type UsgsMatch = {
+  rank: number;
+  name: string;
+  chapter: string;
+  filename: string;
+  cosine: number;
+  sam_radians: number;
+};
+
+export type TopicToUsgsV7 = {
+  scene_id: string;
+  topic_count: number;
+  library_subset: string;
+  library_sample_count: number;
+  library_chapter_counts: Record<string, number>;
+  top_n_per_topic: UsgsMatch[][];
+  chapter_histogram_top50_per_topic: Record<string, number>[];
+  best_match_per_chapter_per_topic: Record<
+    string,
+    { name: string; filename: string; cosine: number; sam_radians: number }
+  >[];
 };
 
 export type TopicStability = {
