@@ -107,10 +107,61 @@ export type DatasetInventory = {
   datasets: DatasetEntry[];
 };
 
+export type MetricStats = {
+  mean: number;
+  std: number;
+  median: number;
+  ci95_lo: number;
+  ci95_hi: number;
+  min: number;
+  max: number;
+  values: number[];
+};
+
+export type MethodSummary = {
+  n_evaluations: number;
+  accuracy: MetricStats;
+  balanced_accuracy: MetricStats;
+  macro_f1: MetricStats;
+};
+
+export type PairedComparison = {
+  a: string;
+  b: string;
+  delta_mean: number;
+  delta_std: number;
+  delta_min: number;
+  delta_max: number;
+};
+
+export type SceneMethodStats = {
+  dataset_id: string;
+  dataset_name: string;
+  family_id: string;
+  scene_summary: {
+    cube_shape: number[];
+    sampled_documents: number;
+    class_count: number;
+    topic_count: number;
+    pca_components: number;
+  };
+  methods: Record<string, MethodSummary>;
+  paired_comparisons: PairedComparison[][];
+};
+
+export type MethodStatistics = {
+  source: string;
+  generated_at: string;
+  method_definitions: Record<string, string>;
+  alpha_significance: number;
+  labeled_scenes: SceneMethodStats[];
+};
+
 export const api = {
   health: () => request<{ status: string }>("/api/healthz"),
   appData: () => request<unknown>("/api/app-data"),
   manifest: () => request<unknown>("/api/manifest"),
   inventory: () => request<DatasetInventory>("/api/local-dataset-inventory"),
+  methodStatistics: () => request<MethodStatistics>("/api/method-statistics"),
   buffer: (path: string) => requestBuffer(path),
 };
