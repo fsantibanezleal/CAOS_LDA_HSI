@@ -1,13 +1,16 @@
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
 
 import {
   api,
+  type HidsagMethodStatistics,
   type MethodStatistics,
   type SceneMethodStats,
 } from "@/api/client";
 import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
+
+const HIDSAG_SUBSETS = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"];
 
 const METHOD_LABEL: Record<string, string> = {
   raw_logistic_regression: "raw_logistic",
@@ -110,9 +113,221 @@ export default function Benchmarks() {
               ))}
             </dl>
           </Section>
+
+          <HidsagBenchmarks />
         </>
       )}
     </PageShell>
+  );
+}
+
+function HidsagBenchmarks() {
+  const queries = useQueries({
+    queries: HIDSAG_SUBSETS.map((code) => ({
+      queryKey: ["hidsag-method", code],
+      queryFn: () => api.hidsagMethodStatistics(code),
+      retry: false,
+    })),
+  });
+
+  const loading = queries.some((q) => q.isLoading);
+  const successes = queries
+    .map((q, i) => ({ data: q.data, code: HIDSAG_SUBSETS[i]! }))
+    .filter((x): x is { data: HidsagMethodStatistics; code: string } =>
+      x.data !== undefined,
+    );
+
+  return (
+    <Section
+      id="hidsag"
+      title="HIDSAG — regresión sobre mediciones"
+      lead="Cinco subsets HIDSAG con targets continuos (Cu %, Au g/t, mineralogía, geoquímica). Por cada uno se compara la familia routed contra raw_ridge, PLS y mezclas tópicas. La métrica primaria es R² medio sobre los targets numéricos del subset."
+    >
+      {loading && (
+        <p style={{ color: "var(--color-fg-faint)" }}>
+          Cargando rankings HIDSAG…
+        </p>
+      )}
+      <div className="space-y-6 mt-2">
+        {successes.map((s) => (
+          <HidsagSubsetCard key={s.code} stats={s.data} />
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
+  const block = stats.regression;
+  if (!block || !block.method_aggregates) {
+    return (
+      <div
+        className="rounded-md border p-4"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h3
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          {stats.subset_code}
+        </h3>
+        <p
+          className="text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Sin bloque de regresión disponible.
+        </p>
+      </div>
+    );
+  }
+  const entries = Object.entries(block.method_aggregates)
+    .map(([method, agg]) => {
+      const dist = agg.r2_distribution ?? agg.macro_f1_distribution;
+      return {
+        method,
+        n_targets: agg.n_targets,
+        mean: dist?.mean ?? null,
+        ci95_lo: dist?.ci95_lo ?? null,
+        ci95_hi: dist?.ci95_hi ?? null,
+      };
+    })
+    .filter((e): e is typeof e & { mean: number } => e.mean !== null)
+    .sort((a, b) => b.mean - a.mean);
+
+  if (entries.length === 0) return null;
+
+  const w = 720;
+  const labelW = 220;
+  const plotW = w - labelW - 40;
+  const rowH = 30;
+  const h = entries.length * rowH + 60;
+  const xLo = Math.min(...entries.map((e) => e.ci95_lo ?? e.mean), 0) - 0.05;
+  const xHi = Math.max(...entries.map((e) => e.ci95_hi ?? e.mean), 1) + 0.05;
+  const xScale = (v: number) =>
+    labelW + ((v - xLo) / (xHi - xLo)) * plotW;
+  const ticks = Array.from({ length: 5 }, (_, i) => xLo + ((xHi - xLo) * i) / 4);
+
+  return (
+    <div
+      className="rounded-md border p-4"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <header className="mb-3 flex items-baseline justify-between gap-3">
+        <h3
+          className="text-base font-semibold"
+          style={{ color: "var(--color-fg)" }}
+        >
+          {stats.subset_code}
+        </h3>
+        <span
+          className="text-xs font-mono"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          n_samples={stats.sample_count} · n_targets={block.n_targets} ·{" "}
+          {block.primary_metric}
+        </span>
+      </header>
+      <svg
+        width="100%"
+        viewBox={`0 0 ${w} ${h}`}
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label={`HIDSAG ${stats.subset_code} forest`}
+        style={{ color: "var(--color-fg)" }}
+      >
+        <g
+          fontFamily="ui-sans-serif, system-ui, sans-serif"
+          fontSize="11"
+          fill="currentColor"
+        >
+          <line
+            x1={labelW}
+            y1={h - 30}
+            x2={labelW + plotW}
+            y2={h - 30}
+            stroke="currentColor"
+            opacity="0.4"
+          />
+          {ticks.map((t) => (
+            <g key={t}>
+              <line
+                x1={xScale(t)}
+                y1={h - 33}
+                x2={xScale(t)}
+                y2={h - 27}
+                stroke="currentColor"
+                opacity="0.4"
+              />
+              <text
+                x={xScale(t)}
+                y={h - 12}
+                textAnchor="middle"
+                opacity="0.65"
+                fontSize="10"
+              >
+                {t.toFixed(2)}
+              </text>
+            </g>
+          ))}
+          {entries.map((e, i) => {
+            const yMid = i * rowH + 18;
+            const isRouted = e.method.includes("routed");
+            const color = isRouted ? "#22c55e" : "#0ea5e9";
+            return (
+              <g key={e.method}>
+                <text
+                  x={labelW - 8}
+                  y={yMid + 4}
+                  textAnchor="end"
+                  fontFamily="ui-monospace, monospace"
+                  fontSize="10.5"
+                  fontWeight={isRouted ? 700 : 400}
+                >
+                  {e.method}
+                </text>
+                {e.ci95_lo !== null && e.ci95_hi !== null && (
+                  <line
+                    x1={xScale(e.ci95_lo)}
+                    y1={yMid}
+                    x2={xScale(e.ci95_hi)}
+                    y2={yMid}
+                    stroke={color}
+                    strokeWidth="2"
+                    opacity="0.85"
+                  />
+                )}
+                <circle
+                  cx={xScale(e.mean)}
+                  cy={yMid}
+                  r="4"
+                  fill={color}
+                  stroke="var(--color-bg)"
+                  strokeWidth="1"
+                />
+                <text
+                  x={
+                    xScale(e.ci95_hi !== null ? e.ci95_hi : e.mean) + 6
+                  }
+                  y={yMid + 4}
+                  fontSize="10.5"
+                  opacity="0.85"
+                >
+                  {e.mean.toFixed(3)}
+                </text>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    </div>
   );
 }
 

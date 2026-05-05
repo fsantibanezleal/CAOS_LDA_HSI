@@ -253,7 +253,45 @@ export const api = {
     request<TopicRoutedClassifier>(
       `/api/topic-routed-classifier/${encodeURIComponent(sceneId)}`,
     ),
+  hidsagMethodStatistics: (subsetCode: string) =>
+    request<HidsagMethodStatistics>(
+      `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type HidsagDistribution = {
+  mean: number | null;
+  std: number | null;
+  ci95_lo: number | null;
+  ci95_hi: number | null;
+  median: number | null;
+  min: number | null;
+  max: number | null;
+};
+
+export type HidsagMethodAggregate = {
+  n_targets: number;
+  r2_distribution?: HidsagDistribution;
+  macro_f1_distribution?: HidsagDistribution;
+};
+
+export type HidsagBlock = {
+  primary_metric: string;
+  n_targets: number;
+  n_targets_complete?: number;
+  target_names: string[];
+  method_aggregates: Record<string, HidsagMethodAggregate>;
+  ranking?: { method: string; mean: number; rank: number }[];
+};
+
+export type HidsagMethodStatistics = {
+  subset_code: string;
+  dataset_id: string;
+  sample_count: number;
+  measurement_count_total: number;
+  regression: HidsagBlock | null;
+  classification: HidsagBlock | null;
 };
 
 export type RoutedFoldMetric = {
