@@ -5,9 +5,20 @@ import { useQuery } from "@tanstack/react-query";
 
 import { api, type DatasetEntry } from "@/api/client";
 import { PageShell } from "@/components/PageShell";
+import { ClassDistributionBar } from "@/components/plots/ClassDistributionBar";
+import { SpectralByClass } from "@/components/plots/SpectralByClass";
 import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily } from "@/state/useSelectionStore";
 import { cn } from "@/lib/cn";
+
+const LABELLED_SCENES = new Set([
+  "indian-pines-corrected",
+  "salinas-corrected",
+  "salinas-a-corrected",
+  "pavia-university",
+  "kennedy-space-center",
+  "botswana",
+]);
 
 const FAMILY_DESCRIPTIONS: Record<string, string> = {
   "labeled-spectral-image":
@@ -110,9 +121,9 @@ export default function Workspace() {
         )}
 
         {String(state.value).startsWith("explore") && (
-          <PendingStep
-            label="Explorar"
-            description="Aquí verás los gráficos espectrales (cientos a miles de espectros), el mapa raster con click-to-inspect, t-SNE 2D y 3D, distribuciones tópico-vs-etiqueta, y la firma φ_k por tópico. Todo precalculado del lado del pipeline. Se construye en sucesivas entregas."
+          <ExploreStep
+            subsetId={state.context.subset}
+            rep={state.context.rep}
             onBack={() => send({ type: "BACK" })}
           />
         )}
@@ -121,46 +132,6 @@ export default function Workspace() {
   );
 }
 
-function PendingStep({
-  label,
-  description,
-  onBack,
-}: {
-  label: string;
-  description: string;
-  onBack: () => void;
-}) {
-  return (
-    <div
-      className="rounded-lg border p-6"
-      style={{
-        borderColor: "var(--color-border)",
-        backgroundColor: "var(--color-panel)",
-        boxShadow: "var(--color-shadow)",
-      }}
-    >
-      <h3
-        className="text-base font-semibold mb-2"
-        style={{ color: "var(--color-fg)" }}
-      >
-        {label}
-      </h3>
-      <p style={{ color: "var(--color-fg-subtle)" }}>{description}</p>
-      <button
-        type="button"
-        onClick={onBack}
-        className="mt-4 rounded-md px-3 py-1.5 text-sm border"
-        style={{
-          borderColor: "var(--color-border)",
-          color: "var(--color-fg)",
-          backgroundColor: "transparent",
-        }}
-      >
-        ← Volver al paso anterior
-      </button>
-    </div>
-  );
-}
 
 function SubsetPickerStep({
   family,
@@ -422,6 +393,234 @@ function RepresentationPickerStep({
         ))}
       </div>
     </section>
+  );
+}
+
+function ExploreStep({
+  subsetId,
+  rep,
+  onBack,
+}: {
+  subsetId: string | null;
+  rep: string | null;
+  onBack: () => void;
+}) {
+  const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
+
+  const eda = useQuery({
+    queryKey: ["eda", subsetId],
+    queryFn: () => api.edaPerScene(subsetId!),
+    enabled: isLabelled,
+  });
+
+  return (
+    <section>
+      <header className="flex items-baseline justify-between mb-4 gap-3">
+        <div>
+          <h3
+            className="text-lg font-semibold"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Explorar{" "}
+            <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
+            {rep && (
+              <span
+                className="ml-2 text-sm font-normal"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                · representación: {rep}
+              </span>
+            )}
+          </h3>
+          <p
+            className="text-sm mt-1"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Vista cruda EDA — distribución de clases + envolventes
+            espectrales p25-p75 con mediana por clase. Próximos paneles
+            (raster con click-to-inspect, t-SNE 2D/3D, intertopic LDAvis,
+            heatmap tópico-vs-etiqueta, apply-to-doc) se irán incorporando.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-md px-3 py-1.5 text-sm border"
+          style={{
+            borderColor: "var(--color-border)",
+            color: "var(--color-fg)",
+            backgroundColor: "transparent",
+          }}
+        >
+          ← Cambiar de representación
+        </button>
+      </header>
+
+      {!isLabelled && (
+        <div
+          className="rounded-lg border p-6"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <p style={{ color: "var(--color-fg-subtle)" }}>
+            Esta vista cruda actualmente sólo está implementada para las 6
+            escenas etiquetadas (Indian Pines, Salinas, Salinas-A, Pavia U,
+            KSC, Botswana). Para HIDSAG / unmixing / individual-spectra los
+            paneles equivalentes (medición por estrato, abundancias por
+            endmember, espectros por material) se construyen en próximas
+            entregas.
+          </p>
+        </div>
+      )}
+
+      {isLabelled && eda.isLoading && (
+        <p style={{ color: "var(--color-fg-faint)" }}>Cargando EDA…</p>
+      )}
+
+      {isLabelled && eda.error && (
+        <div
+          className="rounded-lg border p-6"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <p style={{ color: "var(--color-warn)" }}>No se pudo cargar EDA.</p>
+          <p
+            className="mt-2 text-sm"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            {eda.error instanceof Error ? eda.error.message : String(eda.error)}
+          </p>
+        </div>
+      )}
+
+      {isLabelled && eda.data && (
+        <div className="space-y-8">
+          <SceneStats data={eda.data} />
+
+          <div
+            className="rounded-lg border p-5"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "var(--color-panel)",
+              boxShadow: "var(--color-shadow)",
+            }}
+          >
+            <h4
+              className="text-base font-semibold mb-3"
+              style={{ color: "var(--color-fg)" }}
+            >
+              Distribución de clases
+            </h4>
+            <ClassDistributionBar classes={eda.data.class_distribution} />
+          </div>
+
+          <div
+            className="rounded-lg border p-5"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "var(--color-panel)",
+              boxShadow: "var(--color-shadow)",
+            }}
+          >
+            <h4
+              className="text-base font-semibold mb-2"
+              style={{ color: "var(--color-fg)" }}
+            >
+              Envolventes espectrales por clase
+            </h4>
+            <p
+              className="text-sm mb-3"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              La sombra es el rango p25–p75; la línea es la mediana. Click
+              en una clase para aislarla, click de nuevo para volver a ver
+              todas.
+            </p>
+            <SpectralByClass
+              wavelengths={eda.data.wavelengths_nm}
+              classMeans={eda.data.class_mean_spectra}
+              classDistribution={eda.data.class_distribution}
+            />
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function SceneStats({
+  data,
+}: {
+  data: {
+    spatial_shape: [number, number];
+    n_pixels: number;
+    n_labelled_pixels: number;
+    n_classes: number;
+    imbalance_gini: number;
+    sensor: string;
+    wavelengths_nm: number[];
+  };
+}) {
+  const stats = [
+    {
+      label: "Sensor",
+      value: data.sensor,
+    },
+    {
+      label: "Forma",
+      value: `${data.spatial_shape[0]} × ${data.spatial_shape[1]}`,
+    },
+    {
+      label: "Bandas",
+      value: `${data.wavelengths_nm.length} (${Math.round(
+        data.wavelengths_nm[0]!,
+      )}–${Math.round(data.wavelengths_nm.at(-1)!)} nm)`,
+    },
+    {
+      label: "Píxeles etiquetados",
+      value: `${data.n_labelled_pixels.toLocaleString()} / ${data.n_pixels.toLocaleString()}`,
+    },
+    {
+      label: "Clases",
+      value: String(data.n_classes),
+    },
+    {
+      label: "Gini desbalance",
+      value: data.imbalance_gini.toFixed(3),
+    },
+  ];
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      {stats.map((s) => (
+        <div
+          key={s.label}
+          className="rounded-md border p-3"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+          }}
+        >
+          <div
+            className="text-[11px] uppercase tracking-wider"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            {s.label}
+          </div>
+          <div
+            className="mt-0.5 text-base font-semibold tracking-tight"
+            style={{ color: "var(--color-fg)" }}
+          >
+            {s.value}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 

@@ -157,11 +157,46 @@ export type MethodStatistics = {
   labeled_scenes: SceneMethodStats[];
 };
 
+export type ClassEntry = {
+  label_id: number;
+  name: string;
+  count: number;
+  rel_freq: number;
+  color: string;
+};
+
+export type ClassMeanSpectrum = {
+  mean: number[];
+  std: number[];
+  p5: number[];
+  p25: number[];
+  p50: number[];
+  p75: number[];
+  p95: number[];
+};
+
+export type ScenePerScene = {
+  scene_id: string;
+  scene_name: string;
+  sensor: string;
+  family_id: string;
+  spatial_shape: [number, number];
+  n_pixels: number;
+  n_labelled_pixels: number;
+  n_classes: number;
+  imbalance_gini: number;
+  wavelengths_nm: number[];
+  class_distribution: ClassEntry[];
+  class_mean_spectra: Record<string, ClassMeanSpectrum>;
+};
+
 export const api = {
   health: () => request<{ status: string }>("/api/healthz"),
   appData: () => request<unknown>("/api/app-data"),
   manifest: () => request<unknown>("/api/manifest"),
   inventory: () => request<DatasetInventory>("/api/local-dataset-inventory"),
   methodStatistics: () => request<MethodStatistics>("/api/method-statistics"),
+  edaPerScene: (sceneId: string) =>
+    request<ScenePerScene>(`/api/eda/per-scene/${encodeURIComponent(sceneId)}`),
   buffer: (path: string) => requestBuffer(path),
 };
