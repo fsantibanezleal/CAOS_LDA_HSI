@@ -270,11 +270,44 @@ export const api = {
     request<HidsagMethodStatistics>(
       `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
     ),
+  hidsagPreprocessingSensitivity: () =>
+    request<HidsagPreprocessingSensitivity>(
+      `/api/hidsag-preprocessing-sensitivity`,
+    ),
   spectralBrowserMeta: (sceneId: string) =>
     request<SpectralBrowserMeta>(
       `/api/spectral-browser/${encodeURIComponent(sceneId)}`,
     ),
   buffer: (path: string) => requestBuffer(path),
+};
+
+export type HidsagPreprocessingSubset = {
+  subset_code: string;
+  sample_count: number;
+  measurement_count_total: number;
+  classification_policy_ranking: {
+    policy_id: string;
+    best_model: string;
+    best_balanced_accuracy: number;
+  }[];
+  regression_policy_ranking: {
+    policy_id: string;
+    best_model: string;
+    best_r2: number;
+  }[];
+};
+
+export type HidsagPreprocessingSensitivity = {
+  source?: string;
+  generated_at?: string;
+  methods?: {
+    policies?: {
+      policy_id: string;
+      policy_name: string;
+      description: string;
+    }[];
+  };
+  subsets: HidsagPreprocessingSubset[];
 };
 
 export type SpectralBrowserRow = {
