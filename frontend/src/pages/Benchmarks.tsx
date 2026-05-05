@@ -117,9 +117,176 @@ export default function Benchmarks() {
 
           <HidsagBenchmarks />
           <HidsagPreprocessing />
+          <HidsagCrossPreprocessingStability />
         </>
       )}
     </PageShell>
+  );
+}
+
+function HidsagCrossPreprocessingStability() {
+  const subsets = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"];
+  const queries = useQueries({
+    queries: subsets.map((code) => ({
+      queryKey: ["hidsag-cross-preprocessing-stability", code],
+      queryFn: () => api.hidsagCrossPreprocessingStability(code),
+      retry: false,
+    })),
+  });
+
+  const successes = queries
+    .map((q, i) => ({ data: q.data, code: subsets[i]! }))
+    .filter((x) => x.data !== undefined);
+
+  return (
+    <Section
+      id="hidsag-cross-preproc-stability"
+      title="HIDSAG — estabilidad cross-preprocessing (B-6 follow-up)"
+      lead="Cuán estables son los tópicos del LDA cuando cambia la receta de pre-procesamiento. Reportado como Hungarian-matched top-15 token Jaccard entre las 4 políticas (raw / heuristic-band-mask / SNV / SavGol+SNV). Bajo = los tópicos cambian sustancialmente entre recetas; alto = los tópicos sobreviven."
+    >
+      <div className="space-y-4 mt-2">
+        {successes.map((s) => (
+          <div
+            key={s.code}
+            className="rounded-md border p-4"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "var(--color-panel)",
+              boxShadow: "var(--color-shadow)",
+            }}
+          >
+            <header className="flex items-baseline justify-between mb-2 gap-3">
+              <h3
+                className="text-base font-semibold"
+                style={{ color: "var(--color-fg)" }}
+              >
+                {s.code}
+              </h3>
+              <span
+                className="text-xs font-mono"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                K={s.data!.topic_count} · {s.data!.policies.length} políticas ·{" "}
+                off-diag mean ={" "}
+                <span
+                  style={{
+                    color:
+                      s.data!.off_diagonal_summary.off_diagonal_mean > 0.5
+                        ? "var(--color-success)"
+                        : s.data!.off_diagonal_summary.off_diagonal_mean > 0.25
+                          ? "var(--color-accent)"
+                          : "var(--color-warn)",
+                    fontWeight: 600,
+                  }}
+                >
+                  {s.data!.off_diagonal_summary.off_diagonal_mean.toFixed(3)}
+                </span>
+              </span>
+            </header>
+            <CrossPreprocessingMatrix data={s.data!} />
+          </div>
+        ))}
+      </div>
+      <p
+        className="mt-3 text-[12px]"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Métrica: top-15 token Jaccard con asignación Hungarian. Cada celda de
+        las matrices N×N es la stability media por tópico entre políticas i, j.
+      </p>
+    </Section>
+  );
+}
+
+function CrossPreprocessingMatrix({
+  data,
+}: {
+  data: import("@/api/client").HidsagCrossPreprocessingStability;
+}) {
+  const policies = data.policies;
+  const matrix = data.pairwise_matched_jaccard_top15_mean_matrix;
+  const n = policies.length;
+  const cellW = 64;
+  const labelW = 200;
+  const headerH = 32;
+  const w = labelW + cellW * n + 16;
+  const h = headerH + cellW * n + 12;
+
+  return (
+    <svg
+      width="100%"
+      viewBox={`0 0 ${w} ${h}`}
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label={`Cross-preprocessing matrix for ${data.subset_code}`}
+      style={{ color: "var(--color-fg)" }}
+    >
+      <g
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        fontSize="11"
+        fill="currentColor"
+      >
+        {policies.map((p, j) => (
+          <text
+            key={`h-${j}`}
+            x={labelW + j * cellW + cellW / 2}
+            y={headerH - 6}
+            textAnchor="end"
+            transform={`rotate(-30, ${labelW + j * cellW + cellW / 2}, ${headerH - 6})`}
+            fontFamily="ui-monospace, monospace"
+            fontSize="10"
+            opacity="0.85"
+          >
+            {p.length > 18 ? `${p.slice(0, 17)}…` : p}
+          </text>
+        ))}
+        {matrix.map((row, i) => (
+          <g key={`r-${i}`}>
+            <text
+              x={labelW - 6}
+              y={headerH + i * cellW + cellW / 2 + 3}
+              textAnchor="end"
+              fontFamily="ui-monospace, monospace"
+              fontSize="10.5"
+              opacity="0.85"
+            >
+              {policies[i]!.length > 24 ? `${policies[i]!.slice(0, 23)}…` : policies[i]}
+            </text>
+            {row.map((v, j) => {
+              const x = labelW + j * cellW + 2;
+              const y = headerH + i * cellW + 2;
+              const cw = cellW - 4;
+              const ch = cellW - 4;
+              const isDiag = i === j;
+              return (
+                <g key={`c-${i}-${j}`}>
+                  <rect
+                    x={x}
+                    y={y}
+                    width={cw}
+                    height={ch}
+                    fill="var(--color-accent)"
+                    opacity={isDiag ? 0.05 : Math.max(0.06, v)}
+                  />
+                  {!isDiag && (
+                    <text
+                      x={x + cw / 2}
+                      y={y + ch / 2 + 4}
+                      textAnchor="middle"
+                      fontSize="11"
+                      fontWeight="500"
+                      fill={v > 0.5 ? "#fff" : "currentColor"}
+                    >
+                      {v.toFixed(2)}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        ))}
+      </g>
+    </svg>
   );
 }
 

@@ -274,6 +274,10 @@ export const api = {
     request<HidsagPreprocessingSensitivity>(
       `/api/hidsag-preprocessing-sensitivity`,
     ),
+  hidsagCrossPreprocessingStability: (subsetCode: string) =>
+    request<HidsagCrossPreprocessingStability>(
+      `/api/hidsag-cross-preprocessing-stability/${encodeURIComponent(subsetCode)}`,
+    ),
   spectralBrowserMeta: (sceneId: string) =>
     request<SpectralBrowserMeta>(
       `/api/spectral-browser/${encodeURIComponent(sceneId)}`,
@@ -395,6 +399,27 @@ export type HidsagPreprocessingSubset = {
     best_model: string;
     best_r2: number;
   }[];
+};
+
+export type HidsagCrossPreprocessingStability = {
+  subset_code: string;
+  topic_count: number;
+  policies: string[];
+  per_topic_jaccard_vs_policy0: {
+    policy_id: string;
+    matched_jaccard_top15_mean: number;
+    matched_jaccard_top15_min: number;
+    per_topic_matched_jaccard_top15: number[];
+  }[];
+  pairwise_matched_jaccard_top15_mean_matrix: number[][];
+  pairwise_matched_jaccard_top15_min_matrix: number[][];
+  off_diagonal_summary: {
+    off_diagonal_mean: number;
+    off_diagonal_min: number;
+    off_diagonal_std: number;
+    n_pairs: number;
+  };
+  methodology_note: string;
 };
 
 export type HidsagPreprocessingSensitivity = {

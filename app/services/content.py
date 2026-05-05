@@ -443,6 +443,12 @@ def get_topic_to_usgs_v7(scene_id: str) -> dict:
     return _load_or_404(get_settings().topic_to_usgs_v7_path(scene_id))
 
 
+def get_hidsag_cross_preprocessing_stability(subset_code: str) -> dict:
+    return _load_or_404(
+        get_settings().hidsag_cross_preprocessing_stability_path(subset_code)
+    )
+
+
 def get_topic_anomaly(scene_id: str) -> dict:
     return _load_or_404(get_settings().topic_anomaly_path(scene_id))
 
