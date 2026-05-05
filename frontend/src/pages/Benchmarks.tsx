@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   api,
   type HidsagMethodStatistics,
+  type HidsagPreprocessingSubset,
   type MethodStatistics,
   type SceneMethodStats,
 } from "@/api/client";
@@ -115,9 +116,220 @@ export default function Benchmarks() {
           </Section>
 
           <HidsagBenchmarks />
+          <HidsagPreprocessing />
         </>
       )}
     </PageShell>
+  );
+}
+
+function HidsagPreprocessing() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["hidsag-preprocessing-sensitivity"],
+    queryFn: api.hidsagPreprocessingSensitivity,
+    retry: false,
+  });
+
+  return (
+    <Section
+      id="hidsag-preprocessing"
+      title="HIDSAG — sensibilidad al pre-procesamiento espectral"
+      lead="Cuatro políticas de pre-procesamiento (raw / heuristic-bad-band-mask / SNV / Savitzky-Golay+SNV) sobre las 5 escenas HIDSAG. Mide cuánto cambia el desempeño downstream (clasificación + regresión) cuando varía la receta de limpieza espectral."
+    >
+      {isLoading && (
+        <p style={{ color: "var(--color-fg-faint)" }}>
+          Cargando sensibilidad de pre-procesamiento…
+        </p>
+      )}
+      {error && (
+        <div
+          className="rounded-lg border p-6 mt-2"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+          }}
+        >
+          <p style={{ color: "var(--color-warn)" }}>
+            No se pudo cargar /api/hidsag-preprocessing-sensitivity.
+          </p>
+          <p
+            className="mt-2 text-sm"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            {error instanceof Error ? error.message : String(error)}
+          </p>
+        </div>
+      )}
+      {data && (
+        <>
+          {data.methods?.policies && data.methods.policies.length > 0 && (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-2 mb-4">
+              {data.methods.policies.map((p) => (
+                <div
+                  key={p.policy_id}
+                  className="rounded-md border p-3 text-[12.5px] leading-relaxed"
+                  style={{
+                    borderColor: "var(--color-border)",
+                    backgroundColor: "var(--color-panel)",
+                    color: "var(--color-fg-subtle)",
+                  }}
+                >
+                  <div
+                    className="font-mono mb-1"
+                    style={{ color: "var(--color-accent)" }}
+                  >
+                    {p.policy_id}
+                  </div>
+                  <div
+                    className="font-semibold"
+                    style={{ color: "var(--color-fg)" }}
+                  >
+                    {p.policy_name}
+                  </div>
+                  <p className="mt-1">{p.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="space-y-6 mt-2">
+            {data.subsets.map((s) => (
+              <PreprocessingSubsetCard key={s.subset_code} subset={s} />
+            ))}
+          </div>
+        </>
+      )}
+    </Section>
+  );
+}
+
+function PreprocessingSubsetCard({
+  subset,
+}: {
+  subset: HidsagPreprocessingSubset;
+}) {
+  return (
+    <div
+      className="rounded-md border p-4"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <header className="mb-3 flex items-baseline justify-between gap-3">
+        <h3
+          className="text-base font-semibold"
+          style={{ color: "var(--color-fg)" }}
+        >
+          {subset.subset_code}
+        </h3>
+        <span
+          className="text-xs font-mono"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          n_samples={subset.sample_count} · n_meas={subset.measurement_count_total}
+        </span>
+      </header>
+      <div className="grid sm:grid-cols-2 gap-5">
+        <PolicyBars
+          title="Clasificación · balanced accuracy"
+          rows={subset.classification_policy_ranking.map((r) => ({
+            policy_id: r.policy_id,
+            best_model: r.best_model,
+            value: r.best_balanced_accuracy,
+          }))}
+          good="green"
+        />
+        <PolicyBars
+          title="Regresión · R²"
+          rows={subset.regression_policy_ranking.map((r) => ({
+            policy_id: r.policy_id,
+            best_model: r.best_model,
+            value: r.best_r2,
+          }))}
+          good="amber"
+        />
+      </div>
+    </div>
+  );
+}
+
+function PolicyBars({
+  title,
+  rows,
+  good,
+}: {
+  title: string;
+  rows: { policy_id: string; best_model: string; value: number }[];
+  good: "green" | "amber";
+}) {
+  const maxAbs = Math.max(...rows.map((r) => Math.abs(r.value)), 1e-6);
+  const headColor =
+    good === "green" ? "var(--color-success)" : "var(--color-accent)";
+  return (
+    <div>
+      <div
+        className="text-[11px] uppercase tracking-wider mb-2"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        {title}
+      </div>
+      <div className="space-y-1.5">
+        {rows.map((r, idx) => {
+          const isWinner = idx === 0;
+          const pct = (Math.abs(r.value) / maxAbs) * 100;
+          const isPositive = r.value >= 0;
+          return (
+            <div
+              key={r.policy_id}
+              className="flex items-center gap-2 text-[12.5px]"
+              style={{ color: "var(--color-fg-subtle)" }}
+            >
+              <span
+                className="shrink-0 w-44 font-mono text-[11px] truncate"
+                style={{
+                  color: isWinner ? headColor : "var(--color-fg-subtle)",
+                  fontWeight: isWinner ? 600 : 400,
+                }}
+                title={r.policy_id}
+              >
+                {r.policy_id}
+              </span>
+              <span
+                className="flex-1 h-4 rounded-sm relative overflow-hidden"
+                style={{ backgroundColor: "var(--color-bg)" }}
+              >
+                <span
+                  className="absolute inset-y-0 left-0 rounded-sm"
+                  style={{
+                    width: `${pct}%`,
+                    backgroundColor: isPositive
+                      ? isWinner
+                        ? headColor
+                        : "var(--color-accent)"
+                      : "var(--color-warn)",
+                    opacity: isWinner ? 0.95 : 0.65,
+                  }}
+                />
+              </span>
+              <span
+                className="shrink-0 w-14 text-right font-mono text-[11.5px]"
+                style={{ color: "var(--color-fg)" }}
+              >
+                {r.value.toFixed(3)}
+              </span>
+              <span
+                className="shrink-0 w-32 truncate font-mono text-[11px]"
+                style={{ color: "var(--color-fg-faint)" }}
+                title={r.best_model}
+              >
+                {r.best_model}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
