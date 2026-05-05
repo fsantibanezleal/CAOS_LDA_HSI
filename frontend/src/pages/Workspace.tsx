@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMachine } from "@xstate/react";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { api, type DatasetEntry } from "@/api/client";
 import { PageShell } from "@/components/PageShell";
 import { ClassDistributionBar } from "@/components/plots/ClassDistributionBar";
+import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
+import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily } from "@/state/useSelectionStore";
 import { cn } from "@/lib/cn";
@@ -396,6 +398,8 @@ function RepresentationPickerStep({
   );
 }
 
+type ExploreTab = "raw" | "topics";
+
 function ExploreStep({
   subsetId,
   rep,
@@ -406,11 +410,18 @@ function ExploreStep({
   onBack: () => void;
 }) {
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
+  const [tab, setTab] = useState<ExploreTab>("raw");
 
   const eda = useQuery({
     queryKey: ["eda", subsetId],
     queryFn: () => api.edaPerScene(subsetId!),
-    enabled: isLabelled,
+    enabled: isLabelled && tab === "raw",
+  });
+
+  const topicViews = useQuery({
+    queryKey: ["topic-views", subsetId],
+    queryFn: () => api.topicViews(subsetId!),
+    enabled: isLabelled && tab === "topics",
   });
 
   return (
@@ -436,10 +447,12 @@ function ExploreStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Vista cruda EDA — distribución de clases + envolventes
-            espectrales p25-p75 con mediana por clase. Próximos paneles
-            (raster con click-to-inspect, t-SNE 2D/3D, intertopic LDAvis,
-            heatmap tópico-vs-etiqueta, apply-to-doc) se irán incorporando.
+            Dos paneles disponibles: <strong>Cruda</strong> (distribución
+            de clases + envolventes espectrales) y{" "}
+            <strong>Tópicos</strong> (intertopic distance map LDAvis-faithful
+            + perfiles φ_k + top-words por relevance λ). Próximos paneles
+            (raster con click-to-inspect, t-SNE 2D/3D, heatmap
+            tópico-vs-etiqueta, apply-to-doc) se irán incorporando.
           </p>
         </div>
         <button
@@ -476,81 +489,370 @@ function ExploreStep({
         </div>
       )}
 
-      {isLabelled && eda.isLoading && (
-        <p style={{ color: "var(--color-fg-faint)" }}>Cargando EDA…</p>
-      )}
+      {isLabelled && (
+        <>
+          <nav
+            role="tablist"
+            aria-label="Paneles de exploración"
+            className="flex flex-wrap gap-2 border-b mb-6 pb-3"
+            style={{ borderColor: "var(--color-border)" }}
+          >
+            {(
+              [
+                { id: "raw", label: "Cruda · clases" },
+                { id: "topics", label: "Tópicos · LDAvis" },
+              ] as { id: ExploreTab; label: string }[]
+            ).map((opt) => {
+              const isActive = tab === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  type="button"
+                  onClick={() => setTab(opt.id)}
+                  className={cn(
+                    "rounded-md border px-4 py-2 text-sm transition-colors",
+                    isActive ? "font-semibold" : "opacity-80 hover:opacity-100",
+                  )}
+                  style={{
+                    borderColor: isActive
+                      ? "var(--color-accent)"
+                      : "var(--color-border)",
+                    backgroundColor: isActive
+                      ? "var(--color-accent-soft)"
+                      : "var(--color-panel)",
+                    color: isActive ? "var(--color-accent)" : "var(--color-fg)",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </nav>
 
-      {isLabelled && eda.error && (
+          {tab === "raw" && (
+            <RawTab
+              isLoading={eda.isLoading}
+              error={eda.error as Error | null}
+              data={eda.data ?? null}
+            />
+          )}
+          {tab === "topics" && (
+            <TopicsTab
+              isLoading={topicViews.isLoading}
+              error={topicViews.error as Error | null}
+              data={topicViews.data ?? null}
+            />
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+function RawTab({
+  isLoading,
+  error,
+  data,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  data: import("@/api/client").ScenePerScene | null;
+}) {
+  if (isLoading)
+    return (
+      <p style={{ color: "var(--color-fg-faint)" }}>Cargando EDA…</p>
+    );
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>No se pudo cargar EDA.</p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!data) return null;
+
+  return (
+    <div className="space-y-8">
+      <SceneStats data={data} />
+
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-3"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Distribución de clases
+        </h4>
+        <ClassDistributionBar classes={data.class_distribution} />
+      </div>
+
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Envolventes espectrales por clase
+        </h4>
+        <p
+          className="text-sm mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          La sombra es el rango p25–p75; la línea es la mediana. Click en
+          una clase para aislarla, click de nuevo para volver a ver todas.
+        </p>
+        <SpectralByClass
+          wavelengths={data.wavelengths_nm}
+          classMeans={data.class_mean_spectra}
+          classDistribution={data.class_distribution}
+        />
+      </div>
+    </div>
+  );
+}
+
+const LAMBDA_VALUES = [0.0, 0.3, 0.5, 0.7, 1.0];
+
+function TopicsTab({
+  isLoading,
+  error,
+  data,
+}: {
+  isLoading: boolean;
+  error: Error | null;
+  data: import("@/api/client").TopicViews | null;
+}) {
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [lambda, setLambda] = useState<number>(0.5);
+
+  if (isLoading)
+    return <p style={{ color: "var(--color-fg-faint)" }}>Cargando tópicos…</p>;
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          No se pudo cargar topic_views.
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {error.message}
+        </p>
+      </div>
+    );
+  if (!data) return null;
+
+  const lambdaKey = `lambda_${lambda.toFixed(1)}`;
+  const topWords = data.top_words_per_topic[lambdaKey];
+  const focused =
+    selectedTopic !== null && topWords ? topWords[selectedTopic] : null;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid lg:grid-cols-[480px_1fr] gap-5 items-start">
         <div
-          className="rounded-lg border p-6"
+          className="rounded-lg border p-4"
           style={{
             borderColor: "var(--color-border)",
             backgroundColor: "var(--color-panel)",
             boxShadow: "var(--color-shadow)",
           }}
         >
-          <p style={{ color: "var(--color-warn)" }}>No se pudo cargar EDA.</p>
+          <h4
+            className="text-base font-semibold mb-2"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Mapa intertópico (LDAvis · JS-MDS 2D)
+          </h4>
           <p
-            className="mt-2 text-sm"
+            className="text-sm mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            {eda.error instanceof Error ? eda.error.message : String(eda.error)}
+            El área del bubble es proporcional a la prevalencia del tópico
+            (mean θ sobre el corpus). Click en un bubble para enfocar.
           </p>
+          <IntertopicMap
+            coords={data.topic_intertopic_2d_js}
+            prevalence={data.topic_prevalence}
+            selectedTopic={selectedTopic}
+            onSelect={(k) => setSelectedTopic(k === selectedTopic ? null : k)}
+          />
         </div>
-      )}
 
-      {isLabelled && eda.data && (
-        <div className="space-y-8">
-          <SceneStats data={eda.data} />
-
-          <div
-            className="rounded-lg border p-5"
-            style={{
-              borderColor: "var(--color-border)",
-              backgroundColor: "var(--color-panel)",
-              boxShadow: "var(--color-shadow)",
-            }}
-          >
+        <div
+          className="rounded-lg border p-4"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <header className="flex items-baseline justify-between mb-2 gap-3">
             <h4
-              className="text-base font-semibold mb-3"
+              className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Distribución de clases
+              Top-30 palabras —{" "}
+              {selectedTopic !== null
+                ? `tópico ${selectedTopic + 1}`
+                : "selecciona un tópico"}
             </h4>
-            <ClassDistributionBar classes={eda.data.class_distribution} />
-          </div>
-
-          <div
-            className="rounded-lg border p-5"
-            style={{
-              borderColor: "var(--color-border)",
-              backgroundColor: "var(--color-panel)",
-              boxShadow: "var(--color-shadow)",
-            }}
+            <div className="flex items-center gap-2">
+              <span
+                className="text-[11px] uppercase tracking-wider"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                relevance λ
+              </span>
+              <select
+                value={lambda}
+                onChange={(e) => setLambda(parseFloat(e.target.value))}
+                className="rounded-md border px-2 py-1 text-sm"
+                style={{
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--color-bg)",
+                  color: "var(--color-fg)",
+                }}
+              >
+                {LAMBDA_VALUES.map((v) => (
+                  <option key={v} value={v}>
+                    {v.toFixed(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </header>
+          <p
+            className="text-[12px] mb-3"
+            style={{ color: "var(--color-fg-faint)" }}
           >
-            <h4
-              className="text-base font-semibold mb-2"
-              style={{ color: "var(--color-fg)" }}
+            relevance(w | k) = λ · log P(w | k) + (1 − λ) · log [ P(w | k) /
+            P(w) ]. λ=1 ordena por probabilidad sin penalizar palabras
+            comunes; λ=0 ordena por lift puro.
+          </p>
+          {focused ? (
+            <ol
+              className="grid grid-cols-2 gap-x-4 gap-y-1 list-decimal pl-5 text-[13px]"
+              style={{ color: "var(--color-fg-subtle)" }}
             >
-              Envolventes espectrales por clase
-            </h4>
-            <p
-              className="text-sm mb-3"
-              style={{ color: "var(--color-fg-faint)" }}
-            >
-              La sombra es el rango p25–p75; la línea es la mediana. Click
-              en una clase para aislarla, click de nuevo para volver a ver
-              todas.
+              {focused.slice(0, 24).map((w, i) => (
+                <li key={i} className="font-mono">
+                  {w.token}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p style={{ color: "var(--color-fg-faint)" }}>
+              Selecciona un tópico en el mapa de la izquierda.
             </p>
-            <SpectralByClass
-              wavelengths={eda.data.wavelengths_nm}
-              classMeans={eda.data.class_mean_spectra}
-              classDistribution={eda.data.class_distribution}
-            />
-          </div>
+          )}
         </div>
-      )}
-    </section>
+      </div>
+
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Perfiles espectrales por tópico (φ_k)
+        </h4>
+        <p
+          className="text-sm mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Una curva por tópico, mismo color que el bubble del mapa. Cuando
+          un tópico está seleccionado se resalta y los demás se atenúan.
+        </p>
+        <TopicSpectrum
+          wavelengths={data.wavelengths_nm}
+          bandProfiles={data.topic_band_profiles}
+          selectedTopic={selectedTopic}
+        />
+        <div
+          className="mt-3 flex flex-wrap gap-1.5"
+          role="group"
+          aria-label="Selector de tópicos"
+        >
+          {data.topic_band_profiles.map((_, k) => {
+            const isSel = selectedTopic === k;
+            const color = TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() =>
+                  setSelectedTopic(isSel ? null : k)
+                }
+                className="rounded-md border px-2.5 py-1 text-[12px] inline-flex items-center gap-1.5"
+                style={{
+                  borderColor: isSel
+                    ? "var(--color-accent)"
+                    : "var(--color-border)",
+                  backgroundColor: isSel
+                    ? "var(--color-accent-soft)"
+                    : "var(--color-panel)",
+                  color: isSel ? "var(--color-fg)" : "var(--color-fg-subtle)",
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2.5 h-2.5 rounded-sm"
+                  style={{ backgroundColor: color }}
+                />
+                tópico {k + 1}
+                <span
+                  className="text-[10.5px] ml-1 opacity-70"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  ({(data.topic_prevalence[k] ?? 0).toFixed(2)})
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 

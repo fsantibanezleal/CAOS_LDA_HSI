@@ -190,6 +190,30 @@ export type ScenePerScene = {
   class_mean_spectra: Record<string, ClassMeanSpectrum>;
 };
 
+export type TopWord = {
+  token: string;
+  p_w_given_topic: number;
+  p_w_global: number;
+  lift: number;
+  relevance: number;
+};
+
+export type TopicViews = {
+  scene_id: string;
+  scene_name: string;
+  topic_count: number;
+  vocabulary_size: number;
+  document_count: number;
+  wavelengths_nm: number[];
+  vocabulary: string[];
+  topic_prevalence: number[];
+  topic_band_profiles: number[][];
+  topic_distance_cosine: number[][];
+  topic_intertopic_2d_js: [number, number][];
+  topic_intertopic_3d_js: [number, number, number][];
+  top_words_per_topic: Record<string, TopWord[][]>;
+};
+
 export const api = {
   health: () => request<{ status: string }>("/api/healthz"),
   appData: () => request<unknown>("/api/app-data"),
@@ -198,5 +222,7 @@ export const api = {
   methodStatistics: () => request<MethodStatistics>("/api/method-statistics"),
   edaPerScene: (sceneId: string) =>
     request<ScenePerScene>(`/api/eda/per-scene/${encodeURIComponent(sceneId)}`),
+  topicViews: (sceneId: string) =>
+    request<TopicViews>(`/api/topic-views/${encodeURIComponent(sceneId)}`),
   buffer: (path: string) => requestBuffer(path),
 };
