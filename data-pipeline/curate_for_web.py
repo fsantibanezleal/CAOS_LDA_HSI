@@ -79,6 +79,7 @@ BUILDER_DIRS = [
     ("build_bayesian_classification_labelled", "method_statistics_labelled"),
     ("build_hierarchical_super_topics", "super_topics"),
     ("build_hidsag_cross_preprocessing_stability", "hidsag_cross_preprocessing_stability"),
+    ("build_b12_llm_tea_leaves", "llm_tea_leaves"),
     # ---- pre-precompute ("foundational") layer ------------------------
     # These directories pre-date the precompute waves but their outputs
     # are still served by the public API (subset cards, dataset
