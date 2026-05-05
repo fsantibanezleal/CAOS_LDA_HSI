@@ -78,6 +78,7 @@ BUILDER_DIRS = [
     ("build_cross_scene_transfer", "cross_scene_transfer"),
     ("build_bayesian_classification_labelled", "method_statistics_labelled"),
     ("build_hierarchical_super_topics", "super_topics"),
+    ("build_hidsag_cross_preprocessing_stability", "hidsag_cross_preprocessing_stability"),
     # ---- pre-precompute ("foundational") layer ------------------------
     # These directories pre-date the precompute waves but their outputs
     # are still served by the public API (subset cards, dataset
