@@ -102,10 +102,10 @@ export default function Workspace() {
         )}
 
         {String(state.value) === "pickRep" && (
-          <PendingStep
-            label="Representación"
-            description="Aquí escogerás el modelo (PTM, LDA, NMF, PCA, AE) y el wordification + cuantización para el conjunto seleccionado. La grilla de configuraciones precalculadas se sirve desde /api/wordifications + /api/topic-variants. Esta vista se construye en una próxima entrega."
+          <RepresentationPickerStep
+            subsetId={state.context.subset}
             onBack={() => send({ type: "BACK" })}
+            onPick={(rep) => send({ type: "PICK_REP", rep: rep as never })}
           />
         )}
 
@@ -211,6 +211,214 @@ function SubsetPickerStep({
       <div className="grid sm:grid-cols-2 gap-4">
         {entries.map((d) => (
           <SubsetCard key={d.id} dataset={d} onPick={() => onPick(d.id)} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+type Representation = {
+  id: string;
+  family: "topic" | "compression" | "unmixing";
+  label: string;
+  short: string;
+  description: string;
+  status: "shipped" | "partial" | "preview";
+};
+
+const REPRESENTATIONS: Representation[] = [
+  {
+    id: "lda",
+    family: "topic",
+    label: "LDA — sklearn online",
+    short: "Latent Dirichlet Allocation",
+    description:
+      "Variational Bayes online (sklearn). Recipe canónica V1 band-frequency, K=12 (o n_classes), priors α=0.45 / η=0.2. La base por defecto del Workspace.",
+    status: "shipped",
+  },
+  {
+    id: "lda_sparse",
+    family: "topic",
+    label: "LDA — sklearn sparse",
+    short: "Sparse VB",
+    description:
+      "Variante VB con priors esparzos (α=0.05). Tópicos más sparsos pero perplexity peor.",
+    status: "shipped",
+  },
+  {
+    id: "lda_tomo",
+    family: "topic",
+    label: "LDA — tomotopy (collapsed Gibbs)",
+    short: "tomotopy_lda",
+    description:
+      "Implementación canónica de LDA vía Gibbs colapsado en C++. Wins c_v en 4 de 6 escenas.",
+    status: "shipped",
+  },
+  {
+    id: "hdp",
+    family: "topic",
+    label: "HDP — tomotopy",
+    short: "Hierarchical Dirichlet Process",
+    description:
+      "K se aprende — el modelo decide cuántos tópicos activos hay. Útil cuando no quieres fijar K.",
+    status: "shipped",
+  },
+  {
+    id: "ctm",
+    family: "topic",
+    label: "CTM — tomotopy",
+    short: "Correlated Topic Model",
+    description:
+      "Permite correlación entre tópicos vía logistic-normal sobre θ. Más lento pero captura co-ocurrencias.",
+    status: "shipped",
+  },
+  {
+    id: "prodlda",
+    family: "topic",
+    label: "ProdLDA — Pyro",
+    short: "Neural topic model",
+    description:
+      "Encoder amortizado + decoder multinomial. Implementación neural, comparable en NPMI a LDA Gibbs.",
+    status: "shipped",
+  },
+  {
+    id: "nmf",
+    family: "compression",
+    label: "NMF",
+    short: "Non-negative matrix factorization",
+    description:
+      "Descomposición no-negativa con factorización β-divergencia=KL. Baseline canónico K-dim contra LDA.",
+    status: "shipped",
+  },
+  {
+    id: "pca",
+    family: "compression",
+    label: "PCA",
+    short: "Principal components",
+    description:
+      "Compresión lineal L2-óptima. Wins reconstruction RMSE en cada K (su único título).",
+    status: "shipped",
+  },
+  {
+    id: "ae",
+    family: "compression",
+    label: "Dense autoencoder",
+    short: "MLP AE",
+    description:
+      "Encoder → bottleneck K → decoder. Baseline neural de la misma dimensión K.",
+    status: "shipped",
+  },
+  {
+    id: "endmember",
+    family: "unmixing",
+    label: "Endmembers (NFINDR + NNLS)",
+    short: "Linear unmixing",
+    description:
+      "K endmembers vía NFINDR (Winter 1999) + abundancias por NNLS con suma-a-uno. Baseline físico contra LDA.",
+    status: "shipped",
+  },
+];
+
+function RepresentationPickerStep({
+  subsetId,
+  onBack,
+  onPick,
+}: {
+  subsetId: string | null;
+  onBack: () => void;
+  onPick: (rep: string) => void;
+}) {
+  const families: { id: Representation["family"]; label: string }[] = [
+    { id: "topic", label: "Modelos de tópicos" },
+    { id: "compression", label: "Baselines de compresión K-dim" },
+    { id: "unmixing", label: "Baselines físicos (unmixing)" },
+  ];
+
+  return (
+    <section>
+      <header className="flex items-baseline justify-between mb-4 gap-3">
+        <div>
+          <h3
+            className="text-lg font-semibold"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Representación para{" "}
+            <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
+          </h3>
+          <p
+            className="text-sm mt-1"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Tres familias: tópicos (LDA y variantes), compresiones K-dim
+            (PCA / NMF / AE) y unmixing físico. Todas operan sobre el
+            mismo doc-term matrix de la receta canónica V1 band-frequency.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-md px-3 py-1.5 text-sm border"
+          style={{
+            borderColor: "var(--color-border)",
+            color: "var(--color-fg)",
+            backgroundColor: "transparent",
+          }}
+        >
+          ← Cambiar de conjunto
+        </button>
+      </header>
+
+      <div className="space-y-8">
+        {families.map((fam) => (
+          <div key={fam.id}>
+            <h4
+              className="text-sm font-semibold uppercase tracking-wider mb-3"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              {fam.label}
+            </h4>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {REPRESENTATIONS.filter((r) => r.family === fam.id).map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => onPick(r.id)}
+                  className="text-left rounded-lg border p-4 transition-all hover:shadow-md"
+                  style={{
+                    borderColor: "var(--color-border)",
+                    backgroundColor: "var(--color-panel)",
+                    boxShadow: "var(--color-shadow)",
+                    color: "var(--color-fg)",
+                  }}
+                >
+                  <header className="flex items-baseline justify-between gap-2 mb-1">
+                    <h5 className="text-base font-semibold">{r.label}</h5>
+                    <span
+                      className="rounded-md px-2 py-0.5 text-[11px] font-mono"
+                      style={{
+                        backgroundColor: "var(--color-accent-soft)",
+                        color: "var(--color-accent)",
+                      }}
+                    >
+                      {r.short}
+                    </span>
+                  </header>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "var(--color-fg-subtle)" }}
+                  >
+                    {r.description}
+                  </p>
+                  <div
+                    className="mt-3 text-sm font-medium"
+                    style={{ color: "var(--color-accent)" }}
+                  >
+                    Ajuste precalculado disponible →
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </section>
