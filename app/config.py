@@ -276,6 +276,9 @@ class Settings(BaseSettings):
     def endmember_baseline_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "endmember_baseline" / f"{scene_id}.json"
 
+    def llm_tea_leaves_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "llm_tea_leaves" / f"{scene_id}.json"
+
     @property
     def cross_scene_transfer_path(self) -> Path:
         return self.data_path / "derived" / "cross_scene_transfer" / "transfer_matrix.json"

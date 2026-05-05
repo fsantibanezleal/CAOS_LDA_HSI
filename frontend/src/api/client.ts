@@ -298,6 +298,10 @@ export const api = {
     request<MutualInformation>(
       `/api/mutual-information/${encodeURIComponent(sceneId)}`,
     ),
+  llmTeaLeaves: (sceneId: string) =>
+    request<LlmTeaLeaves>(
+      `/api/llm-tea-leaves/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
 };
 
@@ -516,3 +520,31 @@ export type TopicRoutedClassifier = {
     macro_f1_ci95: [number, number];
   }[];
 };
+
+export type LlmTeaLeavesTopic = {
+  topic_id: number;
+  skipped?: boolean;
+  reason?: string;
+  top_words?: string[];
+  intrusion_candidates?: string[];
+  intruder?: string;
+  llm_chose?: string | null;
+  intrusion_correct?: boolean;
+  llm_label?: string;
+};
+
+export type LlmTeaLeaves = {
+  scene_id: string;
+  topic_count: number;
+  model: string;
+  lambda_used: string;
+  top_n_per_topic: number;
+  n_attempted: number;
+  n_correct_intrusion: number;
+  intrusion_accuracy: number;
+  per_topic: LlmTeaLeavesTopic[];
+  framework_axis: string;
+  generated_at: string;
+  builder_version: string;
+};
+
