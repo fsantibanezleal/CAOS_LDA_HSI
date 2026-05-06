@@ -59,7 +59,8 @@ LABELLED_SCENES = [
     "kennedy-space-center",
     "botswana",
 ]
-N_SEEDS = 7
+import os as _os
+N_SEEDS = int(_os.environ.get("CAOS_TOPIC_STABILITY_N_SEEDS", "7"))
 SAMPLES_PER_CLASS = 220
 SCALE = 12
 RANDOM_STATE = 42
