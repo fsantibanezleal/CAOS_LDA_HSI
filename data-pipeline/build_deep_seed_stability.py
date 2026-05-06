@@ -55,6 +55,9 @@ SAMPLES_PER_CLASS = 220
 N_SEEDS = 7
 LATENT_DIM = 8
 
+import os as _os
+METHOD = _os.environ.get("CAOS_DEEP_SEED_METHOD", "cae_1d_8").strip()
+
 
 def normalize_per_row(values: np.ndarray) -> np.ndarray:
     values = values.astype(np.float32)
@@ -112,6 +115,72 @@ def fit_cae_1d_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, epochs
     return z.cpu().numpy()
 
 
+def fit_beta_vae_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, beta: float = 4.0, epochs: int = 80) -> np.ndarray:
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader, TensorDataset
+
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    D, B = spectra.shape
+    x = torch.from_numpy(spectra.astype(np.float32))
+
+    class BetaVAE(nn.Module):
+        def __init__(self, B: int, latent: int) -> None:
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Linear(B, 128), nn.ReLU(),
+                nn.Linear(128, 64), nn.ReLU(),
+            )
+            self.fc_mu = nn.Linear(64, latent)
+            self.fc_logvar = nn.Linear(64, latent)
+            self.dec = nn.Sequential(
+                nn.Linear(latent, 64), nn.ReLU(),
+                nn.Linear(64, 128), nn.ReLU(),
+                nn.Linear(128, B),
+            )
+
+        def encode(self, x):
+            h = self.enc(x)
+            return self.fc_mu(h), self.fc_logvar(h)
+
+        def reparam(self, mu, logvar):
+            std = torch.exp(0.5 * logvar)
+            return mu + torch.randn_like(std) * std
+
+        def forward(self, x):
+            mu, logvar = self.encode(x)
+            z = self.reparam(mu, logvar)
+            return self.dec(z), mu, logvar, z
+
+    model = BetaVAE(B, latent_dim)
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
+    for _ in range(epochs):
+        for (batch,) in loader:
+            opt.zero_grad()
+            recon, mu, logvar, _ = model(batch)
+            recon_loss = nn.functional.mse_loss(recon, batch, reduction="sum") / batch.shape[0]
+            kl = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / batch.shape[0]
+            loss = recon_loss + beta * kl
+            loss.backward()
+            opt.step()
+    model.eval()
+    with torch.no_grad():
+        mu, _ = model.encode(x)
+    return mu.cpu().numpy()
+
+
+def fit_with_seed(spectra: np.ndarray, latent_dim: int, seed: int) -> np.ndarray:
+    if METHOD == "cae_1d_8":
+        return fit_cae_1d_with_seed(spectra, latent_dim, seed)
+    if METHOD == "beta_vae_8":
+        return fit_beta_vae_with_seed(spectra, latent_dim, seed, beta=4.0)
+    raise ValueError(f"Unknown CAOS_DEEP_SEED_METHOD: {METHOD}")
+
+
 def build_for_scene(scene_id: str) -> dict | None:
     if scene_id not in SCENES or not has_labels(scene_id):
         return None
@@ -130,12 +199,12 @@ def build_for_scene(scene_id: str) -> dict | None:
     spectra_norm = normalize_per_row(spectra)
     n_classes = int(np.unique(labels).size)
 
-    # Fit CAE-1D with N_SEEDS torch seeds
+    # Fit deep method with N_SEEDS torch seeds
     latents = []
     cluster_labels = []
     ari_vs_gt = []
     for seed in range(N_SEEDS):
-        z = fit_cae_1d_with_seed(spectra_norm, LATENT_DIM, seed)
+        z = fit_with_seed(spectra_norm, LATENT_DIM, seed)
         latents.append(z)
         km = KMeans(n_clusters=n_classes, n_init=10, random_state=42).fit(z)
         cluster_labels.append(km.labels_)
@@ -160,7 +229,7 @@ def build_for_scene(scene_id: str) -> dict | None:
     proc_off = procrustes_dist[~np.eye(N_SEEDS, dtype=bool)]
     return {
         "scene_id": scene_id,
-        "method": "cae_1d_8",
+        "method": METHOD,
         "n_seeds": N_SEEDS,
         "latent_dim": LATENT_DIM,
         "samples_per_class": SAMPLES_PER_CLASS,
@@ -200,7 +269,10 @@ def main() -> int:
             continue
         if payload is None:
             continue
-        out = OUTPUT_DIR / f"{scene_id}.json"
+        # Use method-suffixed filename when not the default cae_1d_8 to keep
+        # backward compat with existing /api/deep-seed-stability/{scene} route.
+        suffix = "" if METHOD == "cae_1d_8" else f"__{METHOD}"
+        out = OUTPUT_DIR / f"{scene_id}{suffix}.json"
         out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
         odg = payload["off_diagonal_summary"]
         print(
