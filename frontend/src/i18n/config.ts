@@ -20,7 +20,7 @@ void i18n
       es: { common: esCommon, nav: esNav, pages: esPages },
       en: { common: enCommon, nav: enNav, pages: enPages },
     },
-    fallbackLng: "es",
+    fallbackLng: "en",
     supportedLngs: SUPPORTED_LANGUAGES,
     defaultNS: "common",
     ns: ["common", "nav", "pages"],
