@@ -667,6 +667,15 @@ def deep_anomaly(scene_id: str) -> dict:
         raise HTTPException(status_code=404, detail=f"deep_anomaly for '{scene_id}' not generated yet") from exc
 
 
+@router.get("/classical-seed-stability/{scene_id}")
+def classical_seed_stability(scene_id: str, method: str = "pca_8") -> dict:
+    from app.services.content import get_classical_seed_stability
+    try:
+        return get_classical_seed_stability(scene_id, method=method)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"classical_seed_stability for '{scene_id}' method '{method}' not generated yet") from exc
+
+
 @router.get("/topic-to-usgs-v7/{scene_id}")
 def topic_to_usgs_v7(scene_id: str) -> dict:
     from app.services.content import get_topic_to_usgs_v7

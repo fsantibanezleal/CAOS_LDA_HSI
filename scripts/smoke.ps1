@@ -84,6 +84,7 @@ $paths = @(
     "/api/topic-stability/indian-pines-corrected",
     "/api/deep-seed-stability/indian-pines-corrected",
     "/api/deep-anomaly/indian-pines-corrected",
+    "/api/classical-seed-stability/indian-pines-corrected",
     "/api/topic-to-usgs-v7/indian-pines-corrected",
     "/api/topic-anomaly/indian-pines-corrected",
     "/api/topic-spatial-continuous/indian-pines-corrected",
