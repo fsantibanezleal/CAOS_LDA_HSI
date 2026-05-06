@@ -85,6 +85,7 @@ paths=(
   "/api/topic-spatial-full/indian-pines-corrected"
   "/api/endmember-baseline/indian-pines-corrected"
   "/api/cross-scene-transfer"
+  "/api/super-topics"
   "/api/bayesian-comparison/classification-labelled"
   "/generated/groupings/felzenszwalb/indian-pines-corrected.json"
   "/generated/cross_method_agreement/indian-pines-corrected.json"

@@ -302,6 +302,7 @@ export const api = {
     request<LlmTeaLeaves>(
       `/api/llm-tea-leaves/${encodeURIComponent(sceneId)}`,
     ),
+  superTopics: () => request<SuperTopics>(`/api/super-topics`),
   buffer: (path: string) => requestBuffer(path),
 };
 
@@ -544,6 +545,41 @@ export type LlmTeaLeaves = {
   intrusion_accuracy: number;
   per_topic: LlmTeaLeavesTopic[];
   framework_axis: string;
+  generated_at: string;
+  builder_version: string;
+};
+
+export type SuperTopicMember = {
+  scene_id: string;
+  topic_k: number;
+  scene_wavelength_coverage: string;
+};
+
+export type SuperTopicCluster = {
+  cluster_id: number;
+  n_members: number;
+  scene_set: string[];
+  members: SuperTopicMember[];
+  centroid_profile_round6: number[];
+};
+
+export type SuperTopicCut = {
+  cut_level: number;
+  n_clusters: number;
+  clusters: SuperTopicCluster[];
+};
+
+export type SuperTopics = {
+  n_topics_total: number;
+  n_scenes: number;
+  scenes: string[];
+  common_grid: { low_nm: number; high_nm: number; n_bands: number };
+  linkage_method: string;
+  distance: string;
+  linkage_matrix_round6: number[][];
+  cuts: SuperTopicCut[];
+  scene_pair_super_topic_overlap_at_cut8: Record<string, Record<string, number>>;
+  members: SuperTopicMember[];
   generated_at: string;
   builder_version: string;
 };
