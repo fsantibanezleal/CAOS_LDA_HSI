@@ -165,6 +165,316 @@ def fit_dense_ae(spectra: np.ndarray, latent_dim: int) -> tuple[np.ndarray, dict
     }
 
 
+def _torch_seed() -> None:
+    import torch  # type: ignore
+    torch.manual_seed(RANDOM_STATE)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(RANDOM_STATE)
+
+
+def fit_cae_1d(spectra: np.ndarray, latent_dim: int = 8, epochs: int = 80) -> tuple[np.ndarray, dict]:
+    """1D convolutional autoencoder along the spectral axis."""
+    import torch  # type: ignore
+    import torch.nn as nn  # type: ignore
+    from torch.utils.data import DataLoader, TensorDataset  # type: ignore
+    _torch_seed()
+
+    D, B = spectra.shape
+    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1)  # (D, 1, B)
+
+    class CAE1D(nn.Module):
+        def __init__(self, B: int, latent: int) -> None:
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Conv1d(1, 16, kernel_size=5, padding=2), nn.ReLU(),
+                nn.MaxPool1d(2),
+                nn.Conv1d(16, 32, kernel_size=5, padding=2), nn.ReLU(),
+                nn.AdaptiveAvgPool1d(8),
+            )
+            self.flatten = nn.Flatten()
+            self.head = nn.Linear(32 * 8, latent)
+            self.up = nn.Linear(latent, B)
+
+        def encode(self, x: torch.Tensor) -> torch.Tensor:
+            return self.head(self.flatten(self.enc(x)))
+
+        def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+            z = self.encode(x)
+            recon = self.up(z)
+            return z, recon
+
+    model = CAE1D(B, latent_dim)
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
+    final_loss = 0.0
+    for _ in range(epochs):
+        running = 0.0
+        n_batches = 0
+        for (batch,) in loader:
+            opt.zero_grad()
+            _, recon = model(batch)
+            loss = nn.functional.mse_loss(recon, batch.squeeze(1))
+            loss.backward()
+            opt.step()
+            running += float(loss.detach())
+            n_batches += 1
+        final_loss = running / max(n_batches, 1)
+    model.eval()
+    with torch.no_grad():
+        z, recon = model(x)
+    rmse = float(np.sqrt(np.mean((spectra - recon.cpu().numpy()) ** 2)))
+    return z.cpu().numpy(), {
+        "architecture": "Conv1d(1->16,k5)->Pool2->Conv1d(16->32,k5)->AdaptiveAvgPool(8)->Linear(256->L)->Linear(L->B)",
+        "epochs": int(epochs),
+        "final_loss": round(float(final_loss), 6),
+        "reconstruction_rmse": round(rmse, 6),
+    }
+
+
+def fit_beta_vae(spectra: np.ndarray, latent_dim: int = 8, beta: float = 4.0, epochs: int = 80) -> tuple[np.ndarray, dict]:
+    """β-VAE on flat spectra. Uses the encoder mean as the deterministic latent code."""
+    import torch  # type: ignore
+    import torch.nn as nn  # type: ignore
+    from torch.utils.data import DataLoader, TensorDataset  # type: ignore
+    _torch_seed()
+
+    D, B = spectra.shape
+    x = torch.from_numpy(spectra.astype(np.float32))
+
+    class BetaVAE(nn.Module):
+        def __init__(self, B: int, latent: int) -> None:
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Linear(B, 128), nn.ReLU(),
+                nn.Linear(128, 64), nn.ReLU(),
+            )
+            self.fc_mu = nn.Linear(64, latent)
+            self.fc_logvar = nn.Linear(64, latent)
+            self.dec = nn.Sequential(
+                nn.Linear(latent, 64), nn.ReLU(),
+                nn.Linear(64, 128), nn.ReLU(),
+                nn.Linear(128, B),
+            )
+
+        def encode(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+            h = self.enc(x)
+            return self.fc_mu(h), self.fc_logvar(h)
+
+        def reparameterise(self, mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
+            std = torch.exp(0.5 * logvar)
+            eps = torch.randn_like(std)
+            return mu + eps * std
+
+        def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+            mu, logvar = self.encode(x)
+            z = self.reparameterise(mu, logvar)
+            recon = self.dec(z)
+            return recon, mu, logvar, z
+
+    model = BetaVAE(B, latent_dim)
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
+    final_recon = 0.0
+    final_kl = 0.0
+    for _ in range(epochs):
+        running_recon = 0.0
+        running_kl = 0.0
+        n_batches = 0
+        for (batch,) in loader:
+            opt.zero_grad()
+            recon, mu, logvar, _ = model(batch)
+            recon_loss = nn.functional.mse_loss(recon, batch, reduction="sum") / batch.shape[0]
+            kl = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / batch.shape[0]
+            loss = recon_loss + beta * kl
+            loss.backward()
+            opt.step()
+            running_recon += float(recon_loss.detach())
+            running_kl += float(kl.detach())
+            n_batches += 1
+        final_recon = running_recon / max(n_batches, 1)
+        final_kl = running_kl / max(n_batches, 1)
+    model.eval()
+    with torch.no_grad():
+        mu, _ = model.encode(x)
+        recon = model.dec(mu)
+    rmse = float(np.sqrt(np.mean((spectra - recon.cpu().numpy()) ** 2)))
+    return mu.cpu().numpy(), {
+        "architecture": "Linear(B->128)->Linear(128->64)->[mu,logvar](L) ; Linear(L->64->128->B)",
+        "beta": float(beta),
+        "epochs": int(epochs),
+        "final_recon_loss": round(float(final_recon), 6),
+        "final_kl": round(float(final_kl), 6),
+        "reconstruction_rmse": round(rmse, 6),
+    }
+
+
+def _extract_patches(
+    cube: np.ndarray,
+    pixel_indices_global: np.ndarray,
+    cube_shape: tuple[int, int, int],
+    patch: int = 5,
+) -> np.ndarray:
+    """Extract (patch x patch x B) windows around each global pixel index. Pads with zeros at borders."""
+    h, w, B = cube_shape
+    half = patch // 2
+    padded = np.pad(cube.astype(np.float32), ((half, half), (half, half), (0, 0)), mode="constant")
+    out = np.empty((len(pixel_indices_global), patch, patch, B), dtype=np.float32)
+    for k, gidx in enumerate(pixel_indices_global):
+        i = int(gidx) // w
+        j = int(gidx) % w
+        out[k] = padded[i:i + patch, j:j + patch, :]
+    # Per-cube min-max normalisation per patch (keeps relative spectral shape)
+    flat = out.reshape(out.shape[0], -1)
+    lo = flat.min(axis=1, keepdims=True)
+    hi = flat.max(axis=1, keepdims=True)
+    rng = np.where(hi - lo > 1e-6, hi - lo, 1.0)
+    flat = (flat - lo) / rng
+    return flat.reshape(out.shape)
+
+
+def fit_cae_2d(
+    cube: np.ndarray,
+    pixel_indices_global: np.ndarray,
+    cube_shape: tuple[int, int, int],
+    latent_dim: int = 8,
+    epochs: int = 60,
+    patch: int = 5,
+) -> tuple[np.ndarray, dict]:
+    """2D CAE on (patch x patch) windows with B channels."""
+    import torch  # type: ignore
+    import torch.nn as nn  # type: ignore
+    from torch.utils.data import DataLoader, TensorDataset  # type: ignore
+    _torch_seed()
+
+    patches = _extract_patches(cube, pixel_indices_global, cube_shape, patch=patch)
+    # (N, patch, patch, B) -> (N, B, patch, patch)
+    x = torch.from_numpy(np.transpose(patches, (0, 3, 1, 2)).copy())
+    N, B, P, _ = x.shape
+
+    class CAE2D(nn.Module):
+        def __init__(self, in_ch: int, latent: int) -> None:
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Conv2d(in_ch, 64, kernel_size=3, padding=1), nn.ReLU(),
+                nn.Conv2d(64, 128, kernel_size=3, padding=1), nn.ReLU(),
+                nn.AdaptiveAvgPool2d(1),
+            )
+            self.head = nn.Linear(128, latent)
+            self.up = nn.Linear(latent, in_ch * P * P)
+            self.in_ch = in_ch
+            self.P = P
+
+        def encode(self, x: torch.Tensor) -> torch.Tensor:
+            return self.head(self.enc(x).flatten(1))
+
+        def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+            z = self.encode(x)
+            recon = self.up(z).view(x.shape[0], self.in_ch, self.P, self.P)
+            return z, recon
+
+    model = CAE2D(B, latent_dim)
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loader = DataLoader(TensorDataset(x), batch_size=32, shuffle=True)
+    final_loss = 0.0
+    for _ in range(epochs):
+        running = 0.0
+        nb = 0
+        for (batch,) in loader:
+            opt.zero_grad()
+            _, recon = model(batch)
+            loss = nn.functional.mse_loss(recon, batch)
+            loss.backward()
+            opt.step()
+            running += float(loss.detach())
+            nb += 1
+        final_loss = running / max(nb, 1)
+    model.eval()
+    with torch.no_grad():
+        z = model.encode(x)
+    rmse = float(np.sqrt(2 * final_loss))  # mse → rmse approximation
+    return z.cpu().numpy(), {
+        "architecture": "Conv2d(B->64,3)->Conv2d(64->128,3)->AdaptiveAvgPool->Linear(128->L)",
+        "patch_size": int(patch),
+        "epochs": int(epochs),
+        "final_loss": round(float(final_loss), 6),
+        "reconstruction_rmse": round(rmse, 6),
+    }
+
+
+def fit_cae_3d(
+    cube: np.ndarray,
+    pixel_indices_global: np.ndarray,
+    cube_shape: tuple[int, int, int],
+    latent_dim: int = 8,
+    epochs: int = 60,
+    patch: int = 5,
+) -> tuple[np.ndarray, dict]:
+    """3D CAE on (patch x patch x B) windows treated as a single-channel 3D volume."""
+    import torch  # type: ignore
+    import torch.nn as nn  # type: ignore
+    from torch.utils.data import DataLoader, TensorDataset  # type: ignore
+    _torch_seed()
+
+    patches = _extract_patches(cube, pixel_indices_global, cube_shape, patch=patch)
+    # (N, patch, patch, B) -> (N, 1, B, patch, patch) (channel dim, then depth=B)
+    x_np = np.transpose(patches, (0, 3, 1, 2))[:, None, ...]
+    x = torch.from_numpy(x_np.copy())
+    N, _, Bdim, P, _ = x.shape
+
+    class CAE3D(nn.Module):
+        def __init__(self, latent: int) -> None:
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Conv3d(1, 8, kernel_size=(5, 3, 3), padding=(2, 1, 1)), nn.ReLU(),
+                nn.MaxPool3d(kernel_size=(2, 1, 1)),
+                nn.Conv3d(8, 16, kernel_size=(5, 3, 3), padding=(2, 1, 1)), nn.ReLU(),
+                nn.AdaptiveAvgPool3d((4, 1, 1)),
+            )
+            self.head = nn.Linear(16 * 4, latent)
+
+        def encode(self, x: torch.Tensor) -> torch.Tensor:
+            return self.head(self.enc(x).flatten(1))
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            return self.encode(x)
+
+    model = CAE3D(latent_dim)
+    # No reconstruction head for 3D — train via contrastive-style: maximise variance of the latent
+    # while constraining it to remain in [-1, 1] via a bounded MSE to a learned mean.
+    # This keeps compute manageable on CPU. We instead fit a simple recon to the central pixel
+    # spectrum (the "anchor" that the patch surrounds).
+    centre_spectrum = patches[:, patch // 2, patch // 2, :]  # (N, B)
+    anchor = torch.from_numpy(centre_spectrum.astype(np.float32))
+    decode = nn.Linear(latent_dim, Bdim)
+    opt = torch.optim.Adam(list(model.parameters()) + list(decode.parameters()), lr=1e-3)
+    loader = DataLoader(TensorDataset(x, anchor), batch_size=32, shuffle=True)
+    final_loss = 0.0
+    for _ in range(epochs):
+        running = 0.0
+        nb = 0
+        for batch_x, batch_anchor in loader:
+            opt.zero_grad()
+            z = model(batch_x)
+            recon = decode(z)
+            loss = nn.functional.mse_loss(recon, batch_anchor)
+            loss.backward()
+            opt.step()
+            running += float(loss.detach())
+            nb += 1
+        final_loss = running / max(nb, 1)
+    model.eval()
+    with torch.no_grad():
+        z = model(x)
+    rmse = float(np.sqrt(final_loss))
+    return z.cpu().numpy(), {
+        "architecture": "Conv3d(1->8,5x3x3)->Pool3d(2,1,1)->Conv3d(8->16,5x3x3)->AdaptiveAvgPool3d(4,1,1)->Linear(64->L); decode predicts centre-pixel spectrum",
+        "patch_size": int(patch),
+        "epochs": int(epochs),
+        "final_recon_to_centre_loss": round(float(final_loss), 6),
+        "reconstruction_rmse_to_centre": round(rmse, 6),
+    }
+
+
 def project_2d_3d(z: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[float]]:
     """PCA-2D and PCA-3D of a latent space, plus explained variance ratios."""
     if z.shape[1] < 3:
@@ -178,6 +488,7 @@ def project_2d_3d(z: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[float]]:
 
 
 def build_for_scene(scene_id: str) -> list[dict]:
+    import os
     if scene_id not in SCENES or not has_labels(scene_id):
         return []
     cube, gt, _ = load_scene(scene_id)
@@ -194,6 +505,8 @@ def build_for_scene(scene_id: str) -> list[dict]:
     labels = labels_full[sample_idx_local]
     spectra_norm = normalize_per_row(spectra)
     D, B = spectra_norm.shape
+    pixel_indices_sampled = pixel_indices[sample_idx_local]
+    cube_shape = (h, w, b)
 
     methods: list[tuple[str, callable]] = [
         ("pca_3", lambda s: fit_pca(s, 3)),
@@ -203,7 +516,15 @@ def build_for_scene(scene_id: str) -> list[dict]:
         ("nmf_20", lambda s: fit_nmf(np.clip(s, 0.0, None), 20)),
         ("ica_10", lambda s: fit_ica(s, 10)),
         ("dense_ae_8", lambda s: fit_dense_ae(s, 8)),
+        ("cae_1d_8", lambda s: fit_cae_1d(s, 8)),
+        ("beta_vae_8", lambda s: fit_beta_vae(s, 8, beta=4.0)),
+        ("cae_2d_8", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 8)),
+        ("cae_3d_8", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 8)),
     ]
+    repr_filter = os.environ.get("CAOS_REPR_FILTER", "").strip()
+    if repr_filter:
+        wanted = {m.strip() for m in repr_filter.split(",") if m.strip()}
+        methods = [m for m in methods if m[0] in wanted]
 
     rng = np.random.default_rng(42)
     out_summaries = []
