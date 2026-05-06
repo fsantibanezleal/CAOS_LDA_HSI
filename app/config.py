@@ -254,9 +254,10 @@ class Settings(BaseSettings):
         suffix = "" if k_offset == 0 else f"__K{k_offset:+d}"
         return self.data_path / "derived" / "topic_stability" / f"{scene_id}{suffix}.json"
 
-    def deep_seed_stability_path(self, scene_id: str, method: str = "cae_1d_8") -> Path:
-        suffix = "" if method == "cae_1d_8" else f"__{method}"
-        return self.data_path / "derived" / "deep_seed_stability" / f"{scene_id}{suffix}.json"
+    def deep_seed_stability_path(self, scene_id: str, method: str = "cae_1d_8", n_seeds: int = 7) -> Path:
+        method_suffix = "" if method == "cae_1d_8" else f"__{method}"
+        n_suffix = "" if n_seeds == 7 else f"__N{n_seeds}"
+        return self.data_path / "derived" / "deep_seed_stability" / f"{scene_id}{method_suffix}{n_suffix}.json"
 
     def deep_anomaly_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "deep_anomaly" / f"{scene_id}.json"
