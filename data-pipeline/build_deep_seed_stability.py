@@ -51,11 +51,10 @@ LABELLED_SCENES = [
     "kennedy-space-center",
     "botswana",
 ]
-SAMPLES_PER_CLASS = 220
-N_SEEDS = 7
-LATENT_DIM = 8
-
 import os as _os
+SAMPLES_PER_CLASS = 220
+N_SEEDS = int(_os.environ.get("CAOS_DEEP_SEED_N", "7"))
+LATENT_DIM = 8
 METHOD = _os.environ.get("CAOS_DEEP_SEED_METHOD", "cae_1d_8").strip()
 
 
@@ -398,8 +397,10 @@ def main() -> int:
             continue
         # Use method-suffixed filename when not the default cae_1d_8 to keep
         # backward compat with existing /api/deep-seed-stability/{scene} route.
-        suffix = "" if METHOD == "cae_1d_8" else f"__{METHOD}"
-        out = OUTPUT_DIR / f"{scene_id}{suffix}.json"
+        # Also suffix __N{seeds} when N is not the default 7.
+        method_suffix = "" if METHOD == "cae_1d_8" else f"__{METHOD}"
+        n_suffix = "" if N_SEEDS == 7 else f"__N{N_SEEDS}"
+        out = OUTPUT_DIR / f"{scene_id}{method_suffix}{n_suffix}.json"
         out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
         odg = payload["off_diagonal_summary"]
         print(
