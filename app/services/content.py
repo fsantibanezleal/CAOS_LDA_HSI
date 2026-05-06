@@ -469,6 +469,10 @@ def get_llm_tea_leaves(scene_id: str) -> dict:
     return _load_or_404(get_settings().llm_tea_leaves_path(scene_id))
 
 
+def get_super_topics() -> dict:
+    return _load_or_404(get_settings().super_topics_path)
+
+
 def get_cross_scene_transfer() -> dict:
     return _load_or_404(get_settings().cross_scene_transfer_path)
 
