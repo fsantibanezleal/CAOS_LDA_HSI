@@ -641,12 +641,12 @@ def embedded_baseline(scene_id: str) -> dict:
 
 
 @router.get("/topic-stability/{scene_id}")
-def topic_stability(scene_id: str) -> dict:
+def topic_stability(scene_id: str, k_offset: int = 0) -> dict:
     from app.services.content import get_topic_stability
     try:
-        return get_topic_stability(scene_id)
+        return get_topic_stability(scene_id, k_offset=k_offset)
     except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_stability for '{scene_id}' not generated yet") from exc
+        raise HTTPException(status_code=404, detail=f"topic_stability for '{scene_id}' k_offset={k_offset} not generated yet") from exc
 
 
 @router.get("/deep-seed-stability/{scene_id}")
