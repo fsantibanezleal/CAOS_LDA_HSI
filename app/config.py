@@ -280,6 +280,10 @@ class Settings(BaseSettings):
         return self.data_path / "derived" / "llm_tea_leaves" / f"{scene_id}.json"
 
     @property
+    def super_topics_path(self) -> Path:
+        return self.data_path / "derived" / "super_topics" / "super_topics.json"
+
+    @property
     def cross_scene_transfer_path(self) -> Path:
         return self.data_path / "derived" / "cross_scene_transfer" / "transfer_matrix.json"
 

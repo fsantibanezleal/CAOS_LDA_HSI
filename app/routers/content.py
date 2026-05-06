@@ -715,6 +715,15 @@ def llm_tea_leaves(scene_id: str) -> dict:
         raise HTTPException(status_code=404, detail=f"llm_tea_leaves for '{scene_id}' not generated yet (set ANTHROPIC_API_KEY and run build_b12_llm_tea_leaves)") from exc
 
 
+@router.get("/super-topics")
+def super_topics() -> dict:
+    from app.services.content import get_super_topics
+    try:
+        return get_super_topics()
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="super_topics not generated yet") from exc
+
+
 @router.get("/cross-scene-transfer")
 def cross_scene_transfer() -> dict:
     from app.services.content import get_cross_scene_transfer

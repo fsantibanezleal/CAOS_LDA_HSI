@@ -119,6 +119,7 @@ export default function Benchmarks() {
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
           <LlmTeaLeavesSection />
+          <SuperTopicsSection />
         </>
       )}
     </PageShell>
@@ -133,6 +134,75 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function SuperTopicsSection() {
+  const { data, error } = useQuery({
+    queryKey: ["super-topics"],
+    queryFn: () => api.superTopics(),
+    retry: false,
+  });
+  if (error || !data) {
+    return (
+      <Section
+        title="Cross-scene super-topics (master plan §12)"
+        lead="Hierarchical clustering of every topic across all six labelled scenes on the common 400–2500 nm grid (average linkage on cosine). Reveals which topics group across scenes vs. stay scene-local."
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          super_topics payload not available yet.
+        </p>
+      </Section>
+    );
+  }
+  const cut8 =
+    data.cuts.find((c) => c.cut_level === 8) ?? data.cuts[data.cuts.length - 1]!;
+  const sortedClusters = [...cut8.clusters].sort(
+    (a, b) => b.scene_set.length - a.scene_set.length || b.n_members - a.n_members,
+  );
+  return (
+    <Section
+      title="Cross-scene super-topics (master plan §12)"
+      lead={`Hierarchical clustering of all ${data.n_topics_total} topics across ${data.n_scenes} labelled scenes on the common 400–2500 nm grid (average linkage on cosine). Cut level shown: ${cut8.cut_level} → ${cut8.n_clusters} super-topic clusters. Multi-scene clusters identify topics that recur across data sets — what "unites" the scenes.`}
+    >
+      <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
+        <thead>
+          <tr style={{ color: "var(--color-text-muted)" }}>
+            <th className="text-left font-mono text-[12px] pb-2">cluster</th>
+            <th className="text-left font-mono text-[12px] pb-2">members</th>
+            <th className="text-left font-mono text-[12px] pb-2">scenes</th>
+            <th className="text-left font-mono text-[12px] pb-2">topic ids</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedClusters.map((c) => (
+            <tr
+              key={c.cluster_id}
+              style={{ borderTop: "1px solid var(--color-border)" }}
+            >
+              <td className="py-1.5 font-mono">#{c.cluster_id}</td>
+              <td className="py-1.5">{c.n_members}</td>
+              <td
+                className="py-1.5 text-[12.5px]"
+                style={{
+                  color:
+                    c.scene_set.length > 1
+                      ? "var(--color-accent)"
+                      : "var(--color-text-muted)",
+                }}
+              >
+                {c.scene_set.join(", ")}
+              </td>
+              <td className="py-1.5 font-mono text-[12px]">
+                {c.members
+                  .map((m) => `${m.scene_id.split("-")[0]}:${m.topic_k}`)
+                  .join(" · ")}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Section>
+  );
+}
 
 function LlmTeaLeavesSection() {
   const queries = useQueries({
