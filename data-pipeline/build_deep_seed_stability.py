@@ -173,11 +173,132 @@ def fit_beta_vae_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, beta
     return mu.cpu().numpy()
 
 
-def fit_with_seed(spectra: np.ndarray, latent_dim: int, seed: int) -> np.ndarray:
+def _extract_patches(
+    cube: np.ndarray,
+    pixel_indices_global: np.ndarray,
+    cube_shape: tuple[int, int, int],
+    patch: int = 5,
+) -> np.ndarray:
+    h, w, B = cube_shape
+    half = patch // 2
+    padded = np.pad(cube.astype(np.float32), ((half, half), (half, half), (0, 0)), mode="constant")
+    out = np.empty((len(pixel_indices_global), patch, patch, B), dtype=np.float32)
+    for k, gidx in enumerate(pixel_indices_global):
+        i = int(gidx) // w
+        j = int(gidx) % w
+        out[k] = padded[i:i + patch, j:j + patch, :]
+    flat = out.reshape(out.shape[0], -1)
+    lo = flat.min(axis=1, keepdims=True)
+    hi = flat.max(axis=1, keepdims=True)
+    rng = np.where(hi - lo > 1e-6, hi - lo, 1.0)
+    flat = (flat - lo) / rng
+    return flat.reshape(out.shape)
+
+
+def fit_cae_2d_with_seed(patches: np.ndarray, latent_dim: int, seed: int, epochs: int = 60) -> np.ndarray:
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader, TensorDataset
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    x = torch.from_numpy(np.transpose(patches, (0, 3, 1, 2)).copy())
+    N, B, P, _ = x.shape
+
+    class CAE2D(nn.Module):
+        def __init__(self, in_ch, latent):
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Conv2d(in_ch, 64, kernel_size=3, padding=1), nn.ReLU(),
+                nn.Conv2d(64, 128, kernel_size=3, padding=1), nn.ReLU(),
+                nn.AdaptiveAvgPool2d(1),
+            )
+            self.head = nn.Linear(128, latent)
+            self.up = nn.Linear(latent, in_ch * P * P)
+            self.in_ch = in_ch
+            self.P = P
+
+        def encode(self, x):
+            return self.head(self.enc(x).flatten(1))
+
+        def forward(self, x):
+            z = self.encode(x)
+            return z, self.up(z).view(x.shape[0], self.in_ch, self.P, self.P)
+
+    model = CAE2D(B, latent_dim)
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loader = DataLoader(TensorDataset(x), batch_size=32, shuffle=True)
+    for _ in range(epochs):
+        for (batch,) in loader:
+            opt.zero_grad()
+            _, recon = model(batch)
+            loss = nn.functional.mse_loss(recon, batch)
+            loss.backward()
+            opt.step()
+    model.eval()
+    with torch.no_grad():
+        z = model.encode(x)
+    return z.cpu().numpy()
+
+
+def fit_cae_3d_with_seed(patches: np.ndarray, latent_dim: int, seed: int, epochs: int = 60, patch: int = 5) -> np.ndarray:
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader, TensorDataset
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    x_np = np.transpose(patches, (0, 3, 1, 2))[:, None, ...]
+    x = torch.from_numpy(x_np.copy())
+    N, _, Bdim, P, _ = x.shape
+    centre = patches[:, patch // 2, patch // 2, :]
+    anchor = torch.from_numpy(centre.astype(np.float32))
+
+    class CAE3D(nn.Module):
+        def __init__(self, latent):
+            super().__init__()
+            self.enc = nn.Sequential(
+                nn.Conv3d(1, 8, kernel_size=(5, 3, 3), padding=(2, 1, 1)), nn.ReLU(),
+                nn.MaxPool3d(kernel_size=(2, 1, 1)),
+                nn.Conv3d(8, 16, kernel_size=(5, 3, 3), padding=(2, 1, 1)), nn.ReLU(),
+                nn.AdaptiveAvgPool3d((4, 1, 1)),
+            )
+            self.head = nn.Linear(16 * 4, latent)
+
+        def forward(self, x):
+            return self.head(self.enc(x).flatten(1))
+
+    model = CAE3D(latent_dim)
+    decode = nn.Linear(latent_dim, Bdim)
+    opt = torch.optim.Adam(list(model.parameters()) + list(decode.parameters()), lr=1e-3)
+    loader = DataLoader(TensorDataset(x, anchor), batch_size=32, shuffle=True)
+    for _ in range(epochs):
+        for batch_x, batch_a in loader:
+            opt.zero_grad()
+            z = model(batch_x)
+            recon = decode(z)
+            loss = nn.functional.mse_loss(recon, batch_a)
+            loss.backward()
+            opt.step()
+    model.eval()
+    with torch.no_grad():
+        z = model(x)
+    return z.cpu().numpy()
+
+
+def fit_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, patches: np.ndarray | None = None) -> np.ndarray:
     if METHOD == "cae_1d_8":
         return fit_cae_1d_with_seed(spectra, latent_dim, seed)
     if METHOD == "beta_vae_8":
         return fit_beta_vae_with_seed(spectra, latent_dim, seed, beta=4.0)
+    if METHOD == "cae_2d_8":
+        assert patches is not None, "cae_2d_8 needs patches"
+        return fit_cae_2d_with_seed(patches, latent_dim, seed)
+    if METHOD == "cae_3d_8":
+        assert patches is not None, "cae_3d_8 needs patches"
+        return fit_cae_3d_with_seed(patches, latent_dim, seed)
     raise ValueError(f"Unknown CAOS_DEEP_SEED_METHOD: {METHOD}")
 
 
@@ -199,12 +320,18 @@ def build_for_scene(scene_id: str) -> dict | None:
     spectra_norm = normalize_per_row(spectra)
     n_classes = int(np.unique(labels).size)
 
+    # If method needs patches, build them once (same set across all seeds)
+    patches = None
+    if METHOD in ("cae_2d_8", "cae_3d_8"):
+        pixel_indices_sampled = pixel_indices[sample_idx_local]
+        patches = _extract_patches(cube, pixel_indices_sampled, (h, w, b), patch=5)
+
     # Fit deep method with N_SEEDS torch seeds
     latents = []
     cluster_labels = []
     ari_vs_gt = []
     for seed in range(N_SEEDS):
-        z = fit_with_seed(spectra_norm, LATENT_DIM, seed)
+        z = fit_with_seed(spectra_norm, LATENT_DIM, seed, patches=patches)
         latents.append(z)
         km = KMeans(n_clusters=n_classes, n_init=10, random_state=42).fit(z)
         cluster_labels.append(km.labels_)
