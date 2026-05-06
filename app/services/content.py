@@ -439,8 +439,8 @@ def get_topic_stability(scene_id: str, k_offset: int = 0) -> dict:
     return _load_or_404(get_settings().topic_stability_path(scene_id, k_offset))
 
 
-def get_deep_seed_stability(scene_id: str, method: str = "cae_1d_8") -> dict:
-    return _load_or_404(get_settings().deep_seed_stability_path(scene_id, method))
+def get_deep_seed_stability(scene_id: str, method: str = "cae_1d_8", n_seeds: int = 7) -> dict:
+    return _load_or_404(get_settings().deep_seed_stability_path(scene_id, method, n_seeds))
 
 
 def get_deep_anomaly(scene_id: str) -> dict:
