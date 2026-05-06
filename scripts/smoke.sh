@@ -79,6 +79,7 @@ paths=(
   "/api/topic-routed-classifier/indian-pines-corrected"
   "/api/embedded-baseline/indian-pines-corrected"
   "/api/topic-stability/indian-pines-corrected"
+  "/api/deep-seed-stability/indian-pines-corrected"
   "/api/topic-to-usgs-v7/indian-pines-corrected"
   "/api/topic-anomaly/indian-pines-corrected"
   "/api/topic-spatial-continuous/indian-pines-corrected"
