@@ -109,7 +109,9 @@ $paths = @(
     "/generated/topic_to_library/indian-pines-corrected.json",
     "/generated/spatial/indian-pines-corrected.json",
     "/generated/wordifications/indian-pines-corrected_V3_uniform_Q16.json",
-    "/generated/manifests/index.json"
+    "/generated/manifests/index.json",
+    # ---- SPA root (only present once frontend/dist exists) ----
+    "/"
 )
 
 foreach ($path in $paths) {

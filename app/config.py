@@ -256,6 +256,14 @@ class Settings(BaseSettings):
     def topic_to_usgs_v7_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_to_usgs_v7" / f"{scene_id}.json"
 
+    def hidsag_cross_preprocessing_stability_path(self, subset_code: str) -> Path:
+        return (
+            self.data_path
+            / "derived"
+            / "hidsag_cross_preprocessing_stability"
+            / f"{subset_code}.json"
+        )
+
     def topic_anomaly_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_anomaly" / f"{scene_id}.json"
 
@@ -267,6 +275,9 @@ class Settings(BaseSettings):
 
     def endmember_baseline_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "endmember_baseline" / f"{scene_id}.json"
+
+    def llm_tea_leaves_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "llm_tea_leaves" / f"{scene_id}.json"
 
     @property
     def cross_scene_transfer_path(self) -> Path:

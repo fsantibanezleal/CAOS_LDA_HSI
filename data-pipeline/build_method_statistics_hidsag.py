@@ -44,7 +44,12 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+
 from research_core.paths import DERIVED_DIR
+from _mlflow_helper import mlflow_run
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -298,50 +303,66 @@ def main() -> int:
     core = json.load(CORE_BENCHMARKS_PATH.open("r", encoding="utf-8"))
     runs = core.get("measured_target_runs", []) or []
     written = 0
-    for run in runs:
-        code = run.get("subset_code")
+    for run_record in runs:
+        code = run_record.get("subset_code")
         if not code:
             continue
         print(f"[method_stats_hidsag] {code} ...", flush=True)
-        try:
-            payload = aggregate_subset(run)
-        except Exception as exc:
-            print(f"  FAILED: {exc}", flush=True)
-            import traceback
-            traceback.print_exc()
-            continue
-        out_path = DERIVED_OUT_DIR / f"{code}.json"
-        with out_path.open("w", encoding="utf-8") as h:
-            json.dump(payload, h, separators=(",", ":"))
+        with mlflow_run("build_method_statistics_hidsag", scene_id=code) as mlrun:
+            try:
+                payload = aggregate_subset(run_record)
+            except Exception as exc:
+                print(f"  FAILED: {exc}", flush=True)
+                import traceback
+                traceback.print_exc()
+                continue
+            out_path = DERIVED_OUT_DIR / f"{code}.json"
+            with out_path.open("w", encoding="utf-8") as h:
+                json.dump(payload, h, separators=(",", ":"))
 
-        # Brief headline
-        if payload["regression"]:
-            block = payload["regression"]
-            best_method = max(
-                block["method_aggregates"].items(),
-                key=lambda kv: (kv[1]["r2_distribution"]["mean"]
-                                if kv[1]["r2_distribution"]["mean"] is not None else -np.inf),
-            )
-            f = block["friedman_nemenyi"].get("friedman") if block.get("friedman_nemenyi") else None
-            print(
-                f"  REG  best={best_method[0]} (R2 mean={best_method[1]['r2_distribution']['mean']:.3f}); "
-                f"Friedman p={f['p_value'] if f else 'NA'}",
-                flush=True,
-            )
-        if payload["classification"]:
-            block = payload["classification"]
-            best_method = max(
-                block["method_aggregates"].items(),
-                key=lambda kv: (kv[1]["macro_f1_distribution"]["mean"]
-                                if kv[1]["macro_f1_distribution"]["mean"] is not None else -np.inf),
-            )
-            f = block["friedman_nemenyi"].get("friedman") if block.get("friedman_nemenyi") else None
-            print(
-                f"  CLS  best={best_method[0]} (F1 mean={best_method[1]['macro_f1_distribution']['mean']:.3f}); "
-                f"Friedman p={f['p_value'] if f else 'NA'}",
-                flush=True,
-            )
-        written += 1
+            # Brief headline + MLflow metrics
+            if payload["regression"]:
+                block = payload["regression"]
+                best_method = max(
+                    block["method_aggregates"].items(),
+                    key=lambda kv: (kv[1]["r2_distribution"]["mean"]
+                                    if kv[1]["r2_distribution"]["mean"] is not None else -np.inf),
+                )
+                f = block["friedman_nemenyi"].get("friedman") if block.get("friedman_nemenyi") else None
+                if best_method[1]["r2_distribution"]["mean"] is not None:
+                    mlrun.log_metric(
+                        "regression_best_r2_mean",
+                        float(best_method[1]["r2_distribution"]["mean"]),
+                    )
+                if f and f.get("p_value") is not None:
+                    mlrun.log_metric("regression_friedman_p", float(f["p_value"]))
+                print(
+                    f"  REG  best={best_method[0]} (R2 mean={best_method[1]['r2_distribution']['mean']:.3f}); "
+                    f"Friedman p={f['p_value'] if f else 'NA'}",
+                    flush=True,
+                )
+            if payload["classification"]:
+                block = payload["classification"]
+                best_method = max(
+                    block["method_aggregates"].items(),
+                    key=lambda kv: (kv[1]["macro_f1_distribution"]["mean"]
+                                    if kv[1]["macro_f1_distribution"]["mean"] is not None else -np.inf),
+                )
+                f = block["friedman_nemenyi"].get("friedman") if block.get("friedman_nemenyi") else None
+                if best_method[1]["macro_f1_distribution"]["mean"] is not None:
+                    mlrun.log_metric(
+                        "classification_best_macro_f1_mean",
+                        float(best_method[1]["macro_f1_distribution"]["mean"]),
+                    )
+                if f and f.get("p_value") is not None:
+                    mlrun.log_metric("classification_friedman_p", float(f["p_value"]))
+                print(
+                    f"  CLS  best={best_method[0]} (F1 mean={best_method[1]['macro_f1_distribution']['mean']:.3f}); "
+                    f"Friedman p={f['p_value'] if f else 'NA'}",
+                    flush=True,
+                )
+            mlrun.log_artifact(str(out_path))
+            written += 1
     print(f"[method_stats_hidsag] done — {written} subsets written.", flush=True)
     return 0
 

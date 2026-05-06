@@ -39,6 +39,14 @@ RAW_DATASET_ALIASES = {
         "hidsag-mineral1",
         "hidsag-mineral2",
     ],
+    # cuprite-upv-reflectance and cuprite-aviris-reflectance are two
+    # catalog entries pointing at the same UPV/EHU .mat file (both
+    # consume `Cuprite_f970619t01p02_r02_sc03.a.rfl.mat`). The alias
+    # lets the inventory mark the cuprite-upv entry as locally
+    # available without duplicating the download.
+    "cuprite-upv-reflectance": [
+        "cuprite-aviris-reflectance",
+    ],
 }
 
 

@@ -658,6 +658,18 @@ def topic_to_usgs_v7(scene_id: str) -> dict:
         raise HTTPException(status_code=404, detail=f"topic_to_usgs_v7 for '{scene_id}' not generated yet") from exc
 
 
+@router.get("/hidsag-cross-preprocessing-stability/{subset_code}")
+def hidsag_cross_preprocessing_stability(subset_code: str) -> dict:
+    from app.services.content import get_hidsag_cross_preprocessing_stability
+    try:
+        return get_hidsag_cross_preprocessing_stability(subset_code)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"hidsag_cross_preprocessing_stability for '{subset_code}' not generated yet",
+        ) from exc
+
+
 @router.get("/topic-anomaly/{scene_id}")
 def topic_anomaly(scene_id: str) -> dict:
     from app.services.content import get_topic_anomaly
@@ -692,6 +704,15 @@ def endmember_baseline(scene_id: str) -> dict:
         return get_endmember_baseline(scene_id)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=f"endmember_baseline for '{scene_id}' not generated yet") from exc
+
+
+@router.get("/llm-tea-leaves/{scene_id}")
+def llm_tea_leaves(scene_id: str) -> dict:
+    from app.services.content import get_llm_tea_leaves
+    try:
+        return get_llm_tea_leaves(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"llm_tea_leaves for '{scene_id}' not generated yet (set ANTHROPIC_API_KEY and run build_b12_llm_tea_leaves)") from exc
 
 
 @router.get("/cross-scene-transfer")

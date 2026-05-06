@@ -12,10 +12,15 @@ Implemented blocks (per scene where applicable):
 - supervision-association: ARI / NMI of K-means clustering on theta vs the
   ground-truth label, plus a logistic-regression macro-F1 trained on theta
 
-Blocks left as "blocked" pending dedicated builders:
-- quantization-sensitivity: needs the full Q grid from build_quantization_views
-- document-definition-sensitivity: needs the groupings builder
-- spectral-library-alignment: needs the USGS-aligned topic_to_library builder
+Wired blocks reading dedicated builders:
+- quantization-sensitivity: surfaces build_quantization_sensitivity payload
+  (canonical config, per-probe matched_cosine + ARI vs canonical, summary verdict)
+- document-definition-sensitivity: build_cross_method_agreement payload
+  (mean / min / max ARI and NMI across the 8 document constructors,
+  plus per-method ARI/NMI vs label and vs topic-dominant)
+- spectral-library-alignment: build_topic_to_library + build_topic_to_usgs_v7
+  payload (per-topic best cosine summary on AVIRIS-Classic 1997 library
+  + USGS v7 plurality-chapter assignment per topic + chapter counts)
 
 Output: data/derived/validation_blocks/<scene>.json
 """
@@ -55,6 +60,10 @@ from research_core.raw_scenes import (
 LOCAL_FIT_DIR = DATA_DIR / "local" / "lda_fits"
 LOCAL_STAB_DIR = DATA_DIR / "local" / "topic_stability"
 DERIVED_OUT_DIR = DERIVED_DIR / "validation_blocks"
+QUANT_SENS_DIR = DERIVED_DIR / "quantization_sensitivity"
+CROSS_METHOD_DIR = DERIVED_DIR / "cross_method_agreement"
+TOPIC_TO_LIBRARY_DIR = DERIVED_DIR / "topic_to_library"
+TOPIC_TO_USGS_V7_DIR = DERIVED_DIR / "topic_to_usgs_v7"
 
 LABELLED_SCENES = [
     "indian-pines-corrected",
@@ -228,6 +237,178 @@ def compute_supervision_association(theta: np.ndarray, labels: np.ndarray) -> di
     }
 
 
+def compute_quantization_sensitivity_block(scene_id: str) -> dict:
+    """Surface the build_quantization_sensitivity payload as a
+    validation block. Falls back to status=blocked when the file is
+    absent."""
+    src = QUANT_SENS_DIR / f"{scene_id}.json"
+    if not src.is_file():
+        return make_blocked_block(
+            "quantization-sensitivity",
+            f"build_quantization_sensitivity has not produced "
+            f"{src.relative_to(DERIVED_DIR.parent)} yet",
+        )
+    payload = json.loads(src.read_text(encoding="utf-8"))
+    summary = payload.get("summary", {}) or {}
+    probes = payload.get("probes", []) or []
+    probe_metrics = [
+        {
+            "config": p.get("config"),
+            "status": p.get("status"),
+            "matched_cosine_mean": p.get("matched_cosine_mean"),
+            "matched_cosine_min": p.get("matched_cosine_min"),
+            "ari_dominant_vs_canonical": p.get("ari_dominant_vs_canonical"),
+        }
+        for p in probes
+    ]
+    return {
+        "block_id": "quantization-sensitivity",
+        "status": "ready",
+        "metrics": {
+            "canonical_recipe": payload.get("canonical_recipe"),
+            "canonical_scheme": payload.get("canonical_scheme"),
+            "canonical_Q": payload.get("canonical_Q"),
+            "topic_count": payload.get("topic_count"),
+            "n_configs_compared": int(summary.get("n_configs_compared", len(probes))),
+            "matched_cosine_mean_overall_mean": summary.get(
+                "matched_cosine_mean_overall_mean"
+            ),
+            "matched_cosine_mean_overall_min": summary.get(
+                "matched_cosine_mean_overall_min"
+            ),
+            "ari_overall_mean": summary.get("ari_overall_mean"),
+            "ari_overall_min": summary.get("ari_overall_min"),
+            "verdict": summary.get("verdict"),
+            "per_probe": probe_metrics,
+        },
+        "source": str(src.relative_to(DERIVED_DIR.parent)).replace("\\", "/"),
+    }
+
+
+def _off_diagonal_summary(matrix: list[list[float]]) -> dict:
+    """Mean / min / max of the off-diagonal entries of a symmetric matrix."""
+    arr = np.array(matrix, dtype=np.float64)
+    n = arr.shape[0]
+    if n < 2:
+        return {"mean": None, "min": None, "max": None, "n_pairs": 0}
+    iu = np.triu_indices(n, k=1)
+    vals = arr[iu]
+    return {
+        "mean": round(float(np.mean(vals)), 6),
+        "min": round(float(np.min(vals)), 6),
+        "max": round(float(np.max(vals)), 6),
+        "n_pairs": int(vals.size),
+    }
+
+
+def compute_document_definition_sensitivity_block(scene_id: str) -> dict:
+    """Surface the build_cross_method_agreement payload as a validation
+    block. Reports off-diagonal ARI/NMI mean/min/max across all eight
+    document-constructor methods (felzenszwalb, label, patch_15,
+    patch_7, pixel, slic_2000, slic_500, topic_dominant) plus the
+    per-method ARI/NMI summaries vs label and vs topic-dominant.
+    Falls back to status=blocked when the upstream file is absent."""
+    src = CROSS_METHOD_DIR / f"{scene_id}.json"
+    if not src.is_file():
+        return make_blocked_block(
+            "document-definition-sensitivity",
+            f"build_cross_method_agreement has not produced "
+            f"{src.relative_to(DERIVED_DIR.parent)} yet",
+        )
+    payload = json.loads(src.read_text(encoding="utf-8"))
+    methods = list(payload.get("method_names", []))
+    ari_off = _off_diagonal_summary(payload.get("ari_matrix", []))
+    nmi_off = _off_diagonal_summary(payload.get("nmi_matrix", []))
+    v_off = _off_diagonal_summary(payload.get("v_measure_matrix", []))
+    return {
+        "block_id": "document-definition-sensitivity",
+        "status": "ready",
+        "metrics": {
+            "n_methods_compared": len(methods),
+            "methods": methods,
+            "n_compared_pixels": payload.get("n_compared_pixels"),
+            "off_diagonal_ari": ari_off,
+            "off_diagonal_nmi": nmi_off,
+            "off_diagonal_v_measure": v_off,
+            "agreement_vs_label_summary": payload.get(
+                "agreement_vs_label_summary", []
+            ),
+            "agreement_vs_topic_dominant_summary": payload.get(
+                "agreement_vs_topic_dominant_summary", []
+            ),
+        },
+        "source": str(src.relative_to(DERIVED_DIR.parent)).replace("\\", "/"),
+    }
+
+
+def compute_spectral_library_alignment_block(scene_id: str) -> dict:
+    """Surface build_topic_to_library + build_topic_to_usgs_v7 as a
+    validation block. Reports per-topic best cosine on the AVIRIS-Classic
+    1997 library plus USGS v7 plurality-chapter assignment per topic
+    and overall chapter counts. Falls back to status=blocked when
+    neither file exists."""
+    lib_path = TOPIC_TO_LIBRARY_DIR / f"{scene_id}.json"
+    usgs_path = TOPIC_TO_USGS_V7_DIR / f"{scene_id}.json"
+    if not lib_path.is_file() and not usgs_path.is_file():
+        return make_blocked_block(
+            "spectral-library-alignment",
+            "Neither build_topic_to_library nor build_topic_to_usgs_v7 has produced an artifact for this scene yet",
+        )
+
+    metrics: dict = {}
+    sources: list[str] = []
+
+    if lib_path.is_file():
+        sources.append(
+            str(lib_path.relative_to(DERIVED_DIR.parent)).replace("\\", "/")
+        )
+        payload = json.loads(lib_path.read_text(encoding="utf-8"))
+        cos = np.asarray(payload.get("topic_x_library_cosine", []), dtype=np.float64)
+        if cos.size > 0:
+            best_per_topic = cos.max(axis=1)
+            metrics["library_aviris_classic"] = {
+                "library_subset": payload.get("library_sensor_subset"),
+                "library_sample_count": int(payload.get("library_sample_count", 0)),
+                "topic_count": int(cos.shape[0]),
+                "best_cosine_per_topic_mean": round(float(best_per_topic.mean()), 6),
+                "best_cosine_per_topic_min": round(float(best_per_topic.min()), 6),
+                "best_cosine_per_topic_max": round(float(best_per_topic.max()), 6),
+                "best_cosine_per_topic": [round(float(v), 6) for v in best_per_topic],
+            }
+
+    if usgs_path.is_file():
+        sources.append(
+            str(usgs_path.relative_to(DERIVED_DIR.parent)).replace("\\", "/")
+        )
+        payload = json.loads(usgs_path.read_text(encoding="utf-8"))
+        chapter_counts = payload.get("library_chapter_counts", {}) or {}
+        # chapter_histogram_top50_per_topic is a list[K] of dicts
+        # {chapter: count_in_top_50}; pick each topic's plurality chapter.
+        chapter_top50 = payload.get("chapter_histogram_top50_per_topic", []) or []
+        chapter_top1_counts: dict[str, int] = {}
+        for histogram in chapter_top50:
+            if not isinstance(histogram, dict) or not histogram:
+                continue
+            best_chapter = max(histogram.items(), key=lambda kv: kv[1])[0]
+            chapter_top1_counts[best_chapter] = (
+                chapter_top1_counts.get(best_chapter, 0) + 1
+            )
+        metrics["library_usgs_v7"] = {
+            "library_subset": payload.get("library_subset"),
+            "library_sample_count": int(payload.get("library_sample_count", 0)),
+            "library_chapter_counts": chapter_counts,
+            "topic_count_with_top50_histogram": len(chapter_top50),
+            "best_chapter_count_per_topic": chapter_top1_counts,
+        }
+
+    return {
+        "block_id": "spectral-library-alignment",
+        "status": "ready",
+        "metrics": metrics,
+        "sources": sources,
+    }
+
+
 def make_blocked_block(block_id: str, reason: str) -> dict:
     return {
         "block_id": block_id,
@@ -269,18 +450,9 @@ def build_for_scene(scene_id: str) -> dict | None:
         compute_corpus_integrity(doc_term),
         compute_topic_stability(doc_term, K),
         compute_supervision_association(theta, sample_labels),
-        make_blocked_block(
-            "quantization-sensitivity",
-            "Pending build_quantization_views: needs the full scheme x Q grid",
-        ),
-        make_blocked_block(
-            "document-definition-sensitivity",
-            "Pending build_groupings: needs SLIC / patch / semantic-seg constructors",
-        ),
-        make_blocked_block(
-            "spectral-library-alignment",
-            "Pending build_topic_to_library: needs USGS / ECOSTRESS alignment",
-        ),
+        compute_quantization_sensitivity_block(scene_id),
+        compute_document_definition_sensitivity_block(scene_id),
+        compute_spectral_library_alignment_block(scene_id),
     ]
 
     return {
@@ -288,7 +460,7 @@ def build_for_scene(scene_id: str) -> dict | None:
         "scene_name": config.name,
         "blocks": blocks,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "builder_version": "build_validation_blocks v0.1",
+        "builder_version": "build_validation_blocks v0.4",
     }
 
 
@@ -316,11 +488,33 @@ def main() -> int:
         ci = block_map["corpus-integrity"]["metrics"]
         ts = block_map["topic-stability"]["metrics"]
         sa = block_map["supervision-association"]["metrics"]
+        qs_block = block_map.get("quantization-sensitivity", {})
+        qs_metrics = (
+            qs_block.get("metrics") if qs_block.get("status") == "ready" else None
+        )
+        qs_summary = (
+            f"quant={qs_metrics.get('verdict')}"
+            if qs_metrics
+            else f"quant={qs_block.get('status')}"
+        )
+        dd_block = block_map.get("document-definition-sensitivity", {})
+        dd_metrics = (
+            dd_block.get("metrics") if dd_block.get("status") == "ready" else None
+        )
+        if dd_metrics:
+            ari_off = dd_metrics.get("off_diagonal_ari", {}) or {}
+            dd_summary = (
+                f"docdef_n={dd_metrics.get('n_methods_compared')} "
+                f"ARI_off={ari_off.get('mean', 0):.3f}"
+            )
+        else:
+            dd_summary = f"docdef={dd_block.get('status', '?')}"
         print(
             f"  D={ci['document_count']} V={ci['vocabulary_size']} "
             f"matched_cos={ts['matched_cosine_overall_mean']:.3f} "
             f"ARI={sa['ari_kmeans_theta_vs_label']:.3f} "
-            f"theta_F1={sa['logistic_regression_on_theta_macro_f1']['mean']:.3f}",
+            f"theta_F1={sa['logistic_regression_on_theta_macro_f1']['mean']:.3f} "
+            f"{qs_summary} {dd_summary}",
             flush=True,
         )
         written += 1
