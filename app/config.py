@@ -253,8 +253,9 @@ class Settings(BaseSettings):
     def topic_stability_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_stability" / f"{scene_id}.json"
 
-    def deep_seed_stability_path(self, scene_id: str) -> Path:
-        return self.data_path / "derived" / "deep_seed_stability" / f"{scene_id}.json"
+    def deep_seed_stability_path(self, scene_id: str, method: str = "cae_1d_8") -> Path:
+        suffix = "" if method == "cae_1d_8" else f"__{method}"
+        return self.data_path / "derived" / "deep_seed_stability" / f"{scene_id}{suffix}.json"
 
     def topic_to_usgs_v7_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_to_usgs_v7" / f"{scene_id}.json"
