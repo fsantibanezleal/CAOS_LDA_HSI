@@ -250,8 +250,9 @@ class Settings(BaseSettings):
     def embedded_baseline_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "embedded_baseline" / f"{scene_id}.json"
 
-    def topic_stability_path(self, scene_id: str) -> Path:
-        return self.data_path / "derived" / "topic_stability" / f"{scene_id}.json"
+    def topic_stability_path(self, scene_id: str, k_offset: int = 0) -> Path:
+        suffix = "" if k_offset == 0 else f"__K{k_offset:+d}"
+        return self.data_path / "derived" / "topic_stability" / f"{scene_id}{suffix}.json"
 
     def deep_seed_stability_path(self, scene_id: str, method: str = "cae_1d_8") -> Path:
         suffix = "" if method == "cae_1d_8" else f"__{method}"
