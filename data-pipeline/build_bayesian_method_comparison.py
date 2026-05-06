@@ -43,9 +43,10 @@ warnings.filterwarnings("ignore")
 METHOD_STATS_DIR = DERIVED_DIR / "method_statistics_hidsag"
 DERIVED_OUT_DIR = DERIVED_DIR / "method_statistics_hidsag"
 
-NUTS_DRAWS = 1000
-NUTS_TUNE = 1000
-NUTS_CHAINS = 2
+import os as _os
+NUTS_DRAWS = int(_os.environ.get("CAOS_NUTS_DRAWS", "1000"))
+NUTS_TUNE = int(_os.environ.get("CAOS_NUTS_TUNE", "1000"))
+NUTS_CHAINS = int(_os.environ.get("CAOS_NUTS_CHAINS", "2"))
 RANDOM_STATE = 42
 
 
