@@ -524,8 +524,14 @@ def build_for_scene(scene_id: str) -> list[dict]:
         ("beta_vae_8", lambda s: fit_beta_vae(s, 8, beta=4.0)),
         ("beta_vae_16", lambda s: fit_beta_vae(s, 16, beta=4.0)),
         ("beta_vae_32", lambda s: fit_beta_vae(s, 32, beta=4.0)),
+        ("cae_2d_4", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 4)),
         ("cae_2d_8", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 8)),
+        ("cae_2d_16", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 16)),
+        ("cae_2d_32", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 32)),
+        ("cae_3d_4", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 4)),
         ("cae_3d_8", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 8)),
+        ("cae_3d_16", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 16)),
+        ("cae_3d_32", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 32)),
     ]
     repr_filter = os.environ.get("CAOS_REPR_FILTER", "").strip()
     if repr_filter:
