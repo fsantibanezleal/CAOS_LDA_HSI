@@ -510,8 +510,12 @@ def build_for_scene(scene_id: str) -> list[dict]:
 
     methods: list[tuple[str, callable]] = [
         ("pca_3", lambda s: fit_pca(s, 3)),
+        ("pca_4", lambda s: fit_pca(s, 4)),
+        ("pca_8", lambda s: fit_pca(s, 8)),
         ("pca_10", lambda s: fit_pca(s, 10)),
+        ("pca_16", lambda s: fit_pca(s, 16)),
         ("pca_30", lambda s: fit_pca(s, min(30, B - 1))),
+        ("pca_32", lambda s: fit_pca(s, min(32, B - 1))),
         ("nmf_4", lambda s: fit_nmf(np.clip(s, 0.0, None), 4)),
         ("nmf_8", lambda s: fit_nmf(np.clip(s, 0.0, None), 8)),
         ("nmf_12", lambda s: fit_nmf(np.clip(s, 0.0, None), 12)),
