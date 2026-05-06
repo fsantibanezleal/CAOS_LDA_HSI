@@ -71,6 +71,7 @@ BUILDER_DIRS = [
     ("build_embedded_baseline", "embedded_baseline"),
     ("build_topic_stability", "topic_stability"),
     ("build_deep_seed_stability", "deep_seed_stability"),
+    ("build_deep_anomaly", "deep_anomaly"),
     ("build_topic_to_usgs_v7", "topic_to_usgs_v7"),
     ("build_topic_anomaly", "topic_anomaly"),
     ("build_topic_spatial_continuous", "topic_spatial_continuous"),
