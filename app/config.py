@@ -260,6 +260,9 @@ class Settings(BaseSettings):
     def deep_anomaly_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "deep_anomaly" / f"{scene_id}.json"
 
+    def classical_seed_stability_path(self, scene_id: str, method: str = "pca_8") -> Path:
+        return self.data_path / "derived" / "classical_seed_stability" / f"{scene_id}__{method}.json"
+
     def topic_to_usgs_v7_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_to_usgs_v7" / f"{scene_id}.json"
 

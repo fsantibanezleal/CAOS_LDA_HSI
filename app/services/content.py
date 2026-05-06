@@ -447,6 +447,10 @@ def get_deep_anomaly(scene_id: str) -> dict:
     return _load_or_404(get_settings().deep_anomaly_path(scene_id))
 
 
+def get_classical_seed_stability(scene_id: str, method: str = "pca_8") -> dict:
+    return _load_or_404(get_settings().classical_seed_stability_path(scene_id, method))
+
+
 def get_topic_to_usgs_v7(scene_id: str) -> dict:
     return _load_or_404(get_settings().topic_to_usgs_v7_path(scene_id))
 
