@@ -124,6 +124,9 @@ def build_for_scene(scene_id: str) -> dict | None:
             K = int(phi.shape[0])
         except Exception:
             K = K_default
+    # K-sensitivity sweep support: env var shifts the canonical K
+    K_offset = int(_os.environ.get("CAOS_TOPIC_STABILITY_K_OFFSET", "0"))
+    K = max(2, K + K_offset)
 
     cube, gt, _ = load_scene(scene_id)
     h, w, b = cube.shape
@@ -224,7 +227,11 @@ def main() -> int:
         if payload is None:
             print("  skipped", flush=True)
             continue
-        out_path = DERIVED_OUT_DIR / f"{scene_id}.json"
+        # When CAOS_TOPIC_STABILITY_K_OFFSET is non-zero, suffix the file
+        # so the canonical K=0 file is preserved.
+        _k_offset = int(_os.environ.get("CAOS_TOPIC_STABILITY_K_OFFSET", "0"))
+        _suffix = "" if _k_offset == 0 else f"__K{_k_offset:+d}"
+        out_path = DERIVED_OUT_DIR / f"{scene_id}{_suffix}.json"
         with out_path.open("w", encoding="utf-8") as h:
             json.dump(payload, h, separators=(",", ":"))
         s = payload["scene_stability_summary"]
