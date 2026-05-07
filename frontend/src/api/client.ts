@@ -282,9 +282,25 @@ export const api = {
     request<SpectralBrowserMeta>(
       `/api/spectral-browser/${encodeURIComponent(sceneId)}`,
     ),
-  topicStability: (sceneId: string) =>
+  topicStability: (sceneId: string, kOffset = 0) =>
     request<TopicStability>(
-      `/api/topic-stability/${encodeURIComponent(sceneId)}`,
+      `/api/topic-stability/${encodeURIComponent(sceneId)}${kOffset !== 0 ? `?k_offset=${kOffset}` : ""}`,
+    ),
+  deepSeedStability: (
+    sceneId: string,
+    method: "cae_1d_8" | "beta_vae_8" | "cae_2d_8" | "cae_3d_8" = "cae_1d_8",
+    nSeeds: 7 | 15 = 7,
+  ) =>
+    request<SeedStability>(
+      `/api/deep-seed-stability/${encodeURIComponent(sceneId)}?method=${method}${nSeeds !== 7 ? `&n_seeds=${nSeeds}` : ""}`,
+    ),
+  classicalSeedStability: (
+    sceneId: string,
+    method: "pca_8" | "nmf_8" | "ica_8" | "dense_ae_8" = "pca_8",
+    nSeeds: 7 | 15 = 7,
+  ) =>
+    request<SeedStability>(
+      `/api/classical-seed-stability/${encodeURIComponent(sceneId)}?method=${method}${nSeeds !== 7 ? `&n_seeds=${nSeeds}` : ""}`,
     ),
   topicToUsgsV7: (sceneId: string) =>
     request<TopicToUsgsV7>(
@@ -580,6 +596,33 @@ export type SuperTopics = {
   cuts: SuperTopicCut[];
   scene_pair_super_topic_overlap_at_cut8: Record<string, Record<string, number>>;
   members: SuperTopicMember[];
+  generated_at: string;
+  builder_version: string;
+};
+
+export type SeedStability = {
+  scene_id: string;
+  method: string;
+  n_seeds: number;
+  latent_dim: number;
+  samples_per_class: number;
+  ari_vs_gt_per_seed: number[];
+  ari_vs_gt_summary: {
+    mean: number;
+    std: number;
+    min: number;
+    max: number;
+  };
+  seed_pair_ari: number[][];
+  seed_pair_procrustes_dist: number[][];
+  off_diagonal_summary: {
+    ari_mean: number;
+    ari_min: number;
+    ari_std: number;
+    procrustes_mean: number;
+    procrustes_max: number;
+  };
+  framework_axis: string;
   generated_at: string;
   builder_version: string;
 };
