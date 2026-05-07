@@ -116,6 +116,7 @@ export default function Benchmarks() {
           </Section>
 
           <MultiAxisBatterySection />
+          <BayesianHdiSection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -135,6 +136,165 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function BayesianHdiSection() {
+  const cls = useQuery({
+    queryKey: ["bayesian-classification-labelled"],
+    queryFn: () => api.bayesianClassificationLabelled(),
+    retry: false,
+  });
+  const reg = useQuery({
+    queryKey: ["bayesian-regression"],
+    queryFn: () => api.bayesianRegression(),
+    retry: false,
+  });
+
+  if (!cls.data && !reg.data) {
+    return (
+      <Section
+        title="Bayesian method comparison — hierarchical NUTS posteriors"
+        lead="Loading PyMC posteriors at 4 chains × 1000 tune + 1000 draws…"
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Loading…
+        </p>
+      </Section>
+    );
+  }
+
+  const renderForest = (
+    title: string,
+    payload: import("@/api/client").BayesianComparison | undefined,
+    note: string,
+  ) => {
+    if (!payload) return null;
+    const ms = payload.method_posteriors;
+    const lo = Math.min(...ms.map((m) => m.hdi94_lo));
+    const hi = Math.max(...ms.map((m) => m.hdi94_hi));
+    const range = hi - lo;
+    const W = 540;
+    const xOf = (v: number) => ((v - lo) / range) * W;
+    const zeroX = xOf(0);
+    const ranked = [...ms].sort(
+      (a, b) => b.posterior_mean - a.posterior_mean,
+    );
+
+    return (
+      <div
+        className="rounded-md border p-4 mb-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+        }}
+      >
+        <h4
+          className="text-[14px] font-semibold mb-1"
+          style={{ color: "var(--color-text)" }}
+        >
+          {title}
+        </h4>
+        <p
+          className="text-[12px] mb-3"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          {note}
+        </p>
+        <svg
+          viewBox={`0 0 ${W + 200} ${ms.length * 32 + 30}`}
+          role="img"
+          aria-label={title}
+        >
+          {ranked.map((m, i) => {
+            const y = i * 32 + 18;
+            return (
+              <g key={m.method}>
+                <text
+                  x={188}
+                  y={y + 4}
+                  fontSize="11"
+                  textAnchor="end"
+                  fill="currentColor"
+                  fontFamily="ui-monospace, monospace"
+                >
+                  {m.method}
+                </text>
+                <line
+                  x1={195 + xOf(m.hdi94_lo)}
+                  y1={y}
+                  x2={195 + xOf(m.hdi94_hi)}
+                  y2={y}
+                  stroke="rgba(31,119,180,0.6)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+                <circle
+                  cx={195 + xOf(m.posterior_mean)}
+                  cy={y}
+                  r="4"
+                  fill="rgba(214,39,40,1)"
+                />
+                <text
+                  x={195 + xOf(m.hdi94_hi) + 8}
+                  y={y + 4}
+                  fontSize="10"
+                  fill="currentColor"
+                  opacity="0.7"
+                  fontFamily="ui-monospace, monospace"
+                >
+                  μ={m.posterior_mean.toFixed(3)} HDI[{m.hdi94_lo.toFixed(2)},{m.hdi94_hi.toFixed(2)}]
+                </text>
+              </g>
+            );
+          })}
+          <line
+            x1={195 + zeroX}
+            y1={0}
+            x2={195 + zeroX}
+            y2={ms.length * 32}
+            stroke="currentColor"
+            strokeOpacity="0.4"
+            strokeDasharray="3 3"
+            strokeWidth="1"
+          />
+          <text
+            x={195 + zeroX}
+            y={ms.length * 32 + 14}
+            fontSize="9"
+            textAnchor="middle"
+            fill="currentColor"
+            opacity="0.6"
+          >
+            μ = 0
+          </text>
+        </svg>
+        <p
+          className="mt-2 text-[11.5px]"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          {payload.n_observations} observations · {payload.method_posteriors.length} methods · {payload.model_summary}
+        </p>
+      </div>
+    );
+  };
+
+  return (
+    <Section
+      title="Bayesian method comparison — hierarchical NUTS posteriors"
+      lead="PyMC hierarchical normal model: y ~ N(μ_method + α_scene + γ_fold, σ). Posterior means shown as red dots, HDI94 intervals as blue bars. Methods are ordered by posterior mean. Vertical dashed line at μ=0 is the model-mean reference."
+    >
+      {renderForest(
+        "Classification (labelled scenes, 150 obs)",
+        cls.data,
+        "raw / pca / topic_routed_* HDIs strictly positive; theta_logistic HDI includes 0 — naive theta-flat is statistically indistinguishable from the model mean.",
+      )}
+      {renderForest(
+        "Regression (HIDSAG, 168 obs)",
+        reg.data,
+        "Region-aware and topic-routed methods carry positive μ; raw_ridge worst point estimate. HDIs wide because HIDSAG targets are heterogeneous; per-target Friedman tests are tighter (GEOCHEM Friedman p=0.007).",
+      )}
+    </Section>
+  );
+}
 
 function MultiAxisBatterySection() {
   const probes = useQueries({
