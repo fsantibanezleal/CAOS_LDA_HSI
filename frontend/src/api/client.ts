@@ -329,6 +329,10 @@ export const api = {
     ),
   bayesianRegression: () =>
     request<BayesianComparison>(`/api/bayesian-comparison/regression`),
+  representation: (method: string, sceneId: string) =>
+    request<RepresentationPayload>(
+      `/api/representations/${encodeURIComponent(method)}/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
 };
 
@@ -615,6 +619,26 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type RepresentationPayload = {
+  scene_id: string;
+  method: string;
+  n_documents: number;
+  latent_dim: number;
+  fit_meta: Record<string, number | string>;
+  silhouette_label?: { overall: number; per_class?: Record<string, number> };
+  downstream_kmeans_vs_label: { ari: number; nmi: number };
+  scatter_pca_3d_explained_variance?: number[];
+  scatter_2d_3d_subsample?: {
+    i: number;
+    label_id: number;
+    x_2d: number;
+    y_2d: number;
+    x_3d: number;
+    y_3d: number;
+    z_3d: number;
+  }[];
 };
 
 export type BayesianComparison = {
