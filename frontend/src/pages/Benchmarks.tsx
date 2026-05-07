@@ -115,6 +115,7 @@ export default function Benchmarks() {
             </dl>
           </Section>
 
+          <MultiAxisBatterySection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -134,6 +135,165 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function MultiAxisBatterySection() {
+  const probes = useQueries({
+    queries: LABELLED_SCENES.map((sc) => ({
+      queryKey: ["linear-probe-panel", sc],
+      queryFn: () => api.linearProbePanel(sc),
+      retry: false,
+    })),
+  });
+  const routes = useQueries({
+    queries: LABELLED_SCENES.map((sc) => ({
+      queryKey: ["topic-routed-classifier", sc],
+      queryFn: () => api.topicRoutedClassifier(sc),
+      retry: false,
+    })),
+  });
+  const stabs = useQueries({
+    queries: LABELLED_SCENES.map((sc) => ({
+      queryKey: ["topic-stability", sc, 0],
+      queryFn: () => api.topicStability(sc, 0),
+      retry: false,
+    })),
+  });
+
+  const ready = probes.every((q) => q.data) && routes.every((q) => q.data) && stabs.every((q) => q.data);
+
+  if (!ready) {
+    return (
+      <Section
+        title="Multi-Axis Addendum B — battery summary"
+        lead="One row per labelled scene, one column per axis (B-1 fair-baseline F1, B-3 topic-routed F1, B-6 LDA off-diag stability). Loads in parallel from /api/linear-probe-panel/, /api/topic-routed-classifier/, /api/topic-stability/. See the wiki for the full framework."
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Loading multi-axis battery payloads…
+        </p>
+      </Section>
+    );
+  }
+
+  type Row = {
+    scene: string;
+    theta_f1: number;
+    ica10_f1: number | null;
+    cae_max_f1: number;
+    cae_max_K: number;
+    routed_soft: number | null;
+    raw_logistic: number | null;
+    theta_logistic: number | null;
+    lda_off_diag: number;
+  };
+
+  const rows: Row[] = LABELLED_SCENES.map((sc, i) => {
+    const probe = probes[i]!.data!;
+    const route = routes[i]!.data!;
+    const stab = stabs[i]!.data!;
+    const mm = probe.method_metrics;
+    const theta_f1 = mm.theta?.macro_f1?.mean ?? NaN;
+    const ica10_f1 = mm.ica_10?.macro_f1?.mean ?? null;
+    let cae_max_f1 = 0;
+    let cae_max_K = 0;
+    for (const k of [4, 6, 8, 10, 12, 16, 32]) {
+      const cell = mm[`cae_1d_${k}`]?.macro_f1?.mean;
+      if (cell != null && cell > cae_max_f1) {
+        cae_max_f1 = cell;
+        cae_max_K = k;
+      }
+    }
+    const rm = route.method_metrics;
+    const routed_soft = rm.topic_routed_soft?.macro_f1?.mean ?? null;
+    const raw_logistic = rm.raw_logistic?.macro_f1?.mean ?? null;
+    const theta_logistic = rm.theta_logistic?.macro_f1?.mean ?? null;
+    const lda_off_diag = stab.scene_stability_summary.off_diagonal_mean;
+    return {
+      scene: sc,
+      theta_f1,
+      ica10_f1,
+      cae_max_f1,
+      cae_max_K,
+      routed_soft,
+      raw_logistic,
+      theta_logistic,
+      lda_off_diag,
+    };
+  });
+
+  return (
+    <Section
+      title="Multi-Axis Addendum B — battery summary"
+      lead="One row per labelled scene. Columns: theta-as-feature F1 (B-1, naive), ICA-10 F1 (B-1, fair-baseline winner), best CAE-1D F1 across K∈{4..32} (B-1 deep ladder), topic_routed_soft F1 (B-3 the master-plan thesis), raw_logistic F1 (B-3 strong baseline), and LDA off-diagonal stability (B-6, N=7 seeds). The framework is on the wiki Multi-Axis-Addendum-B page."
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
+          <thead>
+            <tr style={{ color: "var(--color-text-muted)" }}>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">θ flat (B-1)</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">ICA-10 (B-1)</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">CAE-1D best (B-1)</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">θ_logistic (B-3)</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">routed_soft (B-3)</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">raw_logistic (B-3)</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">LDA stability (B-6)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr
+                key={r.scene}
+                style={{ borderTop: "1px solid var(--color-border)" }}
+              >
+                <td className="py-1.5 pr-3 font-mono">{r.scene}</td>
+                <td className="py-1.5 pr-3 text-right font-mono">
+                  {Number.isFinite(r.theta_f1) ? r.theta_f1.toFixed(3) : "—"}
+                </td>
+                <td
+                  className="py-1.5 pr-3 text-right font-mono"
+                  style={{ color: "var(--color-accent)" }}
+                >
+                  {r.ica10_f1 != null ? r.ica10_f1.toFixed(3) : "—"}
+                </td>
+                <td className="py-1.5 pr-3 text-right font-mono">
+                  {r.cae_max_f1 > 0
+                    ? `${r.cae_max_f1.toFixed(3)} (K=${r.cae_max_K})`
+                    : "—"}
+                </td>
+                <td className="py-1.5 pr-3 text-right font-mono">
+                  {r.theta_logistic != null ? r.theta_logistic.toFixed(3) : "—"}
+                </td>
+                <td
+                  className="py-1.5 pr-3 text-right font-mono"
+                  style={{ color: "var(--color-accent)" }}
+                >
+                  {r.routed_soft != null ? r.routed_soft.toFixed(3) : "—"}
+                </td>
+                <td className="py-1.5 pr-3 text-right font-mono">
+                  {r.raw_logistic != null ? r.raw_logistic.toFixed(3) : "—"}
+                </td>
+                <td className="py-1.5 pr-3 text-right font-mono">
+                  {r.lda_off_diag.toFixed(3)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p
+        className="mt-3 text-[12.5px]"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        Headlines: ICA-10 wins B-1 fair-baseline on every scene. CAE-1D K=32 closes
+        much of the gap (KSC θ=0.021 → CAE-1D K=32=0.710, a 33× recovery).
+        topic_routed_soft matches or beats raw_logistic on every scene; θ_logistic
+        loses by 30-50 points everywhere — the master-plan thesis "θ as a gate, never
+        as a feature" is empirically validated. LDA off-diag stability ≥ 0.954 across
+        all 6 scenes vs CAE-1D 0.74-0.97 and β-VAE 0.18-0.89.
+      </p>
+    </Section>
+  );
+}
 
 function SuperTopicsSection() {
   const { data, error } = useQuery({

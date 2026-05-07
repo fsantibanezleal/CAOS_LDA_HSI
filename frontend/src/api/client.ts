@@ -319,6 +319,10 @@ export const api = {
       `/api/llm-tea-leaves/${encodeURIComponent(sceneId)}`,
     ),
   superTopics: () => request<SuperTopics>(`/api/super-topics`),
+  linearProbePanel: (sceneId: string) =>
+    request<LinearProbePanel>(
+      `/api/linear-probe-panel/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
 };
 
@@ -598,6 +602,23 @@ export type SuperTopics = {
   members: SuperTopicMember[];
   generated_at: string;
   builder_version: string;
+};
+
+export type LinearProbeMethodMetrics = {
+  macro_f1: { mean: number; ci95?: [number, number]; per_fold?: number[] };
+  accuracy: { mean: number; ci95?: [number, number] };
+  balanced_accuracy?: { mean: number; ci95?: [number, number] };
+  latent_dim?: number;
+};
+
+export type LinearProbePanel = {
+  scene_id: string;
+  K?: number;
+  n_documents?: number;
+  n_classes?: number;
+  method_metrics: Record<string, LinearProbeMethodMetrics>;
+  ranking_by_macro_f1_mean?: { method: string; macro_f1_mean: number }[];
+  framework_axis?: string;
 };
 
 export type SeedStability = {
