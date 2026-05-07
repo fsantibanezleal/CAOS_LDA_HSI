@@ -323,6 +323,12 @@ export const api = {
     request<LinearProbePanel>(
       `/api/linear-probe-panel/${encodeURIComponent(sceneId)}`,
     ),
+  bayesianClassificationLabelled: () =>
+    request<BayesianComparison>(
+      `/api/bayesian-comparison/classification-labelled`,
+    ),
+  bayesianRegression: () =>
+    request<BayesianComparison>(`/api/bayesian-comparison/regression`),
   buffer: (path: string) => requestBuffer(path),
 };
 
@@ -609,6 +615,30 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type BayesianComparison = {
+  task_type: string;
+  scope: string;
+  n_observations: number;
+  n_methods: number;
+  n_scenes?: number;
+  n_subsets?: number;
+  n_folds: number;
+  method_names: string[];
+  scene_names?: string[];
+  subset_names?: string[];
+  method_posteriors: {
+    method: string;
+    posterior_mean: number;
+    posterior_std: number;
+    hdi94_lo: number;
+    hdi94_hi: number;
+  }[];
+  pairwise_p_a_gt_b: Record<string, Record<string, number>>;
+  model_summary: string;
+  generated_at: string;
+  builder_version: string;
 };
 
 export type LinearProbePanel = {
