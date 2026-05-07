@@ -56,7 +56,7 @@ LABELLED_SCENES = [
     "botswana",
 ]
 SAMPLES_PER_CLASS = 220
-N_SEEDS = 7
+N_SEEDS = int(os.environ.get("CAOS_CLASSICAL_SEED_N", "7"))
 LATENT_DIM = 8
 METHOD = os.environ.get("CAOS_CLASSICAL_SEED_METHOD", "pca_8").strip()
 
@@ -181,7 +181,8 @@ def main() -> int:
             continue
         if payload is None:
             continue
-        out = OUTPUT_DIR / f"{scene_id}__{METHOD}.json"
+        n_suffix = "" if N_SEEDS == 7 else f"__N{N_SEEDS}"
+        out = OUTPUT_DIR / f"{scene_id}__{METHOD}{n_suffix}.json"
         out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
         odg = payload["off_diagonal_summary"]
         print(f"  off-diag ari mean={odg['ari_mean']:.3f} min={odg['ari_min']:.3f} std={odg['ari_std']:.3f}", flush=True)
