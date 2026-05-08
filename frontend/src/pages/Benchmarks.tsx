@@ -120,6 +120,7 @@ export default function Benchmarks() {
           <DeepKCurveSection />
           <BetaVaeCollapseSection />
           <AnomalyComparisonSection />
+          <CrossSceneTransferSection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -139,6 +140,151 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function CrossSceneTransferSection() {
+  const { data, error } = useQuery({
+    queryKey: ["cross-scene-transfer"],
+    queryFn: () => api.crossSceneTransfer(),
+    retry: false,
+  });
+  if (!data || error) {
+    return (
+      <Section
+        title="B-8 cross-scene transfer — fit on A, infer on B"
+        lead="Loading transfer matrix…"
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Loading…
+        </p>
+      </Section>
+    );
+  }
+  const scenes = data.scene_order;
+  const m = data.transfer_matrix_macro_f1;
+  const cell = 80;
+  const headerH = 50;
+  const labelW = 165;
+  // Find min/max for color scale
+  let minV = Infinity;
+  let maxV = -Infinity;
+  for (const row of m) {
+    for (const v of row) {
+      if (v < minV) minV = v;
+      if (v > maxV) maxV = v;
+    }
+  }
+  return (
+    <Section
+      title="B-8 cross-scene transfer — fit on A, infer on B"
+      lead={`5 AVIRIS-class scenes resampled to a common ${data.common_wavelength_grid.n_bands}-band ${data.common_wavelength_grid.min_nm}-${data.common_wavelength_grid.max_nm} nm grid. Each cell is the macro-F1 of a 5-fold logistic on θ (LDA fit on row scene, inferred on column scene). Diagonal = within-scene baseline. Pavia U excluded (ROSIS).`}
+    >
+      <div className="overflow-x-auto">
+        <svg
+          viewBox={`0 0 ${labelW + scenes.length * cell + 50} ${headerH + scenes.length * cell + 30}`}
+          role="img"
+          aria-label="Cross-scene transfer matrix"
+          style={{ maxWidth: "min(100%, 760px)" }}
+        >
+          <text
+            x={labelW + (scenes.length * cell) / 2}
+            y={20}
+            fontSize="12"
+            textAnchor="middle"
+            fill="currentColor"
+            fontWeight="600"
+          >
+            target scene (column)
+          </text>
+          {scenes.map((s, j) => (
+            <text
+              key={`col-${s}`}
+              x={labelW + j * cell + cell / 2}
+              y={headerH - 6}
+              fontSize="10"
+              textAnchor="middle"
+              fill="currentColor"
+              fontFamily="ui-monospace, monospace"
+            >
+              {s.split("-")[0]}
+            </text>
+          ))}
+          {m.map((row, i) =>
+            row.map((v, j) => {
+              const t = Math.max(
+                0,
+                Math.min(1, (v - minV) / Math.max(1e-9, maxV - minV)),
+              );
+              const r = Math.round(50 + (1 - t) * 200);
+              const g = Math.round(50 + t * 130);
+              const b = Math.round(80 + t * 100);
+              const isDiag = i === j;
+              return (
+                <g key={`${i}-${j}`}>
+                  <title>{`${scenes[i]} → ${scenes[j]} = ${v.toFixed(3)}`}</title>
+                  <rect
+                    x={labelW + j * cell}
+                    y={headerH + i * cell}
+                    width={cell - 2}
+                    height={cell - 2}
+                    fill={`rgb(${r},${g},${b})`}
+                    stroke={isDiag ? "white" : "none"}
+                    strokeWidth={isDiag ? "2" : "0"}
+                  />
+                  <text
+                    x={labelW + j * cell + (cell - 2) / 2}
+                    y={headerH + i * cell + (cell - 2) / 2 + 4}
+                    fontSize="13"
+                    textAnchor="middle"
+                    fill="white"
+                    fontWeight={isDiag ? "700" : "500"}
+                    fontFamily="ui-monospace, monospace"
+                  >
+                    {v.toFixed(3)}
+                  </text>
+                </g>
+              );
+            }),
+          )}
+          {scenes.map((s, i) => (
+            <text
+              key={`row-${s}`}
+              x={labelW - 8}
+              y={headerH + i * cell + cell / 2 + 4}
+              fontSize="11"
+              textAnchor="end"
+              fill="currentColor"
+              fontFamily="ui-monospace, monospace"
+            >
+              {s}
+            </text>
+          ))}
+          <text
+            x={20}
+            y={headerH + (scenes.length * cell) / 2}
+            fontSize="12"
+            textAnchor="middle"
+            fill="currentColor"
+            fontWeight="600"
+            transform={`rotate(-90, 20, ${headerH + (scenes.length * cell) / 2})`}
+          >
+            source scene (row)
+          </text>
+        </svg>
+      </div>
+      <p
+        className="mt-3 text-[12.5px]"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        Diagonal cells (white border) are within-scene F1 — they match the
+        native-grid B-3 numbers within ±0.025, so the resampling is honest.
+        Salinas → Salinas-A = 0.747 is the strongest off-diagonal (same
+        campaign, overlapping fields). KSC's collapsed topics neither transfer
+        well (KSC → others ≤ 0.405) nor receive well (others → KSC ≤ 0.405).
+        Salinas-A is the easiest target (0.65-0.75 from any source — compact 6-class).
+      </p>
+    </Section>
+  );
+}
 
 function AnomalyComparisonSection() {
   const ldaQs = useQueries({
