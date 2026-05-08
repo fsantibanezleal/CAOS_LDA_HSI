@@ -333,6 +333,8 @@ export const api = {
     request<RepresentationPayload>(
       `/api/representations/${encodeURIComponent(method)}/${encodeURIComponent(sceneId)}`,
     ),
+  crossSceneTransfer: () =>
+    request<CrossSceneTransfer>(`/api/cross-scene-transfer`),
   topicAnomaly: (sceneId: string) =>
     request<TopicAnomaly>(
       `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
@@ -627,6 +629,16 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type CrossSceneTransfer = {
+  scene_order: string[];
+  common_wavelength_grid: { min_nm: number; max_nm: number; n_bands: number };
+  transfer_matrix_macro_f1: number[][];
+  wordification: string;
+  samples_per_class: number;
+  split: string;
+  head: string;
 };
 
 export type TopicAnomaly = {
