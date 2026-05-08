@@ -1,4 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -121,6 +122,7 @@ export default function Benchmarks() {
           <BetaVaeCollapseSection />
           <AnomalyComparisonSection />
           <CrossSceneTransferSection />
+          <RateDistortionSection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -140,6 +142,142 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function RateDistortionSection() {
+  const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
+  const { data, error } = useQuery({
+    queryKey: ["rate-distortion-curve", scene],
+    queryFn: () => api.rateDistortionCurve(scene),
+    retry: false,
+  });
+  if (!data || error) {
+    return (
+      <Section
+        title="B-2 rate-distortion curve — reconstruction RMSE vs K"
+        lead="Loading rate-distortion curves…"
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Loading…
+        </p>
+      </Section>
+    );
+  }
+  const Ks = data.K_grid;
+  const W = 540;
+  const H = 240;
+  const padding = 40;
+  const allRmse: number[] = [];
+  for (const m of Object.keys(data.method_curves)) {
+    for (const p of data.method_curves[m] ?? []) {
+      if (typeof p.rmse_test === "number") allRmse.push(p.rmse_test);
+    }
+  }
+  const yMin = Math.min(...allRmse);
+  const yMax = Math.max(...allRmse);
+  const xOf = (k: number) =>
+    padding +
+    ((k - Math.min(...Ks)) / (Math.max(...Ks) - Math.min(...Ks))) *
+      (W - 2 * padding);
+  const yOf = (v: number) =>
+    padding + ((yMax - v) / Math.max(1e-9, yMax - yMin)) * (H - 2 * padding);
+  const colors: Record<string, string> = {
+    lda: "rgba(31,119,180,1)",
+    nmf: "rgba(255,127,14,1)",
+    pca: "rgba(44,160,44,1)",
+  };
+  return (
+    <Section
+      title="B-2 rate-distortion curve — reconstruction RMSE vs K"
+      lead="LDA / NMF / PCA reconstruction RMSE on a 20% held-out test split, across K∈{4, 6, 8, 10, 12, 16}. PCA is the L2-optimal compressor (wins everywhere). NMF a close second. LDA last because it optimises a multinomial likelihood, not L2 RMSE — this is the expected picture and is documented as Axis G."
+    >
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>
+          Scene:
+        </span>
+        {LABELLED_SCENES.map((sc) => (
+          <button
+            key={sc}
+            type="button"
+            onClick={() => setScene(sc)}
+            className="px-2 py-0.5 rounded text-[11px] font-mono"
+            style={{
+              backgroundColor: scene === sc ? "var(--color-accent)" : "var(--color-panel)",
+              color: scene === sc ? "var(--color-bg)" : "var(--color-text)",
+              border: "1px solid var(--color-border)",
+            }}
+          >
+            {sc.split("-")[0]}
+          </button>
+        ))}
+      </div>
+
+      <svg viewBox={`0 0 ${W} ${H + 30}`} role="img" aria-label="rate-distortion curve">
+        <line x1={padding} y1={H - padding} x2={W - padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
+        <line x1={padding} y1={padding} x2={padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
+        {Ks.map((k) => (
+          <text
+            key={k}
+            x={xOf(k)}
+            y={H - padding + 15}
+            fontSize="10"
+            textAnchor="middle"
+            fill="currentColor"
+            opacity="0.7"
+          >
+            K={k}
+          </text>
+        ))}
+        {[yMin, (yMin + yMax) / 2, yMax].map((y, i) => (
+          <text
+            key={i}
+            x={padding - 6}
+            y={yOf(y) + 3}
+            fontSize="9"
+            textAnchor="end"
+            fill="currentColor"
+            opacity="0.7"
+            fontFamily="ui-monospace, monospace"
+          >
+            {y.toFixed(3)}
+          </text>
+        ))}
+        {Object.keys(data.method_curves).map((mname) => {
+          const path = (data.method_curves[mname] ?? [])
+            .filter((p) => typeof p.rmse_test === "number")
+            .map((p, i) => `${i === 0 ? "M" : "L"} ${xOf(p.K)} ${yOf(p.rmse_test as number)}`)
+            .join(" ");
+          return (
+            <g key={mname}>
+              <path d={path} fill="none" stroke={colors[mname] ?? "currentColor"} strokeWidth="1.8" />
+              {(data.method_curves[mname] ?? [])
+                .filter((p) => typeof p.rmse_test === "number")
+                .map((p) => (
+                  <circle
+                    key={p.K}
+                    cx={xOf(p.K)}
+                    cy={yOf(p.rmse_test as number)}
+                    r="3"
+                    fill={colors[mname] ?? "currentColor"}
+                  />
+                ))}
+            </g>
+          );
+        })}
+        {/* Legend */}
+        <g transform={`translate(${W - padding - 80}, ${padding})`}>
+          {Object.keys(colors).map((m, i) => (
+            <g key={m} transform={`translate(0, ${i * 14})`}>
+              <rect width="14" height="2" y="6" fill={colors[m]!} />
+              <text x="20" y="11" fontSize="10" fill="currentColor" fontFamily="ui-monospace, monospace">
+                {m.toUpperCase()}
+              </text>
+            </g>
+          ))}
+        </g>
+      </svg>
+    </Section>
+  );
+}
 
 function CrossSceneTransferSection() {
   const { data, error } = useQuery({
