@@ -266,6 +266,10 @@ export const api = {
     request<TopicRoutedClassifier>(
       `/api/topic-routed-classifier/${encodeURIComponent(sceneId)}`,
     ),
+  topicRoutedDeepGate: (sceneId: string) =>
+    request<TopicRoutedDeepGate>(
+      `/api/topic-routed-deep-gate/${encodeURIComponent(sceneId)}`,
+    ),
   hidsagMethodStatistics: (subsetCode: string) =>
     request<HidsagMethodStatistics>(
       `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
@@ -572,6 +576,20 @@ export type TopicRoutedClassifier = {
     macro_f1_mean: number;
     macro_f1_ci95: [number, number];
   }[];
+};
+
+export type TopicRoutedDeepGate = {
+  scene_id: string;
+  n_documents: number;
+  n_classes: number;
+  gate_methods: string[];
+  method_metrics: Record<string, RoutedMethodMetrics>;
+  ranked_by_macro_f1_mean: {
+    method: string;
+    macro_f1_mean: number;
+    macro_f1_ci95: [number, number];
+  }[];
+  framework_axis?: string;
 };
 
 export type LlmTeaLeavesTopic = {
