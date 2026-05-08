@@ -306,6 +306,10 @@ class Settings(BaseSettings):
     def bayesian_classification_labelled_path(self) -> Path:
         return self.data_path / "derived" / "method_statistics_labelled" / "cross_classification_bayesian.json"
 
+    @property
+    def bayesian_classification_labelled_deep_path(self) -> Path:
+        return self.data_path / "derived" / "method_statistics_labelled" / "cross_classification_bayesian_deep.json"
+
 
 @lru_cache
 def get_settings() -> Settings:
