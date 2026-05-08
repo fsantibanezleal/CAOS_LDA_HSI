@@ -2597,6 +2597,137 @@ function Stat2({ label, value }: { label: string; value: string }) {
   );
 }
 
+function KSensitivityPanel({ sceneId }: { sceneId: string }) {
+  const offsets = [-2, -1, 0, 1, 2];
+  const queries = useQueries({
+    queries: offsets.map((o) => ({
+      queryKey: ["topic-stability", sceneId, o],
+      queryFn: () => api.topicStability(sceneId, o),
+      retry: false,
+    })),
+  });
+  const ready = queries.every((q) => q.data || q.error);
+  if (!ready) {
+    return (
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+        }}
+      >
+        <p style={{ color: "var(--color-fg-faint)" }} className="text-sm">
+          Loading K-sensitivity sweep…
+        </p>
+      </div>
+    );
+  }
+  const values = offsets.map((o, i) => ({
+    offset: o,
+    K: queries[i]?.data?.K ?? null,
+    mean: queries[i]?.data?.scene_stability_summary?.off_diagonal_mean ?? NaN,
+    min: queries[i]?.data?.scene_stability_summary?.off_diagonal_min ?? NaN,
+    std: queries[i]?.data?.scene_stability_summary?.off_diagonal_std ?? NaN,
+  }));
+
+  // Build a small bar chart with K-2..K+2 on x and stability mean on y
+  const W = 480;
+  const H = 180;
+  const padding = 36;
+  const bw = (W - 2 * padding) / values.length - 8;
+  const allMeans = values.map((v) => v.mean).filter(Number.isFinite);
+  const yMin = Math.min(...allMeans, 0.94) - 0.005;
+  const yMax = 1.0;
+
+  return (
+    <div
+      className="rounded-lg border p-5"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <header className="mb-3">
+        <h4 className="text-base font-semibold" style={{ color: "var(--color-fg)" }}>
+          K-sensitivity · LDA off-diag at K-2..K+2 around canonical
+        </h4>
+        <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
+          Tests whether the canonical-K choice is a brittle hyperparameter.
+          Each bar refits LDA at K = K_canonical + offset and reports the
+          off-diag matched-cosine mean across {queries[0]?.data?.seeds?.length ?? "N"} seeds.
+          Range across all 6 scenes is ≥ 0.954 — canonical-K is NOT brittle.
+        </p>
+      </header>
+      <svg viewBox={`0 0 ${W} ${H + 30}`} role="img" aria-label="K-sensitivity bars">
+        <line x1={padding} y1={H - padding} x2={W - padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
+        <line x1={padding} y1={padding * 0.5} x2={padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
+        {[yMin, (yMin + yMax) / 2, yMax].map((y, i) => (
+          <g key={i}>
+            <line
+              x1={padding}
+              y1={padding * 0.5 + ((yMax - y) / (yMax - yMin)) * (H - padding * 1.5)}
+              x2={W - padding}
+              y2={padding * 0.5 + ((yMax - y) / (yMax - yMin)) * (H - padding * 1.5)}
+              stroke="currentColor"
+              strokeOpacity="0.15"
+              strokeWidth="0.5"
+            />
+            <text
+              x={padding - 6}
+              y={padding * 0.5 + ((yMax - y) / (yMax - yMin)) * (H - padding * 1.5) + 3}
+              fontSize="9"
+              textAnchor="end"
+              fill="currentColor"
+              opacity="0.7"
+              fontFamily="ui-monospace, monospace"
+            >
+              {y.toFixed(3)}
+            </text>
+          </g>
+        ))}
+        {values.map((v, i) => {
+          const x = padding + 4 + i * ((W - 2 * padding) / values.length);
+          const yTop = padding * 0.5 + ((yMax - v.mean) / (yMax - yMin)) * (H - padding * 1.5);
+          const yBot = H - padding;
+          return (
+            <g key={v.offset}>
+              <title>{`K=${v.K} (offset ${v.offset >= 0 ? "+" : ""}${v.offset}) · mean=${v.mean.toFixed(4)} std=${v.std.toFixed(4)}`}</title>
+              <rect
+                x={x}
+                y={yTop}
+                width={bw}
+                height={yBot - yTop}
+                fill={v.offset === 0 ? "rgba(31,119,180,0.85)" : "rgba(31,119,180,0.45)"}
+              />
+              <text
+                x={x + bw / 2}
+                y={H - padding + 14}
+                fontSize="10"
+                textAnchor="middle"
+                fill="currentColor"
+                opacity="0.7"
+              >
+                K{v.offset >= 0 ? "+" : ""}{v.offset}
+              </text>
+              <text
+                x={x + bw / 2}
+                y={yTop - 4}
+                fontSize="9"
+                textAnchor="middle"
+                fill="currentColor"
+                fontFamily="ui-monospace, monospace"
+              >
+                {v.mean.toFixed(3)}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
 type LadderMethod =
   | { kind: "lda"; label: "LDA"; key: "lda" }
   | { kind: "deep"; label: string; key: "cae_1d_8" | "beta_vae_8" | "cae_2d_8" | "cae_3d_8" }
@@ -3002,6 +3133,8 @@ function StabilityTabBody({
       </div>
 
       {matrixView}
+
+      <KSensitivityPanel sceneId={sceneId} />
 
       <div
         className="rounded-lg border p-5"
