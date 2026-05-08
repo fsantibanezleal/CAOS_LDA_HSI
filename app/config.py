@@ -247,6 +247,9 @@ class Settings(BaseSettings):
     def topic_routed_classifier_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "topic_routed_classifier" / f"{scene_id}.json"
 
+    def topic_routed_deep_gate_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "topic_routed_deep_gate" / f"{scene_id}.json"
+
     def embedded_baseline_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "embedded_baseline" / f"{scene_id}.json"
 
