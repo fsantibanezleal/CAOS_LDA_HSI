@@ -410,6 +410,11 @@ CLAIMS_ALLOWED = [
         "description": "Bayesian hierarchical normal model on labelled-scene per-fold macro F1 across raw_logistic / theta_logistic / pca_K_logistic / topic_routed_hard / topic_routed_soft. 30 observations per method (6 scenes × 5 folds); pools across scenes via offset_scene[s], folds via fold_re[f]. Reports per-method posterior mean + HDI94 + pairwise P(mu_a > mu_b). Closes the follow-up from B-3: include the soft-routed embedded readout in a Bayesian dominance reading on labelled scenes (the existing cross_classification_bayesian is HIDSAG-only and predates B-3).",
         "source_pattern": "method_statistics_labelled/cross_classification_bayesian.json",
     },
+    {
+        "id": "bayesian_classification_labelled_deep",
+        "description": "Bayesian hierarchical normal model on labelled-scene per-fold macro F1 across the cycle 51 deep-gate methods (raw_logistic / theta_routed / pca_8_routed / cae_1d_8_routed / beta_vae_8_routed). 30 observations per method (6 scenes × 5 folds). Companion to bayesian_classification_labelled but consumes the topic_routed_deep_gate output. Reports per-method posterior mean + HDI94 + pairwise P(mu_a > mu_b). Tests with explicit Bayesian evidence whether any deep gate dominates raw, or theta benefits uniquely from natural Dirichlet simplex.",
+        "source_pattern": "method_statistics_labelled/cross_classification_bayesian_deep.json",
+    },
 ]
 
 

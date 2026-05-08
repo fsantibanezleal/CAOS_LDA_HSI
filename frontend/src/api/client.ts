@@ -331,6 +331,10 @@ export const api = {
     request<BayesianComparison>(
       `/api/bayesian-comparison/classification-labelled`,
     ),
+  bayesianClassificationLabelledDeep: () =>
+    request<BayesianComparison>(
+      `/api/bayesian-comparison/classification-labelled-deep`,
+    ),
   bayesianRegression: () =>
     request<BayesianComparison>(`/api/bayesian-comparison/regression`),
   representation: (method: string, sceneId: string) =>
