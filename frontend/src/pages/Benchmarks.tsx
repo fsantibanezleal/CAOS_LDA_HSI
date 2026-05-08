@@ -119,6 +119,7 @@ export default function Benchmarks() {
           <BayesianHdiSection />
           <DeepKCurveSection />
           <BetaVaeCollapseSection />
+          <AnomalyComparisonSection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -138,6 +139,106 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function AnomalyComparisonSection() {
+  const ldaQs = useQueries({
+    queries: LABELLED_SCENES.map((sc) => ({
+      queryKey: ["topic-anomaly", sc],
+      queryFn: () => api.topicAnomaly(sc),
+      retry: false,
+    })),
+  });
+  const deepQs = useQueries({
+    queries: LABELLED_SCENES.map((sc) => ({
+      queryKey: ["deep-anomaly", sc],
+      queryFn: () => api.deepAnomaly(sc),
+      retry: false,
+    })),
+  });
+  const ready =
+    ldaQs.every((q) => q.data || q.error) &&
+    deepQs.every((q) => q.data || q.error);
+
+  if (!ready) {
+    return (
+      <Section
+        title="B-9 anomaly indicators — LDA vs deep ρ comparison"
+        lead="Loading anomaly correlations…"
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Loading…
+        </p>
+      </Section>
+    );
+  }
+
+  const rows = LABELLED_SCENES.map((sc, i) => {
+    const lda = ldaQs[i]!.data;
+    const deep = deepQs[i]!.data;
+    return {
+      scene: sc,
+      lda_nll: lda?.anomaly_to_misclassification_correlation?.spearman_rho_nll ?? null,
+      lda_softmax: lda?.anomaly_to_misclassification_correlation?.spearman_rho_softmax ?? null,
+      cae: deep?.cae_1d_8?.spearman_rho_vs_misclass ?? null,
+      bv_rmse: deep?.beta_vae_8?.spearman_rho_rmse_vs_misclass ?? null,
+      bv_kl: deep?.beta_vae_8?.spearman_rho_kl_vs_misclass ?? null,
+    };
+  });
+
+  const renderCell = (v: number | null) => {
+    if (v == null) return <span style={{ color: "var(--color-text-muted)" }}>—</span>;
+    const positive = v > 0;
+    return (
+      <span style={{ color: positive ? "var(--color-accent)" : "rgba(214,39,40,1)" }}>
+        {(v >= 0 ? "+" : "") + v.toFixed(3)}
+      </span>
+    );
+  };
+
+  return (
+    <Section
+      title="B-9 anomaly indicators — LDA vs deep ρ comparison"
+      lead="Spearman ρ between per-document anomaly score and theta-logistic misclassification. Positive ρ (green) = the indicator flags hard examples (works as anomaly); negative (red) = the indicator anti-correlates (deep encoders concentrate capacity on rare informative spectra). LDA's recon NLL works as anomaly; deep methods invert the heuristic."
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
+          <thead>
+            <tr style={{ color: "var(--color-text-muted)" }}>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">LDA recon NLL ρ</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">LDA softmax ρ</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">CAE-1D recon RMSE ρ</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">β-VAE recon RMSE ρ</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">β-VAE KL ρ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.scene} style={{ borderTop: "1px solid var(--color-border)" }}>
+                <td className="py-1.5 pr-3 font-mono">{r.scene}</td>
+                <td className="py-1.5 pr-3 text-right font-mono">{renderCell(r.lda_nll)}</td>
+                <td className="py-1.5 pr-3 text-right font-mono">{renderCell(r.lda_softmax)}</td>
+                <td className="py-1.5 pr-3 text-right font-mono">{renderCell(r.cae)}</td>
+                <td className="py-1.5 pr-3 text-right font-mono">{renderCell(r.bv_rmse)}</td>
+                <td className="py-1.5 pr-3 text-right font-mono">{renderCell(r.bv_kl)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p
+        className="mt-3 text-[12.5px]"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        Headline: LDA recon NLL is positive ρ on every scene (Pavia U +0.306,
+        Salinas-A +0.298, KSC +0.226, IP +0.214) — it works as an anomaly indicator.
+        Deep methods produce mostly negative ρ — the "high recon = unfamiliar" heuristic
+        does NOT transfer to deep nonlinear encoders. Deep encoders concentrate capacity
+        on rare informative spectra, which the latent then discriminates well.
+      </p>
+    </Section>
+  );
+}
 
 const CAE_1D_KS = [4, 6, 8, 10, 12, 16, 32];
 

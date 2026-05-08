@@ -333,6 +333,14 @@ export const api = {
     request<RepresentationPayload>(
       `/api/representations/${encodeURIComponent(method)}/${encodeURIComponent(sceneId)}`,
     ),
+  topicAnomaly: (sceneId: string) =>
+    request<TopicAnomaly>(
+      `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
+    ),
+  deepAnomaly: (sceneId: string) =>
+    request<DeepAnomaly>(
+      `/api/deep-anomaly/${encodeURIComponent(sceneId)}`,
+    ),
   buffer: (path: string) => requestBuffer(path),
 };
 
@@ -619,6 +627,36 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type TopicAnomaly = {
+  scene_id: string;
+  topic_count: number;
+  n_documents: number;
+  anomaly_to_misclassification_correlation: {
+    spearman_rho_softmax: number;
+    spearman_p_softmax: number;
+    spearman_rho_nll: number;
+    spearman_p_nll: number;
+    comment?: string;
+  };
+};
+
+export type DeepAnomaly = {
+  scene_id: string;
+  n_documents: number;
+  cae_1d_8: {
+    anomaly_indicator: string;
+    spearman_rho_vs_misclass: number;
+    rmse_overall: { median: number; p95: number };
+  };
+  beta_vae_8: {
+    anomaly_indicators: string[];
+    spearman_rho_rmse_vs_misclass: number;
+    spearman_rho_kl_vs_misclass: number;
+    rmse_overall: { median: number; p95: number };
+    kl_overall: { median: number; p95: number };
+  };
 };
 
 export type RepresentationPayload = {
