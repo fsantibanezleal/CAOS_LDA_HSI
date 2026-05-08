@@ -475,6 +475,79 @@ def fit_cae_3d(
     }
 
 
+def fit_cae_3d_full(
+    cube: np.ndarray,
+    pixel_indices_global: np.ndarray,
+    cube_shape: tuple[int, int, int],
+    latent_dim: int = 8,
+    epochs: int = 60,
+    patch: int = 5,
+) -> tuple[np.ndarray, dict]:
+    """CAE-3D variant with FULL-PATCH reconstruction decoder (not centre-anchor).
+    Decoder lifts latent back to (1, B, patch, patch) and computes full-patch
+    MSE. Heavier than the centre-anchor version but should be more stable
+    across seeds (the decoder gets a richer gradient signal)."""
+    import torch  # type: ignore
+    import torch.nn as nn  # type: ignore
+    from torch.utils.data import DataLoader, TensorDataset  # type: ignore
+    _torch_seed()
+
+    patches = _extract_patches(cube, pixel_indices_global, cube_shape, patch=patch)
+    x_np = np.transpose(patches, (0, 3, 1, 2))[:, None, ...]
+    x = torch.from_numpy(x_np.copy())
+    N, _, Bdim, P, _ = x.shape
+
+    class CAE3DFull(nn.Module):
+        def __init__(self, latent: int, B: int, P: int) -> None:
+            super().__init__()
+            self.B = B
+            self.P = P
+            self.enc = nn.Sequential(
+                nn.Conv3d(1, 8, kernel_size=(5, 3, 3), padding=(2, 1, 1)), nn.ReLU(),
+                nn.MaxPool3d(kernel_size=(2, 1, 1)),
+                nn.Conv3d(8, 16, kernel_size=(5, 3, 3), padding=(2, 1, 1)), nn.ReLU(),
+                nn.AdaptiveAvgPool3d((4, 1, 1)),
+            )
+            self.head = nn.Linear(16 * 4, latent)
+            self.up = nn.Linear(latent, B * P * P)
+
+        def encode(self, x: torch.Tensor) -> torch.Tensor:
+            return self.head(self.enc(x).flatten(1))
+
+        def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+            z = self.encode(x)
+            recon = self.up(z).view(x.shape[0], 1, self.B, self.P, self.P)
+            return z, recon
+
+    model = CAE3DFull(latent_dim, Bdim, P)
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loader = DataLoader(TensorDataset(x), batch_size=32, shuffle=True)
+    final_loss = 0.0
+    for _ in range(epochs):
+        running = 0.0
+        nb = 0
+        for (batch,) in loader:
+            opt.zero_grad()
+            _, recon = model(batch)
+            loss = nn.functional.mse_loss(recon, batch)
+            loss.backward()
+            opt.step()
+            running += float(loss.detach())
+            nb += 1
+        final_loss = running / max(nb, 1)
+    model.eval()
+    with torch.no_grad():
+        z = model.encode(x)
+    rmse = float(np.sqrt(final_loss))
+    return z.cpu().numpy(), {
+        "architecture": "Conv3d(1->8,5x3x3)->Pool3d(2,1,1)->Conv3d(8->16,5x3x3)->AdaptiveAvgPool3d(4,1,1)->Linear(64->L)->Linear(L->B*P*P); FULL-PATCH reconstruction decoder",
+        "patch_size": int(patch),
+        "epochs": int(epochs),
+        "final_full_patch_loss": round(float(final_loss), 6),
+        "reconstruction_rmse_full_patch": round(rmse, 6),
+    }
+
+
 def project_2d_3d(z: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[float]]:
     """PCA-2D and PCA-3D of a latent space, plus explained variance ratios."""
     if z.shape[1] < 3:
@@ -551,6 +624,7 @@ def build_for_scene(scene_id: str) -> list[dict]:
         ("cae_2d_32", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 32)),
         ("cae_3d_4", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 4)),
         ("cae_3d_8", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 8)),
+        ("cae_3d_full_8", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 8)),
         ("cae_3d_16", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 16)),
         ("cae_3d_32", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 32)),
     ]
