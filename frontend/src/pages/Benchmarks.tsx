@@ -123,6 +123,7 @@ export default function Benchmarks() {
           <AnomalyComparisonSection />
           <CrossSceneTransferSection />
           <RateDistortionSection />
+          <MutualInfoSection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -142,6 +143,127 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function MutualInfoSection() {
+  const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
+  const { data, error } = useQuery({
+    queryKey: ["mutual-information", scene],
+    queryFn: () => api.mutualInformation(scene),
+    retry: false,
+  });
+  if (!data || error) {
+    return (
+      <Section title="B-4 mutual information — per-feature MI(z; y)" lead="Loading mutual information…">
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+      </Section>
+    );
+  }
+  // Sort methods by per_feature_mi_sum_nats descending; cap at top 14 to keep readable.
+  const methods = Object.entries(data.method_mi)
+    .sort((a, b) => (b[1].per_feature_mi_sum_nats - a[1].per_feature_mi_sum_nats))
+    .slice(0, 14);
+
+  // Build a heatmap: rows = methods, columns = features (truncated to first 32 if larger)
+  const maxCols = 32;
+  const labelW = 130;
+  const cellW = 16;
+  const rowH = 22;
+  const headerH = 24;
+  const W = labelW + maxCols * cellW + 80;
+  const H = headerH + methods.length * rowH + 30;
+
+  // Find global max MI for color scale
+  let gMax = 0;
+  for (const [, info] of methods) {
+    for (const v of info.per_feature_mi.slice(0, maxCols)) {
+      if (v > gMax) gMax = v;
+    }
+  }
+
+  return (
+    <Section
+      title="B-4 mutual information — per-feature MI(z; y)"
+      lead="For each method, MI between every latent feature z_k and the label y. Bright = high MI = informative feature. Per-feature distribution is the right discriminative signal — joint MI clips to label entropy once K is non-degenerate."
+    >
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>Scene:</span>
+        {LABELLED_SCENES.map((sc) => (
+          <button
+            key={sc}
+            type="button"
+            onClick={() => setScene(sc)}
+            className="px-2 py-0.5 rounded text-[11px] font-mono"
+            style={{
+              backgroundColor: scene === sc ? "var(--color-accent)" : "var(--color-panel)",
+              color: scene === sc ? "var(--color-bg)" : "var(--color-text)",
+              border: "1px solid var(--color-border)",
+            }}
+          >
+            {sc.split("-")[0]}
+          </button>
+        ))}
+      </div>
+      <p
+        className="text-[12px] mb-2"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        Label entropy H(Y) = {data.label_entropy_nats.toFixed(3)} nats ({data.label_entropy_bits.toFixed(3)} bits) — the upper bound for joint MI. Top {methods.length} methods sorted by per-feature MI sum.
+      </p>
+      <div className="overflow-x-auto">
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="MI heatmap" style={{ maxWidth: "min(100%, 760px)" }}>
+          {methods.map(([mname, info], i) => {
+            const feats = info.per_feature_mi.slice(0, maxCols);
+            return (
+              <g key={mname}>
+                <text
+                  x={labelW - 6}
+                  y={headerH + i * rowH + rowH / 2 + 3}
+                  fontSize="10"
+                  textAnchor="end"
+                  fill="currentColor"
+                  fontFamily="ui-monospace, monospace"
+                >
+                  {mname.replace("_", " ")}
+                </text>
+                {feats.map((v, j) => {
+                  const t = Math.max(0, Math.min(1, v / gMax));
+                  const r = Math.round(50 + (1 - t) * 200);
+                  const g = Math.round(50 + t * 130);
+                  const b = Math.round(80 + t * 100);
+                  return (
+                    <g key={j}>
+                      <title>{`${mname} · feature ${j} · MI=${v.toFixed(3)}`}</title>
+                      <rect
+                        x={labelW + j * cellW}
+                        y={headerH + i * rowH}
+                        width={cellW - 1}
+                        height={rowH - 2}
+                        fill={`rgb(${r},${g},${b})`}
+                      />
+                    </g>
+                  );
+                })}
+                <text
+                  x={labelW + Math.min(feats.length, maxCols) * cellW + 8}
+                  y={headerH + i * rowH + rowH / 2 + 3}
+                  fontSize="9.5"
+                  fill="currentColor"
+                  opacity="0.7"
+                  fontFamily="ui-monospace, monospace"
+                >
+                  Σ={info.per_feature_mi_sum_nats.toFixed(2)}
+                </text>
+              </g>
+            );
+          })}
+          <text x={labelW + (maxCols * cellW) / 2} y={14} fontSize="11" textAnchor="middle" fill="currentColor" opacity="0.7">
+            feature index k → (capped at {maxCols} for readability)
+          </text>
+        </svg>
+      </div>
+    </Section>
+  );
+}
 
 function RateDistortionSection() {
   const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
