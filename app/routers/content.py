@@ -631,6 +631,15 @@ def topic_routed_classifier(scene_id: str) -> dict:
         raise HTTPException(status_code=404, detail=f"topic_routed_classifier for '{scene_id}' not generated yet") from exc
 
 
+@router.get("/topic-routed-deep-gate/{scene_id}")
+def topic_routed_deep_gate(scene_id: str) -> dict:
+    from app.services.content import get_topic_routed_deep_gate
+    try:
+        return get_topic_routed_deep_gate(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"topic_routed_deep_gate for '{scene_id}' not generated yet") from exc
+
+
 @router.get("/embedded-baseline/{scene_id}")
 def embedded_baseline(scene_id: str) -> dict:
     from app.services.content import get_embedded_baseline

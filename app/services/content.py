@@ -431,6 +431,10 @@ def get_topic_routed_classifier(scene_id: str) -> dict:
     return _load_or_404(get_settings().topic_routed_classifier_path(scene_id))
 
 
+def get_topic_routed_deep_gate(scene_id: str) -> dict:
+    return _load_or_404(get_settings().topic_routed_deep_gate_path(scene_id))
+
+
 def get_embedded_baseline(scene_id: str) -> dict:
     return _load_or_404(get_settings().embedded_baseline_path(scene_id))
 
