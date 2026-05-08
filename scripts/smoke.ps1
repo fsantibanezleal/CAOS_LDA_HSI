@@ -93,6 +93,7 @@ $paths = @(
     "/api/cross-scene-transfer",
     "/api/super-topics",
     "/api/bayesian-comparison/classification-labelled",
+    "/api/bayesian-comparison/classification-labelled-deep",
     "/generated/groupings/felzenszwalb/indian-pines-corrected.json",
     "/generated/cross_method_agreement/indian-pines-corrected.json",
     "/generated/method_statistics_hidsag/GEOMET.json",

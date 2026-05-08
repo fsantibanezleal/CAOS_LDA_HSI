@@ -1300,13 +1300,18 @@ function BayesianHdiSection() {
     queryFn: () => api.bayesianClassificationLabelled(),
     retry: false,
   });
+  const clsDeep = useQuery({
+    queryKey: ["bayesian-classification-labelled-deep"],
+    queryFn: () => api.bayesianClassificationLabelledDeep(),
+    retry: false,
+  });
   const reg = useQuery({
     queryKey: ["bayesian-regression"],
     queryFn: () => api.bayesianRegression(),
     retry: false,
   });
 
-  if (!cls.data && !reg.data) {
+  if (!cls.data && !reg.data && !clsDeep.data) {
     return (
       <Section
         title="Bayesian method comparison — hierarchical NUTS posteriors"
@@ -1443,6 +1448,11 @@ function BayesianHdiSection() {
         "Classification (labelled scenes, 150 obs)",
         cls.data,
         "raw / pca / topic_routed_* HDIs strictly positive; theta_logistic HDI includes 0 — naive theta-flat is statistically indistinguishable from the model mean.",
+      )}
+      {renderForest(
+        "Classification with deep gates (labelled scenes, 150 obs)",
+        clsDeep.data,
+        "B-3 follow-up: gates are raw_logistic vs. θ_routed vs. PCA-8 / CAE-1D-8 / β-VAE-8 routed (deep latents softmaxed to a simplex). raw_logistic dominates θ_routed and all deep gates with P≥0.999; θ_routed dominates every deep gate with P≥0.999. Decisive Bayesian evidence that softmaxed deep latents do NOT recover θ's gating advantage — θ's edge comes from the natural Dirichlet simplex.",
       )}
       {renderForest(
         "Regression (HIDSAG, 168 obs)",

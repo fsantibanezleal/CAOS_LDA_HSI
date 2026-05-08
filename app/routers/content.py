@@ -559,6 +559,7 @@ def dmr_lda_hidsag(subset_code: str) -> dict:
 def bayesian_comparison(task_type: str) -> dict:
     from app.services.content import (
         get_bayesian_classification_labelled,
+        get_bayesian_classification_labelled_deep,
         get_bayesian_comparison,
     )
     if task_type == "classification-labelled":
@@ -566,10 +567,15 @@ def bayesian_comparison(task_type: str) -> dict:
             return get_bayesian_classification_labelled()
         except FileNotFoundError as exc:
             raise HTTPException(status_code=404, detail="bayesian_comparison labelled-classification not generated yet") from exc
+    if task_type == "classification-labelled-deep":
+        try:
+            return get_bayesian_classification_labelled_deep()
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=404, detail="bayesian_comparison labelled-classification-deep not generated yet") from exc
     if task_type not in ("regression", "classification"):
         raise HTTPException(
             status_code=400,
-            detail="task_type must be regression | classification | classification-labelled",
+            detail="task_type must be regression | classification | classification-labelled | classification-labelled-deep",
         )
     try:
         return get_bayesian_comparison(task_type)

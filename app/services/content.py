@@ -495,3 +495,7 @@ def get_cross_scene_transfer() -> dict:
 
 def get_bayesian_classification_labelled() -> dict:
     return _load_or_404(get_settings().bayesian_classification_labelled_path)
+
+
+def get_bayesian_classification_labelled_deep() -> dict:
+    return _load_or_404(get_settings().bayesian_classification_labelled_deep_path)
