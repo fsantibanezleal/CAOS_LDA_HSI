@@ -335,6 +335,14 @@ export const api = {
     ),
   crossSceneTransfer: () =>
     request<CrossSceneTransfer>(`/api/cross-scene-transfer`),
+  topicSpatialContinuous: (sceneId: string) =>
+    request<TopicSpatialContinuous>(
+      `/api/topic-spatial-continuous/${encodeURIComponent(sceneId)}`,
+    ),
+  topicSpatialFull: (sceneId: string) =>
+    request<TopicSpatialContinuous>(
+      `/api/topic-spatial-full/${encodeURIComponent(sceneId)}`,
+    ),
   endmemberBaseline: (sceneId: string) =>
     request<EndmemberBaseline>(
       `/api/endmember-baseline/${encodeURIComponent(sceneId)}`,
@@ -633,6 +641,22 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type TopicSpatialContinuous = {
+  scene_id: string;
+  topic_count: number;
+  spatial_shape: [number, number];
+  per_topic_continuous_spatial: {
+    topic_id: number;
+    morans_I_continuous?: number;
+    morans_I_continuous_full?: number;
+    gearys_C_continuous?: number;
+    gearys_C_continuous_full?: number;
+    mean_abundance_in_mask?: number;
+  }[];
+  aggregated_morans_I_mean_over_topics: number;
+  aggregated_gearys_C_mean_over_topics: number;
 };
 
 export type EndmemberBaseline = {
