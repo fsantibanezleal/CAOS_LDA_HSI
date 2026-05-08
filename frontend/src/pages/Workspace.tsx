@@ -2374,7 +2374,7 @@ const DEEP_METHOD_OPTIONS: {
   key: string;
   label: string;
   K: number;
-  family: "cae_1d" | "beta_vae" | "cae_2d" | "cae_3d";
+  family: "cae_1d" | "beta_vae" | "cae_2d" | "cae_3d" | "cae_3d_full";
 }[] = [
   { key: "cae_1d_4",   label: "CAE-1D K=4",   K: 4,  family: "cae_1d" },
   { key: "cae_1d_8",   label: "CAE-1D K=8",   K: 8,  family: "cae_1d" },
@@ -2388,10 +2388,11 @@ const DEEP_METHOD_OPTIONS: {
   { key: "cae_2d_8",   label: "CAE-2D K=8",   K: 8,  family: "cae_2d" },
   { key: "cae_2d_16",  label: "CAE-2D K=16",  K: 16, family: "cae_2d" },
   { key: "cae_2d_32",  label: "CAE-2D K=32",  K: 32, family: "cae_2d" },
-  { key: "cae_3d_4",   label: "CAE-3D K=4",   K: 4,  family: "cae_3d" },
-  { key: "cae_3d_8",   label: "CAE-3D K=8",   K: 8,  family: "cae_3d" },
-  { key: "cae_3d_16",  label: "CAE-3D K=16",  K: 16, family: "cae_3d" },
-  { key: "cae_3d_32",  label: "CAE-3D K=32",  K: 32, family: "cae_3d" },
+  { key: "cae_3d_4",   label: "CAE-3D K=4 (anchor)",   K: 4,  family: "cae_3d" },
+  { key: "cae_3d_8",   label: "CAE-3D K=8 (anchor)",   K: 8,  family: "cae_3d" },
+  { key: "cae_3d_16",  label: "CAE-3D K=16 (anchor)",  K: 16, family: "cae_3d" },
+  { key: "cae_3d_32",  label: "CAE-3D K=32 (anchor)",  K: 32, family: "cae_3d" },
+  { key: "cae_3d_full_8", label: "CAE-3D K=8 (full-patch)", K: 8, family: "cae_3d_full" },
 ];
 
 const CLASS_LABEL_COLORS = [
