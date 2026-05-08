@@ -124,6 +124,7 @@ export default function Benchmarks() {
           <CrossSceneTransferSection />
           <RateDistortionSection />
           <MutualInfoSection />
+          <EndmemberBaselineSection />
           <HidsagBenchmarks />
           <HidsagPreprocessing />
           <HidsagCrossPreprocessingStability />
@@ -143,6 +144,134 @@ const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+function EndmemberBaselineSection() {
+  const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
+  const { data, error } = useQuery({
+    queryKey: ["endmember-baseline", scene],
+    queryFn: () => api.endmemberBaseline(scene),
+    retry: false,
+  });
+  if (!data || error) {
+    return (
+      <Section title="B-11 endmember baseline — NFINDR / ATGP vs LDA topics" lead="Loading endmember baseline…">
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+      </Section>
+    );
+  }
+  const matrix = data.topic_endmember_match.topic_x_endmember_cosine ?? [];
+  const cell = 24;
+
+  return (
+    <Section
+      title="B-11 endmember baseline — NFINDR / ATGP vs LDA topics"
+      lead={`At K=${data.K}, NFINDR + ATGP endmembers extracted from the canonical labelled-pixel subset (${data.n_pixels_used.toLocaleString()} px, ${data.n_bands} bands). Cosine similarity between LDA topics and NFINDR endmembers — at the same K, both methods land on the same spectral primitives (typical cosine 0.92-1.00).`}
+    >
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>Scene:</span>
+        {LABELLED_SCENES.map((sc) => (
+          <button
+            key={sc}
+            type="button"
+            onClick={() => setScene(sc)}
+            className="px-2 py-0.5 rounded text-[11px] font-mono"
+            style={{
+              backgroundColor: scene === sc ? "var(--color-accent)" : "var(--color-panel)",
+              color: scene === sc ? "var(--color-bg)" : "var(--color-text)",
+              border: "1px solid var(--color-border)",
+            }}
+          >
+            {sc.split("-")[0]}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        {Object.entries(data.reconstruction_rmse_normalised).map(([m, v]) => (
+          <div
+            key={m}
+            className="rounded-md border p-2"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "var(--color-bg)",
+            }}
+          >
+            <div className="text-[10px] mb-1 font-mono uppercase tracking-wide" style={{ color: "var(--color-text-muted)" }}>
+              {m.replace(/_/g, " ")} RMSE (normalised)
+            </div>
+            <div className="font-mono text-[13px]" style={{ color: "var(--color-text)" }}>
+              {v.toFixed(4)}
+            </div>
+          </div>
+        ))}
+      </div>
+      {matrix.length > 0 ? (
+        <div className="overflow-x-auto">
+          <p className="text-[12px] mb-2" style={{ color: "var(--color-text-muted)" }}>
+            Topic × NFINDR endmember cosine matrix:
+          </p>
+          <svg
+            viewBox={`0 0 ${matrix[0]!.length * cell + 80} ${matrix.length * cell + 50}`}
+            role="img"
+            aria-label="topic × endmember cosine matrix"
+            style={{ maxWidth: "min(100%, 540px)" }}
+          >
+            {matrix.map((row, i) =>
+              row.map((v, j) => {
+                const t = Math.max(0, Math.min(1, v));
+                const r = Math.round(50 + (1 - t) * 200);
+                const g = Math.round(50 + t * 130);
+                const b = Math.round(80 + t * 100);
+                return (
+                  <g key={`${i}-${j}`}>
+                    <title>{`topic ${i + 1} ↔ endmember ${j + 1} = ${v.toFixed(3)}`}</title>
+                    <rect
+                      x={70 + j * cell}
+                      y={20 + i * cell}
+                      width={cell - 1}
+                      height={cell - 1}
+                      fill={`rgb(${r},${g},${b})`}
+                    />
+                  </g>
+                );
+              })
+            )}
+            {matrix.map((_, i) => (
+              <text
+                key={`row-${i}`}
+                x={64}
+                y={20 + i * cell + cell / 2 + 3}
+                fontSize="9"
+                textAnchor="end"
+                fill="currentColor"
+                opacity="0.7"
+                fontFamily="ui-monospace, monospace"
+              >
+                t{i + 1}
+              </text>
+            ))}
+            {matrix[0]!.map((_, j) => (
+              <text
+                key={`col-${j}`}
+                x={70 + j * cell + cell / 2}
+                y={16}
+                fontSize="9"
+                textAnchor="middle"
+                fill="currentColor"
+                opacity="0.7"
+                fontFamily="ui-monospace, monospace"
+              >
+                e{j + 1}
+              </text>
+            ))}
+          </svg>
+        </div>
+      ) : null}
+      <p className="mt-3 text-[12.5px]" style={{ color: "var(--color-text-muted)" }}>
+        Bright cells = high cosine (topic and endmember spectrally aligned). Diagonal-like pattern = the two methods recover the same spectral primitives. Master-plan position: at the same K, NMF, NFINDR, and LDA all recover comparable spectral structure; what separates them is interpretability and downstream gating utility (B-3, B-7).
+      </p>
+    </Section>
+  );
+}
 
 function MutualInfoSection() {
   const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);

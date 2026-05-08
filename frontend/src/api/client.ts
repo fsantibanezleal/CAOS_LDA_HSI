@@ -335,6 +335,10 @@ export const api = {
     ),
   crossSceneTransfer: () =>
     request<CrossSceneTransfer>(`/api/cross-scene-transfer`),
+  endmemberBaseline: (sceneId: string) =>
+    request<EndmemberBaseline>(
+      `/api/endmember-baseline/${encodeURIComponent(sceneId)}`,
+    ),
   topicAnomaly: (sceneId: string) =>
     request<TopicAnomaly>(
       `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
@@ -629,6 +633,22 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type EndmemberBaseline = {
+  scene_id: string;
+  K: number;
+  n_pixels_used: number;
+  n_bands: number;
+  endmember_extractors: string[];
+  unmixing_method: string;
+  reconstruction_rmse_full_set: Record<string, number>;
+  reconstruction_rmse_normalised: Record<string, number>;
+  topic_endmember_match: {
+    best_endmember_per_topic?: { topic_id: number; endmember_id: number; cosine: number }[];
+    best_topic_per_endmember?: { endmember_id: number; topic_id: number; cosine: number }[];
+    topic_x_endmember_cosine?: number[][];
+  };
 };
 
 export type CrossSceneTransfer = {
