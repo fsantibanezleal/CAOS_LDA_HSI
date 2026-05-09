@@ -1431,19 +1431,22 @@ function NeuralTopicComparisonSection() {
     );
   }
 
-  type Cell = { ari: number; entropy_norm: number };
+  type Cell = { ari: number; cv: number | null };
   type Row = {
     scene: string;
     n_classes: number;
     cells: Record<string, Cell | null>;
-    winner: string;
+    ariWinner: string;
+    cvWinner: string;
   };
   const METHODS = ["lda", "prodlda", "etm"] as const;
   const rows: Row[] = LABELLED_SCENES.map((sc, i) => {
     const data = queries[i]?.data;
     const cells: Record<string, Cell | null> = {};
-    let winner = "";
+    let ariWinner = "";
+    let cvWinner = "";
     let bestAri = -Infinity;
+    let bestCv = -Infinity;
     for (const m of METHODS) {
       const block = data?.methods?.[m];
       if (!block || !block.downstream_kmeans_vs_label) {
@@ -1451,32 +1454,61 @@ function NeuralTopicComparisonSection() {
         continue;
       }
       const ari = block.downstream_kmeans_vs_label.ari;
-      cells[m] = { ari, entropy_norm: block.theta_entropy.doc_entropy_normalised_mean };
+      const cv = block.coherence?.c_v ?? null;
+      cells[m] = { ari, cv };
       if (ari > bestAri) {
         bestAri = ari;
-        winner = m;
+        ariWinner = m;
+      }
+      if (cv != null && cv > bestCv) {
+        bestCv = cv;
+        cvWinner = m;
       }
     }
-    return { scene: sc, n_classes: data?.n_classes ?? 0, cells, winner };
+    return { scene: sc, n_classes: data?.n_classes ?? 0, cells, ariWinner, cvWinner };
   });
-  const wins: Record<string, number> = { lda: 0, prodlda: 0, etm: 0 };
-  for (const r of rows) if (r.winner) wins[r.winner] = (wins[r.winner] ?? 0) + 1;
+  const ariWins: Record<string, number> = { lda: 0, prodlda: 0, etm: 0 };
+  const cvWins: Record<string, number> = { lda: 0, prodlda: 0, etm: 0 };
+  for (const r of rows) {
+    if (r.ariWinner) ariWins[r.ariWinner] = (ariWins[r.ariWinner] ?? 0) + 1;
+    if (r.cvWinner) cvWins[r.cvWinner] = (cvWins[r.cvWinner] ?? 0) + 1;
+  }
 
   return (
     <Section
-      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM (cycle 61)"
-      lead="Three neural-style topic models compared head-to-head on the canonical 220-per-class stratified sample. Each cell is K-means(theta) ARI vs ground-truth label at K = scene class count. ETM = Embedded Topic Model (Dieng-Ruiz-Blei 2020) with low-rank (V × E) word-embedding decoder. The ϕ_norm column is the mean per-document theta entropy normalised by log(K) — closer to 1.0 = more uniform; closer to 0.0 = more peaked."
+      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM (cycles 61+62)"
+      lead="Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics shown: (1) K-means(theta) ARI vs ground-truth label — clustering quality at K = scene class count. (2) c_v topic coherence (Röder 2015 sliding-window) on the top-15 words per topic — semantic quality. The two metrics tell different stories — coherence and clustering are not the same thing on band-frequency vocabularies."
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
               <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">classes</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">LDA ARI</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">ProdLDA ARI</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">ETM ARI</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">ϕ_norm range</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">cls</th>
+              <th
+                className="text-right font-mono text-[12px] pb-2 pr-3"
+                colSpan={3}
+                style={{ borderBottom: "1px solid var(--color-border)" }}
+              >
+                ARI vs label
+              </th>
+              <th
+                className="text-right font-mono text-[12px] pb-2 pr-3"
+                colSpan={3}
+                style={{ borderBottom: "1px solid var(--color-border)" }}
+              >
+                c_v coherence (top-15)
+              </th>
+            </tr>
+            <tr style={{ color: "var(--color-text-muted)" }}>
+              <th />
+              <th />
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">LDA</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">ProdLDA</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">ETM</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">LDA</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">ProdLDA</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">ETM</th>
             </tr>
           </thead>
           <tbody>
@@ -1488,10 +1520,10 @@ function NeuralTopicComparisonSection() {
                 </td>
                 {METHODS.map((m) => {
                   const c = r.cells[m];
-                  const isWinner = r.winner === m;
+                  const isWinner = r.ariWinner === m;
                   return (
                     <td
-                      key={m}
+                      key={`a${m}`}
                       className="py-1.5 pr-3 text-right font-mono"
                       style={{
                         color: isWinner ? "var(--color-accent)" : "var(--color-text)",
@@ -1502,12 +1534,22 @@ function NeuralTopicComparisonSection() {
                     </td>
                   );
                 })}
-                <td className="py-1.5 pr-3 text-right font-mono text-[11px]" style={{ color: "var(--color-text-muted)" }}>
-                  {METHODS.map((m) => {
-                    const c = r.cells[m];
-                    return c ? c.entropy_norm.toFixed(2) : "—";
-                  }).join(" / ")}
-                </td>
+                {METHODS.map((m) => {
+                  const c = r.cells[m];
+                  const isWinner = r.cvWinner === m;
+                  return (
+                    <td
+                      key={`c${m}`}
+                      className="py-1.5 pr-3 text-right font-mono"
+                      style={{
+                        color: isWinner ? "var(--color-accent)" : "var(--color-text)",
+                        fontWeight: isWinner ? 600 : 400,
+                      }}
+                    >
+                      {c?.cv != null ? (c.cv >= 0 ? "+" : "") + c.cv.toFixed(3) : "—"}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
             <tr style={{ borderTop: "2px solid var(--color-border)" }}>
@@ -1516,27 +1558,38 @@ function NeuralTopicComparisonSection() {
               </td>
               {METHODS.map((m) => (
                 <td
-                  key={m}
+                  key={`aw${m}`}
                   className="py-1.5 pr-3 text-right font-mono text-[11px]"
                   style={{ color: "var(--color-text-muted)" }}
                 >
-                  {wins[m]}/{LABELLED_SCENES.length}
+                  {ariWins[m]}/{LABELLED_SCENES.length}
                 </td>
               ))}
-              <td />
+              {METHODS.map((m) => (
+                <td
+                  key={`cw${m}`}
+                  className="py-1.5 pr-3 text-right font-mono text-[11px]"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  {cvWins[m]}/{LABELLED_SCENES.length}
+                </td>
+              ))}
             </tr>
           </tbody>
         </table>
       </div>
       <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-        Honest read: <strong>LDA wins on most scenes</strong>; the neural variants do not reliably
-        dominate the symmetric-Dirichlet-prior LDA on band-frequency tokens. <strong>Exception
-        — Kennedy SC</strong>: LDA collapses (ARI ≈ 0.000, the known KSC topic-collapse
-        documented in cycle 5+); both ProdLDA and ETM rescue clustering quality to ~+0.22 ARI.
-        On Pavia U the neural variants match or modestly exceed LDA. Across the comparison,
-        <strong> ETM beats ProdLDA on 5/6 scenes</strong>: word-embedding regularisation
-        (low-rank V × E factorisation) produces measurably more class-discriminative theta than
-        ProdLDA's free-form (K × V) topic-word matrix.
+        <strong>Coherence vs discriminability are NOT the same metric on band-frequency
+        tokens.</strong> ProdLDA wins c_v on every scene (highest semantic coherence among the
+        three) but loses ARI on 4/6 scenes — its topics are internally tight but do not align
+        with class structure. LDA wins ARI on 4/6 scenes (most class-discriminative theta on
+        average) yet loses c_v on every scene. ETM lands between on both axes — slight
+        improvement over ProdLDA on ARI (5/6 wins), slight regression on c_v.
+        <br /><br />
+        <strong>Operational rule</strong>: pick the topic family by the downstream task, not by
+        coherence alone. For class clustering use LDA (or neural fallback when LDA collapses,
+        e.g. KSC). For interpretability / topic-vocabulary cards (Workspace Topics tab) use
+        ProdLDA's higher coherence. ETM is the safe middle if both matter.
       </p>
     </Section>
   );
