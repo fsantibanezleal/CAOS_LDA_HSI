@@ -20,7 +20,10 @@ CAOS LDA HSI -- local dev runner
 
 Setup:
   setup-web                   Create .venv and install backend requirements
-  setup-pipeline              Create .venv-pipeline and install pipeline requirements
+  setup-pipeline              Create .venv-pipeline and install pipeline requirements (CPU torch)
+  setup-pipeline-gpu          Reinstall torch with CUDA 12.6 in .venv-pipeline
+                              (5 deep / neural builders auto-detect; ~50-200x speedup)
+                              See scripts/GPU_SETUP.md for prerequisites and caveats.
   setup-frontend              Install frontend node modules (pnpm or npm)
   setup-all                   setup-web + setup-pipeline + setup-frontend
 
@@ -148,6 +151,14 @@ case "$cmd" in
   # ---- setup -----------------------------------------------------------
   setup-web)      ensure_web_venv ;       echo ".venv ready." ;;
   setup-pipeline) ensure_pipeline_venv ;  echo ".venv-pipeline ready." ;;
+  setup-pipeline-gpu)
+    ensure_pipeline_venv
+    "$PVENV/bin/pip" uninstall torch torchvision torchaudio -y || true
+    "$PVENV/bin/pip" install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+    "$PVENV/bin/python" -c "import torch; print('CUDA available:', torch.cuda.is_available()); \
+        print('device 0:', torch.cuda.get_device_name(0)) if torch.cuda.is_available() else None"
+    echo ".venv-pipeline upgraded with CUDA torch. See scripts/GPU_SETUP.md for details."
+    ;;
   setup-frontend) ensure_frontend ;       echo "frontend modules ready." ;;
   setup-all)
     ensure_web_venv
