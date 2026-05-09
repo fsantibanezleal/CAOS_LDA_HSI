@@ -270,6 +270,10 @@ export const api = {
     request<TopicRoutedDeepGate>(
       `/api/topic-routed-deep-gate/${encodeURIComponent(sceneId)}`,
     ),
+  neuralTopicComparison: (sceneId: string) =>
+    request<NeuralTopicComparison>(
+      `/api/neural-topic-comparison/${encodeURIComponent(sceneId)}`,
+    ),
   hidsagMethodStatistics: (subsetCode: string) =>
     request<HidsagMethodStatistics>(
       `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
@@ -593,6 +597,33 @@ export type TopicRoutedDeepGate = {
     macro_f1_mean: number;
     macro_f1_ci95: [number, number];
   }[];
+  framework_axis?: string;
+};
+
+export type NeuralTopicComparisonMethod = {
+  K: number;
+  downstream_kmeans_vs_label: {
+    ari: number;
+    nmi: number;
+    silhouette: number;
+    n_classes: number;
+  };
+  theta_entropy: {
+    K: number;
+    max_entropy_uniform: number;
+    doc_entropy_mean: number;
+    doc_entropy_std: number;
+    doc_entropy_normalised_mean: number;
+  };
+  error?: string;
+};
+
+export type NeuralTopicComparison = {
+  scene_id: string;
+  n_documents: number;
+  n_classes: number;
+  methods: Record<string, NeuralTopicComparisonMethod>;
+  ranking_by_ari: { method: string; ari: number }[];
   framework_axis?: string;
 };
 
