@@ -624,6 +624,7 @@ def build_for_scene(scene_id: str) -> list[dict]:
         ("cae_2d_32", lambda s: fit_cae_2d(cube, pixel_indices_sampled, cube_shape, 32)),
         ("cae_3d_4", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 4)),
         ("cae_3d_8", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 8)),
+        ("cae_3d_full_4", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 4)),
         ("cae_3d_full_8", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 8)),
         ("cae_3d_16", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 16)),
         ("cae_3d_32", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 32)),
@@ -699,10 +700,17 @@ def build_for_scene(scene_id: str) -> list[dict]:
 
 
 def main() -> int:
+    import os as _os_main
     DERIVED_OUT_ROOT.mkdir(parents=True, exist_ok=True)
     LOCAL_OUT_ROOT.mkdir(parents=True, exist_ok=True)
+    scene_filter_env = _os_main.environ.get("CAOS_SCENES_FILTER", "").strip()
+    if scene_filter_env:
+        wanted_scenes = {s.strip() for s in scene_filter_env.split(",") if s.strip()}
+        scenes_iter = [s for s in LABELLED_SCENES if s in wanted_scenes]
+    else:
+        scenes_iter = LABELLED_SCENES
     written_total = 0
-    for scene_id in LABELLED_SCENES:
+    for scene_id in scenes_iter:
         print(f"[representations] {scene_id} ...", flush=True)
         try:
             summaries = build_for_scene(scene_id)
