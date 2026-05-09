@@ -313,6 +313,9 @@ class Settings(BaseSettings):
     def neural_topic_comparison_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "neural_topic_comparison" / f"{scene_id}.json"
 
+    def neural_topic_seed_stability_path(self, scene_id: str) -> Path:
+        return self.data_path / "derived" / "neural_topic_seed_stability" / f"{scene_id}.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

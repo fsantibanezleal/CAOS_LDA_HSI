@@ -655,6 +655,15 @@ def neural_topic_comparison(scene_id: str) -> dict:
         raise HTTPException(status_code=404, detail=f"neural_topic_comparison for '{scene_id}' not generated yet") from exc
 
 
+@router.get("/neural-topic-seed-stability/{scene_id}")
+def neural_topic_seed_stability(scene_id: str) -> dict:
+    from app.services.content import get_neural_topic_seed_stability
+    try:
+        return get_neural_topic_seed_stability(scene_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=f"neural_topic_seed_stability for '{scene_id}' not generated yet") from exc
+
+
 @router.get("/embedded-baseline/{scene_id}")
 def embedded_baseline(scene_id: str) -> dict:
     from app.services.content import get_embedded_baseline

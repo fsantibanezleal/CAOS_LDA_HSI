@@ -80,10 +80,13 @@ def band_frequency_counts(values: np.ndarray, scale: int = SCALE) -> np.ndarray:
     return np.rint(normalize01_per_row(values) * scale).astype(np.int32)
 
 
-def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
+def fit_prodlda(doc_term: np.ndarray, K: int, seed: int | None = None) -> dict:
     """Pyro-based ProdLDA (Srivastava & Sutton 2017).
     Encoder: 2-layer MLP -> (mu, logvar) of latent z (dim K)
     Decoder: theta = softmax(z); logits over vocab via theta @ phi.
+
+    seed defaults to RANDOM_STATE; pass an explicit seed for multi-seed
+    stability sweeps.
     """
     import torch
     import torch.nn as nn
@@ -93,10 +96,11 @@ def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
     from pyro.infer import SVI, Trace_ELBO
     from pyro.optim import Adam
 
-    pyro.set_rng_seed(RANDOM_STATE)
-    torch.manual_seed(RANDOM_STATE)
+    s = int(seed) if seed is not None else RANDOM_STATE
+    pyro.set_rng_seed(s)
+    torch.manual_seed(s)
     if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(RANDOM_STATE)
+        torch.cuda.manual_seed_all(s)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     D, V = doc_term.shape
@@ -174,7 +178,7 @@ def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
     return {"phi": phi, "theta": theta}
 
 
-def fit_etm(doc_term: np.ndarray, K: int, embed_dim: int = 64) -> dict:
+def fit_etm(doc_term: np.ndarray, K: int, embed_dim: int = 64, seed: int | None = None) -> dict:
     """Embedded Topic Model (Dieng-Ruiz-Blei 2020).
 
     Models word-topic assignment via dot product between learned topic
@@ -200,9 +204,10 @@ def fit_etm(doc_term: np.ndarray, K: int, embed_dim: int = 64) -> dict:
     import torch.nn as nn
     import torch.nn.functional as F
 
-    torch.manual_seed(RANDOM_STATE)
+    s = int(seed) if seed is not None else RANDOM_STATE
+    torch.manual_seed(s)
     if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(RANDOM_STATE)
+        torch.cuda.manual_seed_all(s)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     D, V = doc_term.shape
