@@ -274,6 +274,10 @@ export const api = {
     request<NeuralTopicComparison>(
       `/api/neural-topic-comparison/${encodeURIComponent(sceneId)}`,
     ),
+  neuralTopicSeedStability: (sceneId: string) =>
+    request<NeuralTopicSeedStability>(
+      `/api/neural-topic-seed-stability/${encodeURIComponent(sceneId)}`,
+    ),
   hidsagMethodStatistics: (subsetCode: string) =>
     request<HidsagMethodStatistics>(
       `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
@@ -631,6 +635,29 @@ export type NeuralTopicComparison = {
   n_classes: number;
   methods: Record<string, NeuralTopicComparisonMethod>;
   ranking_by_ari: { method: string; ari: number }[];
+  framework_axis?: string;
+};
+
+export type NeuralTopicSeedStabilityMethod = {
+  K: number;
+  n_seeds: number;
+  per_seed: { seed: number; ari?: number; nmi?: number; c_v?: number | null; error?: string }[];
+  ari_mean: number | null;
+  ari_std: number | null;
+  ari_min: number | null;
+  ari_max: number | null;
+  c_v_mean: number | null;
+  c_v_std: number | null;
+};
+
+export type NeuralTopicSeedStability = {
+  scene_id: string;
+  n_documents: number;
+  n_classes: number;
+  K: number;
+  n_seeds: number;
+  methods: Record<string, NeuralTopicSeedStabilityMethod>;
+  ranking_by_ari_mean: { method: string; ari_mean: number }[];
   framework_axis?: string;
 };
 

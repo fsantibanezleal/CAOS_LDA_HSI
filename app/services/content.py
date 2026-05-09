@@ -503,3 +503,7 @@ def get_bayesian_classification_labelled_deep() -> dict:
 
 def get_neural_topic_comparison(scene_id: str) -> dict:
     return _load_or_404(get_settings().neural_topic_comparison_path(scene_id))
+
+
+def get_neural_topic_seed_stability(scene_id: str) -> dict:
+    return _load_or_404(get_settings().neural_topic_seed_stability_path(scene_id))

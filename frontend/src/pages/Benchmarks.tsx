@@ -1419,6 +1419,13 @@ function NeuralTopicComparisonSection() {
       retry: false,
     })),
   });
+  const seedQueries = useQueries({
+    queries: LABELLED_SCENES.map((sc) => ({
+      queryKey: ["neural-topic-seed-stability", sc],
+      queryFn: () => api.neuralTopicSeedStability(sc),
+      retry: false,
+    })),
+  });
   const ready = queries.every((q) => q.data !== undefined || q.error);
   if (!ready) {
     return (
@@ -1431,7 +1438,12 @@ function NeuralTopicComparisonSection() {
     );
   }
 
-  type Cell = { ari: number; cv: number | null };
+  type Cell = {
+    ari: number;
+    cv: number | null;
+    ari_std: number | null;
+    cv_std: number | null;
+  };
   type Row = {
     scene: string;
     n_classes: number;
@@ -1442,6 +1454,7 @@ function NeuralTopicComparisonSection() {
   const METHODS = ["lda", "prodlda", "etm"] as const;
   const rows: Row[] = LABELLED_SCENES.map((sc, i) => {
     const data = queries[i]?.data;
+    const seedData = seedQueries[i]?.data;
     const cells: Record<string, Cell | null> = {};
     let ariWinner = "";
     let cvWinner = "";
@@ -1453,9 +1466,18 @@ function NeuralTopicComparisonSection() {
         cells[m] = null;
         continue;
       }
-      const ari = block.downstream_kmeans_vs_label.ari;
-      const cv = block.coherence?.c_v ?? null;
-      cells[m] = { ari, cv };
+      // Prefer seed-stability mean + std when available (cycle 63);
+      // fall back to single-seed value (cycle 61/62) for LDA which
+      // does not have a multi-seed neural sweep.
+      const seedBlock = seedData?.methods?.[m];
+      const ari = seedBlock?.ari_mean ?? block.downstream_kmeans_vs_label.ari;
+      const cv = seedBlock?.c_v_mean ?? block.coherence?.c_v ?? null;
+      cells[m] = {
+        ari,
+        cv,
+        ari_std: seedBlock?.ari_std ?? null,
+        cv_std: seedBlock?.c_v_std ?? null,
+      };
       if (ari > bestAri) {
         bestAri = ari;
         ariWinner = m;
@@ -1476,8 +1498,8 @@ function NeuralTopicComparisonSection() {
 
   return (
     <Section
-      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM (cycles 61+62)"
-      lead="Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics shown: (1) K-means(theta) ARI vs ground-truth label — clustering quality at K = scene class count. (2) c_v topic coherence (Röder 2015 sliding-window) on the top-15 words per topic — semantic quality. The two metrics tell different stories — coherence and clustering are not the same thing on band-frequency vocabularies."
+      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM (cycles 61–63)"
+      lead="Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics: (1) K-means(theta) ARI vs ground-truth label — clustering quality. (2) c_v topic coherence (Röder 2015 sliding-window, top-15 words) — semantic quality. ProdLDA + ETM cells show mean ± std across N=5 seeds (cycle 63 multi-seed sweep). LDA cell uses the canonical fit (single seed; per-seed LDA stability is in the separate Workspace stability tab). The two metrics tell different stories — coherence ≠ class discriminability on band-frequency vocabularies."
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
@@ -1531,6 +1553,14 @@ function NeuralTopicComparisonSection() {
                       }}
                     >
                       {c ? (c.ari >= 0 ? "+" : "") + c.ari.toFixed(3) : "—"}
+                      {c?.ari_std != null ? (
+                        <span
+                          className="ml-1 text-[10px]"
+                          style={{ color: "var(--color-text-muted)", fontWeight: 400 }}
+                        >
+                          ±{c.ari_std.toFixed(3)}
+                        </span>
+                      ) : null}
                     </td>
                   );
                 })}
@@ -1547,6 +1577,14 @@ function NeuralTopicComparisonSection() {
                       }}
                     >
                       {c?.cv != null ? (c.cv >= 0 ? "+" : "") + c.cv.toFixed(3) : "—"}
+                      {c?.cv_std != null ? (
+                        <span
+                          className="ml-1 text-[10px]"
+                          style={{ color: "var(--color-text-muted)", fontWeight: 400 }}
+                        >
+                          ±{c.cv_std.toFixed(3)}
+                        </span>
+                      ) : null}
                     </td>
                   );
                 })}
