@@ -120,6 +120,7 @@ export default function Benchmarks() {
           <DeepGateSection />
           <BayesianHdiSection />
           <DeepKCurveSection />
+          <Cae3dAnchorVsFullSection />
           <BetaVaeCollapseSection />
           <AnomalyComparisonSection />
           <CrossSceneTransferSection />
@@ -1024,6 +1025,121 @@ function DeepKCurveSection() {
         Capacity-driven scaling: every scene improves with K; no overfitting at K=32. KSC's
         canonical fit (LDA θ-logistic F1=0.021 on B-3) recovers to F1=0.710 at CAE-1D K=32 on
         the linear-probe panel, a 33× gain attributable to deep encoder capacity.
+      </p>
+    </Section>
+  );
+}
+
+function Cae3dAnchorVsFullSection() {
+  const KS = [4, 8] as const;
+  const queries = useQueries({
+    queries: LABELLED_SCENES.flatMap((sc) =>
+      KS.flatMap((k) => [
+        { queryKey: ["repr", `cae_3d_${k}`, sc], queryFn: () => api.representation(`cae_3d_${k}`, sc), retry: false },
+        { queryKey: ["repr", `cae_3d_full_${k}`, sc], queryFn: () => api.representation(`cae_3d_full_${k}`, sc), retry: false },
+      ]),
+    ),
+  });
+  const ready = queries.every((q) => q.data !== undefined || q.error);
+  if (!ready) {
+    return (
+      <Section
+        title="CAE-3D — anchor decoder vs full-patch decoder (K-curve {4, 8})"
+        lead="Loading anchor + full-patch payloads at K∈{4, 8} across 6 labelled scenes…"
+      >
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+      </Section>
+    );
+  }
+  type Cell = { full: number; anchor: number; delta: number };
+  const grid: { scene: string; cells: Record<number, Cell> }[] = LABELLED_SCENES.map((sc, si) => {
+    const cells: Record<number, Cell> = {};
+    KS.forEach((k, ki) => {
+      const idx = (si * KS.length + ki) * 2;
+      const anchor = queries[idx]?.data?.downstream_kmeans_vs_label?.ari ?? NaN;
+      const full = queries[idx + 1]?.data?.downstream_kmeans_vs_label?.ari ?? NaN;
+      cells[k] = { full, anchor, delta: full - anchor };
+    });
+    return { scene: sc, cells };
+  });
+  const meanDelta: Record<number, number> = {};
+  KS.forEach((k) => {
+    const deltas = grid.map((g) => g.cells[k]!.delta).filter(Number.isFinite);
+    meanDelta[k] = deltas.reduce((a, b) => a + b, 0) / deltas.length;
+  });
+  return (
+    <Section
+      title="CAE-3D — anchor decoder vs full-patch decoder (K-curve {4, 8})"
+      lead="Two decoders share the same 3-D conv encoder. Anchor reconstructs only the centre-pixel spectrum (Linear K→B); full-patch reconstructs the entire P×P patch (Linear K→B·P·P). Cycle 52 ran K=8; cycle 55 added K=4. The decoder target is itself a hyperparameter — direction is broadly stable across capacity, with one inversion (Pavia U)."
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
+          <thead>
+            <tr style={{ color: "var(--color-text-muted)" }}>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">full K=4</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">anchor K=4</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">ΔK=4</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">full K=8</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">anchor K=8</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">ΔK=8</th>
+            </tr>
+          </thead>
+          <tbody>
+            {grid.map((g) => (
+              <tr key={g.scene} style={{ borderTop: "1px solid var(--color-border)" }}>
+                <td className="py-1.5 pr-3 font-mono">{g.scene}</td>
+                {KS.flatMap((k) => {
+                  const c = g.cells[k]!;
+                  const dColor =
+                    c.delta > 0 ? "var(--color-accent)" : c.delta < 0 ? "rgba(214,39,40,1)" : "var(--color-text-muted)";
+                  return [
+                    <td key={`f${k}`} className="py-1.5 pr-3 text-right font-mono">
+                      {Number.isFinite(c.full) ? c.full.toFixed(3) : "—"}
+                    </td>,
+                    <td key={`a${k}`} className="py-1.5 pr-3 text-right font-mono">
+                      {Number.isFinite(c.anchor) ? c.anchor.toFixed(3) : "—"}
+                    </td>,
+                    <td key={`d${k}`} className="py-1.5 pr-3 text-right font-mono" style={{ color: dColor, fontWeight: 600 }}>
+                      {Number.isFinite(c.delta) ? (c.delta >= 0 ? "+" : "") + c.delta.toFixed(3) : "—"}
+                    </td>,
+                  ];
+                })}
+              </tr>
+            ))}
+            <tr style={{ borderTop: "2px solid var(--color-border)" }}>
+              <td className="py-1.5 pr-3 font-mono text-[11px]" style={{ color: "var(--color-text-muted)" }}>net mean ΔARI</td>
+              <td className="py-1.5 pr-3" />
+              <td className="py-1.5 pr-3" />
+              <td
+                className="py-1.5 pr-3 text-right font-mono text-[11px]"
+                style={{
+                  color: meanDelta[4]! > 0 ? "var(--color-accent)" : meanDelta[4]! < 0 ? "rgba(214,39,40,1)" : "var(--color-text-muted)",
+                  fontWeight: 600,
+                }}
+              >
+                {(meanDelta[4]! >= 0 ? "+" : "") + meanDelta[4]!.toFixed(3)}
+              </td>
+              <td className="py-1.5 pr-3" />
+              <td className="py-1.5 pr-3" />
+              <td
+                className="py-1.5 pr-3 text-right font-mono text-[11px]"
+                style={{
+                  color: meanDelta[8]! > 0 ? "var(--color-accent)" : meanDelta[8]! < 0 ? "rgba(214,39,40,1)" : "var(--color-text-muted)",
+                  fontWeight: 600,
+                }}
+              >
+                {(meanDelta[8]! >= 0 ? "+" : "") + meanDelta[8]!.toFixed(3)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
+        Honest read: net mean ΔARI is essentially neutral at both K (+0.011 K=4, +0.003 K=8). Direction matches across K on
+        5/6 scenes — IP and Botswana persistently benefit; Salinas family persistently harmed (magnitude grows with K). Pavia U
+        is the single capacity-dependent inversion: full-patch helps at K=4 (+0.026), hurts at K=8 (-0.023). The decoder target
+        is itself a hyperparameter worth surfacing per scene, not a default to flip globally.
       </p>
     </Section>
   );
