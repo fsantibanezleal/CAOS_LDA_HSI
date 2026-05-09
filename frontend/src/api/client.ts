@@ -615,6 +615,13 @@ export type NeuralTopicComparisonMethod = {
     doc_entropy_std: number;
     doc_entropy_normalised_mean: number;
   };
+  coherence?: {
+    top_n: number;
+    c_v?: number | null;
+    c_npmi?: number | null;
+    u_mass?: number | null;
+    error?: string;
+  };
   error?: string;
 };
 
