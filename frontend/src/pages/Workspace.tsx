@@ -2392,6 +2392,7 @@ const DEEP_METHOD_OPTIONS: {
   { key: "cae_3d_8",   label: "CAE-3D K=8 (anchor)",   K: 8,  family: "cae_3d" },
   { key: "cae_3d_16",  label: "CAE-3D K=16 (anchor)",  K: 16, family: "cae_3d" },
   { key: "cae_3d_32",  label: "CAE-3D K=32 (anchor)",  K: 32, family: "cae_3d" },
+  { key: "cae_3d_full_4", label: "CAE-3D K=4 (full-patch)", K: 4, family: "cae_3d_full" },
   { key: "cae_3d_full_8", label: "CAE-3D K=8 (full-patch)", K: 8, family: "cae_3d_full" },
 ];
 
