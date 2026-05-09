@@ -282,7 +282,24 @@ def fit_etm(doc_term: np.ndarray, K: int, embed_dim: int = 64) -> dict:
     }
 
 
-def write_outputs(variant: str, scene_id: str, fit: dict, vocab: list[str], wavelengths: np.ndarray) -> dict:
+def _downstream_kmeans_ari(theta: np.ndarray, labels: np.ndarray) -> dict:
+    from sklearn.cluster import KMeans
+    from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
+
+    n_classes = int(np.unique(labels).size)
+    if n_classes < 2 or theta.shape[0] != labels.shape[0]:
+        return {"ari": 0.0, "nmi": 0.0}
+    try:
+        km = KMeans(n_clusters=n_classes, n_init=10, random_state=42).fit(theta)
+        return {
+            "ari": round(float(adjusted_rand_score(labels, km.labels_)), 6),
+            "nmi": round(float(normalized_mutual_info_score(labels, km.labels_)), 6),
+        }
+    except Exception:
+        return {"ari": 0.0, "nmi": 0.0}
+
+
+def write_outputs(variant: str, scene_id: str, fit: dict, vocab: list[str], wavelengths: np.ndarray, labels: np.ndarray | None = None) -> dict:
     phi = fit["phi"]
     theta = fit["theta"]
     K = phi.shape[0]
@@ -312,8 +329,12 @@ def write_outputs(variant: str, scene_id: str, fit: dict, vocab: list[str], wave
         "top_words_per_topic": top_words,
         "wavelengths_nm": [round(float(x), 2) for x in wavelengths.tolist()],
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "builder_version": "build_neural_topic_models v0.1",
+        "builder_version": "build_neural_topic_models v0.2",
     }
+    if "fit_meta" in fit:
+        derived["fit_meta"] = fit["fit_meta"]
+    if labels is not None:
+        derived["downstream_kmeans_vs_label"] = _downstream_kmeans_ari(theta, labels)
     out_path = DERIVED_OUT_ROOT / variant / f"{scene_id}.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("w", encoding="utf-8") as h:
@@ -346,7 +367,7 @@ def build_for_scene(scene_id: str) -> list[dict]:
     print(f"  fitting prodlda (K={K}, D={doc_term.shape[0]}, V={doc_term.shape[1]}) ...", flush=True)
     try:
         fit = fit_prodlda(doc_term, K)
-        s = write_outputs("prodlda", scene_id, fit, vocab, wavelengths)
+        s = write_outputs("prodlda", scene_id, fit, vocab, wavelengths, labels=labels[sample_idx])
         print(f"    K={s['K']} written", flush=True)
         summaries.append(s)
     except Exception as exc:
@@ -357,7 +378,7 @@ def build_for_scene(scene_id: str) -> list[dict]:
     print(f"  fitting etm (K={K}, embed_dim=64) ...", flush=True)
     try:
         fit = fit_etm(doc_term, K)
-        s = write_outputs("etm", scene_id, fit, vocab, wavelengths)
+        s = write_outputs("etm", scene_id, fit, vocab, wavelengths, labels=labels[sample_idx])
         print(f"    K={s['K']} written", flush=True)
         summaries.append(s)
     except Exception as exc:
