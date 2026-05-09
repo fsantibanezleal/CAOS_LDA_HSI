@@ -69,6 +69,7 @@ BUILDER_DIRS = [
     ("build_rate_distortion_curve", "rate_distortion_curve"),
     ("build_topic_routed_classifier", "topic_routed_classifier"),
     ("build_topic_routed_deep_gate", "topic_routed_deep_gate"),
+    ("build_neural_topic_comparison", "neural_topic_comparison"),
     ("build_embedded_baseline", "embedded_baseline"),
     ("build_topic_stability", "topic_stability"),
     ("build_deep_seed_stability", "deep_seed_stability"),
