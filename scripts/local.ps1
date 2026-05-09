@@ -8,7 +8,7 @@ param(
     [Parameter(Position = 0)]
     [ValidateSet(
         # setup
-        "setup-web", "setup-pipeline", "setup-frontend", "setup-all",
+        "setup-web", "setup-pipeline", "setup-pipeline-gpu", "setup-frontend", "setup-all",
         # web
         "dev", "build", "preview", "demo", "smoke", "logs",
         # pipeline -- fetch
@@ -64,7 +64,10 @@ function Show-Help {
     Write-Host ""
     Write-Host "Setup:" -ForegroundColor Yellow
     Write-Host "  setup-web                   Create .venv and install backend requirements"
-    Write-Host "  setup-pipeline              Create .venv-pipeline and install pipeline requirements"
+    Write-Host "  setup-pipeline              Create .venv-pipeline and install pipeline requirements (CPU torch)"
+    Write-Host "  setup-pipeline-gpu          Reinstall torch with CUDA 12.6 in .venv-pipeline"
+    Write-Host "                              (5 deep / neural builders auto-detect; ~50-200x speedup)"
+    Write-Host "                              See scripts/GPU_SETUP.md for prerequisites."
     Write-Host "  setup-frontend              Install frontend node modules (pnpm or npm)"
     Write-Host "  setup-all                   setup-web + setup-pipeline + setup-frontend"
     Write-Host ""
@@ -190,6 +193,13 @@ switch ($Command) {
     # ---- setup -----------------------------------------------------------
     "setup-web"      { Initialize-WebVenv ;          Write-Host ".venv ready." -ForegroundColor Green }
     "setup-pipeline" { Initialize-PipelineVenv ;  Write-Host ".venv-pipeline ready." -ForegroundColor Green }
+    "setup-pipeline-gpu" {
+        Initialize-PipelineVenv
+        & .\.venv-pipeline\Scripts\pip.exe uninstall torch torchvision torchaudio -y
+        & .\.venv-pipeline\Scripts\pip.exe install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+        & .\.venv-pipeline\Scripts\python.exe -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('device 0:', torch.cuda.get_device_name(0)) if torch.cuda.is_available() else None"
+        Write-Host ".venv-pipeline upgraded with CUDA torch. See scripts/GPU_SETUP.md for details." -ForegroundColor Green
+    }
     "setup-frontend" { Initialize-Frontend ;      Write-Host "frontend modules ready." -ForegroundColor Green }
     "setup-all"      {
         Initialize-WebVenv

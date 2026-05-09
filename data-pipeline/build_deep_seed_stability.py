@@ -66,6 +66,11 @@ def normalize_per_row(values: np.ndarray) -> np.ndarray:
     return (values - low) / denom
 
 
+def _device():
+    import torch
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 def fit_cae_1d_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, epochs: int = 80) -> np.ndarray:
     import torch
     import torch.nn as nn
@@ -74,9 +79,10 @@ def fit_cae_1d_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, epochs
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    device = _device()
 
     D, B = spectra.shape
-    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1)
+    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1).to(device)
 
     class CAE1D(nn.Module):
         def __init__(self, B: int, latent: int) -> None:
@@ -98,7 +104,7 @@ def fit_cae_1d_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, epochs
             z = self.encode(x)
             return z, self.up(z)
 
-    model = CAE1D(B, latent_dim)
+    model = CAE1D(B, latent_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
     for _ in range(epochs):
@@ -122,9 +128,10 @@ def fit_beta_vae_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, beta
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    device = _device()
 
     D, B = spectra.shape
-    x = torch.from_numpy(spectra.astype(np.float32))
+    x = torch.from_numpy(spectra.astype(np.float32)).to(device)
 
     class BetaVAE(nn.Module):
         def __init__(self, B: int, latent: int) -> None:
@@ -154,7 +161,7 @@ def fit_beta_vae_with_seed(spectra: np.ndarray, latent_dim: int, seed: int, beta
             z = self.reparam(mu, logvar)
             return self.dec(z), mu, logvar, z
 
-    model = BetaVAE(B, latent_dim)
+    model = BetaVAE(B, latent_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
     for _ in range(epochs):
@@ -201,8 +208,9 @@ def fit_cae_2d_with_seed(patches: np.ndarray, latent_dim: int, seed: int, epochs
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    device = _device()
 
-    x = torch.from_numpy(np.transpose(patches, (0, 3, 1, 2)).copy())
+    x = torch.from_numpy(np.transpose(patches, (0, 3, 1, 2)).copy()).to(device)
     N, B, P, _ = x.shape
 
     class CAE2D(nn.Module):
@@ -225,7 +233,7 @@ def fit_cae_2d_with_seed(patches: np.ndarray, latent_dim: int, seed: int, epochs
             z = self.encode(x)
             return z, self.up(z).view(x.shape[0], self.in_ch, self.P, self.P)
 
-    model = CAE2D(B, latent_dim)
+    model = CAE2D(B, latent_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=32, shuffle=True)
     for _ in range(epochs):
@@ -248,12 +256,13 @@ def fit_cae_3d_with_seed(patches: np.ndarray, latent_dim: int, seed: int, epochs
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    device = _device()
 
     x_np = np.transpose(patches, (0, 3, 1, 2))[:, None, ...]
-    x = torch.from_numpy(x_np.copy())
+    x = torch.from_numpy(x_np.copy()).to(device)
     N, _, Bdim, P, _ = x.shape
     centre = patches[:, patch // 2, patch // 2, :]
-    anchor = torch.from_numpy(centre.astype(np.float32))
+    anchor = torch.from_numpy(centre.astype(np.float32)).to(device)
 
     class CAE3D(nn.Module):
         def __init__(self, latent):
@@ -269,8 +278,8 @@ def fit_cae_3d_with_seed(patches: np.ndarray, latent_dim: int, seed: int, epochs
         def forward(self, x):
             return self.head(self.enc(x).flatten(1))
 
-    model = CAE3D(latent_dim)
-    decode = nn.Linear(latent_dim, Bdim)
+    model = CAE3D(latent_dim).to(device)
+    decode = nn.Linear(latent_dim, Bdim).to(device)
     opt = torch.optim.Adam(list(model.parameters()) + list(decode.parameters()), lr=1e-3)
     loader = DataLoader(TensorDataset(x, anchor), batch_size=32, shuffle=True)
     for _ in range(epochs):

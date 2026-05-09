@@ -95,9 +95,12 @@ def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
 
     pyro.set_rng_seed(RANDOM_STATE)
     torch.manual_seed(RANDOM_STATE)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(RANDOM_STATE)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     D, V = doc_term.shape
-    docs = torch.tensor(doc_term, dtype=torch.float32)
+    docs = torch.tensor(doc_term, dtype=torch.float32, device=device)
 
     class Encoder(nn.Module):
         def __init__(self, V: int, K: int, hidden: int = 100):
@@ -112,16 +115,16 @@ def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
             h = F.softplus(self.fc2(h))
             return self.fc_mu(h), self.fc_logvar(h)
 
-    encoder = Encoder(V, K)
-    phi_unnorm = nn.Parameter(torch.randn(K, V) * 0.01)
+    encoder = Encoder(V, K).to(device)
+    phi_unnorm = nn.Parameter(torch.randn(K, V, device=device) * 0.01)
 
     def model(x_batch):
         pyro.module("phi", phi_unnorm_module)
         with pyro.plate("docs", x_batch.size(0)):
             z = pyro.sample(
                 "z",
-                dist.Normal(torch.zeros(x_batch.size(0), K),
-                            torch.ones(x_batch.size(0), K)).to_event(1),
+                dist.Normal(torch.zeros(x_batch.size(0), K, device=device),
+                            torch.ones(x_batch.size(0), K, device=device)).to_event(1),
             )
             theta = F.softmax(z, dim=-1)
             beta = F.softmax(phi_unnorm_module.phi_unnorm, dim=-1)
@@ -156,7 +159,7 @@ def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
 
     n_batches = max(1, D // PRODLDA_BATCH)
     for epoch in range(PRODLDA_EPOCHS):
-        perm = torch.randperm(D)
+        perm = torch.randperm(D, device=device)
         for b in range(n_batches):
             idx = perm[b * PRODLDA_BATCH:(b + 1) * PRODLDA_BATCH]
             if idx.numel() == 0:
@@ -166,9 +169,117 @@ def fit_prodlda(doc_term: np.ndarray, K: int) -> dict:
     encoder.eval()
     with torch.no_grad():
         mu, _ = encoder(docs)
-        theta = F.softmax(mu, dim=-1).numpy()
-        phi = F.softmax(phi_unnorm_module.phi_unnorm, dim=-1).numpy()
+        theta = F.softmax(mu, dim=-1).cpu().numpy()
+        phi = F.softmax(phi_unnorm_module.phi_unnorm, dim=-1).cpu().numpy()
     return {"phi": phi, "theta": theta}
+
+
+def fit_etm(doc_term: np.ndarray, K: int, embed_dim: int = 64) -> dict:
+    """Embedded Topic Model (Dieng-Ruiz-Blei 2020).
+
+    Models word-topic assignment via dot product between learned topic
+    embeddings ``alpha`` (K x embed_dim) and word embeddings ``rho``
+    (V x embed_dim), then softmax over the vocabulary:
+
+        beta_k(w) = softmax(rho @ alpha_k.T)_w
+
+    The encoder is identical to ProdLDA's: 2-layer MLP -> (mu, logvar)
+    of latent z (dim K). Trained end-to-end via amortised variational
+    inference with the standard ELBO (no Pyro dependency).
+
+    Compared with ProdLDA:
+    - Decoder uses a low-rank (V x embed_dim) parameterisation instead
+      of a full (K x V) topic-word matrix. Word embeddings are shared
+      across topics, which acts as a regulariser and produces more
+      semantically coherent topics on small vocabularies.
+    - On hyperspectral band-frequency tokens this means topics are
+      forced to be smooth in embedding space rather than free over
+      arbitrary subsets of bands.
+    """
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+
+    torch.manual_seed(RANDOM_STATE)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(RANDOM_STATE)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    D, V = doc_term.shape
+    docs = torch.tensor(doc_term, dtype=torch.float32, device=device)
+    epsilon = 1e-12
+
+    class ETM(nn.Module):
+        def __init__(self, V: int, K: int, E: int, hidden: int = 100):
+            super().__init__()
+            self.fc1 = nn.Linear(V, hidden)
+            self.fc2 = nn.Linear(hidden, hidden)
+            self.fc_mu = nn.Linear(hidden, K)
+            self.fc_logvar = nn.Linear(hidden, K)
+            self.rho = nn.Parameter(torch.randn(V, E) * 0.1)
+            self.alpha = nn.Parameter(torch.randn(K, E) * 0.1)
+
+        def encode(self, x):
+            h = F.softplus(self.fc1(x))
+            h = F.softplus(self.fc2(h))
+            return self.fc_mu(h), self.fc_logvar(h)
+
+        def topic_word(self):
+            return F.softmax(self.rho @ self.alpha.T, dim=0).T
+
+        def forward(self, x):
+            mu, logvar = self.encode(x)
+            std = torch.exp(0.5 * logvar)
+            z = mu + torch.randn_like(std) * std
+            theta = F.softmax(z, dim=-1)
+            beta = self.topic_word()
+            recon_logits = torch.log(theta @ beta + epsilon)
+            return recon_logits, mu, logvar
+
+    model = ETM(V, K, embed_dim).to(device)
+    opt = torch.optim.Adam(model.parameters(), lr=PRODLDA_LR)
+    n_batches = max(1, D // PRODLDA_BATCH)
+    final_recon = 0.0
+    final_kl = 0.0
+    for _epoch in range(PRODLDA_EPOCHS):
+        perm = torch.randperm(D, device=device)
+        running_recon = 0.0
+        running_kl = 0.0
+        nb = 0
+        for b in range(n_batches):
+            idx = perm[b * PRODLDA_BATCH:(b + 1) * PRODLDA_BATCH]
+            if idx.numel() == 0:
+                continue
+            batch = docs[idx]
+            opt.zero_grad()
+            recon_logits, mu, logvar = model(batch)
+            recon_loss = -(batch * recon_logits).sum(dim=-1).mean()
+            kl = -0.5 * (1 + logvar - mu.pow(2) - logvar.exp()).sum(dim=-1).mean()
+            loss = recon_loss + kl
+            loss.backward()
+            opt.step()
+            running_recon += float(recon_loss.detach())
+            running_kl += float(kl.detach())
+            nb += 1
+        final_recon = running_recon / max(nb, 1)
+        final_kl = running_kl / max(nb, 1)
+
+    model.eval()
+    with torch.no_grad():
+        mu, _ = model.encode(docs)
+        theta = F.softmax(mu, dim=-1).cpu().numpy()
+        phi = model.topic_word().cpu().numpy()
+    return {
+        "phi": phi,
+        "theta": theta,
+        "fit_meta": {
+            "embed_dim": int(embed_dim),
+            "epochs": int(PRODLDA_EPOCHS),
+            "lr": float(PRODLDA_LR),
+            "final_recon_loss": round(float(final_recon), 6),
+            "final_kl": round(float(final_kl), 6),
+        },
+    }
 
 
 def write_outputs(variant: str, scene_id: str, fit: dict, vocab: list[str], wavelengths: np.ndarray) -> dict:
@@ -236,6 +347,17 @@ def build_for_scene(scene_id: str) -> list[dict]:
     try:
         fit = fit_prodlda(doc_term, K)
         s = write_outputs("prodlda", scene_id, fit, vocab, wavelengths)
+        print(f"    K={s['K']} written", flush=True)
+        summaries.append(s)
+    except Exception as exc:
+        print(f"    FAILED: {exc}", flush=True)
+        import traceback
+        traceback.print_exc()
+
+    print(f"  fitting etm (K={K}, embed_dim=64) ...", flush=True)
+    try:
+        fit = fit_etm(doc_term, K)
+        s = write_outputs("etm", scene_id, fit, vocab, wavelengths)
         print(f"    K={s['K']} written", flush=True)
         summaries.append(s)
     except Exception as exc:

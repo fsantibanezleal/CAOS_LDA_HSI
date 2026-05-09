@@ -65,14 +65,22 @@ def normalize_per_row(values: np.ndarray) -> np.ndarray:
     return (values - low) / denom
 
 
+def _device():
+    import torch
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 def fit_cae_1d_with_recon(spectra: np.ndarray, latent: int = 8, epochs: int = 80) -> tuple[np.ndarray, np.ndarray]:
     import torch
     import torch.nn as nn
     from torch.utils.data import DataLoader, TensorDataset
     torch.manual_seed(42)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(42)
+    device = _device()
 
     D, B = spectra.shape
-    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1)
+    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1).to(device)
 
     class CAE1D(nn.Module):
         def __init__(self, B, latent):
@@ -93,7 +101,7 @@ def fit_cae_1d_with_recon(spectra: np.ndarray, latent: int = 8, epochs: int = 80
             z = self.encode(x)
             return z, self.up(z)
 
-    model = CAE1D(B, latent)
+    model = CAE1D(B, latent).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
     for _ in range(epochs):
@@ -115,9 +123,12 @@ def fit_beta_vae_with_loss(spectra: np.ndarray, latent: int = 8, beta: float = 4
     import torch.nn as nn
     from torch.utils.data import DataLoader, TensorDataset
     torch.manual_seed(42)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(42)
+    device = _device()
 
     D, B = spectra.shape
-    x = torch.from_numpy(spectra.astype(np.float32))
+    x = torch.from_numpy(spectra.astype(np.float32)).to(device)
 
     class BetaVAE(nn.Module):
         def __init__(self, B, latent):
@@ -138,7 +149,7 @@ def fit_beta_vae_with_loss(spectra: np.ndarray, latent: int = 8, beta: float = 4
             h = self.enc(x)
             return self.fc_mu(h), self.fc_logvar(h)
 
-    model = BetaVAE(B, latent)
+    model = BetaVAE(B, latent).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
     for _ in range(epochs):

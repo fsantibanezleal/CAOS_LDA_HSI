@@ -172,15 +172,21 @@ def _torch_seed() -> None:
         torch.cuda.manual_seed_all(RANDOM_STATE)
 
 
+def _torch_device():
+    import torch  # type: ignore
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 def fit_cae_1d(spectra: np.ndarray, latent_dim: int = 8, epochs: int = 80) -> tuple[np.ndarray, dict]:
     """1D convolutional autoencoder along the spectral axis."""
     import torch  # type: ignore
     import torch.nn as nn  # type: ignore
     from torch.utils.data import DataLoader, TensorDataset  # type: ignore
     _torch_seed()
+    device = _torch_device()
 
     D, B = spectra.shape
-    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1)  # (D, 1, B)
+    x = torch.from_numpy(spectra.astype(np.float32)).unsqueeze(1).to(device)  # (D, 1, B)
 
     class CAE1D(nn.Module):
         def __init__(self, B: int, latent: int) -> None:
@@ -203,7 +209,7 @@ def fit_cae_1d(spectra: np.ndarray, latent_dim: int = 8, epochs: int = 80) -> tu
             recon = self.up(z)
             return z, recon
 
-    model = CAE1D(B, latent_dim)
+    model = CAE1D(B, latent_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
     final_loss = 0.0
@@ -237,9 +243,10 @@ def fit_beta_vae(spectra: np.ndarray, latent_dim: int = 8, beta: float = 4.0, ep
     import torch.nn as nn  # type: ignore
     from torch.utils.data import DataLoader, TensorDataset  # type: ignore
     _torch_seed()
+    device = _torch_device()
 
     D, B = spectra.shape
-    x = torch.from_numpy(spectra.astype(np.float32))
+    x = torch.from_numpy(spectra.astype(np.float32)).to(device)
 
     class BetaVAE(nn.Module):
         def __init__(self, B: int, latent: int) -> None:
@@ -271,7 +278,7 @@ def fit_beta_vae(spectra: np.ndarray, latent_dim: int = 8, beta: float = 4.0, ep
             recon = self.dec(z)
             return recon, mu, logvar, z
 
-    model = BetaVAE(B, latent_dim)
+    model = BetaVAE(B, latent_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=64, shuffle=True)
     final_recon = 0.0
@@ -345,10 +352,11 @@ def fit_cae_2d(
     import torch.nn as nn  # type: ignore
     from torch.utils.data import DataLoader, TensorDataset  # type: ignore
     _torch_seed()
+    device = _torch_device()
 
     patches = _extract_patches(cube, pixel_indices_global, cube_shape, patch=patch)
     # (N, patch, patch, B) -> (N, B, patch, patch)
-    x = torch.from_numpy(np.transpose(patches, (0, 3, 1, 2)).copy())
+    x = torch.from_numpy(np.transpose(patches, (0, 3, 1, 2)).copy()).to(device)
     N, B, P, _ = x.shape
 
     class CAE2D(nn.Module):
@@ -372,7 +380,7 @@ def fit_cae_2d(
             recon = self.up(z).view(x.shape[0], self.in_ch, self.P, self.P)
             return z, recon
 
-    model = CAE2D(B, latent_dim)
+    model = CAE2D(B, latent_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=32, shuffle=True)
     final_loss = 0.0
@@ -414,11 +422,12 @@ def fit_cae_3d(
     import torch.nn as nn  # type: ignore
     from torch.utils.data import DataLoader, TensorDataset  # type: ignore
     _torch_seed()
+    device = _torch_device()
 
     patches = _extract_patches(cube, pixel_indices_global, cube_shape, patch=patch)
     # (N, patch, patch, B) -> (N, 1, B, patch, patch) (channel dim, then depth=B)
     x_np = np.transpose(patches, (0, 3, 1, 2))[:, None, ...]
-    x = torch.from_numpy(x_np.copy())
+    x = torch.from_numpy(x_np.copy()).to(device)
     N, _, Bdim, P, _ = x.shape
 
     class CAE3D(nn.Module):
@@ -438,14 +447,14 @@ def fit_cae_3d(
         def forward(self, x: torch.Tensor) -> torch.Tensor:
             return self.encode(x)
 
-    model = CAE3D(latent_dim)
+    model = CAE3D(latent_dim).to(device)
     # No reconstruction head for 3D — train via contrastive-style: maximise variance of the latent
     # while constraining it to remain in [-1, 1] via a bounded MSE to a learned mean.
     # This keeps compute manageable on CPU. We instead fit a simple recon to the central pixel
     # spectrum (the "anchor" that the patch surrounds).
     centre_spectrum = patches[:, patch // 2, patch // 2, :]  # (N, B)
-    anchor = torch.from_numpy(centre_spectrum.astype(np.float32))
-    decode = nn.Linear(latent_dim, Bdim)
+    anchor = torch.from_numpy(centre_spectrum.astype(np.float32)).to(device)
+    decode = nn.Linear(latent_dim, Bdim).to(device)
     opt = torch.optim.Adam(list(model.parameters()) + list(decode.parameters()), lr=1e-3)
     loader = DataLoader(TensorDataset(x, anchor), batch_size=32, shuffle=True)
     final_loss = 0.0
@@ -491,10 +500,11 @@ def fit_cae_3d_full(
     import torch.nn as nn  # type: ignore
     from torch.utils.data import DataLoader, TensorDataset  # type: ignore
     _torch_seed()
+    device = _torch_device()
 
     patches = _extract_patches(cube, pixel_indices_global, cube_shape, patch=patch)
     x_np = np.transpose(patches, (0, 3, 1, 2))[:, None, ...]
-    x = torch.from_numpy(x_np.copy())
+    x = torch.from_numpy(x_np.copy()).to(device)
     N, _, Bdim, P, _ = x.shape
 
     class CAE3DFull(nn.Module):
@@ -519,7 +529,7 @@ def fit_cae_3d_full(
             recon = self.up(z).view(x.shape[0], 1, self.B, self.P, self.P)
             return z, recon
 
-    model = CAE3DFull(latent_dim, Bdim, P)
+    model = CAE3DFull(latent_dim, Bdim, P).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     loader = DataLoader(TensorDataset(x), batch_size=32, shuffle=True)
     final_loss = 0.0
@@ -626,6 +636,8 @@ def build_for_scene(scene_id: str) -> list[dict]:
         ("cae_3d_8", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 8)),
         ("cae_3d_full_4", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 4)),
         ("cae_3d_full_8", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 8)),
+        ("cae_3d_full_16", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 16)),
+        ("cae_3d_full_32", lambda s: fit_cae_3d_full(cube, pixel_indices_sampled, cube_shape, 32)),
         ("cae_3d_16", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 16)),
         ("cae_3d_32", lambda s: fit_cae_3d(cube, pixel_indices_sampled, cube_shape, 32)),
     ]
