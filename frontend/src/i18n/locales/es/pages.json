@@ -196,6 +196,7 @@
       "anomaly": "Anomalía · vs misclass",
       "llm": "LLM tea leaves",
       "probe": "Linear probe",
+      "robust": "Robustez · Q + cross-scene",
       "unmixing": "Unmixing · endmembers",
       "usgs": "USGS · librería v7",
       "metrics": "Reconstrucción + MI",
