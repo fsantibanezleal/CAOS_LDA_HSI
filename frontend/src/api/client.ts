@@ -773,13 +773,18 @@ export type EndmemberBaseline = {
   n_bands: number;
   endmember_extractors: string[];
   unmixing_method: string;
-  reconstruction_rmse_full_set: Record<string, number>;
-  reconstruction_rmse_normalised: Record<string, number>;
+  nfindr_endmembers?: number[][];
+  atgp_endmembers?: number[][];
+  reconstruction_rmse_full_set: number | Record<string, number>;
+  reconstruction_rmse_normalised: number | Record<string, number>;
   topic_endmember_match: {
     best_endmember_per_topic?: { topic_id: number; endmember_id: number; cosine: number }[];
     best_topic_per_endmember?: { endmember_id: number; topic_id: number; cosine: number }[];
     topic_x_endmember_cosine?: number[][];
   };
+  framework_axis?: string;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type CrossSceneTransfer = {
