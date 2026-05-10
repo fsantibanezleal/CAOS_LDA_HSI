@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -13,6 +13,30 @@ import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
 
 const HIDSAG_SUBSETS = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"];
+
+type BenchmarksTab =
+  | "summary"
+  | "gating"
+  | "deep"
+  | "axes"
+  | "hidsag"
+  | "llm";
+
+const BENCHMARKS_TABS: { id: BenchmarksTab; label: string; tag: string; color: string }[] = [
+  { id: "summary", label: "Summary", tag: "Multi-axis battery + baselines", color: "rgba(56, 189, 248, 1)" },
+  { id: "gating", label: "B-3 gating", tag: "Topic-routed · deep gate · neural topic · Bayesian", color: "rgba(40, 160, 80, 1)" },
+  { id: "deep", label: "Deep representations", tag: "K-curve · anchor vs full · β-collapse · anomaly", color: "rgba(170, 60, 200, 1)" },
+  { id: "axes", label: "Other axes", tag: "Cross-scene · rate-distortion · MI · endmember · spatial · super-topics", color: "rgba(214, 140, 40, 1)" },
+  { id: "hidsag", label: "HIDSAG", tag: "Family-D geochemistry regression", color: "rgba(214, 39, 40, 1)" },
+  { id: "llm", label: "B-12 LLM", tag: "Tea-leaves word intrusion (gated)", color: "rgba(140, 86, 75, 1)" },
+];
+
+function readHashTab(): BenchmarksTab | null {
+  if (typeof window === "undefined") return null;
+  const h = window.location.hash.replace(/^#/, "") as BenchmarksTab;
+  if (BENCHMARKS_TABS.some((t) => t.id === h)) return h;
+  return null;
+}
 
 const METHOD_LABEL: Record<string, string> = {
   raw_logistic_regression: "raw_logistic",
@@ -33,10 +57,27 @@ export default function Benchmarks() {
     queryFn: api.methodStatistics,
   });
 
+  const [tab, setTab] = useState<BenchmarksTab>(() => readHashTab() ?? "summary");
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash.replace(/^#/, "") !== tab) {
+      window.location.hash = tab;
+    }
+  }, [tab]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onHash = () => {
+      const h = readHashTab();
+      if (h) setTab(h);
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
   return (
     <PageShell
       title={t("pages:benchmarks.title")}
-      lead="Comparación cabeza a cabeza entre raw_logistic, pca_logistic y theta_logistic sobre las cuatro escenas labelled del corpus core. K-fold estratificado × multi-seed = 25 evaluaciones por método. Los intervalos son CI95 bootstrap sobre la macro-F1."
+      lead="16+ paneles organizados por eje del framework Addendum B. Usa los tabs para saltar al grupo que te interesa. URL con #hash permite compartir un tab específico."
     >
       {isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>Cargando estadísticas…</p>
@@ -63,80 +104,162 @@ export default function Benchmarks() {
         </div>
       )}
 
+      <BenchmarksTabBar tab={tab} onPick={setTab} />
+
       {data && (
         <>
-          <ProtocolBox stats={data} />
-          <Section
-            id="forest"
-            title="Forest plot — macro-F1 con CI95 por escena"
-            lead="Cada barra es una escena × método; el punto es la media, las whiskers son los percentiles 2.5 y 97.5 del bootstrap sobre las 25 evaluaciones."
-          >
-            <div className="space-y-8 mt-2">
-              {data.labeled_scenes.map((s) => (
-                <SceneForest key={s.dataset_id} scene={s} />
-              ))}
-            </div>
-          </Section>
-
-          <Section
-            id="paired"
-            title="Comparaciones pareadas (Δ macro-F1)"
-            lead="Cada par muestra la diferencia entre métodos por evaluación; resumido como mean ± std del Δ. Negativo = el segundo método pierde."
-          >
-            <div className="space-y-6 mt-2">
-              {data.labeled_scenes.map((s) => (
-                <PairedTable key={s.dataset_id} scene={s} />
-              ))}
-            </div>
-          </Section>
-
-          <Section id="method-defs" title="Definiciones de los métodos">
-            <dl
-              className="text-[14px] leading-relaxed space-y-3 mt-2"
-              style={{ color: "var(--color-fg-subtle)" }}
-            >
-              {Object.entries(data.method_definitions).map(([k, v]) => (
-                <div
-                  key={k}
-                  className="rounded-md border p-3"
-                  style={{
-                    borderColor: "var(--color-border)",
-                    backgroundColor: "var(--color-panel)",
-                  }}
-                >
-                  <dt
-                    className="font-mono text-[12.5px] mb-1"
-                    style={{ color: "var(--color-accent)" }}
-                  >
-                    {k}
-                  </dt>
-                  <dd>{v}</dd>
+          {tab === "summary" && (
+            <div className="space-y-8">
+              <ProtocolBox stats={data} />
+              <Section
+                id="forest"
+                title="Forest plot — macro-F1 con CI95 por escena"
+                lead="Cada barra es una escena × método; el punto es la media, las whiskers son los percentiles 2.5 y 97.5 del bootstrap sobre las 25 evaluaciones."
+              >
+                <div className="space-y-8 mt-2">
+                  {data.labeled_scenes.map((s) => (
+                    <SceneForest key={s.dataset_id} scene={s} />
+                  ))}
                 </div>
-              ))}
-            </dl>
-          </Section>
+              </Section>
+              <Section
+                id="paired"
+                title="Comparaciones pareadas (Δ macro-F1)"
+                lead="Cada par muestra la diferencia entre métodos por evaluación; resumido como mean ± std del Δ. Negativo = el segundo método pierde."
+              >
+                <div className="space-y-6 mt-2">
+                  {data.labeled_scenes.map((s) => (
+                    <PairedTable key={s.dataset_id} scene={s} />
+                  ))}
+                </div>
+              </Section>
+              <MultiAxisBatterySection />
+              <Section id="method-defs" title="Definiciones de los métodos">
+                <dl
+                  className="text-[14px] leading-relaxed space-y-3 mt-2"
+                  style={{ color: "var(--color-fg-subtle)" }}
+                >
+                  {Object.entries(data.method_definitions).map(([k, v]) => (
+                    <div
+                      key={k}
+                      className="rounded-md border p-3"
+                      style={{
+                        borderColor: "var(--color-border)",
+                        backgroundColor: "var(--color-panel)",
+                      }}
+                    >
+                      <dt
+                        className="font-mono text-[12.5px] mb-1"
+                        style={{ color: "var(--color-accent)" }}
+                      >
+                        {k}
+                      </dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </Section>
+            </div>
+          )}
 
-          <MultiAxisBatterySection />
-          <DeepGateSection />
-          <NeuralTopicComparisonSection />
-          <BayesianHdiSection />
-          <DeepKCurveSection />
-          <Cae3dAnchorVsFullSection />
-          <BetaVaeCollapseSection />
-          <AnomalyComparisonSection />
-          <CrossSceneTransferSection />
-          <RateDistortionSection />
-          <MutualInfoSection />
-          <EndmemberBaselineSection />
-          <SpatialCoherenceSection />
-          <HidsagBenchmarks />
-          <HidsagPreprocessing />
-          <HidsagCrossPreprocessingStability />
-          <LlmTeaLeavesSection />
-          <SuperTopicsSection />
+          {tab === "gating" && (
+            <div className="space-y-8">
+              <DeepGateSection />
+              <NeuralTopicComparisonSection />
+              <BayesianHdiSection />
+            </div>
+          )}
+
+          {tab === "deep" && (
+            <div className="space-y-8">
+              <DeepKCurveSection />
+              <Cae3dAnchorVsFullSection />
+              <BetaVaeCollapseSection />
+              <AnomalyComparisonSection />
+            </div>
+          )}
+
+          {tab === "axes" && (
+            <div className="space-y-8">
+              <CrossSceneTransferSection />
+              <RateDistortionSection />
+              <MutualInfoSection />
+              <EndmemberBaselineSection />
+              <SpatialCoherenceSection />
+              <SuperTopicsSection />
+            </div>
+          )}
+
+          {tab === "hidsag" && (
+            <div className="space-y-8">
+              <HidsagBenchmarks />
+              <HidsagPreprocessing />
+              <HidsagCrossPreprocessingStability />
+            </div>
+          )}
+
+          {tab === "llm" && (
+            <div className="space-y-8">
+              <LlmTeaLeavesSection />
+            </div>
+          )}
         </>
       )}
     </PageShell>
+  );
+}
+
+function BenchmarksTabBar({
+  tab,
+  onPick,
+}: {
+  tab: BenchmarksTab;
+  onPick: (t: BenchmarksTab) => void;
+}) {
+  return (
+    <nav
+      role="tablist"
+      aria-label="Benchmarks sections"
+      className="flex flex-wrap gap-2 my-6 pb-3 border-b sticky top-14 z-30"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "color-mix(in oklab, var(--color-bg) 90%, transparent)",
+        backdropFilter: "blur(8px)",
+      }}
+    >
+      {BENCHMARKS_TABS.map((t) => {
+        const isActive = tab === t.id;
+        return (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={isActive}
+            type="button"
+            onClick={() => onPick(t.id)}
+            className="rounded-lg border px-4 py-2.5 text-sm text-left transition-all hover:-translate-y-0.5"
+            style={{
+              borderColor: isActive ? t.color : "var(--color-border)",
+              backgroundColor: isActive ? "var(--color-accent-soft)" : "var(--color-panel)",
+              boxShadow: isActive ? "var(--color-shadow)" : "none",
+              minWidth: 180,
+            }}
+          >
+            <div
+              className="text-[10.5px] uppercase tracking-widest font-semibold"
+              style={{ color: t.color }}
+            >
+              {t.label}
+            </div>
+            <div
+              className="text-[11px] mt-0.5"
+              style={{ color: isActive ? "var(--color-fg)" : "var(--color-fg-faint)" }}
+            >
+              {t.tag}
+            </div>
+          </button>
+        );
+      })}
+    </nav>
   );
 }
 
