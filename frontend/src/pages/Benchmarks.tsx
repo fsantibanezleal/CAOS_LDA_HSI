@@ -22,13 +22,13 @@ type BenchmarksTab =
   | "hidsag"
   | "llm";
 
-const BENCHMARKS_TABS: { id: BenchmarksTab; label: string; tag: string; color: string }[] = [
-  { id: "summary", label: "Summary", tag: "Multi-axis battery + baselines", color: "rgba(56, 189, 248, 1)" },
-  { id: "gating", label: "B-3 gating", tag: "Topic-routed · deep gate · neural topic · Bayesian", color: "rgba(40, 160, 80, 1)" },
-  { id: "deep", label: "Deep representations", tag: "K-curve · anchor vs full · β-collapse · anomaly", color: "rgba(170, 60, 200, 1)" },
-  { id: "axes", label: "Other axes", tag: "Cross-scene · rate-distortion · MI · endmember · spatial · super-topics", color: "rgba(214, 140, 40, 1)" },
-  { id: "hidsag", label: "HIDSAG", tag: "Family-D geochemistry regression", color: "rgba(214, 39, 40, 1)" },
-  { id: "llm", label: "B-12 LLM", tag: "Tea-leaves word intrusion (gated)", color: "rgba(140, 86, 75, 1)" },
+const BENCHMARKS_TABS: { id: BenchmarksTab; labelKey: string; tagKey: string; color: string }[] = [
+  { id: "summary", labelKey: "summary", tagKey: "summary_tag", color: "rgba(56, 189, 248, 1)" },
+  { id: "gating", labelKey: "gating", tagKey: "gating_tag", color: "rgba(40, 160, 80, 1)" },
+  { id: "deep", labelKey: "deep", tagKey: "deep_tag", color: "rgba(170, 60, 200, 1)" },
+  { id: "axes", labelKey: "axes", tagKey: "axes_tag", color: "rgba(214, 140, 40, 1)" },
+  { id: "hidsag", labelKey: "hidsag", tagKey: "hidsag_tag", color: "rgba(214, 39, 40, 1)" },
+  { id: "llm", labelKey: "llm", tagKey: "llm_tag", color: "rgba(140, 86, 75, 1)" },
 ];
 
 function readHashTab(): BenchmarksTab | null {
@@ -77,7 +77,7 @@ export default function Benchmarks() {
   return (
     <PageShell
       title={t("pages:benchmarks.title")}
-      lead="16+ paneles organizados por eje del framework Addendum B. Usa los tabs para saltar al grupo que te interesa. URL con #hash permite compartir un tab específico."
+      lead={t("pages:benchmarks.lead")}
     >
       {isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>Cargando estadísticas…</p>
@@ -216,6 +216,7 @@ function BenchmarksTabBar({
   tab: BenchmarksTab;
   onPick: (t: BenchmarksTab) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <nav
       role="tablist"
@@ -227,18 +228,18 @@ function BenchmarksTabBar({
         backdropFilter: "blur(8px)",
       }}
     >
-      {BENCHMARKS_TABS.map((t) => {
-        const isActive = tab === t.id;
+      {BENCHMARKS_TABS.map((tt) => {
+        const isActive = tab === tt.id;
         return (
           <button
-            key={t.id}
+            key={tt.id}
             role="tab"
             aria-selected={isActive}
             type="button"
-            onClick={() => onPick(t.id)}
+            onClick={() => onPick(tt.id)}
             className="rounded-lg border px-4 py-2.5 text-sm text-left transition-all hover:-translate-y-0.5"
             style={{
-              borderColor: isActive ? t.color : "var(--color-border)",
+              borderColor: isActive ? tt.color : "var(--color-border)",
               backgroundColor: isActive ? "var(--color-accent-soft)" : "var(--color-panel)",
               boxShadow: isActive ? "var(--color-shadow)" : "none",
               minWidth: 180,
@@ -246,15 +247,15 @@ function BenchmarksTabBar({
           >
             <div
               className="text-[10.5px] uppercase tracking-widest font-semibold"
-              style={{ color: t.color }}
+              style={{ color: tt.color }}
             >
-              {t.label}
+              {t(`pages:benchmarks.tabs.${tt.labelKey}`)}
             </div>
             <div
               className="text-[11px] mt-0.5"
               style={{ color: isActive ? "var(--color-fg)" : "var(--color-fg-faint)" }}
             >
-              {t.tag}
+              {t(`pages:benchmarks.tabs.${tt.tagKey}`)}
             </div>
           </button>
         );
