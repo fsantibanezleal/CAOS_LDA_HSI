@@ -567,53 +567,85 @@ function ExploreStep({
 
       {isLabelled && (
         <>
+          <SceneBriefingHero subsetId={subsetId!} rep={rep} />
+
           <nav
             role="tablist"
             aria-label="Paneles de exploración"
-            className="flex flex-wrap gap-2 border-b mb-6 pb-3"
+            className="space-y-2 border-b mb-6 pb-3"
             style={{ borderColor: "var(--color-border)" }}
           >
-            {(
-              [
-                { id: "raw", label: "Cruda · clases" },
-                { id: "browser", label: "Browser · 8000 espectros" },
-                { id: "topics", label: "Tópicos · LDAvis" },
-                { id: "topiclabel", label: "Tópico vs etiqueta" },
-                { id: "routed", label: "Routed · ranking" },
-                { id: "raster", label: "Mapa espacial" },
-                { id: "embed3d", label: "Embedding 3D · θ-PCA" },
-                { id: "stability", label: "Estabilidad · 7-seed" },
-                { id: "deep", label: "Deep latents" },
-                { id: "usgs", label: "USGS · librería v7" },
-                { id: "metrics", label: "Reconstrucción + MI" },
-              ] as { id: ExploreTab; label: string }[]
-            ).map((opt) => {
-              const isActive = tab === opt.id;
-              return (
-                <button
-                  key={opt.id}
-                  role="tab"
-                  aria-selected={isActive}
-                  type="button"
-                  onClick={() => setTab(opt.id)}
-                  className={cn(
-                    "rounded-md border px-4 py-2 text-sm transition-colors",
-                    isActive ? "font-semibold" : "opacity-80 hover:opacity-100",
-                  )}
-                  style={{
-                    borderColor: isActive
-                      ? "var(--color-accent)"
-                      : "var(--color-border)",
-                    backgroundColor: isActive
-                      ? "var(--color-accent-soft)"
-                      : "var(--color-panel)",
-                    color: isActive ? "var(--color-accent)" : "var(--color-fg)",
-                  }}
+            {([
+              {
+                category: "Datos brutos",
+                color: "rgba(56, 189, 248, 1)",
+                tabs: [
+                  { id: "raw" as const, label: "Cruda · clases" },
+                  { id: "browser" as const, label: "Browser · 8000 espectros" },
+                ],
+              },
+              {
+                category: "Modelo de tópicos",
+                color: "rgba(40, 160, 80, 1)",
+                tabs: [
+                  { id: "topics" as const, label: "Tópicos · LDAvis" },
+                  { id: "topiclabel" as const, label: "Tópico vs etiqueta" },
+                  { id: "routed" as const, label: "Routed · ranking" },
+                ],
+              },
+              {
+                category: "Geometría espacial",
+                color: "rgba(170, 60, 200, 1)",
+                tabs: [
+                  { id: "raster" as const, label: "Mapa espacial" },
+                  { id: "embed3d" as const, label: "Embedding 3D · θ-PCA" },
+                ],
+              },
+              {
+                category: "Diagnóstico",
+                color: "rgba(214, 140, 40, 1)",
+                tabs: [
+                  { id: "stability" as const, label: "Estabilidad · 7-seed" },
+                  { id: "deep" as const, label: "Deep latents" },
+                  { id: "usgs" as const, label: "USGS · librería v7" },
+                  { id: "metrics" as const, label: "Reconstrucción + MI" },
+                ],
+              },
+            ] as { category: string; color: string; tabs: { id: ExploreTab; label: string }[] }[]).map((group) => (
+              <div key={group.category} className="flex items-baseline flex-wrap gap-2">
+                <span
+                  className="text-[10px] uppercase tracking-widest font-semibold pr-2 w-32 shrink-0"
+                  style={{ color: group.color }}
                 >
-                  {opt.label}
-                </button>
-              );
-            })}
+                  {group.category}
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {group.tabs.map((opt) => {
+                    const isActive = tab === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        role="tab"
+                        aria-selected={isActive}
+                        type="button"
+                        onClick={() => setTab(opt.id)}
+                        className={cn(
+                          "rounded-md border px-3 py-1.5 text-[13px] transition-all",
+                          isActive ? "font-semibold shadow-sm" : "opacity-80 hover:opacity-100",
+                        )}
+                        style={{
+                          borderColor: isActive ? group.color : "var(--color-border)",
+                          backgroundColor: isActive ? "var(--color-accent-soft)" : "var(--color-panel)",
+                          color: isActive ? group.color : "var(--color-fg)",
+                        }}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </nav>
 
           {tab === "raw" && (
@@ -4046,5 +4078,205 @@ function FamilyPickerStep({
         </button>
       ))}
     </div>
+  );
+}
+
+/* =========================================================================
+   Scene briefing hero — appears at top of Workspace when a labelled scene
+   is loaded. Shows quick stats + class palette + topic count + spectral
+   envelope mini-viz for at-a-glance scene context across all 11 tabs.
+   =======================================================================*/
+
+function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | null }) {
+  const eda = useQuery({
+    queryKey: ["briefing-eda", subsetId],
+    queryFn: () => api.edaPerScene(subsetId),
+    staleTime: 5 * 60_000,
+  });
+  const tv = useQuery({
+    queryKey: ["briefing-topic-views", subsetId],
+    queryFn: () => api.topicViews(subsetId),
+    staleTime: 5 * 60_000,
+  });
+
+  const data = eda.data;
+  if (!data) {
+    return (
+      <div
+        className="rounded-xl border p-4 mb-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-fg-faint)" }} className="text-sm">
+          Cargando contexto de la escena…
+        </p>
+      </div>
+    );
+  }
+
+  const classDist = data.class_distribution ?? [];
+  const sensor = data.sensor ?? "—";
+  const shape = data.spatial_shape ?? [0, 0];
+  const wlLo = (data.wavelengths_nm ?? [400])[0] ?? 400;
+  const wlHi = (data.wavelengths_nm ?? [2500])[data.wavelengths_nm?.length ? data.wavelengths_nm.length - 1 : 0] ?? 2500;
+  const meanSpectra = data.class_mean_spectra ?? {};
+
+  // mini envelope: aggregate min/max across classes
+  let lo = Infinity;
+  let hi = -Infinity;
+  const wl = data.wavelengths_nm ?? [];
+  if (wl.length) {
+    for (const v of Object.values(meanSpectra)) {
+      const ms = (v as { mean?: number[] }).mean;
+      if (!ms || ms.length !== wl.length) continue;
+      for (const y of ms) {
+        if (y < lo) lo = y;
+        if (y > hi) hi = y;
+      }
+    }
+  }
+
+  const W = 280;
+  const H = 60;
+  const enveloperPaths = Object.entries(meanSpectra).slice(0, 12).map(([key, v]) => {
+    const ms = (v as { mean?: number[] }).mean;
+    if (!ms || ms.length !== wl.length) return null;
+    const path = ms.map((y, i) => {
+      const x = (i / (wl.length - 1)) * W;
+      const yy = H - ((y - lo) / (hi - lo || 1)) * H;
+      return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${yy.toFixed(1)}`;
+    }).join(" ");
+    const cls = classDist.find((c) => String(c.label_id) === key);
+    return { path, color: cls?.color ?? "#94a3b8", key };
+  }).filter((p): p is { path: string; color: string; key: string } => p !== null);
+
+  return (
+    <div
+      className="rounded-xl border p-4 mb-5 relative overflow-hidden"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 right-0 h-1"
+        style={{ background: "linear-gradient(90deg, rgba(56,189,248,1) 0%, rgba(40,160,80,1) 33%, rgba(170,60,200,1) 66%, rgba(214,140,40,1) 100%)" }}
+      />
+      <div className="grid lg:grid-cols-[1fr_280px_auto] gap-5 items-center mt-1">
+        {/* LEFT: stats */}
+        <div>
+          <div className="flex items-baseline gap-3 flex-wrap mb-2">
+            <h3
+              className="text-lg font-semibold tracking-tight"
+              style={{ color: "var(--color-fg)" }}
+            >
+              {data.scene_name ?? subsetId}
+            </h3>
+            <span
+              className="text-[10.5px] uppercase tracking-widest font-medium"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              {sensor}
+            </span>
+            {rep ? (
+              <span
+                className="text-[11px] font-mono rounded px-1.5 py-0.5"
+                style={{ backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" }}
+              >
+                rep · {rep}
+              </span>
+            ) : null}
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12.5px]" style={{ color: "var(--color-fg-subtle)" }}>
+            <BriefingStat label="dim" value={`${shape[0]}×${shape[1]}`} />
+            <BriefingStat label="bands" value={String(wl.length)} />
+            <BriefingStat label="wl" value={`${wlLo.toFixed(0)}–${wlHi.toFixed(0)} nm`} />
+            <BriefingStat label="clases" value={String(data.n_classes ?? classDist.length)} />
+            <BriefingStat label="labelled" value={(data.n_labelled_pixels ?? 0).toLocaleString("en-US")} />
+            {tv.data ? <BriefingStat label="K topics" value={String(tv.data.topic_count)} /> : null}
+          </div>
+          {classDist.length ? (
+            <div className="mt-2.5">
+              <div className="w-full h-2.5 flex rounded overflow-hidden border" style={{ borderColor: "var(--color-border)" }}>
+                {classDist.map((c) => (
+                  <div
+                    key={c.label_id}
+                    title={`${c.name} · ${c.count.toLocaleString("en-US")} px (${(c.rel_freq * 100).toFixed(1)}%)`}
+                    style={{ width: `${c.rel_freq * 100}%`, backgroundColor: c.color }}
+                  />
+                ))}
+              </div>
+              <div className="mt-1.5 flex flex-wrap gap-x-2.5 gap-y-0.5 text-[10.5px]" style={{ color: "var(--color-fg-faint)" }}>
+                {classDist.slice(0, 5).map((c) => (
+                  <span key={c.label_id} className="inline-flex items-center gap-1">
+                    <span aria-hidden className="inline-block w-2 h-2 rounded-sm" style={{ backgroundColor: c.color }} />
+                    {c.name}
+                  </span>
+                ))}
+                {classDist.length > 5 ? <span>+{classDist.length - 5} más</span> : null}
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        {/* MIDDLE: tiny spectral envelope */}
+        <div>
+          {enveloperPaths.length ? (
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-[60px]" aria-hidden>
+              {enveloperPaths.map((p) => (
+                <path key={p.key} d={p.path} fill="none" stroke={p.color} strokeWidth="0.9" strokeOpacity="0.85" />
+              ))}
+            </svg>
+          ) : (
+            <div className="text-[10.5px]" style={{ color: "var(--color-fg-faint)" }}>
+              envelope no disponible
+            </div>
+          )}
+          <div className="text-[9.5px] uppercase tracking-widest font-medium text-center mt-0.5" style={{ color: "var(--color-fg-faint)" }}>
+            envolvente espectral por clase
+          </div>
+        </div>
+
+        {/* RIGHT: links */}
+        <div className="flex flex-col gap-1.5 text-[12px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <a
+            href={`/api/eda/per-scene/${encodeURIComponent(subsetId)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="font-mono"
+            style={{ color: "var(--color-accent)" }}
+          >
+            /api/eda/per-scene
+          </a>
+          <a
+            href={`/api/topic-views/${encodeURIComponent(subsetId)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="font-mono"
+            style={{ color: "var(--color-accent)" }}
+          >
+            /api/topic-views
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BriefingStat({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="inline-flex items-baseline gap-1">
+      <span className="text-[10px] uppercase tracking-widest font-medium" style={{ color: "var(--color-fg-faint)" }}>
+        {label}
+      </span>
+      <span className="font-mono font-semibold" style={{ color: "var(--color-fg)" }}>
+        {value}
+      </span>
+    </span>
   );
 }
