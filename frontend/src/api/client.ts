@@ -379,6 +379,10 @@ export const api = {
     request<DocumentCardsFile>(
       `/generated/interpretability/${encodeURIComponent(sceneId)}/document_cards.json`,
     ),
+  quantizationSensitivity: (sceneId: string) =>
+    request<QuantizationSensitivity>(
+      `/generated/quantization_sensitivity/${encodeURIComponent(sceneId)}.json`,
+    ),
   topicAnomaly: (sceneId: string) =>
     request<TopicAnomaly>(
       `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
@@ -819,6 +823,25 @@ export type DocumentCardsFile = {
   document_cards: DocumentCard[];
 };
 
+export type QuantizationProbe = {
+  config: string;
+  status: string;
+  matched_cosine_mean?: number;
+  matched_cosine_min?: number;
+  ari_dominant_vs_canonical?: number;
+  K?: number;
+  V_probe?: number;
+  comment?: string;
+};
+export type QuantizationSensitivity = {
+  scene_id: string;
+  topic_count: number;
+  canonical_recipe: string;
+  canonical_scheme: string;
+  canonical_Q: number;
+  probes: QuantizationProbe[];
+};
+
 export type EndmemberBaseline = {
   scene_id: string;
   K: number;
@@ -842,12 +865,23 @@ export type EndmemberBaseline = {
 
 export type CrossSceneTransfer = {
   scene_order: string[];
-  common_wavelength_grid: { min_nm: number; max_nm: number; n_bands: number };
+  common_wavelength_grid: { min_nm: number; max_nm: number; n_bands: number; spacing_nm?: number };
   transfer_matrix_macro_f1: number[][];
   wordification: string;
+  quantization_scale?: number | string;
   samples_per_class: number;
   split: string;
   head: string;
+  transfer_pairs?: {
+    source_scene: string;
+    target_scene: string;
+    K_source: number;
+    macro_f1_mean: number;
+    macro_f1_std?: number;
+    accuracy_mean?: number;
+    balanced_accuracy_mean?: number;
+    per_fold?: number[];
+  }[];
 };
 
 export type TopicAnomaly = {
