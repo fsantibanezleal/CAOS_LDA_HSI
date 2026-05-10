@@ -192,6 +192,7 @@
       "repfit": "Representation fit · 3D",
       "stability": "Stability · 7-seed",
       "deep": "Deep latents",
+      "unmixing": "Unmixing · endmembers",
       "usgs": "USGS · library v7",
       "metrics": "Reconstruction + MI",
       "group_raw": "Raw data",
