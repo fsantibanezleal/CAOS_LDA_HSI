@@ -2,11 +2,136 @@
   "overview": {
     "title": "Overview",
     "lead": "CAOS LDA HSI explores what probabilistic topic models can capture when documents are pixels, regions, or measurements drawn from hyperspectral imagery.",
-    "cta_workspace": "Open the workspace",
-    "cta_methodology": "Read the methodology"
+    "cta_workspace": "Open the Workspace",
+    "cta_methodology": "Read the Methodology",
+    "hero": {
+      "spectral_signature": "Live spectral signature",
+      "indian_pines_caption": "Indian Pines · 16 classes · {{bands}} bands · 400–2500 nm",
+      "indian_pines_caption_loading": "Indian Pines · live data loading…",
+      "title": "We treat every hyperspectral pixel as a document.",
+      "caption": "Each curve is the mean signature of one agronomic class in the Indian Pines cube. The inter-class diversity at 1100 / 1400 / 1900 nm — water and feldspar absorptions — is what the textual corpus has to recover discretely. That signature is a document; the project's question is which topics (shared latent structure) live in it.",
+      "datacube_anatomy": "Datacube anatomy",
+      "datacube_caption": "An HSI cube is (H × W × B). Each pixel x[i, j] is a B-band spectral vector. The project walks it as a corpus, discretises it into tokens, fits topics θ ∈ Δ^(K-1) and compares them against K-dim baselines."
+    },
+    "headlines": {
+      "datasets_label": "Datasets",
+      "datasets_sub": "across 4 families",
+      "recipes_label": "Wordification recipes",
+      "recipes_sub": "V1 (band) → V12 (GMM)",
+      "builders_label": "Builders",
+      "builders_sub": "data-pipeline modules",
+      "artifacts_label": "Derived artifacts",
+      "artifacts_sub": "live in production",
+      "endpoints_label": "API endpoints",
+      "endpoints_sub": "smoke 87/87 green",
+      "variants_label": "Topic-model variants",
+      "variants_sub": "LDA · ProdLDA · ETM · …"
+    },
+    "findings": {
+      "section_badge": "Featured finding · {{idx}} / {{total}}"
+    },
+    "pipeline_anatomy": {
+      "tag": "Pipeline anatomy",
+      "title": "From the HSI cube to θ ∈ Δ^(K-1)",
+      "lead": "Four steps that the app serves pre-computed behind every /api/topic-views/{scene} endpoint: define document, discretise to tokens, fit the model, inspect the per-pixel θ mixture.",
+      "stage1_title": "1 · Document",
+      "stage1_sub": "build_groupings",
+      "stage1_note": "x ∈ ℝᴮ per pixel · region · sample",
+      "stage1_pixel": "pixel",
+      "stage1_pixel_label": "x[i,j] ∈ ℝᴮ",
+      "stage1_pixel_caption": "one pixel = one document",
+      "stage2_title": "2 · Discretisation",
+      "stage2_sub": "build_wordifications · V1..V12",
+      "stage2_note1": "band-frequency · band-magnitude · …",
+      "stage2_note2": "12 recipes × 3 schemes × Q ∈ {8, 16, 32}",
+      "stage2_note3": "vocab V ∈ [103, 220]",
+      "stage3_title": "3 · Topic model",
+      "stage3_sub": "LDA · ProdLDA · ETM · CAE-{1D,2D,3D} · β-VAE",
+      "stage3_note1": "φ ∈ ℝ^{K×V}, θ ∈ Δ^(K-1)",
+      "stage3_note2": "K ∈ [4, 32]",
+      "stage4_title": "4 · θ inference",
+      "stage4_sub": "topic_routed · evaluation",
+      "stage4_topic1": "topic 1",
+      "stage4_topic2": "topic 2",
+      "stage4_topic3": "topic 3"
+    },
+    "scenes": {
+      "tag": "Six labelled scenes",
+      "title": "Each scene with its class distribution",
+      "lead": "Each bar is one agronomic / urban / mineral class with its real relative frequency. KSC and Botswana are tough benchmarks (diluted majority class, low SNR).",
+      "open_catalogue": "Open the full catalogue →",
+      "loading_stat": "Loading scene stats…",
+      "n_classes_short": "classes",
+      "n_pixels_short": "labelled pixels",
+      "n_bands_short": "bands",
+      "more_classes": "+{{count}} more"
+    },
+    "pillars": {
+      "tag": "Three levers",
+      "title": "Any topic result is attributable to these three levers",
+      "lever_label": "Lever {{idx}}",
+      "documents_title": "Documents",
+      "documents_body": "How to build a document: by pixel, by region (SLIC, Felzenszwalb), by patch or by full sample. Four alternatives materialised in build_groupings; they change the statistical unit upstream.",
+      "discretisation_title": "Discretisation",
+      "discretisation_body": "How a continuous spectrum becomes a discrete token: twelve recipes V1..V12, three quantisation schemes (uniform, quantile, equalised), three levels Q ∈ {8, 16, 32}.",
+      "model_title": "Model",
+      "model_body": "Canonical LDA (collapsed Gibbs, variational Bayes, online), HDP, CTM, ProdLDA, ETM, NMF, PCA, ICA, dense-AE, CAE-1D/2D/3D, β-VAE — all at the same K for a fair comparison."
+    },
+    "coverage": {
+      "tag": "Method coverage",
+      "title": "11 + 5 + 4 + 12 axes — all evaluated on the same scene when applicable",
+      "lda_family": "LDA-family · 9 variants",
+      "neural_topic": "Neural topic · 2 variants",
+      "deep_repr": "Deep representations · 5",
+      "k_baselines": "K-dim baselines · 4",
+      "axes": "12-axis Addendum-B battery"
+    },
+    "reading_path": {
+      "tag": "How to read this site",
+      "title": "Suggested path — 7 stops",
+      "step1_tag": "Methodology",
+      "step1_title": "Theory",
+      "step1_body": "The PTM/LDA model and why an HSI pixel can be treated as a document.",
+      "step2_tag": "Methodology",
+      "step2_title": "Representations",
+      "step2_body": "The V1..V12 × schemes × Q grid plus 5 deep encoders.",
+      "step3_tag": "Methodology",
+      "step3_title": "Pipeline",
+      "step3_body": "Which scripts run locally to produce the material this app serves.",
+      "step4_tag": "Methodology",
+      "step4_title": "Application",
+      "step4_body": "How topics are applied to classification and regression: direct / routed / embedded.",
+      "step5_tag": "Data",
+      "step5_title": "Databases",
+      "step5_body": "The 21 datasets with their access path, local root and source files.",
+      "step6_tag": "Lab",
+      "step6_title": "Workspace",
+      "step6_body": "Guided flow family → subset → representation → 11 tabs per labelled scene.",
+      "step7_tag": "Eval",
+      "step7_title": "Benchmarks",
+      "step7_body": "16 cards: multi-axis battery, Bayesian HDI, K-curve, β-collapse, neural-topic head-to-head, …"
+    },
+    "manifest_loaded": "Live data layer — manifest loaded correctly.",
+    "manifest_static": "Numbers are from the repo manifest — the app serves pre-computed material, no in-browser fitting."
   },
   "methodology": {
-    "title": "Methodology"
+    "title": "Methodology",
+    "index": {
+      "lead": "Four entries: the theory behind the model, the representations the corpus accepts, the pipeline that produces the data, and how topics are applied to downstream tasks.",
+      "reading": "Suggested reading: Theory → Representations → Pipeline → Application. The Bayesian Method Comparison and Multi-Axis Addendum B wiki pages close the methodological loop.",
+      "theory_tag": "PTM · LDA",
+      "theory_title": "Theory",
+      "theory_body": "The probabilistic topic model (PTM) and why an HSI pixel can be treated as a document. LDA in plate notation, variational inference, generalisations to HDP and CTM.",
+      "repr_tag": "V1..V12 + Deep",
+      "repr_title": "Representations",
+      "repr_body": "Twelve wordification recipes (V1 band → V12 GMM-token), three schemes (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Plus five deep encoders: CAE-1D / CAE-2D / CAE-3D anchor and full-patch / β-VAE. PCA, NMF, ICA as fair K-dim baselines.",
+      "pipe_tag": "57 builders",
+      "pipe_title": "Pipeline",
+      "pipe_body": "Diagram of the 12 stages of the data-pipeline: fetch_* (acquire) → research_core (paths/loaders) → build_* (offline compute) → curate_for_web → manifest. Five torch builders detect GPU automatically with CPU fallback.",
+      "app_tag": "direct · routed · embedded",
+      "app_title": "Application",
+      "app_body": "How topics are applied to downstream tasks: flat feature (theta_logistic, dominated by raw), gating (topic_routed_soft = soft mixture of per-topic specialists, matches or beats raw 6/6), embedded (concat [θ | pca_K], small effect on IP). The B-3 follow-up closes: the Dirichlet simplex matters, not K-dim compression."
+    }
   },
   "methodology_theory": {
     "title": "Theory — PTM, LDA, HSI"
@@ -21,18 +146,75 @@
     "title": "Application to classification and regression via topics"
   },
   "databases": {
-    "title": "Databases"
+    "title": "Databases",
+    "lead": "21 datasets grouped in 4 families. Each declares modality, domains, supervision status, and whether it has local roots available for the pipeline. Raw data is not served from the web app — only the publishable derived artifacts.",
+    "family_a_tagline": "USGS / ECOSTRESS curves — reference spectra with label or measurement.",
+    "family_b_tagline": "AVIRIS / ROSIS / Hyperion cubes with pixel-level labels — Indian Pines, Salinas, Pavia U, KSC, Botswana.",
+    "family_cd_tagline": "HIDSAG geo-mining + MicaSense MSI — regions with physical or geochemical measurements.",
+    "family_e_tagline": "Cubes without reliable labels — Borsoi unmixing benchmarks (Samson, Jasper Ridge, Urban) with manual endmembers.",
+    "datasets_count": "{{count}} datasets · {{local}} with local root",
+    "summary": {
+      "cataloged": "Cataloged datasets",
+      "local_avail": "With local download",
+      "raw_volume": "Raw volume",
+      "sources": "Sources"
+    }
   },
   "workspace": {
     "title": "Workspace",
+    "lead": "Guided flow in four steps: family → subset → representation → explore. Each step depends on the previous; you can go back at any time.",
     "step": {
       "family": "Dataset family",
       "subset": "Subset",
       "representation": "Representation",
       "explore": "Explore"
+    },
+    "briefing": {
+      "envelope_caption": "spectral envelope per class",
+      "envelope_unavailable": "envelope unavailable",
+      "loading_scene_context": "Loading scene context…",
+      "stat_dim": "dim",
+      "stat_bands": "bands",
+      "stat_wavelength": "wl",
+      "stat_classes": "classes",
+      "stat_labelled": "labelled",
+      "stat_k_topics": "K topics",
+      "more_classes": "+{{count}} more"
+    },
+    "tabs": {
+      "raw": "Raw · classes",
+      "browser": "Browser · 8000 spectra",
+      "topics": "Topics · LDAvis",
+      "topiclabel": "Topic vs label",
+      "routed": "Routed · ranking",
+      "raster": "Spatial map",
+      "embed3d": "Embedding 3D · θ-PCA",
+      "stability": "Stability · 7-seed",
+      "deep": "Deep latents",
+      "usgs": "USGS · library v7",
+      "metrics": "Reconstruction + MI",
+      "group_raw": "Raw data",
+      "group_topics": "Topic model",
+      "group_spatial": "Spatial geometry",
+      "group_diagnostics": "Diagnostics"
     }
   },
   "benchmarks": {
-    "title": "Benchmarks"
+    "title": "Benchmarks",
+    "lead": "16+ panels organised by Addendum B axis. Use the tabs to jump to the group you want. URL #hash allows sharing a specific tab.",
+    "tabs": {
+      "summary": "Summary",
+      "summary_tag": "Multi-axis battery + baselines",
+      "gating": "B-3 gating",
+      "gating_tag": "Topic-routed · deep gate · neural topic · Bayesian",
+      "deep": "Deep representations",
+      "deep_tag": "K-curve · anchor vs full · β-collapse · anomaly",
+      "axes": "Other axes",
+      "axes_tag": "Cross-scene · rate-distortion · MI · endmember · spatial · super-topics",
+      "hidsag": "HIDSAG",
+      "hidsag_tag": "Family-D geochemistry regression",
+      "llm": "B-12 LLM",
+      "llm_tag": "Tea-leaves word intrusion (gated)"
+    }
   }
 }

@@ -97,7 +97,7 @@ export default function Workspace() {
   return (
     <PageShell
       title={t("pages:workspace.title")}
-      lead="Flujo guiado en cuatro pasos: familia → conjunto → representación → explorar. Cada paso depende de los anteriores; puedes retroceder en cualquier momento."
+      lead={t("pages:workspace.lead")}
     >
       <Stepper currentIndex={currentStepIndex} state={state.value} ctx={state.context} />
 
@@ -431,6 +431,7 @@ function ExploreStep({
   rep: string | null;
   onBack: () => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
   const [tab, setTab] = useState<ExploreTab>("raw");
 
@@ -577,38 +578,38 @@ function ExploreStep({
           >
             {([
               {
-                category: "Datos brutos",
+                category: t("pages:workspace.tabs.group_raw"),
                 color: "rgba(56, 189, 248, 1)",
                 tabs: [
-                  { id: "raw" as const, label: "Cruda · clases" },
-                  { id: "browser" as const, label: "Browser · 8000 espectros" },
+                  { id: "raw" as const, label: t("pages:workspace.tabs.raw") },
+                  { id: "browser" as const, label: t("pages:workspace.tabs.browser") },
                 ],
               },
               {
-                category: "Modelo de tópicos",
+                category: t("pages:workspace.tabs.group_topics"),
                 color: "rgba(40, 160, 80, 1)",
                 tabs: [
-                  { id: "topics" as const, label: "Tópicos · LDAvis" },
-                  { id: "topiclabel" as const, label: "Tópico vs etiqueta" },
-                  { id: "routed" as const, label: "Routed · ranking" },
+                  { id: "topics" as const, label: t("pages:workspace.tabs.topics") },
+                  { id: "topiclabel" as const, label: t("pages:workspace.tabs.topiclabel") },
+                  { id: "routed" as const, label: t("pages:workspace.tabs.routed") },
                 ],
               },
               {
-                category: "Geometría espacial",
+                category: t("pages:workspace.tabs.group_spatial"),
                 color: "rgba(170, 60, 200, 1)",
                 tabs: [
-                  { id: "raster" as const, label: "Mapa espacial" },
-                  { id: "embed3d" as const, label: "Embedding 3D · θ-PCA" },
+                  { id: "raster" as const, label: t("pages:workspace.tabs.raster") },
+                  { id: "embed3d" as const, label: t("pages:workspace.tabs.embed3d") },
                 ],
               },
               {
-                category: "Diagnóstico",
+                category: t("pages:workspace.tabs.group_diagnostics"),
                 color: "rgba(214, 140, 40, 1)",
                 tabs: [
-                  { id: "stability" as const, label: "Estabilidad · 7-seed" },
-                  { id: "deep" as const, label: "Deep latents" },
-                  { id: "usgs" as const, label: "USGS · librería v7" },
-                  { id: "metrics" as const, label: "Reconstrucción + MI" },
+                  { id: "stability" as const, label: t("pages:workspace.tabs.stability") },
+                  { id: "deep" as const, label: t("pages:workspace.tabs.deep") },
+                  { id: "usgs" as const, label: t("pages:workspace.tabs.usgs") },
+                  { id: "metrics" as const, label: t("pages:workspace.tabs.metrics") },
                 ],
               },
             ] as { category: string; color: string; tabs: { id: ExploreTab; label: string }[] }[]).map((group) => (
@@ -4088,6 +4089,7 @@ function FamilyPickerStep({
    =======================================================================*/
 
 function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | null }) {
+  const { t } = useTranslation(["pages"]);
   const eda = useQuery({
     queryKey: ["briefing-eda", subsetId],
     queryFn: () => api.edaPerScene(subsetId),
@@ -4111,7 +4113,7 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
         }}
       >
         <p style={{ color: "var(--color-fg-faint)" }} className="text-sm">
-          Cargando contexto de la escena…
+          {t("pages:workspace.briefing.loading_scene_context")}
         </p>
       </div>
     );
@@ -4193,12 +4195,12 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
             ) : null}
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12.5px]" style={{ color: "var(--color-fg-subtle)" }}>
-            <BriefingStat label="dim" value={`${shape[0]}×${shape[1]}`} />
-            <BriefingStat label="bands" value={String(wl.length)} />
-            <BriefingStat label="wl" value={`${wlLo.toFixed(0)}–${wlHi.toFixed(0)} nm`} />
-            <BriefingStat label="clases" value={String(data.n_classes ?? classDist.length)} />
-            <BriefingStat label="labelled" value={(data.n_labelled_pixels ?? 0).toLocaleString("en-US")} />
-            {tv.data ? <BriefingStat label="K topics" value={String(tv.data.topic_count)} /> : null}
+            <BriefingStat label={t("pages:workspace.briefing.stat_dim")} value={`${shape[0]}×${shape[1]}`} />
+            <BriefingStat label={t("pages:workspace.briefing.stat_bands")} value={String(wl.length)} />
+            <BriefingStat label={t("pages:workspace.briefing.stat_wavelength")} value={`${wlLo.toFixed(0)}–${wlHi.toFixed(0)} nm`} />
+            <BriefingStat label={t("pages:workspace.briefing.stat_classes")} value={String(data.n_classes ?? classDist.length)} />
+            <BriefingStat label={t("pages:workspace.briefing.stat_labelled")} value={(data.n_labelled_pixels ?? 0).toLocaleString("en-US")} />
+            {tv.data ? <BriefingStat label={t("pages:workspace.briefing.stat_k_topics")} value={String(tv.data.topic_count)} /> : null}
           </div>
           {classDist.length ? (
             <div className="mt-2.5">
@@ -4218,7 +4220,7 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
                     {c.name}
                   </span>
                 ))}
-                {classDist.length > 5 ? <span>+{classDist.length - 5} más</span> : null}
+                {classDist.length > 5 ? <span>{t("pages:workspace.briefing.more_classes", { count: classDist.length - 5 })}</span> : null}
               </div>
             </div>
           ) : null}
@@ -4234,11 +4236,11 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
             </svg>
           ) : (
             <div className="text-[10.5px]" style={{ color: "var(--color-fg-faint)" }}>
-              envelope no disponible
+              {t("pages:workspace.briefing.envelope_unavailable")}
             </div>
           )}
           <div className="text-[9.5px] uppercase tracking-widest font-medium text-center mt-0.5" style={{ color: "var(--color-fg-faint)" }}>
-            envolvente espectral por clase
+            {t("pages:workspace.briefing.envelope_caption")}
           </div>
         </div>
 

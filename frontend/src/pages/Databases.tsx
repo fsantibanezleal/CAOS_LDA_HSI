@@ -82,7 +82,7 @@ export default function Databases() {
   return (
     <PageShell
       title={t("pages:databases.title")}
-      lead="21 datasets agrupados en 4 familias. Cada uno declara modalidad, dominios, estado de supervisión, y si tiene raíces locales disponibles para el pipeline. Los datos crudos no se sirven desde la app web — sólo los derivados publicables."
+      lead={t("pages:databases.lead")}
     >
       {isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
@@ -389,30 +389,30 @@ function KvRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-const FAMILY_VISUAL_META: Record<string, { tag: string; color: string; icon: "spectra" | "scenes" | "regions" | "unlabeled"; tagline: string }> = {
+const FAMILY_VISUAL_META: Record<string, { tag: string; color: string; icon: "spectra" | "scenes" | "regions" | "unlabeled"; taglineKey: string }> = {
   "individual-spectra": {
     tag: "Family A",
     color: "rgba(56, 189, 248, 1)",
     icon: "spectra",
-    tagline: "Curvas USGS / ECOSTRESS — espectros de referencia con etiqueta o medición.",
+    taglineKey: "family_a_tagline",
   },
   "labeled-spectral-image": {
     tag: "Family B",
     color: "rgba(40, 160, 80, 1)",
     icon: "scenes",
-    tagline: "Cubos AVIRIS / ROSIS / Hyperion con etiquetas pixel-a-pixel — Indian Pines, Salinas, Pavia U, KSC, Botswana.",
+    taglineKey: "family_b_tagline",
   },
   "regions-with-measurements": {
     tag: "Family C/D",
     color: "rgba(214, 140, 40, 1)",
     icon: "regions",
-    tagline: "HIDSAG geo-mining + MicaSense MSI — regiones con mediciones físicas o geoquímicas externas.",
+    taglineKey: "family_cd_tagline",
   },
   "unlabeled-spectral-image": {
     tag: "Family E",
     color: "rgba(170, 60, 200, 1)",
     icon: "unlabeled",
-    tagline: "Cubos sin etiquetas confiables — Borsoi unmixing benchmarks (Samson, Jasper Ridge, Urban) con endmembers manuales.",
+    taglineKey: "family_e_tagline",
   },
 };
 
@@ -425,6 +425,7 @@ function FamilyVisualHero({
   active: string | null;
   onPick: (fid: string) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <section className="mb-6">
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -462,8 +463,7 @@ function FamilyVisualHero({
                   className="text-[11px] font-mono"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  {g.entries.length}
-                  {localCount < g.entries.length ? <span className="opacity-70"> · {localCount} local</span> : null}
+                  {t("pages:databases.datasets_count", { count: g.entries.length, local: localCount })}
                 </span>
               </div>
               <FamilyIcon kind={meta.icon} color={meta.color} />
@@ -477,7 +477,7 @@ function FamilyVisualHero({
                 className="mt-1 text-[12px] leading-relaxed"
                 style={{ color: "var(--color-fg-subtle)" }}
               >
-                {meta.tagline}
+                {t(`pages:databases.${meta.taglineKey}`)}
               </p>
             </button>
           );
