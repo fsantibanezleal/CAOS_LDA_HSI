@@ -191,6 +191,7 @@
       "raster": "Spatial map",
       "embed3d": "Embedding 3D · θ-PCA",
       "repfit": "Representation fit · 3D",
+      "spatial": "Spatial · Moran's I + groupings",
       "stability": "Stability · 7-seed",
       "deep": "Deep latents",
       "anomaly": "Anomaly · vs misclass",

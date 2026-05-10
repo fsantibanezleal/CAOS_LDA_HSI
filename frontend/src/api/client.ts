@@ -383,6 +383,10 @@ export const api = {
     request<QuantizationSensitivity>(
       `/generated/quantization_sensitivity/${encodeURIComponent(sceneId)}.json`,
     ),
+  felzenszwalbGroupings: (sceneId: string) =>
+    request<FelzenszwalbGroupings>(
+      `/generated/groupings/felzenszwalb/${encodeURIComponent(sceneId)}.json`,
+    ),
   topicAnomaly: (sceneId: string) =>
     request<TopicAnomaly>(
       `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
@@ -770,6 +774,7 @@ export type TopicSpatialContinuous = {
   scene_id: string;
   topic_count: number;
   spatial_shape: [number, number];
+  n_sampled_pixels?: number;
   per_topic_continuous_spatial: {
     topic_id: number;
     morans_I_continuous?: number;
@@ -840,6 +845,14 @@ export type QuantizationSensitivity = {
   canonical_scheme: string;
   canonical_Q: number;
   probes: QuantizationProbe[];
+};
+
+export type FelzenszwalbGroupings = {
+  n_groups: number;
+  group_size_distribution: { min: number; p25: number; p50: number; p75: number; max: number };
+  between_within_variance_ratio: number;
+  agreement_vs_label: { ari: number; nmi: number; v_measure: number; n_labelled_pixels: number };
+  mean_spectrum_per_group: { group_id: number; size: number; mean: number[] }[];
 };
 
 export type EndmemberBaseline = {
