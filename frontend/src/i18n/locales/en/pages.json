@@ -198,6 +198,7 @@
       "llm": "LLM tea leaves",
       "probe": "Linear probe",
       "robust": "Robustness · Q + cross-scene",
+      "agreement": "Method agreement · narratives",
       "unmixing": "Unmixing · endmembers",
       "usgs": "USGS · library v7",
       "metrics": "Reconstruction + MI",

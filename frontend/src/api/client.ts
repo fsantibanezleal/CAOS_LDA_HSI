@@ -387,6 +387,14 @@ export const api = {
     request<FelzenszwalbGroupings>(
       `/generated/groupings/felzenszwalb/${encodeURIComponent(sceneId)}.json`,
     ),
+  crossMethodAgreement: (sceneId: string) =>
+    request<CrossMethodAgreement>(
+      `/generated/cross_method_agreement/${encodeURIComponent(sceneId)}.json`,
+    ),
+  methodNarratives: (sceneId: string) =>
+    request<MethodNarratives>(
+      `/generated/narratives/${encodeURIComponent(sceneId)}.json`,
+    ),
   topicAnomaly: (sceneId: string) =>
     request<TopicAnomaly>(
       `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
@@ -845,6 +853,28 @@ export type QuantizationSensitivity = {
   canonical_scheme: string;
   canonical_Q: number;
   probes: QuantizationProbe[];
+};
+
+export type CrossMethodAgreement = {
+  scene_id: string;
+  spatial_shape: [number, number];
+  n_compared_pixels: number;
+  method_names: string[];
+  ari_matrix: number[][];
+  nmi_matrix: number[][];
+  v_measure_matrix: number[][];
+};
+
+export type MethodNarrativeEntry = {
+  method: string;
+  captures: Record<string, number | string | null>;
+  separates: string | null;
+  unites: string | null;
+  enables: string | null;
+};
+export type MethodNarratives = {
+  scene_id: string;
+  method_narratives: Record<string, MethodNarrativeEntry>;
 };
 
 export type FelzenszwalbGroupings = {
