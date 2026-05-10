@@ -193,6 +193,7 @@
       "repfit": "Fit de representación · 3D",
       "stability": "Estabilidad · 7-seed",
       "deep": "Deep latents",
+      "anomaly": "Anomalía · vs misclass",
       "unmixing": "Unmixing · endmembers",
       "usgs": "USGS · librería v7",
       "metrics": "Reconstrucción + MI",
