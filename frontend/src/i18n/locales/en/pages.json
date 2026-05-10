@@ -191,6 +191,7 @@
       "raster": "Spatial map",
       "embed3d": "Embedding 3D · θ-PCA",
       "repfit": "Representation fit · 3D",
+      "compare3d": "Compare 3D · multi-method",
       "spatial": "Spatial · Moran's I + groupings",
       "stability": "Stability · 7-seed",
       "deep": "Deep latents",
