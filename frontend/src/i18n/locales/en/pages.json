@@ -187,6 +187,7 @@
       "topics": "Topics · LDAvis",
       "topiclabel": "Topic vs label",
       "routed": "Routed · ranking",
+      "interpret": "Interpretability cards",
       "raster": "Spatial map",
       "embed3d": "Embedding 3D · θ-PCA",
       "repfit": "Representation fit · 3D",
