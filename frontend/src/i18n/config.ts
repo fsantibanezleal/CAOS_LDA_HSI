@@ -20,13 +20,20 @@ void i18n
       es: { common: esCommon, nav: esNav, pages: esPages },
       en: { common: enCommon, nav: enNav, pages: enPages },
     },
+    // Hard default: English. The site is research / methodology in
+    // English by intent; users opt into Spanish via the LanguageToggle
+    // and the choice persists in localStorage. We do NOT auto-detect
+    // navigator.language so the first-visit experience is deterministic.
+    lng: "en",
     fallbackLng: "en",
     supportedLngs: SUPPORTED_LANGUAGES,
     defaultNS: "common",
     ns: ["common", "nav", "pages"],
     interpolation: { escapeValue: false },
     detection: {
-      order: ["localStorage", "navigator"],
+      // Only check localStorage — no navigator fallback so first-visit
+      // always starts in English regardless of browser locale.
+      order: ["localStorage"],
       lookupLocalStorage: "caos.lang",
       caches: ["localStorage"],
     },
