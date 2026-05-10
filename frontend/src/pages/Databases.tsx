@@ -114,6 +114,7 @@ export default function Databases() {
 
       {data && (
         <>
+          <FamilyVisualHero groups={groupedByFamily} active={activeFamily} onPick={onPickFamily} />
           <SummaryRow inventory={data} />
 
           <FamilyTabs
@@ -385,5 +386,183 @@ function KvRow({ label, value }: { label: string; value: string }) {
       </dt>
       <dd className="flex-1">{value}</dd>
     </div>
+  );
+}
+
+const FAMILY_VISUAL_META: Record<string, { tag: string; color: string; icon: "spectra" | "scenes" | "regions" | "unlabeled"; tagline: string }> = {
+  "individual-spectra": {
+    tag: "Family A",
+    color: "rgba(56, 189, 248, 1)",
+    icon: "spectra",
+    tagline: "Curvas USGS / ECOSTRESS — espectros de referencia con etiqueta o medición.",
+  },
+  "labeled-spectral-image": {
+    tag: "Family B",
+    color: "rgba(40, 160, 80, 1)",
+    icon: "scenes",
+    tagline: "Cubos AVIRIS / ROSIS / Hyperion con etiquetas pixel-a-pixel — Indian Pines, Salinas, Pavia U, KSC, Botswana.",
+  },
+  "regions-with-measurements": {
+    tag: "Family C/D",
+    color: "rgba(214, 140, 40, 1)",
+    icon: "regions",
+    tagline: "HIDSAG geo-mining + MicaSense MSI — regiones con mediciones físicas o geoquímicas externas.",
+  },
+  "unlabeled-spectral-image": {
+    tag: "Family E",
+    color: "rgba(170, 60, 200, 1)",
+    icon: "unlabeled",
+    tagline: "Cubos sin etiquetas confiables — Borsoi unmixing benchmarks (Samson, Jasper Ridge, Urban) con endmembers manuales.",
+  },
+};
+
+function FamilyVisualHero({
+  groups,
+  active,
+  onPick,
+}: {
+  groups: { family_id: string; family: string; entries: DatasetEntry[] }[];
+  active: string | null;
+  onPick: (fid: string) => void;
+}) {
+  return (
+    <section className="mb-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {groups.map((g) => {
+          const meta = FAMILY_VISUAL_META[g.family_id];
+          if (!meta) return null;
+          const isActive = active === g.family_id;
+          const localCount = g.entries.filter((e) => e.local_raw_available).length;
+          return (
+            <button
+              key={g.family_id}
+              type="button"
+              onClick={() => onPick(g.family_id)}
+              aria-pressed={isActive}
+              className="rounded-xl border p-4 text-left transition-all hover:shadow-lg hover:-translate-y-0.5 relative overflow-hidden"
+              style={{
+                borderColor: isActive ? meta.color : "var(--color-border)",
+                backgroundColor: "var(--color-panel)",
+                boxShadow: "var(--color-shadow)",
+              }}
+            >
+              <div
+                aria-hidden
+                className="absolute top-0 left-0 right-0 h-1"
+                style={{ backgroundColor: meta.color }}
+              />
+              <div className="flex items-baseline justify-between mt-1.5 mb-2">
+                <span
+                  className="text-[10px] uppercase tracking-widest font-semibold"
+                  style={{ color: meta.color }}
+                >
+                  {meta.tag}
+                </span>
+                <span
+                  className="text-[11px] font-mono"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  {g.entries.length}
+                  {localCount < g.entries.length ? <span className="opacity-70"> · {localCount} local</span> : null}
+                </span>
+              </div>
+              <FamilyIcon kind={meta.icon} color={meta.color} />
+              <h3
+                className="mt-2 text-[14px] font-semibold tracking-tight leading-tight"
+                style={{ color: "var(--color-fg)" }}
+              >
+                {g.family}
+              </h3>
+              <p
+                className="mt-1 text-[12px] leading-relaxed"
+                style={{ color: "var(--color-fg-subtle)" }}
+              >
+                {meta.tagline}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function FamilyIcon({ kind, color }: { kind: "spectra" | "scenes" | "regions" | "unlabeled"; color: string }) {
+  if (kind === "spectra") {
+    return (
+      <svg viewBox="0 0 240 64" width="100%" height="64" aria-hidden="true">
+        {/* multiple smooth spectral curves */}
+        {[0.25, 0.45, 0.7].map((shift, i) => {
+          const path = Array.from({ length: 60 }, (_, x) => {
+            const v = 32 + 22 * Math.sin(x * 0.18 + shift * 5) * Math.exp(-Math.abs((x - 30) / 25));
+            return `${x === 0 ? "M" : "L"}${(x * 4).toFixed(1)},${v.toFixed(1)}`;
+          }).join(" ");
+          return (
+            <path key={i} d={path} fill="none" stroke={color} strokeWidth={1.4} strokeOpacity={0.3 + 0.3 * i} strokeLinecap="round"/>
+          );
+        })}
+        <line x1="0" y1="60" x2="240" y2="60" stroke="currentColor" strokeOpacity="0.18" strokeWidth="0.6"/>
+      </svg>
+    );
+  }
+  if (kind === "scenes") {
+    return (
+      <svg viewBox="0 0 240 64" width="100%" height="64" aria-hidden="true">
+        {/* labeled scene mosaic - 16x4 colored cells */}
+        {Array.from({ length: 4 }, (_, r) =>
+          Array.from({ length: 24 }, (_, c) => {
+            const palette = [
+              "rgba(31,119,180,0.85)", "rgba(255,127,14,0.85)", "rgba(40,160,80,0.85)",
+              "rgba(214,39,40,0.85)", "rgba(148,103,189,0.85)", "rgba(140,86,75,0.85)",
+              "rgba(225,180,90,0.85)", "rgba(60,200,200,0.85)",
+            ];
+            const idx = ((r * 7 + c * 3) ^ (c * c)) % palette.length;
+            return (
+              <rect
+                key={`${r}-${c}`}
+                x={c * 10 + 0.5}
+                y={r * 14 + 0.5}
+                width={9}
+                height={13}
+                fill={palette[idx]}
+                stroke="rgba(0,0,0,0.06)"
+                strokeWidth="0.4"
+              />
+            );
+          }),
+        )}
+      </svg>
+    );
+  }
+  if (kind === "regions") {
+    return (
+      <svg viewBox="0 0 240 64" width="100%" height="64" aria-hidden="true">
+        {/* mining-style assay polygons + measurement labels */}
+        <polygon points="20,52 50,12 100,18 90,55" fill={color} fillOpacity="0.18" stroke={color} strokeWidth="1.2"/>
+        <polygon points="100,55 110,20 160,15 175,48" fill={color} fillOpacity="0.32" stroke={color} strokeWidth="1.2"/>
+        <polygon points="160,48 170,18 215,25 220,58" fill={color} fillOpacity="0.55" stroke={color} strokeWidth="1.2"/>
+        {/* labels */}
+        <text x="55" y="32" fontSize="9.5" fill="currentColor" opacity="0.85" textAnchor="middle" fontFamily="ui-monospace, monospace">Cu 0.4%</text>
+        <text x="135" y="32" fontSize="9.5" fill="currentColor" opacity="0.85" textAnchor="middle" fontFamily="ui-monospace, monospace">Mb 12 ppm</text>
+        <text x="190" y="40" fontSize="9.5" fill="currentColor" opacity="0.85" textAnchor="middle" fontFamily="ui-monospace, monospace">Au 1.2 ppb</text>
+      </svg>
+    );
+  }
+  // unlabeled
+  return (
+    <svg viewBox="0 0 240 64" width="100%" height="64" aria-hidden="true">
+      {/* unmixing endmember triangle + abundance dots */}
+      <polygon points="40,55 120,12 200,55" fill={color} fillOpacity="0.16" stroke={color} strokeWidth="1.4"/>
+      <text x="40" y="62" fontSize="9.5" fill="currentColor" opacity="0.85" fontFamily="ui-monospace, monospace">EM₁</text>
+      <text x="120" y="9" fontSize="9.5" fill="currentColor" opacity="0.85" textAnchor="middle" fontFamily="ui-monospace, monospace">EM₂</text>
+      <text x="200" y="62" fontSize="9.5" fill="currentColor" opacity="0.85" textAnchor="end" fontFamily="ui-monospace, monospace">EM₃</text>
+      {/* abundance points */}
+      {[
+        [80, 38], [90, 28], [100, 35], [110, 30], [115, 42], [120, 25], [130, 32], [140, 40],
+        [145, 28], [150, 36], [160, 32], [170, 42], [120, 38],
+      ].map((p, i) => (
+        <circle key={i} cx={p[0]} cy={p[1]} r="2.4" fill={color} fillOpacity="0.85"/>
+      ))}
+    </svg>
   );
 }

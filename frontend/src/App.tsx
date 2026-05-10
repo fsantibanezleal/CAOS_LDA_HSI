@@ -7,6 +7,7 @@ import { PageFallback } from "@/components/PageFallback";
 
 const Overview = lazy(() => import("@/pages/Overview"));
 const Methodology = lazy(() => import("@/pages/Methodology"));
+const MethodologyIndex = lazy(() => import("@/pages/methodology/Index"));
 const MethodologyTheory = lazy(() => import("@/pages/methodology/Theory"));
 const MethodologyRepresentations = lazy(
   () => import("@/pages/methodology/Representations"),
@@ -31,7 +32,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/methodology" element={<Methodology />}>
-              <Route index element={<Navigate to="theory" replace />} />
+              <Route index element={<MethodologyIndex />} />
               <Route path="theory" element={<MethodologyTheory />} />
               <Route
                 path="representations"
