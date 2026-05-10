@@ -282,6 +282,10 @@ export const api = {
     request<HidsagMethodStatistics>(
       `/api/method-statistics-hidsag/${encodeURIComponent(subsetCode)}`,
     ),
+  edaHidsag: (subsetCode: string) =>
+    request<HidsagEda>(
+      `/generated/eda/hidsag/${encodeURIComponent(subsetCode)}.json`,
+    ),
   hidsagPreprocessingSensitivity: () =>
     request<HidsagPreprocessingSensitivity>(
       `/api/hidsag-preprocessing-sensitivity`,
@@ -561,6 +565,22 @@ export type HidsagMethodStatistics = {
   measurement_count_total: number;
   regression: HidsagBlock | null;
   classification: HidsagBlock | null;
+};
+
+export type HidsagEda = {
+  subset_code: string;
+  sample_count: number;
+  measurement_count_total: number;
+  numeric_variable_names: string[];
+  numeric_variables: Record<string, { mean: number; std: number; min: number; max: number; n_finite: number }>;
+  modality_band_counts: Record<string, number>;
+  spectrum_axis: { wavelength_nm: number[] };
+  mean_spectrum_by_measurement: Record<string, { mean: number[]; n: number }>;
+  mean_spectrum_by_measurement_stratum?: Record<string, Record<string, { mean: number[]; n: number; stratum_value: number | string | null }>>;
+  correlation_pearson?: number[][] | null;
+  correlation_spearman?: number[][] | null;
+  measurement_tags_top?: string[];
+  dominant_targets_by_mean?: { name: string; mean: number; std: number }[];
 };
 
 export type RoutedFoldMetric = {
