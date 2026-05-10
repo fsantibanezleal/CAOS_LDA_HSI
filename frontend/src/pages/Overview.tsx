@@ -15,50 +15,20 @@ const LABELLED_SCENES = [
   { id: "botswana", label: "Botswana", sensor: "Hyperion" },
 ];
 
-const HEADLINES = [
-  {
-    label: "Datasets",
-    value: "21",
-    sub: "across 4 families",
-    href: "/databases",
-  },
-  {
-    label: "Wordification recipes",
-    value: "12",
-    sub: "V1 (band) → V12 (GMM)",
-    href: "/methodology/representations",
-  },
-  {
-    label: "Builders",
-    value: "57",
-    sub: "data-pipeline modules",
-    href: "/methodology/pipeline",
-  },
-  {
-    label: "Derived artifacts",
-    value: "1592",
-    sub: "live in production",
-    href: "/benchmarks",
-  },
-  {
-    label: "API endpoints",
-    value: "104",
-    sub: "smoke 87/87 green",
-    href: "/benchmarks",
-  },
-  {
-    label: "Topic-model variants",
-    value: "11",
-    sub: "LDA · ProdLDA · ETM · …",
-    href: "/methodology/representations",
-  },
-];
+const HEADLINE_DEFS = [
+  { keyLabel: "datasets_label", keySub: "datasets_sub", value: "21", href: "/databases" },
+  { keyLabel: "recipes_label", keySub: "recipes_sub", value: "12", href: "/methodology/representations" },
+  { keyLabel: "builders_label", keySub: "builders_sub", value: "57", href: "/methodology/pipeline" },
+  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1592", href: "/benchmarks" },
+  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "104", href: "/benchmarks" },
+  { keyLabel: "variants_label", keySub: "variants_sub", value: "11", href: "/methodology/representations" },
+] as const;
 
 const FINDINGS = [
   {
     badge: "B-3",
     title: "θ as a gate beats raw on labelled scenes",
-    body: "topic_routed_soft matches or beats raw_logistic on all 6 labelled scenes; theta_logistic (θ as flat feature) loses by 30–50 pp everywhere. The framing 'θ is a gate, not a feature' is empirically validated.",
+    body: "topic_routed_soft matches or beats raw_logistic on all 6 labelled scenes; theta_logistic (θ as a flat feature) loses by 30–50 pp everywhere. The framing 'θ is a gate, not a feature' is empirically validated.",
     accent: "rgba(40, 160, 80, 1)",
   },
   {
@@ -70,7 +40,7 @@ const FINDINGS = [
   {
     badge: "Topic family",
     title: "LDA wins ARI · ProdLDA wins coherence · ETM is the safe middle",
-    body: "Cycles 61–63 head-to-head on 220-per-class stratified samples: LDA wins KMeans-vs-label ARI 4/6 scenes; ProdLDA wins c_v topic coherence 6/6; ETM beats ProdLDA on ARI 6/6 (multi-seed N=5).",
+    body: "Cycles 61–63 head-to-head on 220-per-class stratified samples: LDA wins KMeans-vs-label ARI on 4/6 scenes; ProdLDA wins c_v topic coherence 6/6; ETM beats ProdLDA on ARI 6/6 (multi-seed N=5).",
     accent: "rgba(31, 119, 180, 1)",
   },
   {
@@ -82,19 +52,19 @@ const FINDINGS = [
   {
     badge: "GPU stack",
     title: "50–120× speedup on the deep / neural family",
-    body: "RTX 4070 Laptop CUDA 12.6: cae_3d_full K=32 single scene 60 min CPU → 30 s GPU. Full K-curve {4, 8, 16, 32} × 6 scenes 9–12 h CPU → 10 min GPU. Determinism drift ±0.010 ARI < per-seed σ ≈ 0.05.",
+    body: "RTX 4070 Laptop CUDA 12.6: cae_3d_full K=32 single scene goes from ~60 min CPU to ~30 s GPU. Full K-curve {4, 8, 16, 32} × 6 scenes from 9–12 h CPU to ~10 min GPU. Determinism drift ±0.010 ARI is below per-seed σ ≈ 0.05.",
     accent: "rgba(214, 140, 40, 1)",
   },
   {
     badge: "Stability",
     title: "9-method × 6-scene seed stability ladder",
-    body: "PCA = ICA (1.000 deterministic) > LDA > NMF > CAE-2D > CAE-1D > CAE-3D > dense-AE > β-VAE. KSC β-VAE off-diag ≈ 0.18 — KL stochasticity overwhelms inter-seed signal.",
+    body: "PCA = ICA (1.000 deterministic) > LDA > NMF > CAE-2D > CAE-1D > CAE-3D > dense-AE > β-VAE. KSC β-VAE off-diag ≈ 0.18 — KL stochasticity overwhelms the inter-seed signal.",
     accent: "rgba(140, 86, 75, 1)",
   },
   {
     badge: "Posterior collapse",
     title: "β-VAE Salinas at β ≥ 8 — textbook failure mode",
-    body: "Salinas β-VAE at β=8 and β=16 collapses to ARI = 0.000: encoder converges to q(z|x) ≈ p(z) regardless of input; latent uninformative. Salinas-A's compact 6-class structure resists the same regulariser. Visible black cells in the Benchmarks β-sweep heatmap.",
+    body: "Salinas β-VAE at β=8 and β=16 collapses to ARI = 0.000: the encoder converges to q(z|x) ≈ p(z) regardless of input; the latent is uninformative. Salinas-A's compact 6-class structure resists the same regulariser. Visible black cells in the Benchmarks β-sweep heatmap.",
     accent: "rgba(120, 50, 50, 1)",
   },
 ];
@@ -145,6 +115,7 @@ export default function Overview() {
    =======================================================================*/
 
 function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
+  const { t } = useTranslation(["pages"]);
   const ip = scenes?.[0];
   const wl = ip?.wavelengths_nm ?? [];
   const classDist = ip?.class_distribution ?? [];
@@ -207,17 +178,19 @@ function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
               className="text-[11px] uppercase tracking-widest font-semibold"
               style={{ color: "var(--color-accent)" }}
             >
-              Live spectral signature
+              {t("pages:overview.hero.spectral_signature")}
             </span>
             <span className="text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
-              Indian Pines · 16 classes · {wl.length} bands · 400–2500 nm
+              {wl.length
+                ? t("pages:overview.hero.indian_pines_caption", { bands: wl.length })
+                : t("pages:overview.hero.indian_pines_caption_loading")}
             </span>
           </div>
           <h2
             className="text-xl md:text-2xl font-semibold tracking-tight mb-4"
             style={{ color: "var(--color-fg)" }}
           >
-            Tratamos cada píxel hiperespectral como un documento.
+            {t("pages:overview.hero.title")}
           </h2>
 
           <svg
@@ -295,12 +268,7 @@ function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
             className="mt-2 text-[12.5px] leading-relaxed"
             style={{ color: "var(--color-fg-subtle)" }}
           >
-            Cada curva es la firma media de una clase agronómica del cubo Indian
-            Pines. La diversidad inter-clase a 1100 / 1400 / 1900 nm —
-            absorciones de agua y feldespatos — es lo que el corpus textual
-            tiene que recuperar discretamente. <strong>Esa firma es un
-            documento</strong>; la pregunta del proyecto es qué tópicos
-            (estructura latente compartida) viven en él.
+            {t("pages:overview.hero.caption")}
           </p>
         </div>
 
@@ -311,7 +279,7 @@ function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
               className="text-[11px] uppercase tracking-widest font-semibold"
               style={{ color: "var(--color-accent)" }}
             >
-              Datacube anatomy
+              {t("pages:overview.hero.datacube_anatomy")}
             </span>
           </div>
           <HypercubeMini />
@@ -319,11 +287,7 @@ function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
             className="mt-3 text-[12.5px] leading-relaxed"
             style={{ color: "var(--color-fg-subtle)" }}
           >
-            Un cubo HSI es <strong>(H × W × B)</strong>. Cada píxel `x[i, j]`
-            es un vector espectral de B bandas. El proyecto lo recorre como un
-            <em> corpus</em>, lo discretiza en tokens, ajusta tópicos
-            <code className="font-mono mx-1 text-[11px]">θ ∈ Δ^(K-1)</code>
-            y los compara contra baselines K-dim.
+            {t("pages:overview.hero.datacube_caption")}
           </p>
         </div>
       </div>
@@ -403,12 +367,13 @@ function HypercubeMini() {
    =======================================================================*/
 
 function HeadlineNumbers() {
+  const { t } = useTranslation(["pages"]);
   return (
     <section className="mt-8">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        {HEADLINES.map((h) => (
+        {HEADLINE_DEFS.map((h) => (
           <Link
-            key={h.label}
+            key={h.keyLabel}
             to={h.href}
             className="rounded-lg border p-4 transition-all hover:scale-[1.02] hover:shadow-lg"
             style={{
@@ -421,7 +386,7 @@ function HeadlineNumbers() {
               className="text-[10.5px] uppercase tracking-widest font-medium"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              {h.label}
+              {t(`pages:overview.headlines.${h.keyLabel}`)}
             </div>
             <div
               className="mt-1 text-3xl font-semibold tracking-tight"
@@ -430,7 +395,7 @@ function HeadlineNumbers() {
               {h.value}
             </div>
             <div className="text-[11px]" style={{ color: "var(--color-fg-subtle)" }}>
-              {h.sub}
+              {t(`pages:overview.headlines.${h.keySub}`)}
             </div>
           </Link>
         ))}
@@ -444,10 +409,11 @@ function HeadlineNumbers() {
    =======================================================================*/
 
 function FindingsCarousel() {
+  const { t } = useTranslation(["pages"]);
   const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % FINDINGS.length), 7000);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setIdx((i) => (i + 1) % FINDINGS.length), 7000);
+    return () => clearInterval(timer);
   }, []);
   const cur = FINDINGS[idx]!;
 
@@ -477,7 +443,7 @@ function FindingsCarousel() {
             className="text-[11px] uppercase tracking-widest"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Hallazgo destacado · {idx + 1} / {FINDINGS.length}
+            {t("pages:overview.findings.section_badge", { idx: idx + 1, total: FINDINGS.length })}
           </span>
         </div>
         <h2
@@ -516,6 +482,7 @@ function FindingsCarousel() {
    =======================================================================*/
 
 function HypercubeAnatomy() {
+  const { t } = useTranslation(["pages"]);
   return (
     <section className="mt-12">
       <div className="mb-4">
@@ -523,22 +490,19 @@ function HypercubeAnatomy() {
           className="text-[11px] uppercase tracking-widest font-semibold"
           style={{ color: "var(--color-accent)" }}
         >
-          Pipeline anatómico
+          {t("pages:overview.pipeline_anatomy.tag")}
         </span>
         <h2
           className="text-xl md:text-2xl font-semibold tracking-tight mt-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Del cubo HSI a θ ∈ Δ^(K-1)
+          {t("pages:overview.pipeline_anatomy.title")}
         </h2>
         <p
           className="mt-2 max-w-3xl text-[13.5px] leading-relaxed"
           style={{ color: "var(--color-fg-subtle)" }}
         >
-          Cuatro pasos que la app sirve precalculados detrás de cada endpoint
-          <code className="font-mono mx-1 text-[11px]">/api/topic-views/{`{scene}`}</code>:
-          definir documento, discretizar a tokens, ajustar el modelo,
-          inspeccionar la mezcla θ por píxel.
+          {t("pages:overview.pipeline_anatomy.lead")}
         </p>
       </div>
 
@@ -575,24 +539,24 @@ function HypercubeAnatomy() {
 
           {/* Step 1: Cube + pixel */}
           <g transform="translate(40, 50)">
-            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">1 · Documento</text>
-            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">build_groupings</text>
+            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">{t("pages:overview.pipeline_anatomy.stage1_title")}</text>
+            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">{t("pages:overview.pipeline_anatomy.stage1_sub")}</text>
             {/* mini cube */}
             <polygon points="20,40 130,40 152,58 42,58" fill="url(#ovw-step1)" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.8"/>
             <rect x="20" y="58" width="110" height="120" fill="url(#ovw-step1)" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.8"/>
             <polygon points="130,58 152,58 152,178 130,178" fill="rgba(56,189,248,0.25)" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.8"/>
             {/* pixel highlight */}
             <rect x="68" y="98" width="10" height="10" fill="rgba(214,39,40,0.9)"/>
-            <text x="80" y="107" fontSize="9.5" fill="currentColor" opacity="0.7">pixel</text>
-            <text x="20" y="200" fontSize="10" fill="currentColor" opacity="0.7">x ∈ ℝᴮ por píxel · region · sample</text>
+            <text x="80" y="107" fontSize="9.5" fill="currentColor" opacity="0.7">{t("pages:overview.pipeline_anatomy.stage1_pixel")}</text>
+            <text x="20" y="200" fontSize="10" fill="currentColor" opacity="0.7">{t("pages:overview.pipeline_anatomy.stage1_note")}</text>
           </g>
 
           <line x1="210" y1="135" x2="290" y2="135" stroke="currentColor" strokeWidth="1.4" markerEnd="url(#ovw-arr)" opacity="0.55"/>
 
           {/* Step 2: Discretization (12 V-recipes) */}
           <g transform="translate(300, 50)">
-            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">2 · Discretización</text>
-            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">build_wordifications · V1..V12</text>
+            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">{t("pages:overview.pipeline_anatomy.stage2_title")}</text>
+            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">{t("pages:overview.pipeline_anatomy.stage2_sub")}</text>
             <rect x="0" y="32" width="220" height="148" fill="url(#ovw-step2)" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.8" rx="6"/>
             {/* tokens list */}
             {Array.from({length: 6}, (_, i) => (
@@ -603,17 +567,17 @@ function HypercubeAnatomy() {
                 </text>
               </g>
             ))}
-            <text x="12" y="138" fontSize="9.5" fill="currentColor" opacity="0.7">band-frequency · band-magnitude · …</text>
-            <text x="12" y="154" fontSize="9.5" fill="currentColor" opacity="0.7">12 recipes × 3 schemes × Q∈{`{8,16,32}`}</text>
-            <text x="12" y="170" fontSize="9.5" fill="currentColor" opacity="0.55" fontStyle="italic">vocab V ∈ [103, 220]</text>
+            <text x="12" y="138" fontSize="9.5" fill="currentColor" opacity="0.7">{t("pages:overview.pipeline_anatomy.stage2_note1")}</text>
+            <text x="12" y="154" fontSize="9.5" fill="currentColor" opacity="0.7">{t("pages:overview.pipeline_anatomy.stage2_note2")}</text>
+            <text x="12" y="170" fontSize="9.5" fill="currentColor" opacity="0.55" fontStyle="italic">{t("pages:overview.pipeline_anatomy.stage2_note3")}</text>
           </g>
 
           <line x1="540" y1="135" x2="620" y2="135" stroke="currentColor" strokeWidth="1.4" markerEnd="url(#ovw-arr)" opacity="0.55"/>
 
           {/* Step 3: Topic model */}
           <g transform="translate(630, 50)">
-            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">3 · Modelo de tópicos</text>
-            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">LDA · ProdLDA · ETM · CAE-{`{1D,2D,3D}`} · β-VAE</text>
+            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">{t("pages:overview.pipeline_anatomy.stage3_title")}</text>
+            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">{t("pages:overview.pipeline_anatomy.stage3_sub")}</text>
             <rect x="0" y="32" width="180" height="148" fill="url(#ovw-step3)" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.8" rx="6"/>
             {/* phi rows */}
             {Array.from({length: 4}, (_, k) => (
@@ -625,22 +589,22 @@ function HypercubeAnatomy() {
                 ))}
               </g>
             ))}
-            <text x="10" y="160" fontSize="9.5" fill="currentColor" opacity="0.7">φ ∈ ℝ^{`{K×V}`}, θ ∈ Δ^(K-1)</text>
-            <text x="10" y="174" fontSize="9.5" fill="currentColor" opacity="0.55" fontStyle="italic">K ∈ [4, 32]</text>
+            <text x="10" y="160" fontSize="9.5" fill="currentColor" opacity="0.7">{t("pages:overview.pipeline_anatomy.stage3_note1")}</text>
+            <text x="10" y="174" fontSize="9.5" fill="currentColor" opacity="0.55" fontStyle="italic">{t("pages:overview.pipeline_anatomy.stage3_note2")}</text>
           </g>
 
           <line x1="820" y1="135" x2="900" y2="135" stroke="currentColor" strokeWidth="1.4" markerEnd="url(#ovw-arr)" opacity="0.55"/>
 
           {/* Step 4: theta inspection */}
           <g transform="translate(910, 50)">
-            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">4 · Inferencia θ</text>
-            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">topic_routed · evaluation</text>
+            <text x="0" y="-12" fontSize="11.5" fill="currentColor" fontWeight="600" opacity="0.88">{t("pages:overview.pipeline_anatomy.stage4_title")}</text>
+            <text x="0" y="2" fontSize="10" fill="currentColor" opacity="0.55">{t("pages:overview.pipeline_anatomy.stage4_sub")}</text>
             <rect x="0" y="32" width="130" height="148" fill="url(#ovw-step4)" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.8" rx="6"/>
             {/* simplex */}
             <polygon points="65,55 25,165 105,165" fill="rgba(214,140,40,0.25)" stroke="rgba(214,140,40,0.7)" strokeWidth="1.2"/>
-            <text x="65" y="49" fontSize="10" textAnchor="middle" fill="currentColor" opacity="0.75" fontFamily="ui-monospace, monospace">topic 1</text>
-            <text x="20" y="174" fontSize="10" fill="currentColor" opacity="0.75" fontFamily="ui-monospace, monospace">topic 2</text>
-            <text x="105" y="174" fontSize="10" textAnchor="end" fill="currentColor" opacity="0.75" fontFamily="ui-monospace, monospace">topic 3</text>
+            <text x="65" y="49" fontSize="10" textAnchor="middle" fill="currentColor" opacity="0.75" fontFamily="ui-monospace, monospace">{t("pages:overview.pipeline_anatomy.stage4_topic1")}</text>
+            <text x="20" y="174" fontSize="10" fill="currentColor" opacity="0.75" fontFamily="ui-monospace, monospace">{t("pages:overview.pipeline_anatomy.stage4_topic2")}</text>
+            <text x="105" y="174" fontSize="10" textAnchor="end" fill="currentColor" opacity="0.75" fontFamily="ui-monospace, monospace">{t("pages:overview.pipeline_anatomy.stage4_topic3")}</text>
             {/* points = pixels on simplex */}
             {[
               [65, 90], [50, 110], [80, 105], [70, 130], [55, 145], [90, 140], [60, 160], [85, 155], [75, 100],
@@ -659,6 +623,7 @@ function HypercubeAnatomy() {
    =======================================================================*/
 
 function ScenesShowcase({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <section className="mt-12">
       <div className="mb-4 flex items-end justify-between flex-wrap gap-3">
@@ -667,21 +632,19 @@ function ScenesShowcase({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
             className="text-[11px] uppercase tracking-widest font-semibold"
             style={{ color: "var(--color-accent)" }}
           >
-            Six labelled scenes
+            {t("pages:overview.scenes.tag")}
           </span>
           <h2
             className="text-xl md:text-2xl font-semibold tracking-tight mt-1"
             style={{ color: "var(--color-fg)" }}
           >
-            Cada escena con su distribución de clases
+            {t("pages:overview.scenes.title")}
           </h2>
           <p
             className="mt-1.5 max-w-3xl text-[13.5px] leading-relaxed"
             style={{ color: "var(--color-fg-subtle)" }}
           >
-            Cada barra es una clase agronómica/urbana/mineral con su frecuencia
-            relativa real. KSC y Botswana son benchmark difíciles
-            (clase-mayoritaria diluida, baja SNR).
+            {t("pages:overview.scenes.lead")}
           </p>
         </div>
         <Link
@@ -689,7 +652,7 @@ function ScenesShowcase({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
           className="text-[12.5px] underline-offset-4"
           style={{ color: "var(--color-accent)" }}
         >
-          Ir al catálogo completo →
+          {t("pages:overview.scenes.open_catalogue")}
         </Link>
       </div>
 
@@ -710,6 +673,7 @@ function SceneCard({
   meta: { id: string; label: string; sensor: string };
   peek: ScenePeek | null | undefined;
 }) {
+  const { t } = useTranslation(["pages"]);
   const dist = peek?.class_distribution ?? [];
   return (
     <Link
@@ -737,8 +701,8 @@ function SceneCard({
         style={{ color: "var(--color-fg-subtle)" }}
       >
         {peek
-          ? `${peek.n_classes} clases · ${peek.n_labelled_pixels.toLocaleString("en-US")} pixeles etiquetados · ${peek.wavelengths_nm.length} bandas`
-          : "Cargando estadística…"}
+          ? `${peek.n_classes} ${t("pages:overview.scenes.n_classes_short")} · ${peek.n_labelled_pixels.toLocaleString("en-US")} ${t("pages:overview.scenes.n_pixels_short")} · ${peek.wavelengths_nm.length} ${t("pages:overview.scenes.n_bands_short")}`
+          : t("pages:overview.scenes.loading_stat")}
       </div>
       {dist.length ? (
         <div className="w-full h-7 flex rounded overflow-hidden border" style={{ borderColor: "var(--color-border)" }}>
@@ -768,7 +732,7 @@ function SceneCard({
             </span>
           ))}
           {dist.length > 4 ? (
-            <span className="text-[10.5px]" style={{ color: "var(--color-fg-faint)" }}>+{dist.length - 4} más</span>
+            <span className="text-[10.5px]" style={{ color: "var(--color-fg-faint)" }}>{t("pages:overview.scenes.more_classes", { count: dist.length - 4 })}</span>
           ) : null}
         </div>
       ) : null}
@@ -781,23 +745,24 @@ function SceneCard({
    =======================================================================*/
 
 function PillarsTriptych() {
+  const { t } = useTranslation(["pages"]);
   const pillars = [
     {
-      title: "Documentos",
-      tag: "Pilar 1",
-      body: "Cómo construir un documento: por píxel, por región (SLIC, Felzenszwalb), por parche o por muestra completa. Cuatro alternativas materializadas en build_groupings; cambian la unidad estadística aguas arriba.",
+      title: t("pages:overview.pillars.documents_title"),
+      tag: t("pages:overview.pillars.lever_label", { idx: 1 }),
+      body: t("pages:overview.pillars.documents_body"),
       icon: "doc",
     },
     {
-      title: "Discretización",
-      tag: "Pilar 2",
-      body: "Cómo el espectro continuo se vuelve token discreto: doce recetas V1..V12, tres esquemas de cuantización (uniform, quantile, equalised), tres niveles Q ∈ {8, 16, 32}.",
+      title: t("pages:overview.pillars.discretisation_title"),
+      tag: t("pages:overview.pillars.lever_label", { idx: 2 }),
+      body: t("pages:overview.pillars.discretisation_body"),
       icon: "tok",
     },
     {
-      title: "Modelo",
-      tag: "Pilar 3",
-      body: "LDA canónico (collapsed Gibbs, variational Bayes, online), HDP, CTM, ProdLDA, ETM, NMF, PCA, ICA, dense-AE, CAE-1D/2D/3D, β-VAE — todos a la misma K para comparación justa.",
+      title: t("pages:overview.pillars.model_title"),
+      tag: t("pages:overview.pillars.lever_label", { idx: 3 }),
+      body: t("pages:overview.pillars.model_body"),
       icon: "mod",
     },
   ];
@@ -805,10 +770,10 @@ function PillarsTriptych() {
     <section className="mt-12">
       <div className="mb-4">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--color-accent)" }}>
-          Tres palancas
+          {t("pages:overview.pillars.tag")}
         </span>
         <h2 className="text-xl md:text-2xl font-semibold tracking-tight mt-1" style={{ color: "var(--color-fg)" }}>
-          Cualquier resultado tópico es atribuible a estas tres palancas
+          {t("pages:overview.pillars.title")}
         </h2>
       </div>
       <div className="grid sm:grid-cols-3 gap-4">
@@ -899,29 +864,30 @@ function PillarIcon({ kind }: { kind: "doc" | "tok" | "mod" }) {
    =======================================================================*/
 
 function MethodCoverage() {
+  const { t } = useTranslation(["pages"]);
   const groups = [
     {
-      title: "LDA-family · 9 variants",
+      title: t("pages:overview.coverage.lda_family"),
       color: "rgba(56,189,248,1)",
       items: ["LDA (canonical)", "gensim_vb", "gensim_multicore", "sklearn_online", "sklearn_sparse", "tomotopy_lda", "tomotopy_hdp", "tomotopy_ctm", "dmr_lda_hidsag"],
     },
     {
-      title: "Neural topic · 2 variants",
+      title: t("pages:overview.coverage.neural_topic"),
       color: "rgba(170,60,200,1)",
       items: ["ProdLDA (Pyro)", "ETM (low-rank ρα^T)"],
     },
     {
-      title: "Deep representations · 5",
+      title: t("pages:overview.coverage.deep_repr"),
       color: "rgba(40,160,80,1)",
       items: ["CAE-1D (K∈{4,6,8,10,12,16,32})", "CAE-2D (K∈{4,8,16,32})", "CAE-3D anchor (K∈{4,8,16,32})", "CAE-3D full-patch (K∈{4,8})", "β-VAE (β∈{1,2,4,8,16})"],
     },
     {
-      title: "K-dim baselines · 4",
+      title: t("pages:overview.coverage.k_baselines"),
       color: "rgba(214,140,40,1)",
       items: ["PCA-K", "NMF-K", "ICA-K", "dense-AE"],
     },
     {
-      title: "12-axis Addendum-B battery",
+      title: t("pages:overview.coverage.axes"),
       color: "rgba(214,39,40,1)",
       items: ["B-1 linear probe", "B-2 rate-distortion", "B-3 topic-routed + deep gate", "B-4 mutual information", "B-5 embedded baseline", "B-6 seed stability (N=7/15/30)", "B-7 USGS alignment", "B-8 cross-scene transfer", "B-9 anomaly", "B-10 spatial coherence", "B-11 endmember", "B-12 LLM tea-leaves"],
     },
@@ -930,10 +896,10 @@ function MethodCoverage() {
     <section className="mt-12">
       <div className="mb-4">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--color-accent)" }}>
-          Method coverage
+          {t("pages:overview.coverage.tag")}
         </span>
         <h2 className="text-xl md:text-2xl font-semibold tracking-tight mt-1" style={{ color: "var(--color-fg)" }}>
-          11 + 5 + 4 + 12 axes — todo evaluado en la misma escena cuando aplica
+          {t("pages:overview.coverage.title")}
         </h2>
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -975,23 +941,24 @@ function MethodCoverage() {
    =======================================================================*/
 
 function ReadingPath() {
+  const { t } = useTranslation(["pages"]);
   const steps = [
-    { tag: "Metodología", title: "Teoría", body: "El modelo PTM/LDA y por qué un píxel HSI puede tratarse como documento.", href: "/methodology/theory" },
-    { tag: "Metodología", title: "Representaciones", body: "La grilla V1..V12 × esquemas × Q + 5 deep encoders.", href: "/methodology/representations" },
-    { tag: "Metodología", title: "Pipeline", body: "Qué scripts corren localmente para producir el material que la app sirve.", href: "/methodology/pipeline" },
-    { tag: "Metodología", title: "Aplicación", body: "Cómo se aplican los tópicos a clasificación y regresión: directo / routed / embedded.", href: "/methodology/application" },
-    { tag: "Datos", title: "Bases de datos", body: "Los 21 datasets con su acceso, raíz local y archivos fuente.", href: "/databases" },
-    { tag: "Lab", title: "Workspace", body: "Flujo guiado familia → conjunto → representación → 11 tabs por escena etiquetada.", href: "/workspace" },
-    { tag: "Eval", title: "Benchmarks", body: "16 cards: multi-axis battery, Bayesian HDI, K-curve, β-collapse, neural-topic head-to-head, …", href: "/benchmarks" },
+    { tag: t("pages:overview.reading_path.step1_tag"), title: t("pages:overview.reading_path.step1_title"), body: t("pages:overview.reading_path.step1_body"), href: "/methodology/theory" },
+    { tag: t("pages:overview.reading_path.step2_tag"), title: t("pages:overview.reading_path.step2_title"), body: t("pages:overview.reading_path.step2_body"), href: "/methodology/representations" },
+    { tag: t("pages:overview.reading_path.step3_tag"), title: t("pages:overview.reading_path.step3_title"), body: t("pages:overview.reading_path.step3_body"), href: "/methodology/pipeline" },
+    { tag: t("pages:overview.reading_path.step4_tag"), title: t("pages:overview.reading_path.step4_title"), body: t("pages:overview.reading_path.step4_body"), href: "/methodology/application" },
+    { tag: t("pages:overview.reading_path.step5_tag"), title: t("pages:overview.reading_path.step5_title"), body: t("pages:overview.reading_path.step5_body"), href: "/databases" },
+    { tag: t("pages:overview.reading_path.step6_tag"), title: t("pages:overview.reading_path.step6_title"), body: t("pages:overview.reading_path.step6_body"), href: "/workspace" },
+    { tag: t("pages:overview.reading_path.step7_tag"), title: t("pages:overview.reading_path.step7_title"), body: t("pages:overview.reading_path.step7_body"), href: "/benchmarks" },
   ];
   return (
     <section className="mt-12 mb-8">
       <div className="mb-4">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--color-accent)" }}>
-          Cómo leer este sitio
+          {t("pages:overview.reading_path.tag")}
         </span>
         <h2 className="text-xl md:text-2xl font-semibold tracking-tight mt-1" style={{ color: "var(--color-fg)" }}>
-          Camino sugerido — 7 paradas
+          {t("pages:overview.reading_path.title")}
         </h2>
       </div>
       <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">

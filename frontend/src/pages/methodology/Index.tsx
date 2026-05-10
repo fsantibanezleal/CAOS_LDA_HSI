@@ -1,47 +1,21 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { PageShell } from "@/components/PageShell";
 
 const SUBPAGES = [
-  {
-    path: "/methodology/theory",
-    title: "Teoría",
-    tag: "PTM · LDA",
-    body: "El modelo probabilístico de tópicos (PTM) y por qué un píxel hiperespectral puede tratarse como un documento. LDA en notación de placas, inferencia variacional, generalización a HDP y CTM. Equations: \\theta \\sim \\mathrm{Dir}(\\alpha), \\phi \\sim \\mathrm{Dir}(\\eta), z \\sim \\mathrm{Cat}(\\theta), w \\sim \\mathrm{Cat}(\\phi_z).",
-    color: "rgba(56, 189, 248, 1)",
-    icon: "theory" as const,
-  },
-  {
-    path: "/methodology/representations",
-    title: "Representaciones",
-    tag: "V1..V12 + Deep",
-    body: "Doce recetas de wordificación (V1 banda → V12 GMM-token), tres esquemas (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Más cinco encoders profundos: CAE-1D / CAE-2D / CAE-3D anchor & full-patch / β-VAE. PCA, NMF, ICA como baselines K-dim de comparación justa.",
-    color: "rgba(170, 60, 200, 1)",
-    icon: "repr" as const,
-  },
-  {
-    path: "/methodology/pipeline",
-    title: "Pipeline",
-    tag: "57 builders",
-    body: "Diagrama de las 12 etapas del data-pipeline: fetch_* (acquire) → research_core (paths/loaders) → build_* (offline compute) → curate_for_web → manifest. Cinco builders torch (cae_1d, cae_2d, cae_3d, beta_vae, prodlda) detectan GPU automáticamente con fallback CPU.",
-    color: "rgba(40, 160, 80, 1)",
-    icon: "pipe" as const,
-  },
-  {
-    path: "/methodology/application",
-    title: "Aplicación",
-    tag: "directo · routed · embedded",
-    body: "Cómo se aplican los tópicos a tareas downstream: feature plano (theta_logistic, dominado por raw), gating (topic_routed_soft = soft mixture de especialistas por tópico, gana o iguala raw en 6/6), embedded (concat [θ | pca_K], pequeño efecto en IP). El B-3 follow-up cierra: el simplex Dirichlet importa, no la compresión K-dim.",
-    color: "rgba(214, 140, 40, 1)",
-    icon: "app" as const,
-  },
+  { path: "/methodology/theory", tagKey: "theory_tag", titleKey: "theory_title", bodyKey: "theory_body", color: "rgba(56, 189, 248, 1)", icon: "theory" as const },
+  { path: "/methodology/representations", tagKey: "repr_tag", titleKey: "repr_title", bodyKey: "repr_body", color: "rgba(170, 60, 200, 1)", icon: "repr" as const },
+  { path: "/methodology/pipeline", tagKey: "pipe_tag", titleKey: "pipe_title", bodyKey: "pipe_body", color: "rgba(40, 160, 80, 1)", icon: "pipe" as const },
+  { path: "/methodology/application", tagKey: "app_tag", titleKey: "app_title", bodyKey: "app_body", color: "rgba(214, 140, 40, 1)", icon: "app" as const },
 ];
 
 export default function MethodologyIndex() {
+  const { t } = useTranslation(["pages"]);
   return (
     <PageShell
-      title="Metodología"
-      lead="Cuatro entradas: la teoría detrás del modelo, las representaciones que el corpus acepta, el pipeline que produce los datos, y cómo los tópicos se aplican a tareas downstream."
+      title={t("pages:methodology.title")}
+      lead={t("pages:methodology.index.lead")}
     >
       <div className="grid sm:grid-cols-2 gap-4 mt-2">
         {SUBPAGES.map((p) => (
@@ -65,7 +39,7 @@ export default function MethodologyIndex() {
                 className="text-[11px] uppercase tracking-widest font-semibold"
                 style={{ color: p.color }}
               >
-                {p.tag}
+                {t(`pages:methodology.index.${p.tagKey}`)}
               </span>
               <span aria-hidden className="text-[14px]" style={{ color: p.color, opacity: 0.4 }}>→</span>
             </div>
@@ -74,13 +48,13 @@ export default function MethodologyIndex() {
               className="mt-3 text-lg font-semibold tracking-tight"
               style={{ color: "var(--color-fg)" }}
             >
-              {p.title}
+              {t(`pages:methodology.index.${p.titleKey}`)}
             </h2>
             <p
               className="mt-2 text-[13.5px] leading-relaxed"
               style={{ color: "var(--color-fg-subtle)" }}
             >
-              {p.body}
+              {t(`pages:methodology.index.${p.bodyKey}`)}
             </p>
           </Link>
         ))}
@@ -95,10 +69,7 @@ export default function MethodologyIndex() {
           color: "var(--color-fg-subtle)",
         }}
       >
-        <strong style={{ color: "var(--color-fg)" }}>Lectura sugerida</strong>:
-        Teoría → Representaciones → Pipeline → Aplicación. La hoja de
-        Bayesian Method Comparison y la página Multi-Axis Addendum B
-        de la wiki cierran el ciclo metodológico.
+        {t("pages:methodology.index.reading")}
       </div>
     </PageShell>
   );
@@ -106,16 +77,12 @@ export default function MethodologyIndex() {
 
 function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"; color: string }) {
   if (kind === "theory") {
-    // plate notation simplified
     return (
       <svg viewBox="0 0 320 80" width="100%" height="76" aria-hidden="true">
-        {/* outer plate */}
         <rect x="14" y="10" width="290" height="60" fill="none" stroke={color} strokeWidth="1.4" rx="6"/>
         <text x="294" y="64" fontSize="10" textAnchor="end" fill={color} fontFamily="ui-monospace, monospace" opacity="0.75">D</text>
-        {/* inner plate */}
         <rect x="100" y="22" width="190" height="38" fill="none" stroke={color} strokeOpacity="0.6" strokeWidth="1.2" rx="6"/>
         <text x="282" y="55" fontSize="10" textAnchor="end" fill={color} fontFamily="ui-monospace, monospace" opacity="0.55">N_d</text>
-        {/* nodes */}
         <circle cx="40" cy="40" r="11" fill="none" stroke={color} strokeWidth="1.4"/>
         <text x="40" y="44" fontSize="10" textAnchor="middle" fill={color} fontFamily="ui-monospace, monospace">α</text>
         <circle cx="80" cy="40" r="11" fill="none" stroke={color} strokeWidth="1.4"/>
@@ -126,7 +93,6 @@ function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"
         <text x="200" y="44" fontSize="10" textAnchor="middle" fill={color} fontFamily="ui-monospace, monospace">w</text>
         <circle cx="260" cy="40" r="11" fill="none" stroke={color} strokeWidth="1.4"/>
         <text x="260" y="44" fontSize="10" textAnchor="middle" fill={color} fontFamily="ui-monospace, monospace">φ</text>
-        {/* arrows */}
         <line x1="51" y1="40" x2="69" y2="40" stroke={color} strokeWidth="1.2"/>
         <line x1="91" y1="40" x2="124" y2="40" stroke={color} strokeWidth="1.2"/>
         <line x1="146" y1="40" x2="189" y2="40" stroke={color} strokeWidth="1.2"/>
@@ -135,7 +101,6 @@ function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"
     );
   }
   if (kind === "repr") {
-    // 12 recipes grid + deep encoder badge
     return (
       <svg viewBox="0 0 320 80" width="100%" height="76" aria-hidden="true">
         {Array.from({ length: 12 }, (_, i) => (
@@ -144,7 +109,6 @@ function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"
             <text x={i * 22 + 13} y="29" fontSize="8.5" textAnchor="middle" fill="currentColor" opacity="0.85" fontFamily="ui-monospace, monospace">V{i + 1}</text>
           </g>
         ))}
-        {/* deep encoder badge */}
         <rect x="4" y="46" width="110" height="22" rx="6" fill={color} fillOpacity="0.18" stroke={color} strokeWidth="1.1"/>
         <text x="59" y="61" fontSize="10" textAnchor="middle" fill={color} fontFamily="ui-monospace, monospace" fontWeight="600">CAE-1D · 2D · 3D</text>
         <rect x="120" y="46" width="80" height="22" rx="6" fill={color} fillOpacity="0.18" stroke={color} strokeWidth="1.1"/>
@@ -155,7 +119,6 @@ function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"
     );
   }
   if (kind === "pipe") {
-    // 12-stage pipeline DAG
     return (
       <svg viewBox="0 0 320 80" width="100%" height="76" aria-hidden="true">
         {[0, 60, 120, 180, 240].map((x, i) => (
@@ -176,12 +139,10 @@ function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"
       </svg>
     );
   }
-  // app
   return (
     <svg viewBox="0 0 320 80" width="100%" height="76" aria-hidden="true">
-      {/* three flow rectangles: directo, routed, embedded */}
       {[
-        { label: "directo", desc: "θ flat → logistic", x: 4 },
+        { label: "direct", desc: "θ flat → logistic", x: 4 },
         { label: "routed", desc: "P_k(y|x) gated by θ_k", x: 110 },
         { label: "embedded", desc: "[θ | PCA_K] → logistic", x: 216 },
       ].map((b, i) => (
