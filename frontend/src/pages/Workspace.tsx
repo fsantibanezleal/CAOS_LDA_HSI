@@ -33,6 +33,26 @@ const LABELLED_SCENES = new Set([
   "botswana",
 ]);
 
+const HIDSAG_SUBSETS = new Set([
+  "GEOMET",
+  "MINERAL1",
+  "MINERAL2",
+  "GEOCHEM",
+  "PORPHYRY",
+  "hidsag-geomet",
+  "hidsag-mineral1",
+  "hidsag-mineral2",
+  "hidsag-geochem",
+  "hidsag-porphyry",
+]);
+
+function toHidsagSubsetCode(id: string): string {
+  if (id.startsWith("hidsag-")) {
+    return id.replace("hidsag-", "").toUpperCase();
+  }
+  return id.toUpperCase();
+}
+
 const FAMILY_DESCRIPTIONS: Record<string, string> = {
   "labeled-spectral-image":
     "Cubos hiperespectrales con etiquetas por píxel — los benchmarks canónicos UPV/EHU. Punto de partida natural para clasificación.",
@@ -433,6 +453,7 @@ function ExploreStep({
 }) {
   const { t } = useTranslation(["pages"]);
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
+  const isHidsag = subsetId !== null && HIDSAG_SUBSETS.has(subsetId);
   const [tab, setTab] = useState<ExploreTab>("raw");
 
   const eda = useQuery({
@@ -546,7 +567,7 @@ function ExploreStep({
         </button>
       </header>
 
-      {!isLabelled && (
+      {!isLabelled && !isHidsag && (
         <div
           className="rounded-lg border p-6"
           style={{
@@ -556,14 +577,18 @@ function ExploreStep({
           }}
         >
           <p style={{ color: "var(--color-fg-subtle)" }}>
-            Esta vista cruda actualmente sólo está implementada para las 6
-            escenas etiquetadas (Indian Pines, Salinas, Salinas-A, Pavia U,
-            KSC, Botswana). Para HIDSAG / unmixing / individual-spectra los
-            paneles equivalentes (medición por estrato, abundancias por
-            endmember, espectros por material) se construyen en próximas
-            entregas.
+            This explorer currently ships rich panels for the six labelled HSI
+            scenes (Indian Pines, Salinas, Salinas-A, Pavia U, KSC, Botswana)
+            and for the five HIDSAG subsets (GEOMET, MINERAL1, MINERAL2,
+            GEOCHEM, PORPHYRY). For the remaining families (unmixing, USGS
+            individual spectra) the equivalent panels (endmember abundance
+            triangles, library reference cards) are next on the queue.
           </p>
         </div>
+      )}
+
+      {isHidsag && !isLabelled && subsetId && (
+        <HidsagExploreStep subsetCode={toHidsagSubsetCode(subsetId)} />
       )}
 
       {isLabelled && (
@@ -4280,5 +4305,400 @@ function BriefingStat({ label, value }: { label: string; value: string }) {
         {value}
       </span>
     </span>
+  );
+}
+
+/* =========================================================================
+   HIDSAG Explorer — for Etapa 4 when subset is GEOMET/MINERAL{1,2}/
+   GEOCHEM/PORPHYRY. Replaces the previous empty-state placeholder with
+   a multi-card panel showing:
+     - subset briefing (samples, measurements, modalities, top targets)
+     - geochemistry targets table (mean ± std per variable)
+     - mean spectra per measurement type (overlaid lines per modality)
+     - regression-method ranking on macro R² (raw_ridge vs theta_*)
+     - correlation heatmap between targets
+   =======================================================================*/
+
+function HidsagExploreStep({ subsetCode }: { subsetCode: string }) {
+  const eda = useQuery({
+    queryKey: ["hidsag-eda", subsetCode],
+    queryFn: () => api.edaHidsag(subsetCode),
+    staleTime: 5 * 60_000,
+  });
+  const methods = useQuery({
+    queryKey: ["hidsag-methods", subsetCode],
+    queryFn: () => api.hidsagMethodStatistics(subsetCode),
+    staleTime: 5 * 60_000,
+  });
+
+  return (
+    <div className="space-y-6">
+      <HidsagBriefingCard eda={eda.data ?? null} methods={methods.data ?? null} subsetCode={subsetCode} />
+      <div className="grid lg:grid-cols-2 gap-5">
+        <HidsagTargetsCard eda={eda.data ?? null} />
+        <HidsagModalitySpectraCard eda={eda.data ?? null} />
+      </div>
+      <HidsagMethodRankingCard methods={methods.data ?? null} />
+      <HidsagCorrelationCard eda={eda.data ?? null} />
+    </div>
+  );
+}
+
+function HidsagBriefingCard({
+  eda,
+  methods,
+  subsetCode,
+}: {
+  eda: import("@/api/client").HidsagEda | null;
+  methods: import("@/api/client").HidsagMethodStatistics | null;
+  subsetCode: string;
+}) {
+  return (
+    <div
+      className="rounded-xl border p-4 relative overflow-hidden"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 right-0 h-1"
+        style={{ background: "linear-gradient(90deg, rgba(214,140,40,1) 0%, rgba(214,39,40,1) 100%)" }}
+      />
+      <div className="flex items-baseline gap-3 flex-wrap mt-1 mb-2">
+        <h3 className="text-lg font-semibold tracking-tight" style={{ color: "var(--color-fg)" }}>
+          HIDSAG · {subsetCode}
+        </h3>
+        <span className="text-[10.5px] uppercase tracking-widest font-medium" style={{ color: "var(--color-fg-faint)" }}>
+          Family D · geochemistry regression
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12.5px]" style={{ color: "var(--color-fg-subtle)" }}>
+        <BriefingStat label="samples" value={eda ? String(eda.sample_count) : "…"} />
+        <BriefingStat label="measurements" value={eda ? String(eda.measurement_count_total) : "…"} />
+        <BriefingStat label="targets" value={eda ? String(eda.numeric_variable_names.length) : "…"} />
+        <BriefingStat label="methods" value={methods?.regression ? String(Object.keys(methods.regression.method_aggregates).length) : "…"} />
+        {eda?.modality_band_counts ? (
+          <BriefingStat
+            label="bands"
+            value={Object.entries(eda.modality_band_counts)
+              .map(([k, v]) => `${k}=${v}`)
+              .join(" · ")}
+          />
+        ) : null}
+      </div>
+      {eda?.dominant_targets_by_mean?.length ? (
+        <div className="mt-3">
+          <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: "var(--color-fg-faint)" }}>
+            Top geochemistry targets
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {eda.dominant_targets_by_mean.slice(0, 8).map((tt) => (
+              <span
+                key={tt.name}
+                className="inline-flex items-baseline gap-1 rounded px-2 py-0.5 text-[11px] font-mono"
+                style={{ backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" }}
+              >
+                {tt.name}
+                <span className="opacity-70 text-[10px]">μ={tt.mean.toFixed(2)} ± {tt.std.toFixed(2)}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+  if (!eda) {
+    return (
+      <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
+        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>Loading targets…</p>
+      </div>
+    );
+  }
+  const rows = eda.numeric_variable_names.map((name) => ({
+    name,
+    stats: eda.numeric_variables[name],
+  }));
+  return (
+    <div
+      className="rounded-lg border p-4"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
+        Geochemistry targets — mean ± std
+      </h4>
+      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
+        Continuous geochemistry variables measured per HIDSAG sample. {eda.numeric_variable_names.length} targets shown with their range and sample coverage.
+      </p>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
+          <thead>
+            <tr style={{ color: "var(--color-fg-faint)" }}>
+              <th className="text-left font-mono text-[11px] pb-2 pr-3">target</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">mean</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">std</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">min</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">max</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">n</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.slice(0, 15).map((row) => {
+              const s = row.stats;
+              return (
+                <tr key={row.name} style={{ borderTop: "1px solid var(--color-border)" }}>
+                  <td className="py-1.5 pr-3 font-mono">{row.name}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.mean.toFixed(3) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.std.toFixed(3) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.min.toFixed(3) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.max.toFixed(3) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.n_finite : "—"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {rows.length > 15 ? (
+          <p className="mt-2 text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
+            +{rows.length - 15} more targets
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+  if (!eda) {
+    return (
+      <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
+        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>Loading mean spectra…</p>
+      </div>
+    );
+  }
+  const wl = eda.spectrum_axis?.wavelength_nm ?? [];
+  const meanByMeas = eda.mean_spectrum_by_measurement ?? {};
+  const entries = Object.entries(meanByMeas).slice(0, 6);
+
+  const W = 520;
+  const H = 200;
+  const padL = 48;
+  const padR = 12;
+  const padT = 10;
+  const padB = 28;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const [, v] of entries) {
+    for (const y of v.mean ?? []) {
+      if (y < lo) lo = y;
+      if (y > hi) hi = y;
+    }
+  }
+  const wlLo = wl[0] ?? 400;
+  const wlHi = wl[wl.length - 1] ?? 2500;
+
+  const palette = ["#0ea5e9", "#22c55e", "#a855f7", "#f59e0b", "#ef4444", "#06b6d4"];
+
+  return (
+    <div
+      className="rounded-lg border p-4"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
+        Mean spectra per measurement type
+      </h4>
+      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
+        Average spectral signature per HIDSAG measurement modality (typical VNIR low/high, SWIR low). Used to validate stratification + bad-band heuristics.
+      </p>
+      {entries.length ? (
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
+          {[0, 0.25, 0.5, 0.75, 1].map((g) => (
+            <line key={g} x1={padL} y1={padT + g * innerH} x2={padL + innerW} y2={padT + g * innerH} stroke="currentColor" strokeOpacity={g === 0 || g === 1 ? 0.25 : 0.07} strokeWidth="0.6" />
+          ))}
+          {[wlLo, (wlLo + wlHi) / 2, wlHi].map((wlv) => {
+            const x = padL + ((wlv - wlLo) / (wlHi - wlLo)) * innerW;
+            return (
+              <text key={wlv} x={x} y={H - 8} fontSize="10" textAnchor="middle" fill="currentColor" opacity={0.55} fontFamily="ui-monospace, monospace">
+                {wlv.toFixed(0)} nm
+              </text>
+            );
+          })}
+          {entries.map(([name, v], i) => {
+            if (!v.mean?.length || v.mean.length !== wl.length) return null;
+            const path = v.mean
+              .map((y, j) => {
+                const x = padL + ((wl[j]! - wlLo) / (wlHi - wlLo)) * innerW;
+                const yy = padT + innerH - ((y - lo) / (hi - lo || 1)) * innerH;
+                return `${j === 0 ? "M" : "L"}${x.toFixed(1)},${yy.toFixed(1)}`;
+              })
+              .join(" ");
+            return <path key={name} d={path} fill="none" stroke={palette[i % palette.length]} strokeWidth="1.4" strokeOpacity="0.95" />;
+          })}
+        </svg>
+      ) : (
+        <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>No mean-spectra available.</p>
+      )}
+      {entries.length ? (
+        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
+          {entries.map(([name, v], i) => (
+            <span key={name} className="inline-flex items-center gap-1.5" style={{ color: "var(--color-fg-faint)" }}>
+              <span aria-hidden className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: palette[i % palette.length] }} />
+              {name}
+              <span className="opacity-65">(n={v.n})</span>
+            </span>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function HidsagMethodRankingCard({
+  methods,
+}: {
+  methods: import("@/api/client").HidsagMethodStatistics | null;
+}) {
+  if (!methods?.regression) {
+    return (
+      <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
+        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>Loading regression methods…</p>
+      </div>
+    );
+  }
+  const reg = methods.regression;
+  const ranking = reg.ranking ?? Object.entries(reg.method_aggregates).map(([method, agg], i) => ({ method, mean: agg.r2_distribution?.mean ?? 0, rank: i + 1 }));
+  return (
+    <div
+      className="rounded-lg border p-4"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
+        Regression methods — macro R² ranking
+      </h4>
+      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
+        Five methods compared on 5-fold per-target R²: raw_ridge_regression, pca_ridge_regression, pls_regression, region_topic_mixture_linear_regression, topic_routed_linear_regression. Higher is better.
+      </p>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
+          <thead>
+            <tr style={{ color: "var(--color-fg-faint)" }}>
+              <th className="text-left font-mono text-[11px] pb-2 pr-3">rank</th>
+              <th className="text-left font-mono text-[11px] pb-2 pr-3">method</th>
+              <th className="text-right font-mono text-[11px] pb-2 pr-3">mean R²</th>
+              <th className="text-left font-mono text-[11px] pb-2 pr-3">bar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ranking.map((row) => {
+              const agg = reg.method_aggregates[row.method];
+              const norm = Math.max(0, Math.min(1, (row.mean + 0.5) / 1.5));
+              return (
+                <tr key={row.method} style={{ borderTop: "1px solid var(--color-border)" }}>
+                  <td className="py-1.5 pr-3 font-mono">{row.rank}</td>
+                  <td className="py-1.5 pr-3 font-mono">{row.method}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">
+                    {row.mean.toFixed(3)}
+                    {agg ? <span className="opacity-70 ml-1 text-[10.5px]">±{(agg.r2_distribution?.std ?? 0).toFixed(3)}</span> : null}
+                  </td>
+                  <td className="py-1.5 pr-3 w-[180px]">
+                    <div className="w-full h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>
+                      <div className="h-2 rounded" style={{ width: `${norm * 100}%`, backgroundColor: "var(--color-accent)" }} />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+  if (!eda || !eda.correlation_pearson) {
+    return null;
+  }
+  const names = eda.numeric_variable_names.slice(0, 12);
+  const mat = eda.correlation_pearson;
+  const N = Math.min(names.length, 12);
+  const cell = 26;
+  const labelW = 100;
+  const W = labelW + N * cell + 16;
+  const H = labelW + N * cell + 16;
+
+  const colour = (v: number) => {
+    const x = Math.max(-1, Math.min(1, v));
+    if (x >= 0) {
+      const t = x;
+      return `rgba(31, 119, 180, ${0.15 + 0.75 * t})`;
+    }
+    const t = -x;
+    return `rgba(214, 39, 40, ${0.15 + 0.75 * t})`;
+  };
+
+  return (
+    <div
+      className="rounded-lg border p-4"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
+        Pearson correlation between geochemistry targets
+      </h4>
+      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
+        Blue = positive correlation, red = negative. First {N} targets shown. Strong off-diagonal pairs (|ρ| ≥ 0.5) indicate redundancy / co-located mineralisation.
+      </p>
+      <div className="overflow-x-auto">
+        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 720 }}>
+          {names.map((n, j) => (
+            <text key={`col-${n}`} x={labelW + j * cell + cell / 2} y={labelW - 4} fontSize="9.5" textAnchor="end" transform={`rotate(-50 ${labelW + j * cell + cell / 2} ${labelW - 4})`} fill="currentColor" opacity={0.7} fontFamily="ui-monospace, monospace">
+              {n}
+            </text>
+          ))}
+          {names.map((n, i) => (
+            <text key={`row-${n}`} x={labelW - 4} y={labelW + i * cell + cell / 2 + 4} fontSize="9.5" textAnchor="end" fill="currentColor" opacity={0.7} fontFamily="ui-monospace, monospace">
+              {n}
+            </text>
+          ))}
+          {names.map((_, i) =>
+            names.map((__, j) => {
+              const v = mat[i]?.[j] ?? 0;
+              return (
+                <g key={`${i}-${j}`}>
+                  <rect x={labelW + j * cell} y={labelW + i * cell} width={cell - 1} height={cell - 1} fill={colour(v)} />
+                  <text x={labelW + j * cell + cell / 2} y={labelW + i * cell + cell / 2 + 3} fontSize="8.5" textAnchor="middle" fill={Math.abs(v) > 0.45 ? "white" : "currentColor"} opacity={Math.abs(v) > 0.45 ? 1 : 0.65}>
+                    {v.toFixed(1)}
+                  </text>
+                </g>
+              );
+            }),
+          )}
+        </svg>
+      </div>
+    </div>
   );
 }
