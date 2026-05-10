@@ -189,6 +189,7 @@
       "routed": "Routed · ranking",
       "raster": "Mapa espacial",
       "embed3d": "Embedding 3D · θ-PCA",
+      "repfit": "Fit de representación · 3D",
       "stability": "Estabilidad · 7-seed",
       "deep": "Deep latents",
       "usgs": "USGS · librería v7",
