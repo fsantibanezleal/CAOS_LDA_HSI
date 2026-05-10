@@ -189,6 +189,7 @@
       "routed": "Routed · ranking",
       "raster": "Spatial map",
       "embed3d": "Embedding 3D · θ-PCA",
+      "repfit": "Representation fit · 3D",
       "stability": "Stability · 7-seed",
       "deep": "Deep latents",
       "usgs": "USGS · library v7",
