@@ -367,6 +367,18 @@ export const api = {
     request<EndmemberBaseline>(
       `/api/endmember-baseline/${encodeURIComponent(sceneId)}`,
     ),
+  interpretabilityTopicCards: (sceneId: string) =>
+    request<TopicCardsFile>(
+      `/generated/interpretability/${encodeURIComponent(sceneId)}/topic_cards.json`,
+    ),
+  interpretabilityBandCards: (sceneId: string) =>
+    request<BandCardsFile>(
+      `/generated/interpretability/${encodeURIComponent(sceneId)}/band_cards.json`,
+    ),
+  interpretabilityDocumentCards: (sceneId: string) =>
+    request<DocumentCardsFile>(
+      `/generated/interpretability/${encodeURIComponent(sceneId)}/document_cards.json`,
+    ),
   topicAnomaly: (sceneId: string) =>
     request<TopicAnomaly>(
       `/api/topic-anomaly/${encodeURIComponent(sceneId)}`,
@@ -764,6 +776,47 @@ export type TopicSpatialContinuous = {
   }[];
   aggregated_morans_I_mean_over_topics: number;
   aggregated_gearys_C_mean_over_topics: number;
+};
+
+export type TopicCard = {
+  topic_k: number;
+  peak_wavelength_nm: number;
+  peak_value: number;
+  fwhm_nm: number;
+  p_label_given_topic_top3: { label_id: number; name: string; p: number }[];
+};
+export type TopicCardsFile = {
+  scene_id: string;
+  K: number;
+  topic_cards: TopicCard[];
+};
+
+export type BandCard = {
+  band_index: number;
+  wavelength_nm: number;
+  fisher_ratio: number;
+  f_stat: number;
+  p_value: number;
+  mutual_info_vs_label: number;
+};
+export type BandCardsFile = {
+  scene_id: string;
+  n_bands: number;
+  band_cards: BandCard[];
+};
+
+export type DocumentCard = {
+  doc_id: string;
+  topic_k_dominant: number;
+  theta_full: number[];
+  theta_k_at_dominant: number;
+  label_id: number;
+  label_name: string;
+};
+export type DocumentCardsFile = {
+  scene_id: string;
+  n_documents: number;
+  document_cards: DocumentCard[];
 };
 
 export type EndmemberBaseline = {
