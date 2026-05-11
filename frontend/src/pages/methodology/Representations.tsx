@@ -1,374 +1,590 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Figure } from "@/components/Figure";
 import { Equation } from "@/components/Equation";
+import { Figure } from "@/components/Figure";
 import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
+import { cn } from "@/lib/cn";
 
-type Recipe = {
+type MethodFamily = "topic" | "neural-topic" | "compression" | "deep" | "unmixing";
+
+type MethodEntry = {
   id: string;
-  name: string;
-  token: string;
-  vocabSize: string;
-  oneLine: string;
-  bullets: string[];
+  family: MethodFamily;
+  label: string;
+  tag: string;
+  theory: { equations: string[]; body: string };
+  principles: string[];
+  hypothesis: string;
+  findings: string;
 };
 
-const RECIPES: Recipe[] = [
-  {
-    id: "V1",
-    name: "Wavelength-as-word",
-    token: "(band l)",
-    vocabSize: "B",
-    oneLine: "La identidad de la banda es la palabra; la cantidad de tokens por banda es la intensidad cuantizada.",
-    bullets: [
-      "Más simple y la receta canónica del paper Procemin / A39.",
-      "Preserva identidad de longitud de onda.",
-      "Es densa: cada documento tiene B · ⟨q⟩ tokens.",
-    ],
-  },
-  {
-    id: "V2",
-    name: "Intensity-as-word",
-    token: "(intensity_bin q)",
-    vocabSize: "Q",
-    oneLine: "La identidad del bin de intensidad es la palabra. El espectro pierde su orientación en bandas.",
-    bullets: [
-      "Vocabulario diminuto.",
-      "Robusta a permutaciones de bandas.",
-      "Útil sólo como control de sensibilidad.",
-    ],
-  },
-  {
-    id: "V3",
-    name: "Concatenated spectra",
-    token: "(spectrum_id, band)",
-    vocabSize: "S · B",
-    oneLine: "Cada espectro mantiene identidad propia. Útil para corpus pequeños y reproducibles.",
-    bullets: [
-      "Preserva variabilidad inter-espectro.",
-      "Vocabulario crece con el corpus.",
-      "Receta fundacional del paper A39 (DB1).",
-    ],
-  },
-  {
-    id: "V4",
-    name: "Derivative-bin",
-    token: "(band, q(d))",
-    vocabSize: "B · Q",
-    oneLine: "La derivada banda-a-banda cuantizada captura dirección-de-cambio.",
-    bullets: [
-      "Robusta a deriva de brillo per-sample.",
-      "Útil para red-edge, suelos, MSI mal calibrada.",
-      "Implementada en build_wordifications_v4plus.py.",
-    ],
-  },
-  {
-    id: "V5",
-    name: "Second-derivative bin",
-    token: "(band, q(d²))",
-    vocabSize: "B · Q",
-    oneLine: "La segunda derivada resalta picos y valles independientemente de pendiente.",
-    bullets: [
-      "Buena para absorción estrecha.",
-      "Pareja natural con V4.",
-    ],
-  },
-  {
-    id: "V6",
-    name: "Wavelet-coefficient bin",
-    token: "(coef_j, q(|c|))",
-    vocabSize: "J · Q",
-    oneLine: "Daubechies-4 nivel 4: descomposición multi-resolución cuantizada.",
-    bullets: [
-      "Captura envoltura ancha + absorción local simultáneamente.",
-      "Buena para minerales con estructura mixta.",
-    ],
-  },
-  {
-    id: "V7",
-    name: "Absorption-feature triplet",
-    token: "(centroid_bucket, depth_bin, area_bin)",
-    vocabSize: "8 · Q²",
-    oneLine: "Hull cóncavo (Clark & Roush 1984) → tripletes (centroide, profundidad, área) por feature.",
-    bullets: [
-      "Físicamente interpretable.",
-      "Convex-hull stack monotónico propio (pysptools.spectro es frágil).",
-      "Ideal para identificación mineral.",
-    ],
-  },
-  {
-    id: "V8",
-    name: "Endmember-fraction bin",
-    token: "(endmember_k, q(α_k))",
-    vocabSize: "K_em · Q",
-    oneLine: "Base de K endmembers (NFINDR) + NNLS unmixing → abundancia por endmember cuantizada.",
-    bullets: [
-      "Receta más compacta del catálogo.",
-      "Vocabulario fijo independiente de las bandas.",
-      "Tópicos LDA expresados en la misma base que el unmixing.",
-    ],
-  },
-  {
-    id: "V9",
-    name: "Region token (Felzenszwalb)",
-    token: "(region_id, sam_bin)",
-    vocabSize: "≈ #regions · Q",
-    oneLine: "Felzenszwalb segmenta la escena; el token es (región, distancia SAM al centroide).",
-    bullets: [
-      "Documento = región (no píxel).",
-      "Coherencia espacial nativa.",
-    ],
-  },
-  {
-    id: "V10",
-    name: "Band-group VNIR / SWIR-1 / SWIR-2",
-    token: "(group_id, q(mean))",
-    vocabSize: "3 · Q",
-    oneLine: "El espectro se reduce a tres regiones espectrales gruesas; receta deliberadamente coarse.",
-    bullets: [
-      "Útil como baseline / smoke test.",
-      "Pavia U colapsa a un solo bucket porque su rango es 430–860 nm (sólo VNIR).",
-    ],
-  },
-  {
-    id: "V11",
-    name: "Codebook VQ (nanopq)",
-    token: "(subvector_j, code)",
-    vocabSize: "M · Q",
-    oneLine: "Product Quantisation (Jegou-Douze-Schmid 2011): k-means por sub-vector.",
-    bullets: [
-      "Representación discreta aprendida.",
-      "Adapta el alfabeto al manifold del corpus.",
-    ],
-  },
-  {
-    id: "V12",
-    name: "GMM token",
-    token: "(band, gmm_component)",
-    vocabSize: "B · Q",
-    oneLine: "GaussianMixture(Q) por banda; soft binning de intensidades.",
-    bullets: [
-      "Alternativa data-driven a uniform / quantile / Lloyd-Max.",
-      "Vocabulario denso comparable a V1.",
-    ],
-  },
-];
+const FAMILY_LABEL: Record<MethodFamily, string> = {
+  topic: "Topic models · classical",
+  "neural-topic": "Topic models · neural",
+  compression: "K-dim compression baselines",
+  deep: "Deep representations",
+  unmixing: "Linear unmixing",
+};
 
-const QUANT_SCHEMES = [
+const FAMILY_COLOR: Record<MethodFamily, string> = {
+  topic: "rgba(40, 160, 80, 1)",
+  "neural-topic": "rgba(34, 197, 94, 1)",
+  compression: "rgba(56, 189, 248, 1)",
+  deep: "rgba(170, 60, 200, 1)",
+  unmixing: "rgba(214, 140, 40, 1)",
+};
+
+const METHODS: MethodEntry[] = [
   {
-    id: "uniform",
-    name: "Uniform",
-    desc: "Bins equiespaciados sobre el rango [min, max] del espectro normalizado.",
+    id: "lda",
+    family: "topic",
+    label: "LDA · online VB",
+    tag: "Blei-Ng-Jordan 2003 · sklearn online",
+    theory: {
+      equations: [
+        "\\theta_d \\sim \\text{Dir}(\\alpha)",
+        "z_{d,n} \\sim \\text{Mult}(\\theta_d)",
+        "w_{d,n} \\sim \\text{Mult}(\\phi_{z_{d,n}})",
+      ],
+      body: "Latent Dirichlet Allocation modela cada documento como una mezcla θ_d de K tópicos. Cada token w_{d,n} se genera eligiendo primero un tópico z_{d,n} con probabilidad θ_d, luego una palabra con probabilidad φ_{z_{d,n}}. La inferencia variacional online (Hoffman-Blei-Bach 2010) usa mini-batches y stochastic VI.",
+    },
+    principles: [
+      "K se elige a priori (K = n_classes por convención en este proyecto).",
+      "Priors canónicos del paper original Procemin/A39: α = 0.45, η = 0.2.",
+      "Recipe canónica V1 (band-frequency, banda como palabra) con Q ∈ {8, 16, 32}.",
+    ],
+    hypothesis: "Si una imagen hiperespectral es un corpus de píxeles-como-documentos, los tópicos discretos descubiertos deberían alinearse con las clases agronómicas/minerales etiquetadas.",
+    findings: "Wins ARI 4/6 escenas (Indian Pines, Salinas, Salinas-A, Pavia U) vs ProdLDA y ETM head-to-head; pierde 1/6 en KSC donde colapsa a ARI≈0; pierde 1/6 en Botswana vs ETM. Coherencia c_v 0/6 (siempre worst). σ ≤ 0.03 ARI sobre N=5 seeds — extremadamente estable.",
   },
   {
-    id: "quantile",
-    name: "Quantile",
-    desc: "Bins equiprobables: cada bin contiene el mismo número de muestras.",
+    id: "lda_tomo",
+    family: "topic",
+    label: "LDA · tomotopy (collapsed Gibbs)",
+    tag: "Griffiths-Steyvers 2004 · C++ Gibbs",
+    theory: {
+      equations: [
+        "p(z_i = k \\mid z_{-i}, w) \\propto \\frac{n^{(d)}_{k,-i} + \\alpha}{\\sum_{k'} n^{(d)}_{k',-i} + K\\alpha} \\cdot \\frac{n^{(w)}_{k,-i} + \\eta}{\\sum_{w'} n^{(w')}_{k,-i} + V\\eta}",
+      ],
+      body: "Colapsado: integra φ y θ analíticamente, deja sólo las asignaciones discretas z como variables de Gibbs. Iteración i: re-muestrea z_i condicional al resto. Más lento (10× online VB) pero suele encontrar mejores máximos.",
+    },
+    principles: [
+      "Sin variational gap — la distribución del sampler converge a la posterior real.",
+      "Burn-in + N iteraciones efectivas; per-document log-likelihood como diagnóstico.",
+      "Implementación C++ vía tomotopy → 50× más rápido que pgmpy puro.",
+    ],
+    hypothesis: "Mejor estimador de φ debería traducirse a tópicos más semánticamente coherentes (c_v más alto).",
+    findings: "Wins coherencia c_v en 4/6 escenas vs LDA-online. Tradeoff coherencia-vs-ARI: tomotopy es bueno c_v, pero ARI vs label se mantiene similar. Útil cuando la prioridad es interpretabilidad.",
   },
   {
-    id: "lloyd_max",
-    name: "Lloyd-Max",
-    desc: "Bins óptimos en MSE para la distribución empírica del espectro.",
+    id: "lda_sparse",
+    family: "topic",
+    label: "LDA · sparse VB",
+    tag: "α = 0.05 (vs canonical 0.45)",
+    theory: {
+      equations: [
+        "\\theta_d \\sim \\text{Dir}(\\alpha)\\quad \\text{con } \\alpha \\ll 1",
+      ],
+      body: "Igual a LDA online pero con α = 0.05 (modo de la Dirichlet hacia vertices del simplex). θ_d resulta peaked: cada documento se concentra en pocos tópicos.",
+    },
+    principles: [
+      "Sparsity prior estricto: documentos con sólo 1-3 tópicos activos.",
+      "Útil cuando las clases son disjuntas (las clases agronómicas no se mezclan dentro de un píxel).",
+      "Perplexity típicamente peor — pero mejor coincidencia con etiquetas categóricas.",
+    ],
+    hypothesis: "Sparsity más alta debería mejorar ARI vs label (cada documento → un tópico dominante claro).",
+    findings: "Perplexity peor que LDA canonical, ARI marginalmente peor en la mayoría de escenas. Confirma que para datos HSI los píxeles no son mono-tópico.",
+  },
+  {
+    id: "hdp",
+    family: "topic",
+    label: "HDP · tomotopy",
+    tag: "Hierarchical Dirichlet Process · K aprendido",
+    theory: {
+      equations: [
+        "G_0 \\sim \\text{DP}(\\gamma, H)",
+        "G_d \\sim \\text{DP}(\\alpha_0, G_0)",
+        "\\theta_{d,n} \\sim G_d, \\quad w_{d,n} \\sim F(\\theta_{d,n})",
+      ],
+      body: "HDP (Teh-Jordan-Beal-Blei 2006) es la extensión no-paramétrica de LDA: el número de tópicos K se aprende del corpus vía stick-breaking. Cada tópico se comparte (cómpartmente) entre documentos vía un proceso de Dirichlet jerárquico.",
+    },
+    principles: [
+      "K no se fija a priori — el modelo decide cuántos tópicos activos hay.",
+      "Truncación T (cap superior) para inferencia tractable; T = 50 típico.",
+      "Útil cuando no hay prior sobre n_classes (escenas no etiquetadas).",
+    ],
+    hypothesis: "Para escenas con número de clases desconocido, HDP debería identificar automáticamente el K efectivo y converger a tópicos coherentes.",
+    findings: "Sobre las 6 escenas etiquetadas, HDP típicamente activa entre 8-15 tópicos efectivos (n_classes ∈ {9, 13, 16}). c_v comparable a LDA. ARI vs label competitivo con LDA cuando el K aprendido se acerca al verdadero.",
+  },
+  {
+    id: "ctm",
+    family: "topic",
+    label: "CTM · tomotopy",
+    tag: "Correlated Topic Model · logistic-normal",
+    theory: {
+      equations: [
+        "\\eta_d \\sim \\mathcal{N}(\\mu, \\Sigma)",
+        "\\theta_d = \\text{softmax}(\\eta_d)",
+        "w_{d,n} \\sim \\text{Mult}(\\phi_{z_{d,n}}),\\ z_{d,n} \\sim \\text{Mult}(\\theta_d)",
+      ],
+      body: "Blei-Lafferty 2007. Reemplaza el prior Dirichlet por una logistic-normal: η_d ∈ ℝ^{K-1} con covarianza Σ no diagonal. La softmax convierte η a θ. Σ codifica correlaciones entre tópicos.",
+    },
+    principles: [
+      "Relaja la independencia entre tópicos que LDA impone vía Dirichlet.",
+      "Inferencia más cara (logistic-normal no es conjugada con multinomial).",
+      "Σ es un parámetro libre adicional con K(K-1)/2 entradas.",
+    ],
+    hypothesis: "Para HSI, tópicos espectralmente vecinos pueden correlacionarse (e.g. vegetación temprana y madura comparten bandas). CTM debería capturarlo.",
+    findings: "Tiempo de cómputo 5-10× LDA. ARI ganancia marginal (<0.02). Σ off-diagonal no es estructuralmente informativa en los corpus testeados.",
+  },
+  {
+    id: "prodlda",
+    family: "neural-topic",
+    label: "ProdLDA · Pyro",
+    tag: "Srivastava-Sutton 2017 · amortizado",
+    theory: {
+      equations: [
+        "q_\\phi(z \\mid w) = \\text{softmax}(\\text{MLP}_\\phi(w))",
+        "p_\\theta(w \\mid z) = \\text{softmax}(\\beta^\\top z)",
+        "\\mathcal{L} = \\mathbb{E}_q[\\log p_\\theta(w \\mid z)] - \\text{KL}(q_\\phi \\| p)",
+      ],
+      body: "Neural topic model: encoder MLP amortiza la inferencia de z, decoder es la multinomial softmax sobre β = K×V. ELBO con KL Dirichlet vía Laplace approximation.",
+    },
+    principles: [
+      "Encoder + decoder neurales — entrenamiento por gradiente sobre todo el corpus.",
+      "Topic Coherence c_v mejor que LDA típicamente (decoder aprende relaciones banda).",
+      "Sensible a init: σ(ARI) ≈ 0.03 a través de N=5 seeds.",
+    ],
+    hypothesis: "Encoder amortizado debería igualar LDA en ARI y mejorar c_v gracias al decoder neural.",
+    findings: "Wins c_v 6/6 escenas vs LDA y ETM. Pierde ARI 4/6 vs LDA (5/6 vs ETM). Confirma tradeoff explícito: coherence vs discriminability. Operational rule: ProdLDA para interpretabilidad, LDA para clustering.",
+  },
+  {
+    id: "etm",
+    family: "neural-topic",
+    label: "ETM · Embedded Topic Model",
+    tag: "Dieng-Ruiz-Blei 2020 · low-rank decoder",
+    theory: {
+      equations: [
+        "\\beta_k = \\rho \\cdot \\alpha_k^\\top \\in \\mathbb{R}^V",
+        "q_\\phi(\\theta \\mid w) = \\mathcal{N}(\\mu_\\phi(w), \\Sigma_\\phi(w))",
+        "p(w \\mid \\theta, \\rho, \\alpha) = \\text{softmax}(\\theta^\\top \\beta)",
+      ],
+      body: "Decoder factorizado: β = ρα^T donde ρ ∈ ℝ^{V×E} son word embeddings y α ∈ ℝ^{K×E} son topic embeddings. E ≪ V acelera y regulariza. Variational gaussian sobre θ.",
+    },
+    principles: [
+      "Decoder low-rank E ≤ 256 — captura similitud semántica entre palabras (bandas vecinas).",
+      "Word embeddings ρ son aprendidos junto con tópicos.",
+      "Mejor para vocabularios grandes; HSI tiene V ≈ 200 bandas.",
+    ],
+    hypothesis: "Embedding compartido entre palabras debería ayudar cuando hay redundancia espectral (bandas correlacionadas).",
+    findings: "ETM > ProdLDA en ARI 5/6 escenas (ProdLDA wins solo en KSC). Coherencia c_v middle: ProdLDA > ETM > LDA. ETM es el mejor compromiso ARI+c_v.",
+  },
+  {
+    id: "nmf",
+    family: "compression",
+    label: "NMF · K=8",
+    tag: "Lee-Seung 1999 · KL divergence",
+    theory: {
+      equations: [
+        "X \\approx W H, \\quad W \\geq 0,\\ H \\geq 0",
+        "D_{KL}(X \\| WH) = \\sum_{ij} X_{ij} \\log\\frac{X_{ij}}{(WH)_{ij}} - X_{ij} + (WH)_{ij}",
+      ],
+      body: "Non-negative matrix factorization. β-divergence = KL. W ∈ ℝ_+^{N×K} son scores por documento, H ∈ ℝ_+^{K×V} son basis spectra. Multiplicative update rules.",
+    },
+    principles: [
+      "Parts-based: cada espectro es suma no-negativa de K basis spectra.",
+      "Sin priors estocásticos — solución determinista (init-dependent).",
+      "Baseline K-dim directo contra LDA / PCA / AE en la misma K.",
+    ],
+    hypothesis: "Si la mezcla espectral es físicamente lineal, NMF debería recuperar endmembers comparables a NFINDR.",
+    findings: "Reconstrucción RMSE comparable a PCA en K=8. Silhouette y ARI vs label peor que PCA en 4/6 escenas — los componentes NMF son más interpretables que separables.",
+  },
+  {
+    id: "pca",
+    family: "compression",
+    label: "PCA · K=8",
+    tag: "Linear, L2-optimal",
+    theory: {
+      equations: [
+        "C = \\frac{1}{N} X^\\top X",
+        "C v_k = \\lambda_k v_k,\\quad v_k \\in \\mathbb{R}^V",
+        "z_d = V_{:K}^\\top x_d",
+      ],
+      body: "Descomposición espectral de la covarianza C ∈ ℝ^{V×V}. Los K eigenvectores top forman la base V_{:K}. La proyección z_d = V_{:K}^T x_d es L2-óptima en reconstrucción (Eckart-Young).",
+    },
+    principles: [
+      "Compresión lineal — preserva varianza máxima en K direcciones.",
+      "Reconstruction RMSE mínima en cada K (esto es su único título garantizado).",
+      "Componentes pueden ser negativos — sin interpretación física directa.",
+    ],
+    hypothesis: "Para datos HSI dominados por una sola dirección de varianza (brillo), PCA debería ser una baseline difícil de batir en MSE pero pobre en separabilidad.",
+    findings: "Wins reconstruction RMSE en TODAS las K testeadas (4, 8, 12, 16, 32). Silhouette intermedio. ARI vs label moderado. Es el L2-baseline canónico contra el cual todo deep encoder debe justificarse.",
+  },
+  {
+    id: "ica",
+    family: "compression",
+    label: "ICA · K=8 (FastICA)",
+    tag: "Hyvärinen 1999 · non-Gaussian",
+    theory: {
+      equations: [
+        "x = A s,\\quad s \\sim \\text{non-Gaussian, independent}",
+        "\\max_W |\\mathbb{E}[G(W^\\top x)] - \\mathbb{E}[G(\\nu)]|",
+      ],
+      body: "Independent Component Analysis. Asume x = As con fuentes s estadísticamente independientes (no Gaussianas). FastICA usa kurtosis / negentropy. ν ~ N(0,1) es la referencia Gaussiana.",
+    },
+    principles: [
+      "Independencia estadística > decorrelación (PCA).",
+      "Útil cuando hay fuentes físicas distinguibles (e.g. agua, vegetación, suelo).",
+      "Convergencia más lenta que PCA pero comparable en costo.",
+    ],
+    hypothesis: "Si la HSI es una mezcla de pocas fuentes físicas independientes, ICA debería recuperar dichas fuentes mejor que PCA en silhouette.",
+    findings: "Latentes comparables a PCA en ARI/NMI. Silhouette ligeramente menor en 3/6 escenas — los componentes ICA capturan estructura distinta pero no necesariamente más separable.",
+  },
+  {
+    id: "dense_ae",
+    family: "compression",
+    label: "Dense AE · K=8",
+    tag: "MLP encoder → bottleneck K → decoder",
+    theory: {
+      equations: [
+        "z = \\sigma(W_2 \\sigma(W_1 x + b_1) + b_2)",
+        "\\hat x = \\sigma(W_4 \\sigma(W_3 z + b_3) + b_4)",
+        "\\mathcal{L} = \\|x - \\hat x\\|_2^2",
+      ],
+      body: "Baseline neural lineal. Encoder MLP → bottleneck K, decoder MLP simétrico. Loss MSE. Sin convolución, sin recurrencia. Equivalente a una PCA no-lineal.",
+    },
+    principles: [
+      "Generalización no-lineal de PCA con la misma K.",
+      "Trained on GPU (cycles 59+ del proyecto).",
+      "Sin regularización adicional (sin KL, sin dropout) — comparable a PCA en degenerados.",
+    ],
+    hypothesis: "Para K bajo (4, 8), las relaciones no-lineales entre bandas deberían dar mejor reconstrucción que PCA.",
+    findings: "Reconstruction RMSE comparable a PCA (no mejor en K=8 promedio 6 escenas). Silhouette y ARI ligeramente peores que PCA — el modelo aprende lo mismo que PCA pero con más varianza de seed.",
+  },
+  {
+    id: "cae_1d",
+    family: "deep",
+    label: "CAE-1D · K=8",
+    tag: "Conv1D encoder over spectrum",
+    theory: {
+      equations: [
+        "z = \\text{Conv1D}_{\\text{enc}}(x) \\in \\mathbb{R}^K",
+        "\\hat x = \\text{ConvTranspose1D}_{\\text{dec}}(z)",
+        "\\mathcal{L} = \\|x - \\hat x\\|_2^2",
+      ],
+      body: "Convolutional AE 1D sobre el espectro. Kernel = 7 bandas adyacentes. Encoder = 3 capas Conv1D + 2 dense, bottleneck K = 8.",
+    },
+    principles: [
+      "Asume estructura local en el espectro (bandas vecinas correlacionadas).",
+      "Receptive field aumenta exponencialmente con la profundidad — captura features amplios.",
+      "Stride 2 entre capas reduce dimensión espectral progresivamente.",
+    ],
+    hypothesis: "El espectro hiperespectral tiene autocorrelación banda-a-banda. CAE-1D debe capturar features locales (bordes, picos) mejor que PCA/AE denso.",
+    findings: "Mejor estabilidad de seeds (ARI std 15-20% menor que LDA en 5/6 escenas). Silhouette igualada a PCA pero σ menor. Es la opción default de compresión deep cuando se busca estabilidad.",
+  },
+  {
+    id: "cae_2d",
+    family: "deep",
+    label: "CAE-2D · K=8 (anchor)",
+    tag: "Conv2D over spatial-spectral patches",
+    theory: {
+      equations: [
+        "x_p \\in \\mathbb{R}^{B \\times P \\times P},\\ P = 7",
+        "z = \\text{Conv2D}_{\\text{enc}}(x_p)[\\text{centre pixel}]",
+      ],
+      body: "CAE 2D sobre parches P×P×B (P=7 bandas adyacentes en 2D espacial). Encoder Conv2D + bottleneck K=8 sólo para el píxel central del parche.",
+    },
+    principles: [
+      "Captura textura espacial (no sólo el perfil espectral).",
+      "Modo anchor: solo el centro del parche contribuye al loss y al z.",
+      "Spatial neighborhood = 3.5 pixels de radio efectivo.",
+    ],
+    hypothesis: "Spatial context debería mejorar separabilidad — un píxel agrícola rodeado de píxeles agrícolas es más clasificable.",
+    findings: "A N=15 seeds: ARI vs label competitivo con CAE-1D. Mejor en escenas con texturas claras (Indian Pines), peor en mosaicos finos (Salinas-A).",
+  },
+  {
+    id: "cae_3d",
+    family: "deep",
+    label: "CAE-3D anchor · K=8",
+    tag: "Conv3D over (space × bands)",
+    theory: {
+      equations: [
+        "x_p \\in \\mathbb{R}^{B \\times P \\times P},\\ P = 7",
+        "z = \\text{Conv3D}_{\\text{enc}}(x_p)[\\text{centre}],",
+      ],
+      body: "Conv3D sobre cubos completos (dim espacial × dim espectral). Kernels 3D = (3 bandas × 3 px × 3 px). Anchor: sólo el píxel central define z.",
+    },
+    principles: [
+      "Receptive field volumétrico — captura simultáneamente vecindad espacial y espectral.",
+      "Más caro computacionalmente — entrenamiento GPU 50-120× con CUDA.",
+      "Anchor mode reduce loss noise al concentrarse en el píxel objetivo.",
+    ],
+    hypothesis: "Conv3D debería ser estrictamente mejor que CAE-2D + CAE-1D combinados — más capacidad inductiva nativa.",
+    findings: "K-curve {K=4, K=8} neutral: ΔARI K=4 = +0.011 (5/6 escenas confirman dirección); Pavia U invierte con capacidad. No es ganancia decisiva sobre CAE-1D — la capacidad volumétrica no es la palanca dominante.",
+  },
+  {
+    id: "cae_3d_full",
+    family: "deep",
+    label: "CAE-3D full · K=8",
+    tag: "Conv3D dense loss (full patch)",
+    theory: {
+      equations: [
+        "z = \\text{Conv3D}_{\\text{enc}}(x_p)",
+        "\\mathcal{L} = \\frac{1}{P^2}\\sum_{i,j} \\|x_p[:,i,j] - \\hat x_p[:,i,j]\\|_2^2",
+      ],
+      body: "Misma red que CAE-3D anchor, pero el loss penaliza todos los píxeles del parche P×P (no solo el centro). Aprovecha más señal del parche por gradiente.",
+    },
+    principles: [
+      "Loss denso (P² veces más píxeles contribuyen) reduce noise de gradient.",
+      "Embedding por píxel se calcula al rato y queda K-dim por píxel.",
+      "Trained on GPU; misma arquitectura que anchor + loss diferente.",
+    ],
+    hypothesis: "Dense loss debería dar gradients más limpios y latents más estables.",
+    findings: "Equivalente a anchor en ARI vs label en N=15 sobre 6 escenas. No es decisivamente mejor en ninguna escena. Cycle 58 confirmó K-curve idéntica entre anchor y full.",
+  },
+  {
+    id: "beta_vae",
+    family: "deep",
+    label: "β-VAE · K=8",
+    tag: "Higgins et al. 2017 · β KL term",
+    theory: {
+      equations: [
+        "q_\\phi(z \\mid x) = \\mathcal{N}(\\mu_\\phi(x), \\sigma_\\phi^2(x))",
+        "\\mathcal{L} = \\mathbb{E}_q[\\log p(x \\mid z)] - \\beta \\cdot \\text{KL}(q_\\phi \\| \\mathcal{N}(0, I))",
+      ],
+      body: "Variational AE con multiplicador β en el término KL. β = 1 ⇒ VAE estándar. β > 1 fuerza dimensiones de z a ser más independientes (desentrelazado).",
+    },
+    principles: [
+      "Latente probabilístico — z es una distribución, no un punto.",
+      "β controla el tradeoff reconstrucción vs disentanglement.",
+      "Default canónico aquí: β = 2.",
+    ],
+    hypothesis: "Latente desentrelazado debería ayudar interpretabilidad sin sacrificar mucho reconstrucción.",
+    findings: "A β = 2, comparable a CAE-1D en ARI/NMI. K-curve sweep β ∈ {1, 2, 8, 16} muestra collapse documentado a β ≥ 8 (KL → 0, sólo el prior queda). β = 2 es el sweet spot.",
+  },
+  {
+    id: "endmember",
+    family: "unmixing",
+    label: "Endmembers · NFINDR + NNLS",
+    tag: "Winter 1999 · Heinz-Chang 2001",
+    theory: {
+      equations: [
+        "E^* = \\arg\\max_{\\{e_1,\\dots,e_K\\}} |\\det[e_1 - e_0, \\dots, e_K - e_0]|",
+        "\\alpha_p = \\arg\\min_{\\alpha \\geq 0,\\ \\mathbf{1}^\\top \\alpha = 1} \\|x_p - E\\alpha\\|_2^2",
+      ],
+      body: "NFINDR (Winter 1999): K endmembers son los vértices del simplex de máximo volumen en el cubo HSI. NNLS con restricción suma-a-uno (delta = 100 penalty) infiere abundancia por píxel.",
+    },
+    principles: [
+      "Modelo lineal de mezcla — cada píxel = suma convexa de K endmembers.",
+      "Físicamente interpretable: cada endmember es un material puro candidato.",
+      "Comparado contra LDA vía topic_endmember_match: K-K cosine matrix.",
+    ],
+    hypothesis: "Si los píxeles HSI son combinaciones lineales de pocos materiales puros, los tópicos LDA deberían alinearse con endmembers.",
+    findings: "Best per-topic cosine vs endmember típicamente 0.7-0.9 (alta alineación) en escenas mineralógicas. En escenas agrícolas (no minerales), el alineamiento baja a 0.4-0.6 — confirma que LDA recupera estructura no-lineal adicional.",
   },
 ];
 
 export default function MethodologyRepresentations() {
   const { t } = useTranslation(["pages"]);
+  const [selectedId, setSelectedId] = useState<string>(METHODS[0]!.id);
+  const selected = METHODS.find((m) => m.id === selectedId) ?? METHODS[0]!;
+
   return (
     <PageShell
       title={t("pages:methodology_representations.title")}
-      lead="Cómo un cubo hiperespectral se convierte en una matriz documento-término. Hay doce recetas implementadas (V1..V12), tres esquemas de cuantización y tres niveles Q ∈ {8, 16, 32}."
+      lead="Cada método (16 totales — 6 topic family + 2 neural-topic + 4 K-dim baselines + 5 deep + 1 unmixing) tiene su propio perfil teórico, principios de diseño, hipótesis de partida, y hallazgos contra las 6 escenas etiquetadas. Pick a method to drill in."
     >
-      <Section
-        id="grid"
-        title="El espacio de configuraciones"
-        lead="Cada celda de la grilla siguiente es un corpus distinto y, por lo tanto, una solución LDA distinta. Total: 12 recetas × 3 esquemas × 3 Q = 108 configs por escena."
-      >
-        <Figure caption="El alfabeto (token) y la longitud del documento dependen de la receta. La cuantización controla cuántos niveles distintos puede emitir el espectro. Q ∈ {8, 16, 32} balancea resolución y entropía.">
+      <MethodNav methods={METHODS} selectedId={selectedId} onSelect={setSelectedId} />
+
+      <MethodDetail entry={selected} />
+
+      <Section id="recipes" title="Background · wordification recipes V1..V12">
+        <p className="mb-3 text-[14px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+          Las representaciones topic-family operan sobre un alfabeto discreto de palabras. Hay 12
+          recetas de wordification (V1..V12) × 3 esquemas de cuantización × Q ∈ {`{8, 16, 32}`} = 108
+          configs por escena. La grilla siguiente muestra el espacio. La recipe canónica es V1
+          (band-frequency, banda como palabra) con uniform Q=8.
+        </p>
+        <Figure caption="12 recipes × 9 (3 esquemas × 3 Q) = 108 configs por escena.">
           <RecipeGridSVG />
         </Figure>
-      </Section>
-
-      <Section
-        id="quantisation"
-        title="Esquemas de cuantización"
-        lead="Toda receta que cuantiza intensidades elige uno de tres esquemas. La diferencia ocurre en los extremos de la distribución."
-      >
-        <div
-          className="grid sm:grid-cols-3 gap-3 mt-2"
-          style={{ color: "var(--color-fg-subtle)" }}
-        >
-          {QUANT_SCHEMES.map((s) => (
-            <div
-              key={s.id}
-              className="rounded-md border p-4 text-sm leading-relaxed"
-              style={{
-                borderColor: "var(--color-border)",
-                backgroundColor: "var(--color-panel)",
-                boxShadow: "var(--color-shadow)",
-              }}
-            >
-              <h3
-                className="font-semibold mb-2"
-                style={{ color: "var(--color-fg)" }}
-              >
-                {s.name}
-              </h3>
-              <p>{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        id="recipes"
-        title="Las doce recetas"
-        lead="Cada receta declara qué constituye un token y un documento. La columna 'Vocabulario' indica el tamaño aproximado de V."
-      >
-        <div className="overflow-x-auto mt-2">
-          <table
-            className="min-w-full text-[14px] leading-relaxed border-collapse"
-            style={{ color: "var(--color-fg-subtle)" }}
-          >
-            <thead>
-              <tr
-                style={{
-                  borderBottom: "1px solid var(--color-border)",
-                  color: "var(--color-fg)",
-                }}
-              >
-                <th className="text-left py-2 pr-4 font-semibold">Receta</th>
-                <th className="text-left py-2 pr-4 font-semibold">Token</th>
-                <th className="text-left py-2 pr-4 font-semibold">Vocab</th>
-                <th className="text-left py-2 font-semibold">Resumen</th>
-              </tr>
-            </thead>
-            <tbody>
-              {RECIPES.map((r) => (
-                <tr
-                  key={r.id}
-                  style={{ borderBottom: "1px solid var(--color-border)" }}
-                >
-                  <td className="py-3 pr-4 align-top whitespace-nowrap">
-                    <span
-                      className="inline-block rounded-md px-2 py-0.5 text-xs font-mono mr-2"
-                      style={{
-                        backgroundColor: "var(--color-accent-soft)",
-                        color: "var(--color-accent)",
-                      }}
-                    >
-                      {r.id}
-                    </span>
-                    <span style={{ color: "var(--color-fg)" }}>{r.name}</span>
-                  </td>
-                  <td className="py-3 pr-4 align-top font-mono text-[13px]">
-                    {r.token}
-                  </td>
-                  <td className="py-3 pr-4 align-top font-mono text-[13px]">
-                    {r.vocabSize}
-                  </td>
-                  <td className="py-3 align-top">
-                    <p className="mb-2">{r.oneLine}</p>
-                    <ul className="list-disc pl-5 space-y-1 text-[13px]">
-                      {r.bullets.map((b, i) => (
-                        <li key={i}>{b}</li>
-                      ))}
-                    </ul>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Section>
-
-      <Section
-        id="document"
-        title="¿Qué cuenta como un documento?"
-        lead="El documento es la unidad sobre la que LDA estima theta. Una receta decide implícitamente el tamaño y la coherencia espacial de cada documento."
-      >
-        <p>
-          Para una receta fija, la elección de granularidad documental es la
-          segunda decisión más importante. El proyecto materializa cuatro
-          alternativas vía <code>build_groupings.py</code>:
-        </p>
-        <Figure caption="Cuatro granularidades documentales: píxel, parche fijo (5×5 / 7×7 / 15×15), región SLIC, y región Felzenszwalb. La página de Workspace permite elegir entre ellas y ver cómo cambia la estructura tópica resultante.">
-          <DocumentGranularitySVG />
-        </Figure>
-        <p>
-          La métrica <Equation tex="\text{ARI}_{\text{off-diag}}" /> entre las ocho
-          opciones (4 granularidades × 2 etiquetados) cuantifica la sensibilidad
-          de los tópicos a esta elección. En todas las escenas etiquetadas
-          observadas el valor es ~0.15: las cuatro granularidades producen
-          estructuras tópicas genuinamente distintas, no equivalentes con ruido.
-        </p>
-      </Section>
-
-      <Section
-        id="see-also"
-        title="Cómo seguir"
-      >
-        <p>
-          Cada combinación{" "}
-          <Equation tex="(\text{escena}, \text{receta}, \text{esquema}, Q)" /> está
-          servida en el endpoint{" "}
-          <code>/api/wordifications/{`{scene}/{recipe}/{scheme}/{q}`}</code>. El
-          Workspace expone esa elección como un selector explícito y muestra el
-          ajuste LDA correspondiente sin re-fittear nada en el cliente: todos
-          los <Equation tex="\theta" /> y <Equation tex="\phi" /> están precalculados.
-        </p>
       </Section>
     </PageShell>
   );
 }
 
+function MethodNav({
+  methods,
+  selectedId,
+  onSelect,
+}: {
+  methods: MethodEntry[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
+  const families: MethodFamily[] = ["topic", "neural-topic", "compression", "deep", "unmixing"];
+  return (
+    <nav
+      role="tablist"
+      aria-label="Métodos"
+      className="sticky top-14 z-20 -mx-6 px-6 py-3 mb-4 border-b"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, transparent)",
+        borderColor: "var(--color-border)",
+        backdropFilter: "blur(8px)",
+      }}
+    >
+      <div className="space-y-1.5">
+        {families.map((fam) => {
+          const inFamily = methods.filter((m) => m.family === fam);
+          if (inFamily.length === 0) return null;
+          return (
+            <div key={fam} className="flex items-baseline flex-wrap gap-2">
+              <span
+                className="text-[10px] uppercase tracking-widest font-semibold pr-2 w-44 shrink-0"
+                style={{ color: FAMILY_COLOR[fam] }}
+              >
+                {FAMILY_LABEL[fam]}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {inFamily.map((m) => {
+                  const isActive = selectedId === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={isActive}
+                      onClick={() => onSelect(m.id)}
+                      className={cn(
+                        "rounded-md border px-2.5 py-1 text-[12px] transition-all",
+                        isActive ? "font-semibold shadow-sm" : "opacity-80 hover:opacity-100",
+                      )}
+                      style={{
+                        borderColor: isActive ? FAMILY_COLOR[fam] : "var(--color-border)",
+                        backgroundColor: isActive ? "var(--color-accent-soft)" : "var(--color-panel)",
+                        color: isActive ? FAMILY_COLOR[fam] : "var(--color-fg)",
+                      }}
+                    >
+                      {m.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+function MethodDetail({ entry }: { entry: MethodEntry }) {
+  return (
+    <article
+      className="rounded-xl border p-6 mb-8 relative overflow-hidden"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <div aria-hidden className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: FAMILY_COLOR[entry.family] }} />
+      <header className="mb-4 mt-2">
+        <div className="text-[10.5px] uppercase tracking-widest font-semibold mb-1" style={{ color: FAMILY_COLOR[entry.family] }}>
+          {FAMILY_LABEL[entry.family]}
+        </div>
+        <h2 className="text-2xl font-semibold tracking-tight mb-1" style={{ color: "var(--color-fg)" }}>
+          {entry.label}
+        </h2>
+        <p className="text-[13px]" style={{ color: "var(--color-fg-faint)" }}>{entry.tag}</p>
+      </header>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        <MethodSubsection title="Theoretical formulation" accent={FAMILY_COLOR[entry.family]}>
+          {entry.theory.equations.map((eq, i) => (
+            <Equation key={i} tex={eq} block />
+          ))}
+          <p className="mt-2 text-[13.5px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+            {entry.theory.body}
+          </p>
+        </MethodSubsection>
+
+        <MethodSubsection title="Principios de diseño" accent={FAMILY_COLOR[entry.family]}>
+          <ul className="space-y-1.5 text-[13.5px] leading-relaxed list-disc pl-5" style={{ color: "var(--color-fg-subtle)" }}>
+            {entry.principles.map((p, i) => (
+              <li key={i}>{p}</li>
+            ))}
+          </ul>
+        </MethodSubsection>
+
+        <MethodSubsection title="Hipótesis de partida" accent={FAMILY_COLOR[entry.family]}>
+          <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+            {entry.hypothesis}
+          </p>
+        </MethodSubsection>
+
+        <MethodSubsection title="Hallazgos contra las 6 escenas etiquetadas" accent={FAMILY_COLOR[entry.family]}>
+          <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+            {entry.findings}
+          </p>
+        </MethodSubsection>
+      </div>
+    </article>
+  );
+}
+
+function MethodSubsection({
+  title,
+  accent,
+  children,
+}: {
+  title: string;
+  accent: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border-l-2 pl-4" style={{ borderColor: accent }}>
+      <h3 className="text-[11px] uppercase tracking-widest font-semibold mb-2" style={{ color: accent }}>
+        {title}
+      </h3>
+      {children}
+    </section>
+  );
+}
+
 function RecipeGridSVG() {
-  // 12 recipes × 3 schemes × 3 Q = 108 cells. Render as 12 rows × 9 columns.
-  const recipeIds = RECIPES.map((r) => r.id);
+  const RECIPES = [
+    "V1 band-frequency", "V2 intensity-as-word", "V3 concat-spectra", "V4 derivative-bin",
+    "V5 2nd-derivative", "V6 wavelet", "V7 absorption-triplet", "V8 endmember-fraction",
+    "V9 region-token", "V10 band-group", "V11 codebook-VQ", "V12 GMM-token",
+  ];
   const cols = ["U/8", "U/16", "U/32", "Q/8", "Q/16", "Q/32", "L/8", "L/16", "L/32"];
   const cellW = 32;
   const cellH = 22;
-  const x0 = 90;
+  const x0 = 200;
   const y0 = 28;
   return (
     <svg
-      width="430"
-      height={y0 + recipeIds.length * cellH + 14}
-      viewBox={`0 0 430 ${y0 + recipeIds.length * cellH + 14}`}
+      width="480"
+      height={y0 + RECIPES.length * cellH + 14}
+      viewBox={`0 0 480 ${y0 + RECIPES.length * cellH + 14}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="Recipe × scheme × Q grid"
       style={{ color: "var(--color-fg)" }}
     >
-      <g
-        fontFamily="ui-sans-serif, system-ui, sans-serif"
-        fontSize="10"
-        fill="currentColor"
-      >
-        {/* Column headers */}
+      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
         {cols.map((c, i) => (
-          <text
-            key={c}
-            x={x0 + i * cellW + cellW / 2}
-            y={y0 - 8}
-            textAnchor="middle"
-            opacity="0.7"
-          >
+          <text key={c} x={x0 + i * cellW + cellW / 2} y={y0 - 8} textAnchor="middle" opacity="0.7">
             {c}
           </text>
         ))}
-        {/* Recipe rows */}
-        {recipeIds.map((rid, ri) => (
-          <g key={rid}>
-            <text
-              x={x0 - 10}
-              y={y0 + ri * cellH + cellH * 0.65}
-              textAnchor="end"
-              fontFamily="ui-monospace, monospace"
-              fontSize="10.5"
-            >
-              {rid} {RECIPES[ri]?.name}
+        {RECIPES.map((label, ri) => (
+          <g key={ri}>
+            <text x={x0 - 10} y={y0 + ri * cellH + cellH * 0.65} textAnchor="end" fontFamily="ui-monospace, monospace" fontSize="10.5">
+              {label}
             </text>
             {cols.map((_, ci) => (
               <rect
@@ -384,111 +600,6 @@ function RecipeGridSVG() {
             ))}
           </g>
         ))}
-      </g>
-    </svg>
-  );
-}
-
-function DocumentGranularitySVG() {
-  return (
-    <svg
-      width="640"
-      height="220"
-      viewBox="0 0 640 220"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label="Document granularity options"
-      style={{ color: "var(--color-fg)" }}
-    >
-      <g
-        fontFamily="ui-sans-serif, system-ui, sans-serif"
-        fontSize="12"
-        fill="currentColor"
-      >
-        {/* Pixel grid */}
-        <g transform="translate(20, 30)">
-          <text x="60" y="-8" textAnchor="middle" fontWeight="600">
-            píxel
-          </text>
-          {Array.from({ length: 36 }).map((_, i) => {
-            const r = Math.floor(i / 6);
-            const c = i % 6;
-            return (
-              <rect
-                key={i}
-                x={c * 20}
-                y={r * 20}
-                width={18}
-                height={18}
-                fill="var(--color-accent)"
-                opacity={0.3 + ((r * 7 + c) % 5) * 0.08}
-              />
-            );
-          })}
-        </g>
-
-        {/* Patch */}
-        <g transform="translate(180, 30)">
-          <text x="60" y="-8" textAnchor="middle" fontWeight="600">
-            parche fijo (5×5)
-          </text>
-          {Array.from({ length: 36 }).map((_, i) => {
-            const r = Math.floor(i / 6);
-            const c = i % 6;
-            // Group into 2x2 patches
-            const pr = Math.floor(r / 2);
-            const pc = Math.floor(c / 2);
-            const opacity = 0.25 + ((pr * 3 + pc) % 4) * 0.12;
-            return (
-              <rect
-                key={i}
-                x={c * 20}
-                y={r * 20}
-                width={18}
-                height={18}
-                fill="var(--color-accent)"
-                opacity={opacity}
-              />
-            );
-          })}
-        </g>
-
-        {/* SLIC */}
-        <g transform="translate(340, 30)">
-          <text x="60" y="-8" textAnchor="middle" fontWeight="600">
-            SLIC superpíxel
-          </text>
-          {/* irregular blobs */}
-          <path
-            d="M 0 30 C 20 0, 60 0, 90 20 C 120 40, 110 80, 80 70 C 50 60, 30 80, 10 60 Z"
-            fill="var(--color-accent)"
-            opacity="0.45"
-          />
-          <path
-            d="M 90 70 C 120 50, 130 100, 110 120 C 90 140, 60 130, 60 110 C 60 90, 70 80, 90 70 Z"
-            fill="var(--color-accent)"
-            opacity="0.32"
-          />
-          <path
-            d="M 10 70 C 0 100, 30 130, 60 130 C 50 110, 30 100, 10 70 Z"
-            fill="var(--color-accent)"
-            opacity="0.55"
-          />
-          <rect x="0" y="0" width="120" height="120" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.35" />
-        </g>
-
-        {/* Felzenszwalb */}
-        <g transform="translate(500, 30)">
-          <text x="60" y="-8" textAnchor="middle" fontWeight="600">
-            Felzenszwalb
-          </text>
-          <path d="M 0 0 L 60 0 L 80 30 L 50 60 L 0 50 Z" fill="var(--color-accent)" opacity="0.5" />
-          <path d="M 60 0 L 120 0 L 120 50 L 80 30 Z" fill="var(--color-accent)" opacity="0.32" />
-          <path d="M 0 50 L 50 60 L 30 110 L 0 90 Z" fill="var(--color-accent)" opacity="0.4" />
-          <path d="M 50 60 L 80 30 L 120 50 L 120 120 L 80 120 Z" fill="var(--color-accent)" opacity="0.25" />
-          <path d="M 30 110 L 80 120 L 80 120 L 0 120 L 0 90 Z" fill="var(--color-accent)" opacity="0.55" />
-          <rect x="0" y="0" width="120" height="120" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.35" />
-        </g>
       </g>
     </svg>
   );
