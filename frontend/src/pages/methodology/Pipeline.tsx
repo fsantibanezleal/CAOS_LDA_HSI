@@ -15,71 +15,71 @@ type Stage = {
 const STAGES: Stage[] = [
   {
     id: "fetch",
-    name: "Adquisición",
+    name: "Acquisition",
     command: "scripts/local fetch-all",
     produces: "data/raw/{upv_ehu, micasense, usgs_splib07, hidsag, ecostress, unmixing}/",
     notes:
-      "Descarga UPV/EHU HSI scenes, MicaSense MSI, USGS spectral library, HIDSAG zips (opt-in), ECOSTRESS metadata, Borsoi Samson/Jasper/Urban ROIs. Una sola vez por máquina.",
+      "Downloads UPV/EHU HSI scenes, MicaSense MSI, USGS spectral library, HIDSAG zips (opt-in), ECOSTRESS metadata, Borsoi Samson/Jasper/Urban ROIs. One-time per machine.",
   },
   {
     id: "preprocess-real",
-    name: "Compactación de escenas",
+    name: "Scene compaction",
     command: "scripts/local build-real",
     produces: "data/derived/real/real_samples.json + previews/*.png",
     notes:
-      "Reduce los cubos crudos a un payload publicable (sub-muestreo estratificado + previews RGB / labels).",
+      "Reduces the raw cubes to a publishable payload (stratified sub-sampling + RGB / label previews).",
   },
   {
     id: "wordifications",
     name: "Wordifications V1..V12",
     command:
       "scripts/local build-wordifications && build-wordifications-v4plus && build-wordifications-v6plus && build-wordifications-v7v11",
-    produces: "data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json (≈486 configs)",
+    produces: "data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json (~486 configs)",
     notes:
-      "Las 12 recetas × 3 schemes × 3 Q por escena. Cada config es una matriz documento-término distinta. Todas se exponen en /api/wordifications.",
+      "The 12 recipes × 3 schemes × 3 Q per scene. Each config is a distinct document-term matrix. All exposed via /api/wordifications.",
   },
   {
     id: "topic-views",
-    name: "Vistas tópicas + theta",
+    name: "Topic views + theta",
     command: "scripts/local build-topic-views build-topic-to-data",
     produces: "data/derived/topic_views/<scene>.json + topic_to_data/<scene>.json + data/local/lda_fits/<scene>/",
     notes:
-      "LDA fit canónico (V1, K=12 o n_classes), JS-MDS para intertopic, theta por documento, dominant_topic_map.",
+      "Canonical LDA fit (V1, K=12 or n_classes), JS-MDS for intertopic, per-document theta, dominant_topic_map.",
   },
   {
     id: "spectral-browser",
-    name: "Browser espectral",
+    name: "Spectral browser",
     command: "scripts/local build-spectral-browser build-spectral-density",
     produces: "data/derived/spectral_browser/<scene>/spectra.bin + spectral_density/<scene>/density_*.bin",
     notes:
-      "Float32 binarios servibles directo a la app web sin parseo JSON. Densidad banda × reflectancia precalculada por grupo.",
+      "Float32 binaries served directly to the web app without JSON parsing. Band × reflectance density pre-computed per group.",
   },
   {
     id: "groupings",
-    name: "Agrupadores documentales",
+    name: "Document groupings",
     command: "scripts/local build-groupings build-cross-method-agreement",
     produces:
       "data/derived/groupings/{slic_500, slic_2000, patch_7, patch_15, felzenszwalb}/<scene>.json + cross_method_agreement/<scene>.json",
     notes:
-      "Cuatro construcciones documentales × ARI/NMI/V cross-pair. Métrica: off-diagonal ~0.15 — los constructores son distintos, no equivalentes.",
+      "Four document constructions × ARI/NMI/V cross-pair. Metric: off-diagonal ~0.15 — the constructors are genuinely different, not equivalent.",
   },
   {
     id: "addendum-b",
-    name: "Addendum B — batería multi-eje",
+    name: "Addendum B — multi-axis battery",
     command:
       "scripts/local build-linear-probe-panel build-rate-distortion-curve build-topic-routed-classifier build-mutual-information build-embedded-baseline build-topic-stability build-topic-to-usgs-v7 build-cross-scene-transfer build-topic-anomaly build-topic-spatial-continuous build-topic-spatial-full build-endmember-baseline",
     produces:
       "data/derived/{linear_probe_panel, rate_distortion_curve, topic_routed_classifier, mutual_information, embedded_baseline, topic_stability, topic_to_usgs_v7, cross_scene_transfer, topic_anomaly, topic_spatial_continuous, topic_spatial_full, endmember_baseline}/<scene>.json",
     notes:
-      "Once axes B-1..B-11 + cross-scene transfer. Cada uno es un downstream readout o un test de robustez. La página de Aplicación los relaciona con el marco PTM.",
+      "Eleven axes B-1..B-11 + cross-scene transfer. Each one is a downstream readout or a robustness test. The Application page relates them to the PTM framework.",
   },
   {
     id: "bayesian",
-    name: "Posterior bayesiana",
+    name: "Bayesian posterior",
     command: "scripts/local build-bayesian-method-comparison build-bayesian-classification-labelled",
     produces: "data/derived/bayesian/{regression, classification_labelled}.json + data/local/bayesian_traces/",
     notes:
-      "PyMC NUTS sobre los downstream readouts. Reporta HDI94 + P(μ_a > μ_b) pairwise.",
+      "PyMC NUTS over the downstream readouts. Reports HDI94 + pairwise P(μ_a > μ_b).",
   },
   {
     id: "validation-blocks",
@@ -87,31 +87,31 @@ const STAGES: Stage[] = [
     command: "scripts/local build-validation-blocks",
     produces: "data/derived/validation_blocks/<scene>.json",
     notes:
-      "Seis bloques por escena: corpus-integrity, topic-stability, supervision-association, quantization-sensitivity, document-definition-sensitivity, spectral-library-alignment. Los tres últimos se conectan a builders dedicados.",
+      "Six blocks per scene: corpus-integrity, topic-stability, supervision-association, quantization-sensitivity, document-definition-sensitivity, spectral-library-alignment. The last three connect to dedicated builders.",
   },
   {
     id: "super-topics",
-    name: "Super-tópicos",
+    name: "Super-topics",
     command: "scripts/local build-hierarchical-super-topics",
     produces: "data/derived/super_topics/super_topics.json",
     notes:
-      "Cluster jerárquico sobre los 63 tópicos (todas las escenas) en grilla común 224 bandas 400-2500 nm. Cortes en K_super ∈ {4, 6, 8, 10, 12}.",
+      "Hierarchical clustering over the 63 topics (all scenes) on a common 224-band 400-2500 nm grid. Cuts at K_super ∈ {4, 6, 8, 10, 12}.",
   },
   {
     id: "curate",
-    name: "Curado del manifest",
+    name: "Manifest curation",
     command: "scripts/local curate-for-web",
     produces: "data/derived/manifests/index.json",
     notes:
-      "Empaca todo lo anterior en el contrato que la app web lee. 1118 artifacts, 35 builders, 60 claims_allowed, ~74 MB.",
+      "Packs everything above into the contract the web app reads. 1118 artifacts, 35 builders, 60 claims_allowed, ~74 MB.",
   },
   {
     id: "audit",
-    name: "Auditoría del manifest",
+    name: "Manifest audit",
     command: "scripts/local audit-manifest",
-    produces: "stdout: drift y huérfanos, exit 0/1",
+    produces: "stdout: drift and orphans, exit 0/1",
     notes:
-      "Verifica que cada artefacto declarado existe, que los bytes coinciden, que cada claim tiene al menos un artefacto, y reporta archivos derivados que no están en el manifest.",
+      "Verifies that every declared artifact exists, that byte sums match, that every claim has at least one artifact, and reports derived files not in the manifest.",
   },
 ];
 
@@ -120,22 +120,22 @@ export default function MethodologyPipeline() {
   return (
     <PageShell
       title={t("pages:methodology_pipeline.title")}
-      lead="La app web sirve material precalculado. La generación corre localmente — descarga, preprocesa, fittea LDA, computa downstream readouts, empaca el manifest. El código fuente vive en el repo del proyecto; aquí mostramos sólo cómo ejecutarlo y qué produce."
+      lead="The web app serves pre-computed material. Generation runs locally — fetches, preprocesses, fits LDA, computes downstream readouts, packs the manifest. Source code lives in the project repo; here we show only how to run it and what it produces."
     >
       <Section
         id="overview"
-        title="Vista general"
-        lead="Doce etapas encadenadas. Cada una es un script de comando único. La salida de cada etapa es la entrada de las siguientes."
+        title="Overview"
+        lead="Twelve chained stages. Each is a single-command script. Each stage's output is the input for the next."
       >
-        <Figure caption="Las doce etapas del pipeline local. Las flechas indican dependencia de datos entre etapas. La adquisición es one-time; las wordifications, validation-blocks y super-topics se re-ejecutan cuando cambia algún parámetro upstream.">
+        <Figure caption="The twelve stages of the local pipeline. Arrows indicate data dependencies between stages. Acquisition is one-time; wordifications, validation-blocks and super-topics are re-run when an upstream parameter changes.">
           <PipelineDagSVG />
         </Figure>
       </Section>
 
       <Section
         id="stages"
-        title="Las etapas, comando por comando"
-        lead="Los comandos asumen que estás en la raíz del repo y tienes los dos venvs creados (scripts/local setup-all)."
+        title="The stages, command by command"
+        lead="The commands assume you are at the repo root and have the two venvs created (scripts/local setup-all)."
       >
         <div className="space-y-4 mt-2">
           {STAGES.map((s, idx) => (
@@ -180,7 +180,7 @@ export default function MethodologyPipeline() {
                 style={{ color: "var(--color-fg-subtle)" }}
               >
                 <strong style={{ color: "var(--color-fg)" }}>
-                  Produce:
+                  Produces:
                 </strong>{" "}
                 <code className="font-mono text-[12.5px]">{s.produces}</code>
               </p>
@@ -190,9 +190,9 @@ export default function MethodologyPipeline() {
         </div>
       </Section>
 
-      <Section id="reproduce" title="Cómo reproducir el corpus completo">
+      <Section id="reproduce" title="How to reproduce the full corpus">
         <p>
-          La forma corta — ejecutar todo en orden, una sola sesión:
+          The short form — run everything in order, single session:
         </p>
         <pre
           className="font-mono text-[12.5px] rounded-md p-3 my-3"
@@ -208,11 +208,11 @@ $ scripts/local run-core
 $ scripts/local build-validation-blocks
 $ scripts/local build-hierarchical-super-topics
 $ scripts/local curate-for-web
-$ scripts/local audit-manifest     # debe terminar 0; los huérfanos legacy se reportan pero no fallan`}</pre>
+$ scripts/local audit-manifest     # must end with 0; legacy orphans are reported but do not fail`}</pre>
         <p>
-          Para una escena concreta, los flags `CAOS_VARIANT_FILTER` y
-          equivalentes permiten re-ejecutar un único variant sin re-correr
-          toda la grilla. Ver{" "}
+          For a specific scene, the `CAOS_VARIANT_FILTER` flag and equivalents
+          allow re-running a single variant without re-running the full grid.
+          See{" "}
           <a
             href="https://github.com/fsantibanezleal/CAOS_LDA_HSI/blob/main/scripts/local.sh"
             target="_blank"
@@ -221,7 +221,7 @@ $ scripts/local audit-manifest     # debe terminar 0; los huérfanos legacy se r
           >
             scripts/local.sh
           </a>{" "}
-          y{" "}
+          and{" "}
           <a
             href="https://github.com/fsantibanezleal/CAOS_LDA_HSI/blob/main/scripts/local.ps1"
             target="_blank"
@@ -230,27 +230,25 @@ $ scripts/local audit-manifest     # debe terminar 0; los huérfanos legacy se r
           >
             scripts/local.ps1
           </a>{" "}
-          para los comandos individuales.
+          for the individual commands.
         </p>
       </Section>
 
-      <Section id="boundary" title="Lo que la app web NO hace">
+      <Section id="boundary" title="What the web app does NOT do">
         <ul
           className="mt-2 space-y-2 list-disc pl-5"
           style={{ color: "var(--color-fg-subtle)" }}
         >
-          <li>No fittea modelos. Todos los θ y φ vienen del pipeline local.</li>
+          <li>It does not fit models. Every θ and φ comes from the local pipeline.</li>
           <li>
-            No descarga datasets crudos. Sólo lee los artefactos derivados que
-            el pipeline empaca.
+            It does not download raw datasets. It only reads the derived artifacts that
+            the pipeline packs.
           </li>
           <li>
-            No expone los scripts de pipeline. Para inspeccionarlos, el repo
-            del proyecto es el lugar.
+            It does not expose the pipeline scripts. To inspect them, the project repo is the place.
           </li>
           <li>
-            No hace cuantización ni wordification on-the-fly. La grilla de
-            configuraciones está pre-empaquetada.
+            No on-the-fly quantisation or wordification. The configuration grid is pre-packaged.
           </li>
         </ul>
       </Section>
@@ -263,8 +261,8 @@ function PipelineDagSVG() {
   // few cross-row dependencies. Pure visual; no live data.
   type Node = { id: string; row: number; col: number; label: string };
   const nodes: Node[] = [
-    { id: "fetch", row: 0, col: 0, label: "1. Adquisición" },
-    { id: "preprocess", row: 0, col: 1, label: "2. Compactación" },
+    { id: "fetch", row: 0, col: 0, label: "1. Acquisition" },
+    { id: "preprocess", row: 0, col: 1, label: "2. Compaction" },
     { id: "wordif", row: 0, col: 2, label: "3. Wordifications" },
     { id: "topic-views", row: 1, col: 0, label: "4. Topic views" },
     { id: "spectral", row: 1, col: 1, label: "5. Spectral browser" },
