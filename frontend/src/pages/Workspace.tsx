@@ -539,6 +539,7 @@ function ExploreStep({
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
   const isHidsag = subsetId !== null && HIDSAG_SUBSETS.has(subsetId);
   const [tab, setTab] = useState<ExploreTab>("raw");
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
 
   const eda = useQuery({
     queryKey: ["eda", subsetId],
@@ -889,6 +890,8 @@ function ExploreStep({
               isLoading={topicViews.isLoading}
               error={topicViews.error as Error | null}
               data={topicViews.data ?? null}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
             />
           )}
           {tab === "topiclabel" && (
@@ -896,6 +899,8 @@ function ExploreStep({
               isLoading={topicToData.isLoading}
               error={topicToData.error as Error | null}
               data={topicToData.data ?? null}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
             />
           )}
           {tab === "routed" && (
@@ -910,6 +915,8 @@ function ExploreStep({
               isLoading={rasterMeta.isLoading}
               error={rasterMeta.error as Error | null}
               meta={rasterMeta.data ?? null}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
             />
           )}
           {tab === "embed3d" && (
@@ -917,6 +924,8 @@ function ExploreStep({
               isLoading={embed3d.isLoading}
               error={embed3d.error as Error | null}
               data={embed3d.data ?? null}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
             />
           )}
           {tab === "repfit" && (
@@ -1044,6 +1053,8 @@ function ExploreStep({
               isLoading={usgs.isLoading}
               error={usgs.error as Error | null}
               data={usgs.data ?? null}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
             />
           )}
           {tab === "metrics" && (
@@ -1154,12 +1165,15 @@ function TopicsTab({
   isLoading,
   error,
   data,
+  selectedTopic,
+  setSelectedTopic,
 }: {
   isLoading: boolean;
   error: Error | null;
   data: import("@/api/client").TopicViews | null;
+  selectedTopic: number | null;
+  setSelectedTopic: (k: number | null) => void;
 }) {
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
   const [lambda, setLambda] = useState<number>(0.5);
 
   if (isLoading)
@@ -1441,12 +1455,15 @@ function TopicLabelTab({
   isLoading,
   error,
   data,
+  selectedTopic,
+  setSelectedTopic,
 }: {
   isLoading: boolean;
   error: Error | null;
   data: import("@/api/client").TopicToData | null;
+  selectedTopic: number | null;
+  setSelectedTopic: (k: number | null) => void;
 }) {
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
 
   if (isLoading)
     return <p style={{ color: "var(--color-fg-faint)" }}>Loading topic–label matrix…</p>;
@@ -1905,13 +1922,16 @@ function RasterTab({
   isLoading,
   error,
   meta,
+  selectedTopic,
+  setSelectedTopic,
 }: {
   isLoading: boolean;
   error: Error | null;
   meta: import("@/api/client").TopicToData | null;
+  selectedTopic: number | null;
+  setSelectedTopic: (k: number | null) => void;
 }) {
   const [pick, setPick] = useState<PickInfo | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
 
   // Derive served path from the JSON metadata. The pipeline writes a
   // companion .bin in data/derived/topic_to_data/ so the frontend can
@@ -2515,12 +2535,15 @@ function UsgsTab({
   isLoading,
   error,
   data,
+  selectedTopic,
+  setSelectedTopic,
 }: {
   isLoading: boolean;
   error: Error | null;
   data: import("@/api/client").TopicToUsgsV7 | null;
+  selectedTopic: number | null;
+  setSelectedTopic: (k: number | null) => void;
 }) {
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(0);
 
   if (isLoading)
     return (
@@ -3889,13 +3912,16 @@ function Embed3DTab({
   isLoading,
   error,
   data,
+  selectedTopic,
+  setSelectedTopic,
 }: {
   isLoading: boolean;
   error: Error | null;
   data: import("@/api/client").TopicToData | null;
+  selectedTopic: number | null;
+  setSelectedTopic: (k: number | null) => void;
 }) {
   const [colorBy, setColorBy] = useState<"topic" | "label">("topic");
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
   const [pickedDoc, setPickedDoc] = useState<{ docId: number; index: number } | null>(
     null,
   );
