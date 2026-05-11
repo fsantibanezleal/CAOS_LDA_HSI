@@ -844,8 +844,12 @@ function ExploreStep({
           <nav
             role="tablist"
             aria-label="Exploration panels"
-            className="space-y-2 border-b mb-6 pb-3"
-            style={{ borderColor: "var(--color-border)" }}
+            className="sticky top-14 z-30 -mx-6 px-6 py-3 mb-4 space-y-2 border-b"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "color-mix(in srgb, var(--color-bg) 94%, transparent)",
+              backdropFilter: "blur(8px)",
+            }}
           >
             {([
               {
@@ -7899,11 +7903,10 @@ function TopicContextStrip({
   const jumpTargets = TOPIC_AWARE_TABS.filter((t) => t.id !== activeTab);
   return (
     <div
-      className="sticky top-14 z-20 -mx-6 px-6 py-2 mb-4 border-y flex items-center gap-3 flex-wrap"
+      className="-mx-6 px-6 py-2 mb-4 border-y flex items-center gap-3 flex-wrap"
       style={{
-        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, transparent)",
+        backgroundColor: "var(--color-accent-soft)",
         borderColor: "var(--color-border)",
-        backdropFilter: "blur(8px)",
       }}
       role="status"
       aria-live="polite"
