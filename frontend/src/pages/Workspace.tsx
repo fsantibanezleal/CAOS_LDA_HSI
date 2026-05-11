@@ -195,6 +195,7 @@ export default function Workspace() {
             subsetId={state.context.subset}
             rep={state.context.rep}
             onBack={() => send({ type: "BACK" })}
+            onSwitchScene={(s) => send({ type: "SWITCH_SUBSET", subset: s })}
           />
         )}
       </div>
@@ -575,10 +576,12 @@ function ExploreStep({
   subsetId,
   rep,
   onBack,
+  onSwitchScene,
 }: {
   subsetId: string | null;
   rep: string | null;
   onBack: () => void;
+  onSwitchScene: (subset: string) => void;
 }) {
   const { t } = useTranslation(["pages"]);
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
@@ -847,6 +850,10 @@ function ExploreStep({
 
       {isLabelled && (
         <>
+          <SceneQuickSwitch
+            currentScene={subsetId!}
+            onSwitch={(s) => onSwitchScene(s)}
+          />
           <SceneBriefingHero subsetId={subsetId!} rep={rep} />
 
           <nav
@@ -8041,5 +8048,55 @@ function TabFooter({ tab }: { tab: ExploreTab }) {
         report an issue
       </a>
     </footer>
+  );
+}
+
+const LABELLED_SCENE_ORDER: { id: string; short: string }[] = [
+  { id: "indian-pines-corrected", short: "Indian Pines" },
+  { id: "salinas-corrected", short: "Salinas" },
+  { id: "salinas-a-corrected", short: "Salinas-A" },
+  { id: "pavia-university", short: "Pavia U" },
+  { id: "kennedy-space-center", short: "KSC" },
+  { id: "botswana", short: "Botswana" },
+];
+
+function SceneQuickSwitch({
+  currentScene,
+  onSwitch,
+}: {
+  currentScene: string;
+  onSwitch: (s: string) => void;
+}) {
+  return (
+    <div
+      className="rounded-lg border p-2 mb-4 flex items-baseline gap-2 flex-wrap"
+      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
+    >
+      <span className="text-[10.5px] uppercase tracking-widest font-semibold pr-2" style={{ color: "var(--color-fg-faint)" }}>
+        Quick-switch scene
+      </span>
+      {LABELLED_SCENE_ORDER.map((s) => {
+        const isActive = s.id === currentScene;
+        return (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => !isActive && onSwitch(s.id)}
+            aria-pressed={isActive}
+            disabled={isActive}
+            className="rounded border px-2.5 py-1 text-[12px] font-mono"
+            style={{
+              borderColor: isActive ? "var(--color-accent)" : "var(--color-border)",
+              color: isActive ? "var(--color-accent)" : "var(--color-fg-subtle)",
+              backgroundColor: isActive ? "var(--color-accent-soft)" : "transparent",
+              cursor: isActive ? "default" : "pointer",
+              fontWeight: isActive ? 600 : 400,
+            }}
+          >
+            {s.short}
+          </button>
+        );
+      })}
+    </div>
   );
 }
