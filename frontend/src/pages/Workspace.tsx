@@ -878,6 +878,15 @@ function ExploreStep({
             ))}
           </nav>
 
+          {selectedTopic !== null && (
+            <TopicContextStrip
+              selectedTopic={selectedTopic}
+              onClear={() => setSelectedTopic(null)}
+              onJump={setTab}
+              activeTab={tab}
+            />
+          )}
+
           {tab === "raw" && (
             <RawTab
               isLoading={eda.isLoading}
@@ -7802,6 +7811,93 @@ function SuperTopicsTab({
             );
           })}
         </div>
+      </div>
+    </div>
+  );
+}
+
+const TOPIC_AWARE_TABS: { id: ExploreTab; label: string }[] = [
+  { id: "topics", label: "Topics" },
+  { id: "topiclabel", label: "Topic vs label" },
+  { id: "routed", label: "Routed" },
+  { id: "raster", label: "Raster" },
+  { id: "embed3d", label: "3D embedding" },
+  { id: "interpret", label: "Interpretability" },
+  { id: "supertopics", label: "Super-topics" },
+  { id: "usgs", label: "USGS library" },
+  { id: "unmixing", label: "Unmixing" },
+  { id: "spatial", label: "Spatial" },
+];
+
+function TopicContextStrip({
+  selectedTopic,
+  onClear,
+  onJump,
+  activeTab,
+}: {
+  selectedTopic: number;
+  onClear: () => void;
+  onJump: (tab: ExploreTab) => void;
+  activeTab: ExploreTab;
+}) {
+  const swatch = TOPIC_COLORS[selectedTopic % TOPIC_COLORS.length];
+  const jumpTargets = TOPIC_AWARE_TABS.filter((t) => t.id !== activeTab);
+  return (
+    <div
+      className="sticky top-14 z-20 -mx-6 px-6 py-2 mb-4 border-y flex items-center gap-3 flex-wrap"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-bg) 92%, transparent)",
+        borderColor: "var(--color-border)",
+        backdropFilter: "blur(8px)",
+      }}
+      role="status"
+      aria-live="polite"
+    >
+      <div className="flex items-baseline gap-2 shrink-0">
+        <span
+          className="inline-block w-3 h-3 rounded-full"
+          style={{ backgroundColor: swatch }}
+          aria-hidden
+        />
+        <span className="font-mono text-[13px] font-semibold" style={{ color: "var(--color-fg)" }}>
+          topic {selectedTopic + 1}
+        </span>
+        <span className="text-[11px] uppercase tracking-widest" style={{ color: "var(--color-fg-faint)" }}>
+          shared across topic-aware tabs
+        </span>
+      </div>
+      <div className="flex items-baseline gap-1 ml-auto flex-wrap">
+        <span className="text-[10.5px] uppercase tracking-widest font-semibold mr-1" style={{ color: "var(--color-fg-faint)" }}>
+          jump to
+        </span>
+        {jumpTargets.map((t) => (
+          <button
+            key={`jump-${t.id}`}
+            type="button"
+            onClick={() => onJump(t.id)}
+            className="rounded border px-1.5 py-0.5 text-[11px] font-mono"
+            style={{
+              borderColor: "var(--color-border)",
+              color: "var(--color-fg-subtle)",
+              backgroundColor: "transparent",
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={onClear}
+          className="ml-2 rounded border px-2 py-0.5 text-[11px] font-mono"
+          style={{
+            borderColor: "var(--color-warn)",
+            color: "var(--color-warn)",
+            backgroundColor: "transparent",
+          }}
+          title="Clear selected topic"
+        >
+          × clear
+        </button>
       </div>
     </div>
   );
