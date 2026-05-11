@@ -141,7 +141,7 @@ export default function Databases() {
                     activeGroup.entries.filter((e) => e.local_raw_available)
                       .length
                   }{" "}
-                  con raíz local
+                  with local raw root
                 </p>
               </header>
               <div className="grid sm:grid-cols-2 gap-4">
@@ -310,7 +310,7 @@ function DatasetCard({ dataset }: { dataset: DatasetEntry }) {
           value={dataset.domains.join(", ") || "—"}
         />
         <KvRow
-          label="Supervisión"
+          label="Supervision"
           value={dataset.supervision_states.join(" · ") || "ninguna"}
         />
         <KvRow label="Acceso" value={dataset.access} />
@@ -324,11 +324,11 @@ function DatasetCard({ dataset }: { dataset: DatasetEntry }) {
         ) : (
           <KvRow
             label="Crudo local"
-            value="no descargado en esta máquina"
+            value="not downloaded on this machine"
           />
         )}
         {dataset.last_verified && (
-          <KvRow label="Última verificación" value={dataset.last_verified} />
+          <KvRow label="Last verified" value={dataset.last_verified} />
         )}
       </dl>
 

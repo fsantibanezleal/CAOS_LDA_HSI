@@ -334,7 +334,7 @@ function WordificationFlowSVG() {
           strokeWidth="1.3"
         />
         <text x="230" y="80" textAnchor="middle" fontWeight="600">
-          Normalización
+          Normalisation
         </text>
         <text x="230" y="115" textAnchor="middle" opacity="0.85">
           per-spectrum,
@@ -357,7 +357,7 @@ function WordificationFlowSVG() {
           strokeWidth="1.3"
         />
         <text x="380" y="80" textAnchor="middle" fontWeight="600">
-          Cuantización
+          Quantisation
         </text>
         <g stroke="var(--color-accent)" strokeWidth="1.6" fill="none">
           <line x1="335" y1="100" x2="425" y2="100" />
@@ -446,7 +446,7 @@ function MixedMembershipSVG() {
           opacity="0.85"
         />
         <text x="60" y="180" textAnchor="middle" fontWeight="600">
-          píxel d
+          pixel d
         </text>
 
         <text x="160" y="62" fontWeight="600">
@@ -457,10 +457,10 @@ function MixedMembershipSVG() {
           <rect x="360" y="80" width="120" height="20" fill="#f97316" />
           <rect x="480" y="80" width="50" height="20" fill="#22c55e" />
           <text x="260" y="95" textAnchor="middle" fill="#fff" fontSize="11">
-            tópico 1 — 0.59
+            topic 1 — 0.59
           </text>
           <text x="420" y="95" textAnchor="middle" fill="#fff" fontSize="11">
-            tópico 2 — 0.27
+            topic 2 — 0.27
           </text>
           <text x="505" y="95" textAnchor="middle" fill="#fff" fontSize="11">
             t3
@@ -468,7 +468,7 @@ function MixedMembershipSVG() {
         </g>
 
         <text x="160" y="130" fontWeight="600">
-          φ_k (firmas tópicas)
+          φ_k (topic signatures)
         </text>
         <g transform="translate(160, 140)">
           <path
@@ -496,7 +496,7 @@ function MixedMembershipSVG() {
         </g>
 
         <text x="400" y="130" fontWeight="600">
-          Reconstrucción
+          Reconstruction
         </text>
         <text x="400" y="148" opacity="0.85">
           Σ θ_dk · φ_k
