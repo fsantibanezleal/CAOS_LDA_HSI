@@ -448,6 +448,7 @@
       "deep": "Deep latents",
       "anomaly": "Anomalía · vs misclass",
       "neural": "Neural · LDA vs ProdLDA vs ETM",
+      "gating": "Gating · embedded + deep gate",
       "llm": "LLM tea leaves",
       "probe": "Linear probe",
       "robust": "Robustez · Q + cross-scene",
