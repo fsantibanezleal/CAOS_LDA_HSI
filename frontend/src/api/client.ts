@@ -266,6 +266,10 @@ export const api = {
     request<TopicRoutedClassifier>(
       `/api/topic-routed-classifier/${encodeURIComponent(sceneId)}`,
     ),
+  embeddedBaseline: (sceneId: string) =>
+    request<EmbeddedBaseline>(
+      `/api/embedded-baseline/${encodeURIComponent(sceneId)}`,
+    ),
   topicRoutedDeepGate: (sceneId: string) =>
     request<TopicRoutedDeepGate>(
       `/api/topic-routed-deep-gate/${encodeURIComponent(sceneId)}`,
@@ -636,6 +640,27 @@ export type TopicRoutedClassifier = {
     macro_f1_mean: number;
     macro_f1_ci95: [number, number];
   }[];
+};
+
+export type EmbeddedBaselineMetrics = {
+  macro_f1: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
+  accuracy: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
+  balanced_accuracy?: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
+};
+
+export type EmbeddedBaseline = {
+  scene_id: string;
+  K: number;
+  n_classes: number;
+  n_documents: number;
+  head: string;
+  split: string;
+  method_metrics: Record<string, EmbeddedBaselineMetrics>;
+  concat_vs_pca?: Record<string, unknown>;
+  ranking_by_macro_f1_mean?: { method: string; macro_f1_mean: number }[];
+  framework_axis?: string;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type TopicRoutedDeepGate = {
