@@ -1143,6 +1143,8 @@ function ExploreStep({
               miLoading={mutualInfo.isLoading}
             />
           )}
+
+          <TabFooter tab={tab} />
         </>
       )}
     </section>
@@ -7966,5 +7968,78 @@ function TopicContextStrip({
         </button>
       </div>
     </div>
+  );
+}
+
+const TAB_WIKI_PAGE: Record<ExploreTab, string> = {
+  raw: "Web-App-Workflow",
+  browser: "Web-App-Workflow",
+  topics: "Mathematical-Background",
+  topiclabel: "Mathematical-Background",
+  routed: "Multi-Axis-Addendum-B",
+  raster: "Backend-Architecture",
+  embed3d: "Backend-Architecture",
+  repfit: "Multi-Axis-Addendum-B",
+  compare3d: "Multi-Axis-Addendum-B",
+  interpret: "Mathematical-Background",
+  supertopics: "Corpus-Construction",
+  unmixing: "Multi-Axis-Addendum-B",
+  spatial: "Multi-Axis-Addendum-B",
+  agreement: "Multi-Axis-Addendum-B",
+  neural: "Mathematical-Background",
+  gating: "Multi-Axis-Addendum-B",
+  llm: "Multi-Axis-Addendum-B",
+  probe: "Multi-Axis-Addendum-B",
+  robust: "Multi-Axis-Addendum-B",
+  stability: "Multi-Axis-Addendum-B",
+  deep: "Mathematical-Background",
+  anomaly: "Multi-Axis-Addendum-B",
+  usgs: "Corpus-Construction",
+  metrics: "Bayesian-Method-Comparison",
+};
+
+const WIKI_BASE = "https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki";
+
+function TabFooter({ tab }: { tab: ExploreTab }) {
+  const wikiPage = TAB_WIKI_PAGE[tab];
+  const repoBase = "https://github.com/fsantibanezleal/CAOS_LDA_HSI";
+  return (
+    <footer
+      className="mt-8 pt-4 border-t flex flex-wrap items-baseline gap-x-4 gap-y-2 text-[12px]"
+      style={{ borderColor: "var(--color-border)", color: "var(--color-fg-faint)" }}
+    >
+      <span className="uppercase tracking-widest text-[10.5px] font-semibold">
+        Read more
+      </span>
+      <a
+        href={`${WIKI_BASE}/${wikiPage}`}
+        target="_blank"
+        rel="noreferrer"
+        className="font-mono"
+        style={{ color: "var(--color-accent)" }}
+      >
+        wiki · {wikiPage.replaceAll("-", " ")}
+      </a>
+      <span style={{ opacity: 0.4 }}>·</span>
+      <a
+        href={`${repoBase}/blob/main/data-pipeline`}
+        target="_blank"
+        rel="noreferrer"
+        className="font-mono"
+        style={{ color: "var(--color-accent)" }}
+      >
+        data-pipeline source
+      </a>
+      <span style={{ opacity: 0.4 }}>·</span>
+      <a
+        href={`${repoBase}/issues`}
+        target="_blank"
+        rel="noreferrer"
+        className="font-mono"
+        style={{ color: "var(--color-accent)" }}
+      >
+        report an issue
+      </a>
+    </footer>
   );
 }
