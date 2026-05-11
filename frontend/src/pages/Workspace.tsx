@@ -55,22 +55,22 @@ function toHidsagSubsetCode(id: string): string {
 
 const FAMILY_DESCRIPTIONS: Record<string, string> = {
   "labeled-spectral-image":
-    "Cubos hiperespectrales con etiquetas por píxel — los benchmarks canónicos UPV/EHU. Punto de partida natural para clasificación.",
+    "Hyperspectral cubes with per-pixel labels — the canonical UPV/EHU benchmarks. Natural starting point for classification.",
   "individual-spectra":
-    "Espectros individuales con identidad de material o referencia (USGS splib07, MicaSense). Sin geometría espacial.",
+    "Individual spectra with material identity or reference (USGS splib07, MicaSense). No spatial geometry.",
   "hidsag-mineral":
-    "Subsets HIDSAG con mediciones geoquímicas y mineralógicas por muestra. Targets continuos, no clases.",
+    "HIDSAG subsets with per-sample geochemical and mineralogical measurements. Continuous targets, not classes.",
   "unmixing-roi":
-    "Borsoi Samson / Jasper Ridge / Urban — escenas con endmembers y abundancias de referencia para unmixing.",
+    "Borsoi Samson / Jasper Ridge / Urban — scenes with endmembers and reference abundances for unmixing.",
   default:
-    "Familia de datasets disponibles para el flujo del laboratorio.",
+    "Dataset family available for the lab workflow.",
 };
 
 const STEPS: { id: string; key: keyof Steps; label: string }[] = [
   { id: "family", key: "family", label: "Familia" },
   { id: "subset", key: "subset", label: "Conjunto" },
   { id: "representation", key: "representation", label: "Representación" },
-  { id: "explore", key: "explore", label: "Explorar" },
+  { id: "explore", key: "explore", label: "Explore"},
 ];
 
 type Steps = {
@@ -237,7 +237,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "LDA — sklearn online",
     short: "Latent Dirichlet Allocation",
     description:
-      "Variational Bayes online (sklearn). Recipe canónica V1 band-frequency, K=12 (o n_classes), priors α=0.45 / η=0.2. La base por defecto del Workspace.",
+      "Online variational Bayes (sklearn). Canonical V1 band-frequency recipe, K=12 (or n_classes), priors α=0.45 / η=0.2. Default base for the Workspace.",
     status: "shipped",
   },
   {
@@ -246,7 +246,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "LDA — sklearn sparse",
     short: "Sparse VB",
     description:
-      "Variante VB con priors esparzos (α=0.05). Tópicos más sparsos pero perplexity peor.",
+      "VB variant with sparse priors (α=0.05). Sparser topics but worse perplexity.",
     status: "shipped",
   },
   {
@@ -255,7 +255,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "LDA — tomotopy (collapsed Gibbs)",
     short: "tomotopy_lda",
     description:
-      "Implementación canónica de LDA vía Gibbs colapsado en C++. Wins c_v en 4 de 6 escenas.",
+      "Canonical LDA via collapsed Gibbs in C++. Wins c_v on 4/6 scenes.",
     status: "shipped",
   },
   {
@@ -264,7 +264,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "HDP — tomotopy",
     short: "Hierarchical Dirichlet Process",
     description:
-      "K se aprende — el modelo decide cuántos tópicos activos hay. Útil cuando no quieres fijar K.",
+      "K is learned — the model decides how many active topics exist. Useful when K should not be fixed.",
     status: "shipped",
   },
   {
@@ -273,7 +273,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "CTM — tomotopy",
     short: "Correlated Topic Model",
     description:
-      "Permite correlación entre tópicos vía logistic-normal sobre θ. Más lento pero captura co-ocurrencias.",
+      "Allows topic correlations via logistic-normal over θ. Slower but captures co-occurrences.",
     status: "shipped",
   },
   {
@@ -282,16 +282,16 @@ const REPRESENTATIONS: Representation[] = [
     label: "ProdLDA — Pyro",
     short: "Neural topic model",
     description:
-      "Encoder amortizado + decoder multinomial. Implementación neural, comparable en NPMI a LDA Gibbs.",
+      "Amortised encoder + multinomial decoder. Neural implementation, comparable to LDA Gibbs in NPMI.",
     status: "shipped",
   },
   {
     id: "nmf",
     family: "compression",
     label: "NMF",
-    short: "Non-negative matrix factorization",
+    short: "Non-negative matrix factorisation",
     description:
-      "Descomposición no-negativa con factorización β-divergencia=KL. Baseline canónico K-dim contra LDA.",
+      "Non-negative decomposition with β-divergence=KL. Canonical K-dim baseline against LDA.",
     status: "shipped",
   },
   {
@@ -300,7 +300,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "PCA",
     short: "Principal components",
     description:
-      "Compresión lineal L2-óptima. Wins reconstruction RMSE en cada K (su único título).",
+      "Linear L2-optimal compression. Wins reconstruction RMSE at every K (its only guaranteed title).",
     status: "shipped",
   },
   {
@@ -309,7 +309,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "Dense autoencoder",
     short: "MLP AE",
     description:
-      "Encoder → bottleneck K → decoder. Baseline neural de la misma dimensión K.",
+      "Encoder → bottleneck K → decoder. Neural baseline at the same K.",
     status: "shipped",
   },
   {
@@ -318,7 +318,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "Endmembers (NFINDR + NNLS)",
     short: "Linear unmixing",
     description:
-      "K endmembers vía NFINDR (Winter 1999) + abundancias por NNLS con suma-a-uno. Baseline físico contra LDA.",
+      "K endmembers via NFINDR (Winter 1999) + NNLS abundance with sum-to-one. Physical baseline against LDA.",
     status: "shipped",
   },
   {
@@ -327,7 +327,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "ICA — FastICA",
     short: "Independent components",
     description:
-      "Componentes estadísticamente independientes (FastICA). K=8. Baseline complementario a PCA en compresión lineal.",
+      "Statistically independent components (FastICA). K=8. Complementary baseline to PCA in linear compression.",
     status: "shipped",
   },
   {
@@ -336,7 +336,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "CAE-1D · K=8",
     short: "Conv autoencoder 1D",
     description:
-      "Autoencoder convolucional 1D sobre espectro. Encoder Conv1D → bottleneck K=8 → decoder. GPU-trained.",
+      "1D convolutional autoencoder over the spectrum. Conv1D encoder → bottleneck K=8 → decoder. GPU-trained.",
     status: "shipped",
   },
   {
@@ -345,7 +345,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "CAE-2D · K=8",
     short: "Conv autoencoder 2D anchor",
     description:
-      "CAE 2D sobre parches espaciales-espectrales. Anchor K=8. Captura textura espacial + perfil espectral.",
+      "2D CAE over spatial-spectral patches. K=8 anchor. Captures spatial texture + spectral profile.",
     status: "shipped",
   },
   {
@@ -354,7 +354,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "CAE-3D anchor · K=8",
     short: "Conv autoencoder 3D anchor",
     description:
-      "CAE 3D sobre cubos (espacial × espectral). Versión anchor (centro del parche). K=8 GPU-trained.",
+      "3D CAE over cubes (spatial × spectral). Anchor version (patch centre). K=8 GPU-trained.",
     status: "shipped",
   },
   {
@@ -363,7 +363,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "CAE-3D full · K=8",
     short: "Conv autoencoder 3D full-patch",
     description:
-      "Variante full-patch del CAE-3D — todos los píxeles del parche contribuyen al loss. K=8 GPU-trained.",
+      "Full-patch variant of CAE-3D — every patch pixel contributes to the loss. K=8 GPU-trained.",
     status: "shipped",
   },
   {
@@ -372,7 +372,7 @@ const REPRESENTATIONS: Representation[] = [
     label: "β-VAE · K=8",
     short: "Variational autoencoder",
     description:
-      "VAE con β=2 que regulariza el KL divergence. Latente probabilístico desentrelazado. K=8 GPU-trained.",
+      "VAE with β=2 regularising the KL divergence. Disentangled probabilistic latent. K=8 GPU-trained.",
     status: "shipped",
   },
 ];
@@ -387,9 +387,9 @@ function RepresentationPickerStep({
   onPick: (rep: string) => void;
 }) {
   const families: { id: Representation["family"]; label: string }[] = [
-    { id: "topic", label: "Modelos de tópicos" },
-    { id: "compression", label: "Baselines de compresión K-dim" },
-    { id: "unmixing", label: "Baselines físicos (unmixing)" },
+    { id: "topic", label: "Topic models" },
+    { id: "compression", label: "K-dim compression baselines" },
+    { id: "unmixing", label: "Physical baselines (unmixing)" },
   ];
 
   return (
@@ -407,7 +407,7 @@ function RepresentationPickerStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Tres familias: tópicos (LDA y variantes), compresiones K-dim
+            Tres familias: topics (LDA y variantes), compresiones K-dim
             (PCA / NMF / AE) y unmixing físico. Todas operan sobre el
             mismo doc-term matrix de la receta canónica V1 band-frequency.
           </p>
@@ -706,14 +706,14 @@ function ExploreStep({
             className="text-lg font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Explorar{" "}
+            Explore{" "}
             <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
             {rep && (
               <span
                 className="ml-2 text-sm font-normal"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                · representación: {rep}
+                · representation: {rep}
               </span>
             )}
           </h3>
@@ -721,12 +721,8 @@ function ExploreStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Dos paneles disponibles: <strong>Cruda</strong> (distribución
-            de clases + envolventes espectrales) y{" "}
-            <strong>Tópicos</strong> (intertopic distance map LDAvis-faithful
-            + perfiles φ_k + top-words por relevance λ). Próximos paneles
-            (raster con click-to-inspect, t-SNE 2D/3D, heatmap
-            tópico-vs-etiqueta, apply-to-doc) se irán incorporando.
+            16 panels across raw data, topic model output, spatial geometry, and diagnostics.
+            Loaded on demand — pick a tab below to fetch its dedicated backend artefact.
           </p>
         </div>
         <button
@@ -739,7 +735,7 @@ function ExploreStep({
             backgroundColor: "transparent",
           }}
         >
-          ← Cambiar de representación
+          ← Change representation
         </button>
       </header>
 
@@ -1015,7 +1011,7 @@ function RawTab({
 }) {
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Cargando EDA…</p>
+      <p style={{ color: "var(--color-fg-faint)" }}>Loading EDA…</p>
     );
   if (error)
     return (
@@ -1027,7 +1023,7 @@ function RawTab({
           boxShadow: "var(--color-shadow)",
         }}
       >
-        <p style={{ color: "var(--color-warn)" }}>No se pudo cargar EDA.</p>
+        <p style={{ color: "var(--color-warn)" }}>Could not load EDA.</p>
         <p
           className="mt-2 text-sm"
           style={{ color: "var(--color-fg-faint)" }}
@@ -1105,7 +1101,7 @@ function TopicsTab({
   const [lambda, setLambda] = useState<number>(0.5);
 
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Cargando tópicos…</p>;
+    return <p style={{ color: "var(--color-fg-faint)" }}>Loading topics…</p>;
   if (error)
     return (
       <div
@@ -1117,7 +1113,7 @@ function TopicsTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar topic_views.
+          Could not load topic_views.
         </p>
         <p
           className="mt-2 text-sm"
@@ -1149,13 +1145,13 @@ function TopicsTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Mapa intertópico (LDAvis · JS-MDS 2D)
+            Mapa intertopic (LDAvis · JS-MDS 2D)
           </h4>
           <p
             className="text-sm mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            El área del bubble es proporcional a la prevalencia del tópico
+            El área del bubble es proporcional a la prevalence del topic
             (mean θ sobre el corpus). Click en un bubble para enfocar.
           </p>
           <IntertopicMap
@@ -1181,8 +1177,8 @@ function TopicsTab({
             >
               Top-30 palabras —{" "}
               {selectedTopic !== null
-                ? `tópico ${selectedTopic + 1}`
-                : "selecciona un tópico"}
+                ? `topic ${selectedTopic + 1}`
+                : "select a topic"}
             </h4>
             <div className="flex items-center gap-2">
               <span
@@ -1230,7 +1226,7 @@ function TopicsTab({
             </ol>
           ) : (
             <p style={{ color: "var(--color-fg-faint)" }}>
-              Selecciona un tópico en el mapa de la izquierda.
+              Select a topic in the left map.
             </p>
           )}
         </div>
@@ -1248,14 +1244,14 @@ function TopicsTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Perfiles espectrales por tópico (φ_k)
+          Perfiles espectrales por topic (φ_k)
         </h4>
         <p
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Una curva por tópico, mismo color que el bubble del mapa. Cuando
-          un tópico está seleccionado se resalta y los demás se atenúan.
+          One curve per topic, same colour as the map bubble. When a topic is
+          selected it is highlighted and the rest fade out.
         </p>
         <TopicSpectrum
           wavelengths={data.wavelengths_nm}
@@ -1265,7 +1261,7 @@ function TopicsTab({
         <div
           className="mt-3 flex flex-wrap gap-1.5"
           role="group"
-          aria-label="Selector de tópicos"
+          aria-label="Selector de topics"
         >
           {data.topic_band_profiles.map((_, k) => {
             const isSel = selectedTopic === k;
@@ -1293,7 +1289,7 @@ function TopicsTab({
                   className="inline-block w-2.5 h-2.5 rounded-sm"
                   style={{ backgroundColor: color }}
                 />
-                tópico {k + 1}
+                topic {k + 1}
                 <span
                   className="text-[10.5px] ml-1 opacity-70"
                   style={{ color: "var(--color-fg-faint)" }}
@@ -1338,7 +1334,7 @@ function SceneStats({
       )}–${Math.round(data.wavelengths_nm.at(-1)!)} nm)`,
     },
     {
-      label: "Píxeles etiquetados",
+      label: "Labelled pixels",
       value: `${data.n_labelled_pixels.toLocaleString()} / ${data.n_pixels.toLocaleString()}`,
     },
     {
@@ -1391,7 +1387,7 @@ function TopicLabelTab({
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
 
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Cargando matriz tópico–etiqueta…</p>;
+    return <p style={{ color: "var(--color-fg-faint)" }}>Loading topic–label matrix…</p>;
   if (error)
     return (
       <div
@@ -1403,7 +1399,7 @@ function TopicLabelTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar topic_to_data.
+          Could not load topic_to_data.
         </p>
         <p
           className="mt-2 text-sm"
@@ -1431,16 +1427,15 @@ function TopicLabelTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          P(etiqueta | tópico) · asignación dominante
+          P(label | topic) · dominant assignment
         </h4>
         <p
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Cada fila es un tópico; las celdas son la fracción de píxeles
-          asignados al tópico (por θ dominante) que tienen cada
-          etiqueta. La celda con borde es la dominante por fila.
-          Click en una fila para resaltarla y ver el detalle abajo.
+          Each row is one topic; cells show the fraction of pixels assigned to that
+          topic (by dominant θ) that carry each label. The bordered cell is the
+          dominant per row. Click a row to highlight it and see the detail below.
         </p>
         <div className="overflow-x-auto">
           <TopicLabelHeatmap
@@ -1469,14 +1464,14 @@ function TopicLabelTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Documentos por tópico (asignación dominante)
+            Documents per topic (dominant assignment)
           </h4>
           <p
             className="text-[12.5px] mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cuántos píxeles cae a cada tópico cuando aplicamos arg-max
-            sobre θ. La barra muestra el conteo absoluto.
+            How many pixels fall into each topic when we apply arg-max over θ.
+            The bar shows the absolute count.
           </p>
           <DocsPerTopicBar
             counts={data.docs_per_topic_dominant}
@@ -1498,15 +1493,15 @@ function TopicLabelTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            KL(P(label | tópico) ‖ P(label))
+            KL(P(label | topic) ‖ P(label))
           </h4>
           <p
             className="text-[12.5px] mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Divergencia KL de la distribución de etiquetas dado el tópico
-            contra el prior global. Tópicos con alta KL son
-            informativos sobre la etiqueta; con KL ≈ 0 son inespecíficos.
+            KL divergence of P(label | topic) against the global label prior.
+            Topics with high KL are informative about labels; with KL ≈ 0 they
+            are unspecific.
           </p>
           <DocsPerTopicBar
             counts={data.kl_to_label_prior_per_topic}
@@ -1532,7 +1527,7 @@ function TopicLabelTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Detalle del tópico {selectedTopic + 1}
+            Detalle del topic {selectedTopic + 1}
           </h4>
           <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[13px]">
             {[...matrix[selectedTopic]!]
@@ -1580,14 +1575,14 @@ const ROUTED_LABEL: Record<string, string> = {
 };
 
 const ROUTED_DESC: Record<string, string> = {
-  raw_logistic: "Logistic regression sobre el espectro crudo (B bandas).",
-  theta_logistic: "Logistic regression sobre theta (K dimensiones — control).",
-  pca_12_logistic: "Logistic regression sobre PCA-K (control K-dim).",
-  pca_K_logistic: "Logistic regression sobre PCA-K (control K-dim).",
+  raw_logistic: "Logistic regression over the raw spectrum (B bands).",
+  theta_logistic: "Logistic regression over theta (K dimensions — control).",
+  pca_12_logistic: "Logistic regression over PCA-K (K-dim control).",
+  pca_K_logistic: "Logistic regression over PCA-K (K-dim control).",
   topic_routed_soft:
-    "Especialista por tópico sobre el espectro crudo, mezclado por theta (mixture).",
+    "Per-topic specialist over the raw spectrum, mixed by theta (mixture).",
   topic_routed_hard:
-    "Especialista por tópico sobre el espectro crudo, asignación dura al tópico dominante.",
+    "Per-topic specialist over the raw spectrum, hard assignment to the dominant topic.",
 };
 
 const ROUTED_COLOR: Record<string, string> = {
@@ -1609,7 +1604,7 @@ function RoutedTab({
   data: import("@/api/client").TopicRoutedClassifier | null;
 }) {
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Cargando ranking…</p>;
+    return <p style={{ color: "var(--color-fg-faint)" }}>Loading ranking…</p>;
   if (error)
     return (
       <div
@@ -1621,7 +1616,7 @@ function RoutedTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar topic_routed_classifier.
+          Could not load topic_routed_classifier.
         </p>
         <p
           className="mt-2 text-sm"
@@ -1665,16 +1660,16 @@ function RoutedTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Ranking macro-F1 (5-fold StratifiedKFold) — esta escena
+            Ranking macro-F1 (5-fold StratifiedKFold) — this scene
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            K={data.K} tópicos · {data.n_classes} clases ·{" "}
+            K={data.K} topics · {data.n_classes} clases ·{" "}
             {data.n_documents.toLocaleString()} documentos. Cinco métodos
             comparados; el routed_soft es el que la metodología defiende
-            (especialista por tópico sobre el espectro crudo, mezclado por
+            (especialista por topic sobre el espectro crudo, mezclado por
             theta).
           </p>
         </header>
@@ -1871,7 +1866,7 @@ function RasterTab({
 
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Cargando metadata raster…</p>
+      <p style={{ color: "var(--color-fg-faint)" }}>Loading raster metadata…</p>
     );
   if (error)
     return (
@@ -1884,7 +1879,7 @@ function RasterTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar topic_to_data.
+          Could not load topic_to_data.
         </p>
         <p
           className="mt-2 text-sm"
@@ -1916,16 +1911,16 @@ function RasterTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Mapa espacial — tópico dominante por píxel
+            Mapa espacial — topic dominante por pixel
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cada píxel etiquetado se colorea por su tópico dominante
+            Cada pixel labelled se coloured por su topic dominante
             (arg-max θ_d). Mueve el cursor sobre el raster para inspeccionar
-            row/col + tópico; click para fijar la lectura. Selecciona un
-            tópico abajo para aislar su huella espacial.
+            row/col + topic; click para fijar la lectura. Select un
+            topic abajo para aislar su huella espacial.
           </p>
         </header>
 
@@ -1933,12 +1928,12 @@ function RasterTab({
           {buf.isLoading && (
             <p style={{ color: "var(--color-fg-faint)" }}>
               Descargando raster ({meta.spatial_shape[0]}×
-              {meta.spatial_shape[1]} píxeles)…
+              {meta.spatial_shape[1]} pixels)…
             </p>
           )}
           {buf.error && (
             <p style={{ color: "var(--color-warn)" }}>
-              No se pudo cargar el raster: {String(buf.error)}
+              Could not load the raster: {String(buf.error)}
             </p>
           )}
           {buf.data && (
@@ -1969,12 +1964,12 @@ function RasterTab({
               </div>
               {pick ? (
                 <div className="font-mono">
-                  ({pick.row}, {pick.col}) → tópico{" "}
+                  ({pick.row}, {pick.col}) → topic{" "}
                   {pick.topic === null ? "—" : pick.topic + 1}
                 </div>
               ) : (
                 <span style={{ color: "var(--color-fg-faint)" }}>
-                  Click cualquier píxel del raster.
+                  Click cualquier pixel del raster.
                 </span>
               )}
             </div>
@@ -1984,7 +1979,7 @@ function RasterTab({
                 className="text-[11px] uppercase tracking-wider mb-2"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Aislar un tópico
+                Aislar un topic
               </div>
               <div className="flex flex-wrap gap-1.5">
                 <button
@@ -2037,7 +2032,7 @@ function RasterTab({
                         className="inline-block w-2.5 h-2.5 rounded-sm"
                         style={{ backgroundColor: color }}
                       />
-                      tópico {k + 1}
+                      topic {k + 1}
                     </button>
                   );
                 })}
@@ -2056,7 +2051,7 @@ function RasterTab({
                   className="text-[11px] uppercase tracking-wider mb-2"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  Mezcla de etiquetas — tópico {selectedTopic! + 1}
+                  Label mixture — topic {selectedTopic! + 1}
                 </div>
                 <ul className="space-y-1">
                   {[...labels]
@@ -2142,21 +2137,21 @@ function MetricsTab({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Reconstrucción RMSE en held-out sobre el doc-term matrix para
-            K ∈ {`{4, 6, 8, 10, 12, 16}`}. PCA gana porque es el compresor L2-óptimo;
-            LDA optimiza una verosimilitud multinomial (no L2). El argumento
-            no es "LDA recuestriuye mejor" — sino "LDA da una basis interpretable
-            a costo de RMSE".
+            Held-out reconstruction RMSE on the doc-term matrix for
+            K ∈ {`{4, 6, 8, 10, 12, 16}`}. PCA wins because it is the L2-optimal
+            compressor; LDA optimises a multinomial likelihood (not L2). The
+            argument is not "LDA reconstructs better" — it is "LDA delivers an
+            interpretable basis at the cost of RMSE".
           </p>
         </header>
         {rateDistLoading && (
           <p style={{ color: "var(--color-fg-faint)" }}>
-            Cargando curvas…
+            Loading curves…
           </p>
         )}
         {rateDistError && (
           <p style={{ color: "var(--color-warn)" }}>
-            No se pudo cargar /api/rate-distortion-curve.
+            Could not load /api/rate-distortion-curve.
           </p>
         )}
         {rateDist && <RateDistortionCurveSvg data={rateDist} />}
@@ -2175,26 +2170,26 @@ function MetricsTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Mutual information · MI(latent ; etiqueta)
+            Mutual information · MI(latent ; label)
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cuánta información sobre la etiqueta retiene cada
-            representación K-dim (theta vs PCA-K vs NMF-K vs ICA-K vs
+            Cuánta información sobre la label retiene cada
+            representation K-dim (theta vs PCA-K vs NMF-K vs ICA-K vs
             dense-AE-K). Reportado como joint MI clipeado a la entropía
-            de la etiqueta y como fracción de entropía recuperada.
+            de la label y como fracción de entropía recuperada.
           </p>
         </header>
         {miLoading && (
           <p style={{ color: "var(--color-fg-faint)" }}>
-            Cargando MI…
+            Loading MI…
           </p>
         )}
         {miError && (
           <p style={{ color: "var(--color-warn)" }}>
-            No se pudo cargar /api/mutual-information.
+            Could not load /api/mutual-information.
           </p>
         )}
         {mi && <MutualInfoTable data={mi} />}
@@ -2386,7 +2381,7 @@ function MutualInfoTable({
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Entropía de etiqueta H(y) = {data.label_entropy_nats.toFixed(3)}{" "}
+        Entropía de label H(y) = {data.label_entropy_nats.toFixed(3)}{" "}
         nats ({data.label_entropy_bits.toFixed(3)} bits) ·{" "}
         {data.n_documents.toLocaleString()} documentos.
       </p>
@@ -2468,7 +2463,7 @@ function UsgsTab({
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Cargando topic-to-USGS-v7…
+        Loading topic-to-USGS-v7…
       </p>
     );
   if (error)
@@ -2482,7 +2477,7 @@ function UsgsTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar topic_to_usgs_v7.
+          Could not load topic_to_usgs_v7.
         </p>
         <p
           className="mt-2 text-sm"
@@ -2522,8 +2517,8 @@ function UsgsTab({
             style={{ color: "var(--color-fg-faint)" }}
           >
             {data.library_subset} · {data.library_sample_count} espectros en
-            7 capítulos. Cada tópico se enmaridada por cosine + SAM contra
-            la librería completa; click un tópico abajo para ver sus top
+            7 chapters. Cada topic se enmaridada por cosine + SAM contra
+            la librería completa; click un topic abajo para ver sus top
             matches.
           </p>
         </header>
@@ -2553,7 +2548,7 @@ function UsgsTab({
                   className="inline-block w-2.5 h-2.5 rounded-sm"
                   style={{ backgroundColor: color }}
                 />
-                tópico {k + 1}
+                topic {k + 1}
               </button>
             );
           })}
@@ -2566,7 +2561,7 @@ function UsgsTab({
                 className="text-sm font-semibold mb-2"
                 style={{ color: "var(--color-fg)" }}
               >
-                Top 20 — tópico {selectedTopic! + 1}
+                Top 20 — topic {selectedTopic! + 1}
               </h5>
               <ol
                 className="text-[12.5px] space-y-1.5"
@@ -2661,7 +2656,7 @@ function UsgsTab({
                 style={{ color: "var(--color-fg-faint)" }}
               >
                 Conteo de capítulo entre los 50 espectros más parecidos al
-                tópico. {data.library_subset}: {data.library_sample_count}{" "}
+                topic. {data.library_subset}: {data.library_sample_count}{" "}
                 muestras totales en biblioteca, distribuidas como{" "}
                 {Object.entries(data.library_chapter_counts)
                   .map(([c, n]) => `${c} ${n}`)
@@ -3310,7 +3305,7 @@ function StabilityTab({
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Cargando estabilidad…
+        Loading stability…
       </p>
     );
   if (error)
@@ -3324,7 +3319,7 @@ function StabilityTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar topic_stability.
+          Could not load topic_stability.
         </p>
         <p
           className="mt-2 text-sm"
@@ -3505,13 +3500,13 @@ function StabilityTabBody({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Estabilidad por tópico · matched-cosine vs seed 0
+          Estabilidad por topic · matched-cosine vs seed 0
         </h4>
         <p
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Para cada tópico, la mediana y mínimo del Hungarian-matched cosine
+          Para cada topic, la mediana y mínimo del Hungarian-matched cosine
           contra el ajuste de seed 0 a través de los demás seeds.
           Tópicos cerca de 1.0 son robustos; los más bajos son los que la
           inicialización aleatoria aún logra perturbar.
@@ -3530,7 +3525,7 @@ function StabilityTabBody({
                   className="shrink-0 w-20 font-mono"
                   style={{ color: "var(--color-fg)" }}
                 >
-                  tópico {t.topic_id}
+                  topic {t.topic_id}
                 </span>
                 <span
                   className="flex-1 h-4 rounded-sm relative overflow-hidden"
@@ -3573,7 +3568,7 @@ function StabilityTabBody({
           className="mt-4 text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Barra coloreada = mediana; línea vertical interna = mínimo.
+          Barra colouredda = mediana; línea vertical interna = mínimo.
         </p>
       </div>
     </div>
@@ -3661,7 +3656,7 @@ function SpectralBrowserTab({
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Cargando metadata del browser…
+        Loading browser metadata…
       </p>
     );
   if (error)
@@ -3675,7 +3670,7 @@ function SpectralBrowserTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar /api/spectral-browser.
+          Could not load /api/spectral-browser.
         </p>
         <p
           className="mt-2 text-sm"
@@ -3709,7 +3704,7 @@ function SpectralBrowserTab({
               className="text-sm mt-1"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Cada línea es un píxel real (no un promedio); muestreo{" "}
+              Cada línea es un pixel real (no un promedio); muestreo{" "}
               {meta.sampling_strategy}. {meta.B} bandas (
               {Math.round(meta.wavelengths_nm[0]!)}–
               {Math.round(meta.wavelengths_nm[meta.wavelengths_nm.length - 1]!)}{" "}
@@ -3750,7 +3745,7 @@ function SpectralBrowserTab({
         )}
         {buf.error && (
           <p style={{ color: "var(--color-warn)" }}>
-            No se pudo cargar spectra.bin: {String(buf.error)}
+            Could not load spectra.bin: {String(buf.error)}
           </p>
         )}
         {spectra && (
@@ -3846,7 +3841,7 @@ function Embed3DTab({
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Cargando embedding…
+        Loading embedding…
       </p>
     );
   if (error)
@@ -3860,7 +3855,7 @@ function Embed3DTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar el embedding 3D.
+          Could not load the 3D embedding.
         </p>
         <p
           className="mt-2 text-sm"
@@ -3915,7 +3910,7 @@ function Embed3DTab({
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              colorear por
+              colouredr por
             </span>
             <select
               value={colorBy}
@@ -3936,7 +3931,7 @@ function Embed3DTab({
         <Suspense
           fallback={
             <p style={{ color: "var(--color-fg-faint)" }}>
-              Cargando renderizador 3D…
+              Loading 3D renderer…
             </p>
           }
         >
@@ -3954,7 +3949,7 @@ function Embed3DTab({
               className="text-[11px] uppercase tracking-wider mb-1.5"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Aislar tópico
+              Aislar topic
             </div>
             <div className="flex flex-wrap gap-1.5">
               <button
@@ -4006,7 +4001,7 @@ function Embed3DTab({
                       className="inline-block w-2.5 h-2.5 rounded-sm"
                       style={{ backgroundColor: color }}
                     />
-                    tópico {k + 1}
+                    topic {k + 1}
                   </button>
                 );
               })}
@@ -4063,7 +4058,7 @@ function DocsPerTopicBar({
                 fontWeight: isSel ? 600 : 400,
               }}
             >
-              tópico {k + 1}
+              topic {k + 1}
             </span>
             <span
               className="flex-1 h-4 rounded-sm relative overflow-hidden"
@@ -4256,7 +4251,7 @@ function FamilyPickerStep({
   if (isLoading) {
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Cargando inventario…
+        Loading inventory…
       </p>
     );
   }
@@ -4272,7 +4267,7 @@ function FamilyPickerStep({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          No se pudo cargar el inventario.
+          Could not load the inventory.
         </p>
         <p
           className="mt-2 text-sm"
