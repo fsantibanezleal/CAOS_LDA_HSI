@@ -364,7 +364,7 @@ export const api = {
       `/api/topic-spatial-continuous/${encodeURIComponent(sceneId)}`,
     ),
   topicSpatialFull: (sceneId: string) =>
-    request<TopicSpatialContinuous>(
+    request<TopicSpatialFull>(
       `/api/topic-spatial-full/${encodeURIComponent(sceneId)}`,
     ),
   endmemberBaseline: (sceneId: string) =>
@@ -801,6 +801,26 @@ export type LinearProbeMethodMetrics = {
   accuracy: { mean: number; ci95?: [number, number] };
   balanced_accuracy?: { mean: number; ci95?: [number, number] };
   latent_dim?: number;
+};
+
+export type TopicSpatialFull = {
+  scene_id: string;
+  topic_count: number;
+  spatial_shape: [number, number];
+  n_labelled_pixels: number;
+  lda_refit_note?: string;
+  per_topic_continuous_spatial_full: {
+    topic_id: number;
+    morans_I_continuous_full?: number;
+    gearys_C_continuous_full?: number;
+    mean_abundance_in_mask?: number;
+  }[];
+  aggregated_morans_I_mean_over_topics: number;
+  aggregated_gearys_C_mean_over_topics?: number;
+  boundary_displacement_error?: number | null;
+  framework_axis?: string;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type TopicSpatialContinuous = {
