@@ -10,211 +10,202 @@ export default function MethodologyApplication() {
   return (
     <PageShell
       title={t("pages:methodology_application.title")}
-      lead="Cómo se aplican los tópicos a problemas de clasificación y regresión sobre HSI. Tres familias de modelos: directo (theta como feature), routed (un especialista por tópico) y embedded (theta concatenado con baselines)."
+      lead="How topics are applied to classification and regression problems on HSI. Three families of models: direct (theta as feature), routed (one specialist per topic) and embedded (theta concatenated with baselines)."
     >
       <Section
         id="why"
-        title="¿Por qué no clasificar directamente?"
-        lead="Reducir un cubo HSI a clases duras descarta toda la información sobre mezcla. Si un píxel es 60% suelo y 40% maleza, una etiqueta dura escoge uno y miente. Los tópicos preservan la mezcla."
+        title="Why not classify directly?"
+        lead="Reducing an HSI cube to hard classes throws away all the mixture information. If a pixel is 60% soil and 40% scrub, a hard label picks one and lies. Topics preserve the mixture."
       >
         <p>
-          La estrategia clásica en HSI — fittear un random forest o un SVM
-          sobre el espectro crudo — funciona en escenas balanceadas y bien
-          etiquetadas. Falla donde más importa: bordes de clase, mezclas
-          fraccionales, transiciones de cobertura. Una representación tópica
-          se sienta entre el espectro y el clasificador y captura la mezcla
-          como un vector denso{" "}
+          The classical HSI strategy — fit a random forest or an SVM on the raw
+          spectrum — works on balanced, well-labelled scenes. It fails where it
+          matters most: class boundaries, fractional mixtures, cover transitions.
+          A topic representation sits between the spectrum and the classifier
+          and captures the mixture as a dense vector{" "}
           <Equation tex="\theta_d \in \Delta^{K-1}" />.
         </p>
         <p className="mt-3">
-          La pregunta empírica es: <em>¿theta como input mejora a un
-          baseline lineal sobre el espectro crudo?</em> La respuesta de la
-          batería B-1..B-5 (página de Benchmarks) es: <strong>theta
-          plano pierde</strong> contra ICA-10 / PCA-30 / dense-AE-8 en casi
-          todas las escenas etiquetadas, lo que es a la vez decepcionante e
-          informativo.
+          The empirical question is: <em>does theta as input beat a linear
+          baseline on the raw spectrum?</em> The answer from the B-1..B-5
+          battery (Benchmarks page) is: <strong>flat theta loses</strong> to
+          ICA-10 / PCA-30 / dense-AE-8 on almost every labelled scene, which
+          is both disappointing and informative.
         </p>
         <p className="mt-3">
-          La forma honesta de aprovechar los tópicos no es theta como
-          feature plano, sino los modelos <em>routed</em> y <em>embedded</em>{" "}
-          que vienen abajo.
+          The honest way to exploit topics is not theta as a flat feature, but
+          the <em>routed</em> and <em>embedded</em> models below.
         </p>
       </Section>
 
       <Section
         id="three-families"
-        title="Tres familias de modelos basados en tópicos"
-        lead="Cada familia usa theta de un modo distinto. La diferencia es metodológica, no cosmética."
+        title="Three families of topic-based models"
+        lead="Each family uses theta in a different way. The difference is methodological, not cosmetic."
       >
-        <Figure caption="De izquierda a derecha: directo (theta como vector de features), routed (un especialista por tópico, mezclados por theta), embedded (theta concatenado con un baseline lineal). Los tres están implementados como builders separados en data-pipeline/ y se comparan en la página de Benchmarks.">
+        <Figure caption="Left to right: direct (theta as feature vector), routed (one specialist per topic, mixed by theta), embedded (theta concatenated with a linear baseline). All three are implemented as separate builders in data-pipeline/ and compared head-to-head on the Benchmarks page.">
           <ThreeFamiliesSVG />
         </Figure>
       </Section>
 
       <Section
         id="direct"
-        title="1. Directo — theta como feature"
-        lead="El más simple, también el menos informativo."
+        title="1. Direct — theta as feature"
+        lead="The simplest, also the least informative."
       >
-        <p>El predictor toma theta y produce la etiqueta:</p>
+        <p>The predictor takes theta and produces the label:</p>
         <Equation block tex="\hat{y}_d = \arg\max_y \, p_\beta(y \mid \theta_d) = \arg\max_y \, \beta_y^\top \theta_d" />
         <p>
-          La regresión logística sobre theta es el caso baseline. Su
-          desempeño está dominado por dos cosas: (i) cuánta información
-          discriminativa hay en la mezcla y (ii) qué tan bien LDA recuperó
-          una basis útil para la tarea.
+          Logistic regression over theta is the baseline case. Its performance
+          is dominated by two things: (i) how much discriminative information
+          lives in the mixture, and (ii) how well LDA recovered a useful basis
+          for the task.
         </p>
         <p className="mt-3">
           <strong>Builder:</strong>{" "}
-          <code>build_topic_routed_classifier.py</code> reporta este como{" "}
-          <code>theta_logistic</code>. <strong>Headline:</strong> theta
-          plano pierde contra raw_logistic en todas las escenas labelled.
-          Útil sólo como control.
+          <code>build_topic_routed_classifier.py</code> reports this as{" "}
+          <code>theta_logistic</code>. <strong>Headline:</strong> flat theta
+          loses against raw_logistic on every labelled scene. Useful only as a
+          control.
         </p>
       </Section>
 
       <Section
         id="routed"
-        title="2. Routed — un especialista por tópico"
-        lead="Cada tópico entrena su propio clasificador sobre el espectro crudo, ponderado por la pertenencia."
+        title="2. Routed — one specialist per topic"
+        lead="Each topic trains its own classifier on the raw spectrum, weighted by membership."
       >
         <p>
-          La idea: para cada tópico <Equation tex="k" />, entrenar un
-          clasificador <Equation tex="P_k(y \mid x)" /> sobre el espectro
-          crudo <Equation tex="x" /> con pesos de muestra{" "}
-          <Equation tex="\theta_{d,k}" />. En tiempo de inferencia, mezclar
-          según la pertenencia tópica del documento de prueba:
+          The idea: for each topic <Equation tex="k" />, train a classifier{" "}
+          <Equation tex="P_k(y \mid x)" /> on the raw spectrum{" "}
+          <Equation tex="x" /> with per-sample weights{" "}
+          <Equation tex="\theta_{d,k}" />. At inference time, mix according to
+          the topical membership of the test document:
         </p>
         <Equation
           block
           tex="P(y \mid x_{\text{test}}) = \sum_{k=1}^{K} \theta_{\text{test}, k} \, P_k(y \mid x_{\text{test}})"
         />
         <p>
-          La intuición: cada tópico captura un régimen espectral distinto
-          (suelo seco, vegetación verde, urbano…), y un clasificador
-          especializado en ese régimen funciona mejor ahí que un
-          clasificador único forzado a generalizar sobre todos.
+          Intuition: each topic captures a distinct spectral regime (dry soil,
+          green vegetation, urban...), and a classifier specialised in that
+          regime works better there than a single classifier forced to
+          generalise over all.
         </p>
         <p className="mt-3">
-          <strong>Variantes:</strong>{" "}
-          <code>topic_routed_soft</code> (mezcla la suma),{" "}
-          <code>topic_routed_hard</code> (pasa todo al especialista del
-          tópico dominante).
+          <strong>Variants:</strong>{" "}
+          <code>topic_routed_soft</code> (mixes the sum),{" "}
+          <code>topic_routed_hard</code> (forwards everything to the dominant
+          topic's specialist).
         </p>
         <p className="mt-3">
           <strong>Builder:</strong>{" "}
           <code>build_topic_routed_classifier.py</code>.{" "}
-          <strong>Headline:</strong> topic_routed_soft empata o supera a
-          raw_logistic en las 6 escenas labelled (Indian Pines 0.839 vs
-          0.833; Salinas 0.954 vs 0.951; KSC 0.921 vs 0.914; Botswana 0.962
-          vs 0.962; Pavia U 0.819 vs 0.805; Salinas-A 0.996 vs 0.997). El
-          posterior bayesiano (HDI94) muestra μ_routed_soft − μ_raw =
-          +0.737 — soporte robusto a favor del routed soft.
+          <strong>Headline:</strong> topic_routed_soft ties or beats
+          raw_logistic on the 6 labelled scenes (Indian Pines 0.839 vs 0.833;
+          Salinas 0.954 vs 0.951; KSC 0.921 vs 0.914; Botswana 0.962 vs 0.962;
+          Pavia U 0.819 vs 0.805; Salinas-A 0.996 vs 0.997). The Bayesian
+          posterior (HDI94) shows μ_routed_soft − μ_raw = +0.737 — robust
+          support in favour of routed soft.
         </p>
       </Section>
 
       <Section
         id="embedded"
-        title="3. Embedded — theta concatenado con baseline"
-        lead="El concat es el menos elegante, pero a veces el más sano: deja que el clasificador decida cuánto pesa theta."
+        title="3. Embedded — theta concatenated with baseline"
+        lead="Concat is the least elegant but sometimes the healthiest: let the classifier decide how much theta weighs."
       >
         <p>
-          El feature de entrada es la concatenación{" "}
-          <Equation tex="[\theta_d \; \| \; z_d]" /> donde{" "}
-          <Equation tex="z_d" /> es un baseline (PCA-K, NMF-K,
-          dense-AE-K). El clasificador es regresión logística estándar
-          sobre el feature combinado.
+          The input feature is the concatenation{" "}
+          <Equation tex="[\theta_d \; \| \; z_d]" /> where{" "}
+          <Equation tex="z_d" /> is a baseline (PCA-K, NMF-K, dense-AE-K). The
+          classifier is standard logistic regression over the combined feature.
         </p>
         <p className="mt-3">
-          La hipótesis: theta aporta información de mezcla que ni PCA ni
-          AE recuperan; un clasificador con acceso a ambos hace mejor
-          trabajo que con uno solo.
+          The hypothesis: theta contributes mixture information that neither PCA
+          nor AE recovers; a classifier with access to both does better than
+          either alone.
         </p>
         <p className="mt-3">
           <strong>Builder:</strong>{" "}
           <code>build_embedded_baseline.py</code>.{" "}
-          <strong>Headline honesto:</strong> sólo Indian Pines muestra una
-          ganancia (Δ F1 = +0.018, Cliff δ = +0.280, efecto pequeño). En
-          las otras 5 escenas el concat empata con pca_K solo. La señal
-          que ayuda es el <em>gating</em> (familia routed), no el
-          concatenamiento plano.
+          <strong>Honest headline:</strong> only Indian Pines shows a gain
+          (Δ F1 = +0.018, Cliff δ = +0.280, small effect). On the other 5
+          scenes concat ties with pca_K alone. The signal that helps is the{" "}
+          <em>gating</em> (routed family), not the flat concatenation.
         </p>
       </Section>
 
       <Section
         id="regression"
-        title="Regresión sobre mediciones (HIDSAG)"
-        lead="Cuando el target no es una clase sino una medición continua (Cu %, Au g/t, leyes minerales), la lógica es la misma con regresores lineales."
+        title="Regression over measurements (HIDSAG)"
+        lead="When the target is not a class but a continuous measurement (Cu %, Au g/t, mineral grade), the logic is the same with linear regressors."
       >
         <p>
-          Para los subsets HIDSAG (GEOMET, MINERAL1, MINERAL2, GEOCHEM,
-          PORPHYRY) la página de Benchmarks reporta R² y CI95 bootstrap
-          sobre cada target numérico. La familia DMR-LDA (Dirichlet-
-          Multinomial Regression) integra mediciones como meta-data de
-          documento, no como target — esa es una manera distinta de usar
-          el mismo aparato.
+          For the HIDSAG subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY)
+          the Benchmarks page reports R² and bootstrap CI95 over each numeric
+          target. The DMR-LDA family (Dirichlet-Multinomial Regression)
+          integrates measurements as document meta-data, not as target — that
+          is a distinct way of using the same apparatus.
         </p>
         <p className="mt-3">
           <strong>Builders:</strong>{" "}
           <code>build_dmr_lda_hidsag.py</code> +{" "}
-          <code>build_method_statistics_hidsag.py</code>. La página de
-          Benchmarks expone forest plots paired contra los métodos
-          baselines.
+          <code>build_method_statistics_hidsag.py</code>. The Benchmarks page
+          exposes paired forest plots against the baseline methods.
         </p>
       </Section>
 
       <Section
         id="what-topics-capture"
-        title='¿Qué "captura" un tópico, en términos de la tarea?'
-        lead="No es texto: la pregunta se contesta visualmente con distribuciones."
+        title='What does a topic "capture", in task terms?'
+        lead="It is not text: the question is answered visually with distributions."
       >
         <p>
-          Para cada tópico <Equation tex="k" />, el Workspace permite ver:
+          For each topic <Equation tex="k" />, the Workspace shows:
         </p>
         <ul
           className="mt-2 space-y-2 list-disc pl-5"
           style={{ color: "var(--color-fg-subtle)" }}
         >
           <li>
-            <strong>Etiquetas</strong>:{" "}
+            <strong>Labels</strong>:{" "}
             <Equation tex="P(y \mid k) = \frac{\sum_d \theta_{d,k} \, \mathbf{1}[y_d = y]}{\sum_d \theta_{d,k}}" />{" "}
-            — distribución condicional de etiquetas dado el tópico.
+            — conditional label distribution given the topic.
           </li>
           <li>
-            <strong>Mediciones</strong>: histograma o KDE de cada variable
-            continua sobre los documentos pesados por{" "}
-            <Equation tex="\theta_{d,k}" />.
+            <strong>Measurements</strong>: histogram or KDE of each continuous
+            variable over documents weighted by <Equation tex="\theta_{d,k}" />.
           </li>
           <li>
-            <strong>Espectro</strong>: el perfil <Equation tex="\phi_k" />{" "}
-            re-mapeado a longitud de onda — la "firma" del tópico.
+            <strong>Spectrum</strong>: the profile <Equation tex="\phi_k" />{" "}
+            re-mapped to wavelength — the topic's "signature".
           </li>
           <li>
-            <strong>Espacial</strong>: el mapa por píxel de{" "}
-            <Equation tex="\theta_k" /> sobre la escena, con click-to-
-            inspect del píxel y su vector completo.
+            <strong>Spatial</strong>: the per-pixel map of{" "}
+            <Equation tex="\theta_k" /> over the scene, with click-to-inspect
+            on the pixel and its full vector.
           </li>
           <li>
-            <strong>Biblioteca</strong>: top-N coincidencias con USGS
-            spectral library v7 (2450 espectros, 7 capítulos) por cosine
-            sobre el grid AVIRIS-Classic.
+            <strong>Library</strong>: top-N matches with the USGS spectral
+            library v7 (2450 spectra, 7 chapters) by cosine on the
+            AVIRIS-Classic grid.
           </li>
         </ul>
         <p className="mt-3">
-          Con esos cinco panels, una pregunta como "¿este tópico captura
-          documentos de alta ley de cobre?" se contesta mirando el
-          histograma de Cu condicionado a <Equation tex="\theta_k" />, no
-          parseando texto.
+          With those five panels, a question like "does this topic capture
+          high-copper-grade documents?" is answered by looking at the Cu
+          histogram conditioned on <Equation tex="\theta_k" />, not by parsing
+          text.
         </p>
       </Section>
 
-      <Section id="see-also" title="Cómo seguir">
+      <Section id="see-also" title="How to continue">
         <p>
-          La página de Workspace permite <em>aplicar</em> un modelo a un
-          documento concreto y ver los cinco panels al vuelo (todo
-          precalculado, sin re-fitting). La página de Benchmarks compara
-          los modelos cabeza a cabeza con bootstrap CI95 + Wilcoxon-Holm
-          + Cliff δ + posterior bayesiana (HDI94) por escena.
+          The Workspace lets you <em>apply</em> a model to a specific document
+          and see the five panels live (all precomputed, no re-fitting). The
+          Benchmarks page compares models head-to-head with bootstrap CI95 +
+          Wilcoxon-Holm + Cliff δ + Bayesian posterior (HDI94) per scene.
         </p>
       </Section>
     </PageShell>
