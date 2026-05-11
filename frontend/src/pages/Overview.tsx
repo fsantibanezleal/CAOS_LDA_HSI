@@ -344,7 +344,7 @@ function HypercubeMini() {
       <rect x="120" y="120" width="14" height="14" fill="rgba(214, 39, 40, 0.85)" stroke="white" strokeOpacity="0.7" strokeWidth="1.2"/>
       <line x1="134" y1="127" x2="190" y2="127" stroke="rgba(214, 39, 40, 0.85)" strokeWidth="1.4" markerEnd="url(#caos-arr)"/>
       <text x="200" y="124" fontSize="11" fill="rgba(214, 39, 40, 1)" fontWeight="600">x[i,j] ∈ ℝᴮ</text>
-      <text x="200" y="140" fontSize="9.5" fill="currentColor" opacity="0.6">un píxel = un documento</text>
+      <text x="200" y="140" fontSize="9.5" fill="currentColor" opacity="0.6">one pixel = one document</text>
 
       <defs>
         <marker id="caos-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">

@@ -69,7 +69,7 @@ const FAMILY_DESCRIPTIONS: Record<string, string> = {
 const STEPS: { id: string; key: keyof Steps; label: string }[] = [
   { id: "family", key: "family", label: "Familia" },
   { id: "subset", key: "subset", label: "Conjunto" },
-  { id: "representation", key: "representation", label: "Representación" },
+  { id: "representation", key: "representation", label: "Representation" },
   { id: "explore", key: "explore", label: "Explore"},
 ];
 
@@ -399,7 +399,7 @@ function RepresentationPickerStep({
             className="text-lg font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Representación para{" "}
+            Representation for{" "}
             <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
           </h3>
           <p
@@ -753,7 +753,7 @@ function ExploreStep({
 
           <nav
             role="tablist"
-            aria-label="Paneles de exploración"
+            aria-label="Exploration panels"
             className="space-y-2 border-b mb-6 pb-3"
             style={{ borderColor: "var(--color-border)" }}
           >
@@ -1050,7 +1050,7 @@ function RawTab({
           className="text-base font-semibold mb-3"
           style={{ color: "var(--color-fg)" }}
         >
-          Distribución de clases
+          Class distribution
         </h4>
         <ClassDistributionBar classes={data.class_distribution} />
       </div>
@@ -1073,7 +1073,7 @@ function RawTab({
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          La sombra es el rango p25–p75; la línea es la mediana. Click en
+          The shaded band is the p25–p75 range; the line is the median. Click on
           una clase para aislarla, click de nuevo para volver a ver todas.
         </p>
         <SpectralByClass
@@ -1151,7 +1151,7 @@ function TopicsTab({
             className="text-sm mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            El área del bubble es proporcional a la prevalence del topic
+            The bubble area is proportional to topic prevalence
             (mean θ sobre el corpus). Click en un bubble para enfocar.
           </p>
           <IntertopicMap
@@ -1667,8 +1667,8 @@ function RoutedTab({
             style={{ color: "var(--color-fg-faint)" }}
           >
             K={data.K} topics · {data.n_classes} clases ·{" "}
-            {data.n_documents.toLocaleString()} documentos. Cinco métodos
-            comparados; el routed_soft es el que la metodología defiende
+            {data.n_documents.toLocaleString()} documents. Five methods
+            compared; routed_soft is the one the methodology supports
             (especialista por topic sobre el espectro crudo, mezclado por
             theta).
           </p>
@@ -1803,7 +1803,7 @@ function RoutedTab({
           className="text-base font-semibold mb-3"
           style={{ color: "var(--color-fg)" }}
         >
-          Definiciones de método
+          Method definitions
         </h4>
         <dl className="space-y-2 text-[13px]">
           {ranking.map((r) => (
@@ -1960,7 +1960,7 @@ function RasterTab({
                 className="text-[11px] uppercase tracking-wider mb-1"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Píxel fijado
+                Pinned pixel
               </div>
               {pick ? (
                 <div className="font-mono">
@@ -2304,7 +2304,7 @@ function RateDistortionCurveSvg({
           opacity="0.55"
           fontSize="10"
         >
-          K (dimensión latente)
+          K (latent dimension)
         </text>
         <text
           x={12}
@@ -2381,7 +2381,7 @@ function MutualInfoTable({
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Entropía de label H(y) = {data.label_entropy_nats.toFixed(3)}{" "}
+        Label entropy H(y) = {data.label_entropy_nats.toFixed(3)}{" "}
         nats ({data.label_entropy_bits.toFixed(3)} bits) ·{" "}
         {data.n_documents.toLocaleString()} documentos.
       </p>
@@ -2396,7 +2396,7 @@ function MutualInfoTable({
               color: "var(--color-fg)",
             }}
           >
-            <th className="text-left py-2 pr-4 font-semibold">Método</th>
+            <th className="text-left py-2 pr-4 font-semibold">Method</th>
             <th className="text-right py-2 pr-4 font-semibold">Latent dim</th>
             <th className="text-right py-2 pr-4 font-semibold">Joint MI</th>
             <th className="text-right py-2 font-semibold">% H(y) recuperada</th>
@@ -2518,7 +2518,7 @@ function UsgsTab({
           >
             {data.library_subset} · {data.library_sample_count} espectros en
             7 chapters. Cada topic se enmaridada por cosine + SAM contra
-            la librería completa; click un topic abajo para ver sus top
+            the full library; click a topic below to see its top
             matches.
           </p>
         </header>
@@ -2606,7 +2606,7 @@ function UsgsTab({
                 className="text-sm font-semibold mb-2"
                 style={{ color: "var(--color-fg)" }}
               >
-                Capítulos en el top-50
+                Chapters in the top-50
               </h5>
               {chapterHist && Object.keys(chapterHist).length > 0 && (
                 <div className="space-y-1.5">
@@ -2655,7 +2655,7 @@ function UsgsTab({
                 className="mt-3 text-[12px]"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Conteo de capítulo entre los 50 espectros más parecidos al
+                Chapter count among the 50 spectra most similar to the
                 topic. {data.library_subset}: {data.library_sample_count}{" "}
                 muestras totales en biblioteca, distribuidas como{" "}
                 {Object.entries(data.library_chapter_counts)
@@ -3506,10 +3506,10 @@ function StabilityTabBody({
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Para cada topic, la mediana y mínimo del Hungarian-matched cosine
-          contra el ajuste de seed 0 a través de los demás seeds.
-          Tópicos cerca de 1.0 son robustos; los más bajos son los que la
-          inicialización aleatoria aún logra perturbar.
+          For each topic, the median and minimum of the Hungarian-matched
+          cosine against the seed-0 fit across the remaining seeds. Topics
+          near 1.0 are robust; the lowest ones are those random initialisation
+          still manages to perturb.
         </p>
         <div className="space-y-1.5">
           {perTopic.map((t) => {
@@ -3568,7 +3568,7 @@ function StabilityTabBody({
           className="mt-4 text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Barra colouredda = mediana; línea vertical interna = mínimo.
+          Coloured bar = median; inner vertical line = minimum.
         </p>
       </div>
     </div>
@@ -3704,12 +3704,12 @@ function SpectralBrowserTab({
               className="text-sm mt-1"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Cada línea es un pixel real (no un promedio); muestreo{" "}
+              Each line is a real pixel (not an average); subsample{" "}
               {meta.sampling_strategy}. {meta.B} bandas (
               {Math.round(meta.wavelengths_nm[0]!)}–
               {Math.round(meta.wavelengths_nm[meta.wavelengths_nm.length - 1]!)}{" "}
-              nm). Click una clase para aislarla; reduce las líneas
-              renderizadas si tu máquina sufre.
+              nm). Click a class to isolate it; reduce the rendered line count
+              if your machine struggles.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -3717,7 +3717,7 @@ function SpectralBrowserTab({
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              líneas
+              lines
             </span>
             <select
               value={maxLines}
@@ -3922,7 +3922,7 @@ function Embed3DTab({
                 color: "var(--color-fg)",
               }}
             >
-              <option value="topic">Tópico dominante</option>
+              <option value="topic">Dominant topic</option>
               <option value="label">Etiqueta</option>
             </select>
           </div>
@@ -4112,7 +4112,7 @@ function SubsetCard({
       title={
         isReady
           ? `Elegir ${dataset.name}`
-          : `${dataset.name} no tiene raíz local descargada — el pipeline no puede operar sobre él`
+          : `${dataset.name} has no local raw root downloaded — the pipeline cannot operate on it`
       }
     >
       <header className="flex items-baseline gap-2 justify-between mb-2">
@@ -4147,7 +4147,7 @@ function SubsetCard({
             className="shrink-0 w-24 text-[11px] uppercase tracking-wider pt-0.5"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Supervisión
+            Supervision
           </dt>
           <dd className="flex-1">
             {dataset.supervision_states.join(" · ") || "ninguna"}

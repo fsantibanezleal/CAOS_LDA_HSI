@@ -80,7 +80,7 @@ export default function Benchmarks() {
       lead={t("pages:benchmarks.lead")}
     >
       {isLoading && (
-        <p style={{ color: "var(--color-fg-faint)" }}>Cargando estadísticas…</p>
+        <p style={{ color: "var(--color-fg-faint)" }}>Loading statistics…</p>
       )}
 
       {error && (
@@ -114,7 +114,7 @@ export default function Benchmarks() {
               <Section
                 id="forest"
                 title="Forest plot — macro-F1 con CI95 por escena"
-                lead="Cada barra es una escena × método; el punto es la media, las whiskers son los percentiles 2.5 y 97.5 del bootstrap sobre las 25 evaluaciones."
+                lead="Each bar is a scene × method; the dot is the mean, the whiskers are the 2.5 and 97.5 percentiles of the bootstrap over the 25 evaluations."
               >
                 <div className="space-y-8 mt-2">
                   {data.labeled_scenes.map((s) => (
@@ -125,7 +125,7 @@ export default function Benchmarks() {
               <Section
                 id="paired"
                 title="Comparaciones pareadas (Δ macro-F1)"
-                lead="Cada par muestra la diferencia entre métodos por evaluación; resumido como mean ± std del Δ. Negativo = el segundo método pierde."
+                lead="Each pair shows the difference between methods per evaluation; summarised as mean ± std of Δ. Negative = the second method loses."
               >
                 <div className="space-y-6 mt-2">
                   {data.labeled_scenes.map((s) => (
@@ -134,7 +134,7 @@ export default function Benchmarks() {
                 </div>
               </Section>
               <MultiAxisBatterySection />
-              <Section id="method-defs" title="Definiciones de los métodos">
+              <Section id="method-defs" title="Method definitions">
                 <dl
                   className="text-[14px] leading-relaxed space-y-3 mt-2"
                   style={{ color: "var(--color-fg-subtle)" }}
@@ -2284,7 +2284,7 @@ function HidsagCrossPreprocessingStability() {
     <Section
       id="hidsag-cross-preproc-stability"
       title="HIDSAG — estabilidad cross-preprocessing (B-6 follow-up)"
-      lead="Cuán estables son los tópicos del LDA cuando cambia la receta de pre-procesamiento. Reportado como Hungarian-matched top-15 token Jaccard entre las 4 políticas (raw / heuristic-band-mask / SNV / SavGol+SNV). Bajo = los tópicos cambian sustancialmente entre recetas; alto = los tópicos sobreviven."
+      lead="How stable LDA topics are when the preprocessing recipe changes. Reported as Hungarian-matched top-15 token Jaccard across the 4 policies (raw / heuristic-band-mask / SNV / SavGol+SNV). Low = topics change substantially across recipes; high = topics survive."
     >
       <div className="space-y-4 mt-2">
         {successes.map((s) => (
@@ -2308,7 +2308,7 @@ function HidsagCrossPreprocessingStability() {
                 className="text-xs font-mono"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                K={s.data!.topic_count} · {s.data!.policies.length} políticas ·{" "}
+                K={s.data!.topic_count} · {s.data!.policies.length} policies ·{" "}
                 off-diag mean ={" "}
                 <span
                   style={{
@@ -2333,8 +2333,8 @@ function HidsagCrossPreprocessingStability() {
         className="mt-3 text-[12px]"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Métrica: top-15 token Jaccard con asignación Hungarian. Cada celda de
-        las matrices N×N es la stability media por tópico entre políticas i, j.
+        Metric: top-15 token Jaccard with Hungarian assignment. Each cell of
+        the N×N matrices is the average per-topic stability between policies i, j.
       </p>
     </Section>
   );
@@ -2443,7 +2443,7 @@ function HidsagPreprocessing() {
     <Section
       id="hidsag-preprocessing"
       title="HIDSAG — sensibilidad al pre-procesamiento espectral"
-      lead="Cuatro políticas de pre-procesamiento (raw / heuristic-bad-band-mask / SNV / Savitzky-Golay+SNV) sobre las 5 escenas HIDSAG. Mide cuánto cambia el desempeño downstream (clasificación + regresión) cuando varía la receta de limpieza espectral."
+      lead="Four preprocessing policies (raw / heuristic-bad-band-mask / SNV / Savitzky-Golay+SNV) over the 5 HIDSAG scenes. Measures how downstream performance (classification + regression) changes when the spectral cleaning recipe varies."
     >
       {isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
@@ -2541,7 +2541,7 @@ function PreprocessingSubsetCard({
       </header>
       <div className="grid sm:grid-cols-2 gap-5">
         <PolicyBars
-          title="Clasificación · balanced accuracy"
+          title="Classification · balanced accuracy"
           rows={subset.classification_policy_ranking.map((r) => ({
             policy_id: r.policy_id,
             best_model: r.best_model,
@@ -2550,7 +2550,7 @@ function PreprocessingSubsetCard({
           good="green"
         />
         <PolicyBars
-          title="Regresión · R²"
+          title="Regression · R²"
           rows={subset.regression_policy_ranking.map((r) => ({
             policy_id: r.policy_id,
             best_model: r.best_model,
@@ -2661,8 +2661,8 @@ function HidsagBenchmarks() {
   return (
     <Section
       id="hidsag"
-      title="HIDSAG — regresión sobre mediciones"
-      lead="Cinco subsets HIDSAG con targets continuos (Cu %, Au g/t, mineralogía, geoquímica). Por cada uno se compara la familia routed contra raw_ridge, PLS y mezclas tópicas. La métrica primaria es R² medio sobre los targets numéricos del subset."
+      title="HIDSAG — regression over measurements"
+      lead="Five HIDSAG subsets with continuous targets (Cu %, Au g/t, mineralogy, geochemistry). Each compares the routed family against raw_ridge, PLS and topic mixtures. The primary metric is mean R² over the subset's numeric targets."
     >
       {loading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
@@ -2700,7 +2700,7 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
           className="text-sm"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Sin bloque de regresión disponible.
+          No regression block available.
         </p>
       </div>
     );
@@ -2864,7 +2864,7 @@ function ProtocolBox({ stats }: { stats: MethodStatistics }) {
     >
       <Stat label="Escenas evaluadas" value={String(stats.labeled_scenes.length)} />
       <Stat
-        label="Evaluaciones por método"
+        label="Evaluations per method"
         value={
           stats.labeled_scenes.length > 0
             ? String(
