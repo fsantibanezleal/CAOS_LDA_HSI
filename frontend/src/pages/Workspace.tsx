@@ -422,10 +422,10 @@ function RepresentationPickerStep({
   onBack: () => void;
   onPick: (rep: string) => void;
 }) {
-  const families: { id: Representation["family"]; label: string }[] = [
-    { id: "topic", label: "Topic models" },
-    { id: "compression", label: "K-dim compression baselines" },
-    { id: "unmixing", label: "Physical baselines (unmixing)" },
+  const families: { id: Representation["family"]; label: string; color: string; supports: string }[] = [
+    { id: "topic", label: "Topic models", color: "rgba(40, 160, 80, 1)", supports: "Topics · TopicLabel · Routed · USGS · Embed3D · Stability · Interpret · SuperTopics · Spatial · Unmixing · Gating · Neural · LLM · Probe · Robust · Anomaly · Agreement" },
+    { id: "compression", label: "K-dim compression baselines", color: "rgba(56, 189, 248, 1)", supports: "Representation fit (3D scatter + ARI/NMI/silhouette + fit metadata) · Compare 3D (multi-method)" },
+    { id: "unmixing", label: "Physical baselines (unmixing)", color: "rgba(214, 140, 40, 1)", supports: "Unmixing tab (NFINDR + ATGP endmembers + topic×endmember cosine)" },
   ];
 
   return (
@@ -466,12 +466,20 @@ function RepresentationPickerStep({
       <div className="space-y-8">
         {families.map((fam) => (
           <div key={fam.id}>
-            <h4
-              className="text-sm font-semibold uppercase tracking-wider mb-3"
-              style={{ color: "var(--color-fg-faint)" }}
-            >
-              {fam.label}
-            </h4>
+            <div className="flex items-baseline gap-3 mb-1">
+              <h4
+                className="text-sm font-semibold uppercase tracking-wider"
+                style={{ color: fam.color }}
+              >
+                {fam.label}
+              </h4>
+              <span className="text-[10.5px] uppercase tracking-widest font-medium" style={{ color: "var(--color-fg-faint)" }}>
+                {REPRESENTATIONS.filter((r) => r.family === fam.id).length} options
+              </span>
+            </div>
+            <p className="text-[11.5px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
+              Picking unlocks: {fam.supports}
+            </p>
             <div className="grid sm:grid-cols-2 gap-3">
               {REPRESENTATIONS.filter((r) => r.family === fam.id).map((r) => (
                 <button
@@ -508,7 +516,7 @@ function RepresentationPickerStep({
                     className="mt-3 text-sm font-medium"
                     style={{ color: "var(--color-accent)" }}
                   >
-                    Ajuste precalculado disponible →
+                    Precomputed fit available →
                   </div>
                 </button>
               ))}
