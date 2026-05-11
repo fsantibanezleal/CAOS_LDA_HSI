@@ -607,6 +607,32 @@ function ExploreStep({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, selectedTopic]);
 
+  // Keyboard shortcuts: Esc=clear topic, [ ]=prev/next tab
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      // Ignore if user is typing in an input/textarea/select or an element with contentEditable
+      const tgt = e.target as HTMLElement | null;
+      if (tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.tagName === "SELECT" || tgt.isContentEditable)) return;
+      if (e.key === "Escape") {
+        if (selectedTopic !== null) {
+          e.preventDefault();
+          setSelectedTopic(null);
+        }
+        return;
+      }
+      if (e.key === "[" || e.key === "]") {
+        const order: ExploreTab[] = ["raw", "browser", "topics", "topiclabel", "routed", "interpret", "supertopics", "raster", "embed3d", "repfit", "compare3d", "spatial", "stability", "deep", "anomaly", "neural", "gating", "unmixing", "llm", "probe", "robust", "agreement", "usgs", "metrics"];
+        const idx = order.indexOf(tab);
+        if (idx === -1) return;
+        const next = e.key === "]" ? (idx + 1) % order.length : (idx - 1 + order.length) % order.length;
+        e.preventDefault();
+        setTab(order[next] ?? "raw");
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [tab, selectedTopic]);
+
   const eda = useQuery({
     queryKey: ["eda", subsetId],
     queryFn: () => api.edaPerScene(subsetId!),
@@ -4284,7 +4310,7 @@ function SubsetCard({
       }}
       title={
         isReady
-          ? `Elegir ${dataset.name}`
+          ? `Pick ${dataset.name}`
           : `${dataset.name} has no local raw root downloaded — the pipeline cannot operate on it`
       }
     >
