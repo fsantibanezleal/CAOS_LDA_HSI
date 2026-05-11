@@ -708,6 +708,11 @@ function ExploreStep({
     queryFn: () => api.edaPerScene(subsetId!),
     enabled: isLabelled && tab === "spatial",
   });
+  const topicSpatialFullQ = useQuery({
+    queryKey: ["topic-spatial-full", subsetId],
+    queryFn: () => api.topicSpatialFull(subsetId!),
+    enabled: isLabelled && tab === "spatial",
+  });
 
   const crossMethod = useQuery({
     queryKey: ["cross-method-agreement", subsetId],
@@ -984,9 +989,10 @@ function ExploreStep({
           )}
           {tab === "spatial" && (
             <SpatialStructureTab
-              isLoading={topicSpatial.isLoading || groupings.isLoading || groupingsEda.isLoading}
+              isLoading={topicSpatial.isLoading || groupings.isLoading || groupingsEda.isLoading || topicSpatialFullQ.isLoading}
               error={(topicSpatial.error as Error | null) ?? (groupings.error as Error | null)}
               spatial={topicSpatial.data ?? null}
+              spatialFull={topicSpatialFullQ.data ?? null}
               groupings={groupings.data ?? null}
               eda={groupingsEda.data ?? null}
             />
@@ -6406,12 +6412,14 @@ function SpatialStructureTab({
   isLoading,
   error,
   spatial,
+  spatialFull,
   groupings,
   eda,
 }: {
   isLoading: boolean;
   error: Error | null;
   spatial: import("@/api/client").TopicSpatialContinuous | null;
+  spatialFull: import("@/api/client").TopicSpatialFull | null;
   groupings: import("@/api/client").FelzenszwalbGroupings | null;
   eda: import("@/api/client").ScenePerScene | null;
 }) {
@@ -6427,7 +6435,84 @@ function SpatialStructureTab({
   return (
     <div className="space-y-6">
       {spatial ? <SpatialAutocorrelationCard spatial={spatial} /> : null}
+      {spatialFull ? <SpatialFullCard spatialFull={spatialFull} /> : null}
       {groupings ? <FelzenszwalbCard groupings={groupings} eda={eda} /> : null}
+    </div>
+  );
+}
+
+function SpatialFullCard({ spatialFull }: { spatialFull: import("@/api/client").TopicSpatialFull }) {
+  const ts = spatialFull.per_topic_continuous_spatial_full;
+  const maxI = Math.max(...ts.map((t) => Math.abs(t.morans_I_continuous_full ?? 0)), 1);
+  const maxC = Math.max(...ts.map((t) => t.gearys_C_continuous_full ?? 0), 1);
+  return (
+    <div
+      className="rounded-lg border p-4"
+      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
+    >
+      <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
+        Spatial autocorrelation · full labelled set ({spatialFull.n_labelled_pixels.toLocaleString()} pixels)
+      </h4>
+      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
+        Same Moran's I and Geary's C as the previous card, but computed on the LDA refit over the
+        full labelled pixel set (max_iter=40, batch_size=1024) rather than the 220-per-class
+        sub-sample. Values are spatially faithful — useful for honest reporting of cluster
+        compactness. Aggregated Moran's I (mean over topics) ={" "}
+        {spatialFull.aggregated_morans_I_mean_over_topics.toFixed(3)}.
+        {spatialFull.aggregated_gearys_C_mean_over_topics != null ? (
+          <> · Aggregated Geary's C = {spatialFull.aggregated_gearys_C_mean_over_topics.toFixed(3)}.</>
+        ) : null}
+        {spatialFull.boundary_displacement_error != null ? (
+          <> · BDE = {spatialFull.boundary_displacement_error.toFixed(3)}.</>
+        ) : null}
+      </p>
+      {spatialFull.lda_refit_note ? (
+        <p className="text-[11.5px] italic mb-3" style={{ color: "var(--color-fg-faint)" }}>
+          {spatialFull.lda_refit_note}
+        </p>
+      ) : null}
+      <div className="overflow-x-auto">
+        <table className="w-full text-[12px]" style={{ color: "var(--color-fg)" }}>
+          <thead>
+            <tr style={{ color: "var(--color-fg-faint)" }}>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">topic</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">Moran's I (full)</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">Geary's C (full)</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">mean θ in mask</th>
+              <th className="text-left font-mono text-[11px] pb-1">I bar</th>
+              <th className="text-left font-mono text-[11px] pb-1">C bar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ts.map((t) => {
+              const I = t.morans_I_continuous_full ?? 0;
+              const C = t.gearys_C_continuous_full ?? 0;
+              const m = t.mean_abundance_in_mask ?? 0;
+              return (
+                <tr key={`full-${t.topic_id}`} style={{ borderTop: "1px solid var(--color-border)" }}>
+                  <td className="py-1 pr-3 font-mono">
+                    <span className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style={{ backgroundColor: TOPIC_COLORS[(t.topic_id - 1) % TOPIC_COLORS.length] }} />
+                    t{t.topic_id}
+                  </td>
+                  <td className="py-1 pr-3 text-right font-mono">{I.toFixed(3)}</td>
+                  <td className="py-1 pr-3 text-right font-mono">{C.toFixed(3)}</td>
+                  <td className="py-1 pr-3 text-right font-mono">{m.toFixed(3)}</td>
+                  <td className="py-1 w-[110px]">
+                    <div className="w-full h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>
+                      <div className="h-2 rounded" style={{ width: `${(Math.abs(I) / maxI) * 100}%`, backgroundColor: I >= 0 ? "rgba(40,160,80,0.85)" : "rgba(214,39,40,0.85)" }} />
+                    </div>
+                  </td>
+                  <td className="py-1 w-[110px]">
+                    <div className="w-full h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>
+                      <div className="h-2 rounded" style={{ width: `${(C / maxC) * 100}%`, backgroundColor: "rgba(170,60,200,0.85)" }} />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
