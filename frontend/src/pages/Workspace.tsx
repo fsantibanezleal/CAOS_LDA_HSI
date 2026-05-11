@@ -743,24 +743,8 @@ function ExploreStep({
         </button>
       </header>
 
-      {!isLabelled && !isHidsag && (
-        <div
-          className="rounded-lg border p-6"
-          style={{
-            borderColor: "var(--color-border)",
-            backgroundColor: "var(--color-panel)",
-            boxShadow: "var(--color-shadow)",
-          }}
-        >
-          <p style={{ color: "var(--color-fg-subtle)" }}>
-            This explorer currently ships rich panels for the six labelled HSI
-            scenes (Indian Pines, Salinas, Salinas-A, Pavia U, KSC, Botswana)
-            and for the five HIDSAG subsets (GEOMET, MINERAL1, MINERAL2,
-            GEOCHEM, PORPHYRY). For the remaining families (unmixing, USGS
-            individual spectra) the equivalent panels (endmember abundance
-            triangles, library reference cards) are next on the queue.
-          </p>
-        </div>
+      {!isLabelled && !isHidsag && subsetId && (
+        <DatasetOverviewExplorer subsetId={subsetId} />
       )}
 
       {isHidsag && !isLabelled && subsetId && (
@@ -6887,6 +6871,163 @@ function Compare3DPanel({ sceneId, method }: { sceneId: string; method: CompareM
           />
         </Suspense>
       ) : null}
+    </div>
+  );
+}
+
+function DatasetOverviewExplorer({ subsetId }: { subsetId: string }) {
+  const { t } = useTranslation(["pages"]);
+  const inventory = useQuery({
+    queryKey: ["inventory"],
+    queryFn: () => api.inventory(),
+    staleTime: 30 * 60_000,
+  });
+
+  if (inventory.isLoading) {
+    return <p style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.dataset_overview.loading")}</p>;
+  }
+  if (inventory.error) {
+    return (
+      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
+        <p style={{ color: "var(--color-warn)" }}>{t("pages:workspace.dataset_overview.error")}</p>
+      </div>
+    );
+  }
+
+  const entry = inventory.data?.datasets.find((d) => d.id === subsetId);
+  if (!entry) {
+    return (
+      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
+        <p style={{ color: "var(--color-fg-subtle)" }}>
+          {t("pages:workspace.dataset_overview.not_found", { id: subsetId })}
+        </p>
+      </div>
+    );
+  }
+
+  const totalSize = entry.raw_total_size_gb;
+  const fileCount = entry.raw_file_count;
+
+  return (
+    <div className="space-y-5">
+      <div
+        className="rounded-xl border p-5 relative overflow-hidden"
+        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
+      >
+        <div
+          aria-hidden
+          className="absolute top-0 left-0 right-0 h-1"
+          style={{ background: "linear-gradient(90deg, rgba(170,60,200,1) 0%, rgba(56,189,248,1) 100%)" }}
+        />
+        <div className="mt-1 mb-2">
+          <h3 className="text-lg font-semibold tracking-tight" style={{ color: "var(--color-fg)" }}>
+            {entry.name}
+          </h3>
+          <p className="text-[12.5px]" style={{ color: "var(--color-fg-faint)" }}>
+            <span className="font-mono">{entry.id}</span> · {entry.family_title} · {entry.modality}
+          </p>
+        </div>
+        <p className="text-[13px] leading-relaxed mt-3" style={{ color: "var(--color-fg-subtle)" }}>
+          {t("pages:workspace.dataset_overview.lead")}
+        </p>
+
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          <UnmixingStat label={t("pages:workspace.dataset_overview.stat_local")} value={entry.local_raw_available ? t("pages:workspace.dataset_overview.yes") : t("pages:workspace.dataset_overview.no")} />
+          <UnmixingStat label={t("pages:workspace.dataset_overview.stat_files")} value={fileCount.toLocaleString()} />
+          <UnmixingStat label={t("pages:workspace.dataset_overview.stat_size_gb")} value={totalSize.toFixed(2)} />
+          <UnmixingStat label={t("pages:workspace.dataset_overview.stat_access")} value={entry.access} />
+        </div>
+      </div>
+
+      <div
+        className="rounded-lg border p-4"
+        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
+      >
+        <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
+          {t("pages:workspace.dataset_overview.facts_title")}
+        </h4>
+        <div className="grid md:grid-cols-2 gap-x-6 gap-y-1.5 text-[13px]" style={{ color: "var(--color-fg)" }}>
+          <OverviewFact label={t("pages:workspace.dataset_overview.fact_supervision")} value={entry.supervision_states.join(", ")} />
+          {entry.label_scope ? (
+            <OverviewFact label={t("pages:workspace.dataset_overview.fact_label_scope")} value={entry.label_scope} />
+          ) : null}
+          {entry.measurement_scope ? (
+            <OverviewFact label={t("pages:workspace.dataset_overview.fact_measurement_scope")} value={entry.measurement_scope} />
+          ) : null}
+          <OverviewFact label={t("pages:workspace.dataset_overview.fact_acquisition")} value={entry.acquisition_status} />
+          <OverviewFact label={t("pages:workspace.dataset_overview.fact_fit_for_demo")} value={entry.fit_for_demo} />
+          {entry.last_verified ? (
+            <OverviewFact label={t("pages:workspace.dataset_overview.fact_last_verified")} value={entry.last_verified} />
+          ) : null}
+          {entry.license_note ? (
+            <OverviewFact label={t("pages:workspace.dataset_overview.fact_license")} value={entry.license_note} />
+          ) : null}
+          {entry.supervision_caveat ? (
+            <OverviewFact label={t("pages:workspace.dataset_overview.fact_caveat")} value={entry.supervision_caveat} />
+          ) : null}
+          {entry.domains.length > 0 ? (
+            <OverviewFact label={t("pages:workspace.dataset_overview.fact_domains")} value={entry.domains.join(", ")} />
+          ) : null}
+        </div>
+      </div>
+
+      {entry.raw_files.length > 0 ? (
+        <div
+          className="rounded-lg border p-4"
+          style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
+        >
+          <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
+            {t("pages:workspace.dataset_overview.files_title", { count: entry.raw_files.length })}
+          </h4>
+          <p className="text-[12px] mb-2" style={{ color: "var(--color-fg-faint)" }}>
+            {t("pages:workspace.dataset_overview.files_lead")}
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
+              <thead>
+                <tr style={{ color: "var(--color-fg-faint)" }}>
+                  <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.dataset_overview.col_name")}</th>
+                  <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.dataset_overview.col_kind")}</th>
+                  <th className="text-right font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.dataset_overview.col_size_bytes")}</th>
+                  <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.dataset_overview.col_source")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entry.raw_files.slice(0, 24).map((f, i) => (
+                  <tr key={`${f.raw_dataset_id}-${i}`} style={{ borderTop: "1px solid var(--color-border)" }}>
+                    <td className="py-1 pr-3 font-mono text-[11.5px] truncate" style={{ maxWidth: 280 }} title={f.name}>
+                      {f.name}
+                    </td>
+                    <td className="py-1 pr-3 font-mono text-[11.5px]">{f.kind}</td>
+                    <td className="py-1 pr-3 text-right font-mono text-[11.5px]">{(f.size_bytes / 1e6).toFixed(2)} MB</td>
+                    <td className="py-1 font-mono text-[11px] truncate" style={{ maxWidth: 200, color: "var(--color-fg-faint)" }} title={f.source}>
+                      {f.source}
+                    </td>
+                  </tr>
+                ))}
+                {entry.raw_files.length > 24 ? (
+                  <tr>
+                    <td colSpan={4} className="py-2 text-center text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
+                      + {entry.raw_files.length - 24} {t("pages:workspace.dataset_overview.more_files")}
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function OverviewFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-2 border-b py-1" style={{ borderColor: "var(--color-border)" }}>
+      <span className="text-[11px] uppercase tracking-widest font-semibold shrink-0" style={{ color: "var(--color-fg-faint)" }}>
+        {label}
+      </span>
+      <span className="font-mono text-[12px] truncate" title={value}>{value}</span>
     </div>
   );
 }
