@@ -137,7 +137,229 @@
     "title": "Teoría — PTM, LDA, HSI"
   },
   "methodology_representations": {
-    "title": "Tipos de datos y representaciones de documentos"
+    "title": "Representaciones · método por método",
+    "lead": "Cada método (16 totales — 5 topic models clásicos + 2 neural-topic + 4 baselines K-dim + 5 deep encoders + 1 unmixing) tiene su propia formulación teórica, principios de diseño, hipótesis de partida, y hallazgos contra las 6 escenas etiquetadas. Elige un método para profundizar.",
+    "nav_label": "Métodos",
+    "section_theory": "Formulación teórica",
+    "section_principles": "Principios de diseño",
+    "section_hypothesis": "Hipótesis de partida",
+    "section_findings": "Hallazgos contra las 6 escenas etiquetadas",
+    "recipes_title": "Background · recetas de wordification V1..V12",
+    "recipes_lead": "Las representaciones topic-family operan sobre un alfabeto discreto. Hay 12 recetas (V1..V12) × 3 esquemas de cuantización × Q ∈ {8, 16, 32} = 108 configs por escena. La grilla siguiente bosqueja el espacio. La recipe canónica es V1 (band-frequency) con uniform Q=8.",
+    "recipes_figure_caption": "12 recetas × 9 (3 esquemas × 3 Q) = 108 configs por escena.",
+    "families": {
+      "topic": "Topic models clásicos",
+      "neural-topic": "Topic models neurales",
+      "compression": "Baselines de compresión K-dim",
+      "deep": "Representaciones deep",
+      "unmixing": "Linear unmixing"
+    },
+    "methods": {
+      "lda": {
+        "label": "LDA · online VB",
+        "tag": "Blei–Ng–Jordan 2003 · sklearn online VB",
+        "theory_body": "Latent Dirichlet Allocation modela cada documento como una mezcla θ_d sobre K tópicos. Cada token w_{d,n} se genera eligiendo primero un tópico z_{d,n} con probabilidad θ_d, luego una palabra con probabilidad φ_{z_{d,n}}. La inferencia variacional online (Hoffman–Blei–Bach 2010) usa mini-batches y stochastic VI.",
+        "principles": [
+          "K se elige a priori (K = n_classes por convención del proyecto).",
+          "Priors canónicos del paper Procemin/A39: α = 0.45, η = 0.2.",
+          "Recipe canónica V1 (band-frequency, banda como palabra) con Q ∈ {8, 16, 32}."
+        ],
+        "hypothesis": "Si una imagen hiperespectral es un corpus de píxeles-como-documentos, los tópicos discretos descubiertos deberían alinearse con las clases agronómicas/minerales etiquetadas.",
+        "findings": "Gana ARI 4/6 escenas (Indian Pines, Salinas, Salinas-A, Pavia U) vs ProdLDA y ETM head-to-head; pierde 1/6 en KSC donde colapsa a ARI≈0; pierde 1/6 en Botswana vs ETM. Coherencia c_v 0/6 (siempre peor). σ ≤ 0.03 ARI sobre N=5 seeds — extremadamente estable."
+      },
+      "lda_tomo": {
+        "label": "LDA · tomotopy (collapsed Gibbs)",
+        "tag": "Griffiths–Steyvers 2004 · C++ Gibbs",
+        "theory_body": "Colapsado: integra φ y θ analíticamente, deja sólo las asignaciones discretas z como variables de Gibbs. Iteración i: re-muestrea z_i condicional al resto. Más lento (10× online VB) pero suele encontrar mejores máximos.",
+        "principles": [
+          "Sin variational gap — la distribución del sampler converge a la posterior real.",
+          "Burn-in + N iteraciones efectivas; per-document log-likelihood como diagnóstico.",
+          "Implementación C++ vía tomotopy → 50× más rápido que Gibbs puro en Python."
+        ],
+        "hypothesis": "Un mejor estimador de φ debería traducirse a tópicos más semánticamente coherentes (c_v más alto).",
+        "findings": "Gana coherencia c_v en 4/6 escenas vs LDA-online. Tradeoff coherencia-vs-ARI: tomotopy es bueno en c_v, pero ARI vs label se mantiene similar. Útil cuando la prioridad es interpretabilidad."
+      },
+      "lda_sparse": {
+        "label": "LDA · sparse VB",
+        "tag": "α = 0.05 (vs canonical 0.45)",
+        "theory_body": "Igual a LDA online pero con α = 0.05 (modo de la Dirichlet hacia vértices del simplex). θ_d resulta peaked: cada documento se concentra en pocos tópicos.",
+        "principles": [
+          "Sparsity prior estricto: documentos con sólo 1–3 tópicos activos.",
+          "Útil cuando las clases son disjuntas (las clases agronómicas no se mezclan dentro de un píxel).",
+          "Perplexity típicamente peor — pero mejor coincidencia con etiquetas categóricas."
+        ],
+        "hypothesis": "Mayor sparsity debería mejorar ARI vs label (cada documento → un tópico dominante claro).",
+        "findings": "Perplexity peor que LDA canonical, ARI marginalmente peor en la mayoría de escenas. Confirma que para datos HSI los píxeles no son mono-tópico."
+      },
+      "hdp": {
+        "label": "HDP · tomotopy",
+        "tag": "Hierarchical Dirichlet Process · K aprendido",
+        "theory_body": "HDP (Teh–Jordan–Beal–Blei 2006) es la extensión no-paramétrica de LDA: el número de tópicos K se aprende del corpus vía stick-breaking. Los tópicos se comparten entre documentos vía un proceso de Dirichlet jerárquico.",
+        "principles": [
+          "K no se fija a priori — el modelo decide cuántos tópicos activos hay.",
+          "Truncación T (cap superior) para inferencia tractable; T = 50 típico.",
+          "Útil cuando no hay prior sobre n_classes (escenas no etiquetadas)."
+        ],
+        "hypothesis": "Para escenas con número de clases desconocido, HDP debería identificar automáticamente el K efectivo y converger a tópicos coherentes.",
+        "findings": "Sobre las 6 escenas etiquetadas, HDP típicamente activa entre 8–15 tópicos efectivos (n_classes ∈ {9, 13, 16}). c_v comparable a LDA. ARI vs label competitivo con LDA cuando el K aprendido se acerca al verdadero."
+      },
+      "ctm": {
+        "label": "CTM · tomotopy",
+        "tag": "Correlated Topic Model · logistic-normal",
+        "theory_body": "Blei–Lafferty 2007. Reemplaza el prior Dirichlet por una logistic-normal: η_d ∈ ℝ^{K-1} con covarianza Σ no diagonal. La softmax convierte η a θ. Σ codifica correlaciones entre tópicos.",
+        "principles": [
+          "Relaja la independencia entre tópicos que LDA impone vía Dirichlet.",
+          "Inferencia más cara (logistic-normal no es conjugada con multinomial).",
+          "Σ es un parámetro libre adicional con K(K-1)/2 entradas."
+        ],
+        "hypothesis": "Para HSI, tópicos espectralmente vecinos pueden correlacionarse. CTM debería capturarlo.",
+        "findings": "Tiempo de cómputo 5–10× LDA. Ganancia ARI marginal (<0.02). Σ off-diagonal no es estructuralmente informativa en los corpus testeados."
+      },
+      "prodlda": {
+        "label": "ProdLDA · Pyro",
+        "tag": "Srivastava–Sutton 2017 · amortizado",
+        "theory_body": "Neural topic model: un encoder MLP amortiza la inferencia de z, el decoder es la multinomial softmax sobre β = K×V. ELBO con KL Dirichlet vía Laplace approximation.",
+        "principles": [
+          "Encoder + decoder neurales — entrenamiento por gradiente sobre todo el corpus.",
+          "Topic Coherence c_v mejor que LDA típicamente (decoder aprende relaciones banda).",
+          "Sensible a init: σ(ARI) ≈ 0.03 a través de N=5 seeds."
+        ],
+        "hypothesis": "Encoder amortizado debería igualar LDA en ARI y mejorar c_v gracias al decoder neural.",
+        "findings": "Gana c_v 6/6 escenas vs LDA y ETM. Pierde ARI 4/6 vs LDA (5/6 vs ETM). Confirma tradeoff explícito: coherence vs discriminability. Regla operativa: ProdLDA para interpretabilidad, LDA para clustering."
+      },
+      "etm": {
+        "label": "ETM · Embedded Topic Model",
+        "tag": "Dieng–Ruiz–Blei 2020 · decoder low-rank",
+        "theory_body": "Decoder factorizado: β = ρα^T donde ρ ∈ ℝ^{V×E} son word embeddings y α ∈ ℝ^{K×E} son topic embeddings. E ≪ V acelera y regulariza. Variational gaussian sobre θ.",
+        "principles": [
+          "Decoder low-rank E ≤ 256 — captura similitud semántica entre palabras (bandas vecinas).",
+          "Word embeddings ρ son aprendidos junto con tópicos.",
+          "Mejor para vocabularios grandes; HSI tiene V ≈ 200 bandas."
+        ],
+        "hypothesis": "Embedding compartido entre palabras debería ayudar cuando hay redundancia espectral (bandas correlacionadas).",
+        "findings": "ETM > ProdLDA en ARI 5/6 escenas (ProdLDA gana sólo en KSC). Coherencia c_v middle: ProdLDA > ETM > LDA. ETM es el mejor compromiso ARI+c_v."
+      },
+      "nmf": {
+        "label": "NMF · K=8",
+        "tag": "Lee–Seung 1999 · KL divergence",
+        "theory_body": "Non-negative matrix factorization. β-divergence = KL. W ∈ ℝ_+^{N×K} son scores por documento, H ∈ ℝ_+^{K×V} son basis spectra. Multiplicative update rules.",
+        "principles": [
+          "Parts-based: cada espectro es suma no-negativa de K basis spectra.",
+          "Sin priors estocásticos — solución determinista (init-dependent).",
+          "Baseline K-dim directo contra LDA / PCA / AE en la misma K."
+        ],
+        "hypothesis": "Si la mezcla espectral es físicamente lineal, NMF debería recuperar endmembers comparables a NFINDR.",
+        "findings": "Reconstrucción RMSE comparable a PCA en K=8. Silhouette y ARI vs label peor que PCA en 4/6 escenas — los componentes NMF son más interpretables que separables."
+      },
+      "pca": {
+        "label": "PCA · K=8",
+        "tag": "Lineal · L2-óptimo",
+        "theory_body": "Descomposición espectral de la covarianza C ∈ ℝ^{V×V}. Los K eigenvectores top forman la base V_{:K}. La proyección z_d = V_{:K}^T x_d es L2-óptima en reconstrucción (Eckart–Young).",
+        "principles": [
+          "Compresión lineal — preserva varianza máxima en K direcciones.",
+          "Reconstruction RMSE mínima en cada K (esto es su único título garantizado).",
+          "Componentes pueden ser negativos — sin interpretación física directa."
+        ],
+        "hypothesis": "Para datos HSI dominados por una sola dirección de varianza (brillo), PCA debería ser una baseline difícil de batir en MSE pero pobre en separabilidad.",
+        "findings": "Gana reconstruction RMSE en TODAS las K testeadas (4, 8, 12, 16, 32). Silhouette intermedio. ARI vs label moderado. Es el L2-baseline canónico contra el cual todo deep encoder debe justificarse."
+      },
+      "ica": {
+        "label": "ICA · K=8 (FastICA)",
+        "tag": "Hyvärinen 1999 · no-Gaussiano",
+        "theory_body": "Independent Component Analysis. Asume x = As con fuentes s estadísticamente independientes (no Gaussianas). FastICA usa kurtosis / negentropy. ν ~ N(0,1) es la referencia Gaussiana.",
+        "principles": [
+          "Independencia estadística > decorrelación (PCA).",
+          "Útil cuando hay fuentes físicas distinguibles (e.g. agua, vegetación, suelo).",
+          "Convergencia más lenta que PCA pero comparable en costo."
+        ],
+        "hypothesis": "Si la HSI es una mezcla de pocas fuentes físicas independientes, ICA debería recuperar dichas fuentes mejor que PCA en silhouette.",
+        "findings": "Latentes comparables a PCA en ARI/NMI. Silhouette ligeramente menor en 3/6 escenas — los componentes ICA capturan estructura distinta pero no necesariamente más separable."
+      },
+      "dense_ae": {
+        "label": "Dense AE · K=8",
+        "tag": "MLP encoder → bottleneck K → decoder",
+        "theory_body": "Baseline neural lineal. Encoder MLP → bottleneck K, decoder MLP simétrico. Loss MSE. Sin convolución, sin recurrencia. Equivalente a una PCA no-lineal.",
+        "principles": [
+          "Generalización no-lineal de PCA con la misma K.",
+          "Trained on GPU (cycles 59+ del proyecto).",
+          "Sin regularización adicional (sin KL, sin dropout) — comparable a PCA en degenerados."
+        ],
+        "hypothesis": "Para K bajo (4, 8), las relaciones no-lineales entre bandas deberían dar mejor reconstrucción que PCA.",
+        "findings": "Reconstruction RMSE comparable a PCA (no mejor en K=8 promedio 6 escenas). Silhouette y ARI ligeramente peores que PCA — el modelo aprende lo mismo que PCA pero con más varianza de seed."
+      },
+      "cae_1d": {
+        "label": "CAE-1D · K=8",
+        "tag": "Conv1D encoder sobre el espectro",
+        "theory_body": "Convolutional AE 1D sobre el espectro. Kernel = 7 bandas adyacentes. Encoder = 3 capas Conv1D + 2 dense, bottleneck K = 8.",
+        "principles": [
+          "Asume estructura local en el espectro (bandas vecinas correlacionadas).",
+          "Receptive field aumenta exponencialmente con la profundidad — captura features amplios.",
+          "Stride 2 entre capas reduce dimensión espectral progresivamente."
+        ],
+        "hypothesis": "El espectro hiperespectral tiene autocorrelación banda-a-banda. CAE-1D debe capturar features locales (bordes, picos) mejor que PCA/AE denso.",
+        "findings": "Mejor estabilidad de seeds (ARI std 15–20% menor que LDA en 5/6 escenas). Silhouette igualada a PCA pero σ menor. Es la opción default de compresión deep cuando se busca estabilidad."
+      },
+      "cae_2d": {
+        "label": "CAE-2D · K=8 (anchor)",
+        "tag": "Conv2D sobre parches espaciales-espectrales",
+        "theory_body": "CAE 2D sobre parches P×P×B (P=7 píxeles espaciales × B bandas). Encoder Conv2D + bottleneck K=8 sólo para el píxel central del parche.",
+        "principles": [
+          "Captura textura espacial (no sólo el perfil espectral).",
+          "Modo anchor: sólo el centro del parche contribuye al loss y al z.",
+          "Spatial neighborhood = 3.5 pixels de radio efectivo."
+        ],
+        "hypothesis": "Spatial context debería mejorar separabilidad — un píxel agrícola rodeado de píxeles agrícolas es más clasificable.",
+        "findings": "A N=15 seeds: ARI vs label competitivo con CAE-1D. Mejor en escenas con texturas claras (Indian Pines), peor en mosaicos finos (Salinas-A)."
+      },
+      "cae_3d": {
+        "label": "CAE-3D anchor · K=8",
+        "tag": "Conv3D sobre (espacio × bandas)",
+        "theory_body": "Conv3D sobre cubos completos (dim espacial × dim espectral). Kernels 3D = (3 bandas × 3 px × 3 px). Anchor: sólo el píxel central define z.",
+        "principles": [
+          "Receptive field volumétrico — captura simultáneamente vecindad espacial y espectral.",
+          "Más caro computacionalmente — entrenamiento GPU 50–120× con CUDA.",
+          "Anchor mode reduce loss noise al concentrarse en el píxel objetivo."
+        ],
+        "hypothesis": "Conv3D debería ser estrictamente mejor que CAE-2D + CAE-1D combinados — más capacidad inductiva nativa.",
+        "findings": "K-curve {K=4, K=8} neutral: ΔARI K=4 = +0.011 (5/6 escenas confirman dirección); Pavia U invierte con capacidad. No es ganancia decisiva sobre CAE-1D — la capacidad volumétrica no es la palanca dominante."
+      },
+      "cae_3d_full": {
+        "label": "CAE-3D full · K=8",
+        "tag": "Conv3D dense loss (full patch)",
+        "theory_body": "Misma red que CAE-3D anchor, pero el loss penaliza todos los píxeles del parche P×P (no sólo el centro). Aprovecha más señal del parche por gradiente.",
+        "principles": [
+          "Loss denso (P² veces más píxeles contribuyen) reduce noise de gradient.",
+          "Embedding por píxel se calcula al rato y queda K-dim por píxel.",
+          "Trained on GPU; misma arquitectura que anchor + loss diferente."
+        ],
+        "hypothesis": "Dense loss debería dar gradients más limpios y latents más estables.",
+        "findings": "Equivalente a anchor en ARI vs label en N=15 sobre 6 escenas. No es decisivamente mejor en ninguna escena. Cycle 58 confirmó K-curve idéntica entre anchor y full."
+      },
+      "beta_vae": {
+        "label": "β-VAE · K=8",
+        "tag": "Higgins et al. 2017 · término β KL",
+        "theory_body": "Variational AE con multiplicador β en el término KL. β = 1 ⇒ VAE estándar. β > 1 fuerza dimensiones de z a ser más independientes (desentrelazado).",
+        "principles": [
+          "Latente probabilístico — z es una distribución, no un punto.",
+          "β controla el tradeoff reconstrucción vs disentanglement.",
+          "Default canónico aquí: β = 2."
+        ],
+        "hypothesis": "Latente desentrelazado debería ayudar interpretabilidad sin sacrificar mucho reconstrucción.",
+        "findings": "A β = 2, comparable a CAE-1D en ARI/NMI. K-curve sweep β ∈ {1, 2, 8, 16} muestra collapse documentado a β ≥ 8 (KL → 0, sólo el prior queda). β = 2 es el sweet spot."
+      },
+      "endmember": {
+        "label": "Endmembers · NFINDR + NNLS",
+        "tag": "Winter 1999 · Heinz–Chang 2001",
+        "theory_body": "NFINDR (Winter 1999): K endmembers son los vértices del simplex de máximo volumen en el cubo HSI. NNLS con restricción suma-a-uno (delta = 100 penalty) infiere abundancia por píxel.",
+        "principles": [
+          "Modelo lineal de mezcla — cada píxel = suma convexa de K endmembers.",
+          "Físicamente interpretable: cada endmember es un material puro candidato.",
+          "Comparado contra LDA vía topic_endmember_match: K-K cosine matrix."
+        ],
+        "hypothesis": "Si los píxeles HSI son combinaciones lineales de pocos materiales puros, los tópicos LDA deberían alinearse con endmembers.",
+        "findings": "Best per-topic cosine vs endmember típicamente 0.7–0.9 (alta alineación) en escenas mineralógicas. En escenas agrícolas (no minerales), el alineamiento baja a 0.4–0.6 — confirma que LDA recupera estructura no-lineal adicional."
+      }
+    }
   },
   "methodology_pipeline": {
     "title": "Pipeline local de creación de datos"
@@ -180,6 +402,35 @@
       "stat_labelled": "etiquetadas",
       "stat_k_topics": "K tópicos",
       "more_classes": "+{{count}} más"
+    },
+    "dataset_overview": {
+      "loading": "Cargando inventario del dataset…",
+      "error": "No se pudo cargar el inventario.",
+      "not_found": "No hay entrada en el inventario para {{id}}.",
+      "lead": "Este subset no tiene aún artefactos de análisis derivado (sin LDA, sin EDA per-scene, sin unmixing). Lo que sabemos viene del inventario canónico: fuente, archivos raw, supervisión, licencia. Los paneles de topic-models se habilitan automáticamente cuando este dataset gane artefactos derivados.",
+      "stat_local": "local",
+      "stat_files": "archivos raw",
+      "stat_size_gb": "tamaño · GB",
+      "stat_access": "acceso",
+      "yes": "sí",
+      "no": "no",
+      "facts_title": "Datos del inventario",
+      "fact_supervision": "supervisión",
+      "fact_label_scope": "alcance del label",
+      "fact_measurement_scope": "alcance de medición",
+      "fact_acquisition": "adquisición",
+      "fact_fit_for_demo": "uso en demo",
+      "fact_last_verified": "última verificación",
+      "fact_license": "licencia",
+      "fact_caveat": "observación",
+      "fact_domains": "dominios",
+      "files_title": "Archivos raw · {{count}} totales",
+      "files_lead": "Primeros 24 mostrados; tamaños en MB.",
+      "col_name": "nombre",
+      "col_kind": "tipo",
+      "col_size_bytes": "tamaño",
+      "col_source": "fuente",
+      "more_files": "más"
     },
     "tabs": {
       "raw": "Cruda · clases",
