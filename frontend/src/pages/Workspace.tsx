@@ -1,5 +1,6 @@
-import { lazy, Suspense, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { useMachine } from "@xstate/react";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
@@ -17,7 +18,7 @@ import { StabilityHeatmap } from "@/components/plots/StabilityHeatmap";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { workspaceMachine } from "@/state/workspaceMachine";
-import type { DatasetFamily } from "@/state/useSelectionStore";
+import type { DatasetFamily, RepresentationKind } from "@/state/useSelectionStore";
 import { cn } from "@/lib/cn";
 
 const Scatter3D = lazy(() =>
@@ -83,11 +84,47 @@ type Steps = {
 export default function Workspace() {
   const { t } = useTranslation(["pages", "common"]);
   const [state, send] = useMachine(workspaceMachine);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const restoredRef = useRef(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["inventory"],
     queryFn: api.inventory,
   });
+
+  // Restore state from URL on first inventory load
+  useEffect(() => {
+    if (restoredRef.current) return;
+    if (!data) return;
+    const fam = searchParams.get("family");
+    const sub = searchParams.get("subset");
+    const rp = searchParams.get("rep");
+    if (fam) {
+      send({ type: "PICK_FAMILY", family: fam as DatasetFamily });
+      if (sub) {
+        send({ type: "PICK_SUBSET", subset: sub });
+        if (rp) send({ type: "PICK_REP", rep: rp as RepresentationKind });
+      }
+    }
+    restoredRef.current = true;
+  }, [data, searchParams, send]);
+
+  // Mirror machine state to URL
+  useEffect(() => {
+    if (!restoredRef.current) return;
+    const next = new URLSearchParams(searchParams);
+    const setOrDel = (k: string, v: string | null | undefined) => {
+      if (v) next.set(k, v);
+      else next.delete(k);
+    };
+    setOrDel("family", state.context.family);
+    setOrDel("subset", state.context.subset);
+    setOrDel("rep", state.context.rep);
+    if (next.toString() !== searchParams.toString()) {
+      setSearchParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.context.family, state.context.subset, state.context.rep]);
 
   const familyGroups = useMemo(() => {
     if (!data) return [] as { family_id: string; family_title: string; entries: DatasetEntry[] }[];
@@ -538,8 +575,26 @@ function ExploreStep({
   const { t } = useTranslation(["pages"]);
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
   const isHidsag = subsetId !== null && HIDSAG_SUBSETS.has(subsetId);
-  const [tab, setTab] = useState<ExploreTab>("raw");
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get("tab") as ExploreTab | null;
+  const urlTopic = searchParams.get("topic");
+  const [tab, setTab] = useState<ExploreTab>(urlTab ?? "raw");
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(
+    urlTopic != null && /^\d+$/.test(urlTopic) ? Number(urlTopic) : null,
+  );
+
+  // Mirror tab + selectedTopic to URL
+  useEffect(() => {
+    const next = new URLSearchParams(searchParams);
+    if (tab && tab !== "raw") next.set("tab", tab);
+    else next.delete("tab");
+    if (selectedTopic !== null) next.set("topic", String(selectedTopic));
+    else next.delete("topic");
+    if (next.toString() !== searchParams.toString()) {
+      setSearchParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, selectedTopic]);
 
   const eda = useQuery({
     queryKey: ["eda", subsetId],
