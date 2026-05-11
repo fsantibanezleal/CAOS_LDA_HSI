@@ -60,7 +60,7 @@ export function ClassDistributionBar({ classes }: Props) {
         className="mt-1 text-[12px]"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        {total.toLocaleString()} píxeles etiquetados · {classes.length} clases
+        {total.toLocaleString()} labelled pixels · {classes.length} classes
       </p>
     </div>
   );

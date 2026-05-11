@@ -114,7 +114,7 @@ export function TopicLabelHeatmap({
                 fontWeight={isSel ? "600" : "400"}
                 fill={isSel ? "var(--color-accent)" : "currentColor"}
               >
-                tópico {i + 1}
+                topic {i + 1}
               </text>
 
               {/* Cells */}

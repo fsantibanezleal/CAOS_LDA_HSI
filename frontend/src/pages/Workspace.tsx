@@ -187,15 +187,14 @@ function SubsetPickerStep({
             className="text-lg font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Conjunto en {family}
+            Subset in {family}
           </h3>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            {entries.length} datasets en esta familia ·{" "}
-            {entries.filter((e) => e.local_raw_available).length} con raíz
-            local
+            {entries.length} datasets in this family ·{" "}
+            {entries.filter((e) => e.local_raw_available).length} with local raw
           </p>
         </div>
         <button
@@ -208,7 +207,7 @@ function SubsetPickerStep({
             backgroundColor: "transparent",
           }}
         >
-          ← Cambiar de familia
+          ← Change family
         </button>
       </header>
 
@@ -407,9 +406,10 @@ function RepresentationPickerStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Tres familias: topics (LDA y variantes), compresiones K-dim
-            (PCA / NMF / AE) y unmixing físico. Todas operan sobre el
-            mismo doc-term matrix de la receta canónica V1 band-frequency.
+            Three families: topics (LDA and variants), K-dim compression
+            baselines (PCA / NMF / AE / ICA / CAE-1D/2D/3D / β-VAE) and physical
+            unmixing. They operate on the same doc-term matrix from the canonical
+            V1 band-frequency recipe.
           </p>
         </div>
         <button
@@ -422,7 +422,7 @@ function RepresentationPickerStep({
             backgroundColor: "transparent",
           }}
         >
-          ← Cambiar de conjunto
+          ← Change subset
         </button>
       </header>
 
@@ -2176,10 +2176,10 @@ function MetricsTab({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cuánta información sobre la label retiene cada
-            representation K-dim (theta vs PCA-K vs NMF-K vs ICA-K vs
-            dense-AE-K). Reportado como joint MI clipeado a la entropía
-            de la label y como fracción de entropía recuperada.
+            How much information about the label each K-dim representation
+            retains (theta vs PCA-K vs NMF-K vs ICA-K vs dense-AE-K). Reported
+            as joint MI clipped to label entropy and as the fraction of entropy
+            recovered.
           </p>
         </header>
         {miLoading && (
@@ -3457,10 +3457,10 @@ function StabilityTabBody({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cada par de seeds (i, j) reporta la similitud Hungarian-matched
-            cosine entre las K={data.K} firmas tópicas φ ajustadas con el
-            mismo corpus pero distinta semilla. Diagonal = 1 (auto-match).
-            La estabilidad real está en las celdas off-diagonal.
+            Each seed pair (i, j) reports the Hungarian-matched cosine
+            similarity between the K={data.K} topic signatures φ fitted on the
+            same corpus with different seeds. Diagonal = 1 (auto-match). Real
+            stability lives in the off-diagonal cells.
           </p>
         </header>
 
@@ -4333,7 +4333,7 @@ function FamilyPickerStep({
                 className="inline-block px-2 py-0.5"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                + {g.entries.length - 6} más
+                + {g.entries.length - 6} more
               </li>
             )}
           </ul>
