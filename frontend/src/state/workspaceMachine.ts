@@ -27,6 +27,7 @@ export type WorkspaceEvent =
   | { type: "PICK_FAMILY"; family: DatasetFamily }
   | { type: "PICK_SUBSET"; subset: string }
   | { type: "PICK_REP"; rep: RepresentationKind }
+  | { type: "SWITCH_SUBSET"; subset: string }
   | { type: "GO_VIEW"; view: WorkspaceView }
   | { type: "PICK_DOC"; docId: string }
   | { type: "BACK" };
@@ -93,6 +94,9 @@ export const workspaceMachine = setup({
         PICK_DOC: {
           target: "benchmarkFork",
           actions: assign({ docId: ({ event }) => event.docId }),
+        },
+        SWITCH_SUBSET: {
+          actions: assign({ subset: ({ event }) => event.subset }),
         },
         BACK: { target: "pickRep" },
       },
