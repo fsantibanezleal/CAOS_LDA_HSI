@@ -593,6 +593,7 @@ function ExploreStep({
   const [selectedTopic, setSelectedTopic] = useState<number | null>(
     urlTopic != null && /^\d+$/.test(urlTopic) ? Number(urlTopic) : null,
   );
+  const [showHelp, setShowHelp] = useState<boolean>(false);
 
   // Mirror tab + selectedTopic to URL
   useEffect(() => {
@@ -614,10 +615,18 @@ function ExploreStep({
       const tgt = e.target as HTMLElement | null;
       if (tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.tagName === "SELECT" || tgt.isContentEditable)) return;
       if (e.key === "Escape") {
-        if (selectedTopic !== null) {
+        if (showHelp) {
+          e.preventDefault();
+          setShowHelp(false);
+        } else if (selectedTopic !== null) {
           e.preventDefault();
           setSelectedTopic(null);
         }
+        return;
+      }
+      if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+        e.preventDefault();
+        setShowHelp((v) => !v);
         return;
       }
       if (e.key === "[" || e.key === "]") {
@@ -631,7 +640,7 @@ function ExploreStep({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [tab, selectedTopic]);
+  }, [tab, selectedTopic, showHelp]);
 
   const eda = useQuery({
     queryKey: ["eda", subsetId],
@@ -1179,6 +1188,28 @@ function ExploreStep({
 
           <TabFooter tab={tab} />
         </>
+      )}
+
+      {isLabelled && (
+        <button
+          type="button"
+          onClick={() => setShowHelp(true)}
+          className="fixed bottom-4 right-4 z-40 rounded-full w-10 h-10 border font-mono font-semibold text-[14px]"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            color: "var(--color-fg-faint)",
+            boxShadow: "var(--color-shadow)",
+          }}
+          aria-label="Keyboard shortcuts help"
+          title="Keyboard shortcuts (press ? to toggle)"
+        >
+          ?
+        </button>
+      )}
+
+      {showHelp && (
+        <KeyboardShortcutsOverlay onClose={() => setShowHelp(false)} />
       )}
     </section>
   );
@@ -8123,6 +8154,77 @@ function SceneQuickSwitch({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function KeyboardShortcutsOverlay({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Keyboard shortcuts"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.55)" }}
+      onClick={onClose}
+    >
+      <div
+        className="rounded-xl border max-w-lg w-full p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "0 24px 48px -16px rgba(0, 0, 0, 0.35)",
+          color: "var(--color-fg)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className="flex items-baseline justify-between mb-4">
+          <h2 className="text-lg font-semibold tracking-tight">Keyboard shortcuts</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded border px-2 py-0.5 text-[11px] font-mono"
+            style={{ borderColor: "var(--color-border)", color: "var(--color-fg-faint)" }}
+            aria-label="Close"
+          >
+            Esc · ×
+          </button>
+        </header>
+        <p className="text-[12.5px] mb-4" style={{ color: "var(--color-fg-faint)" }}>
+          Power-user navigation inside Workspace › Explore. Disabled while typing in any text field.
+        </p>
+        <dl className="space-y-3 text-[13px]">
+          {[
+            { keys: ["?"], desc: "Toggle this help overlay" },
+            { keys: ["Esc"], desc: "Clear the selected topic (or close this overlay)" },
+            { keys: ["["], desc: "Previous tab (wraps around)" },
+            { keys: ["]"], desc: "Next tab (wraps around)" },
+          ].map((row) => (
+            <div key={row.desc} className="flex items-baseline gap-3">
+              <div className="flex items-baseline gap-1 shrink-0 w-24">
+                {row.keys.map((k) => (
+                  <kbd
+                    key={k}
+                    className="rounded border px-1.5 py-0.5 text-[11px] font-mono"
+                    style={{
+                      borderColor: "var(--color-border)",
+                      backgroundColor: "var(--color-bg)",
+                      color: "var(--color-fg)",
+                    }}
+                  >
+                    {k}
+                  </kbd>
+                ))}
+              </div>
+              <span style={{ color: "var(--color-fg-subtle)" }}>{row.desc}</span>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-5 text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
+          The URL also reflects the current selection so any view is shareable: family, subset,
+          representation, tab, and selected topic are all in <code>?…</code> search params.
+        </p>
+      </div>
     </div>
   );
 }
