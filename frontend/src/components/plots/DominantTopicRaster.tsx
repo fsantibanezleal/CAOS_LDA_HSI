@@ -140,10 +140,10 @@ export function DominantTopicRaster({
         }}
       >
         {hover
-          ? `(${hover.row}, ${hover.col})  · tópico ${
+          ? `(${hover.row}, ${hover.col})  · topic ${
               hover.topic === null ? "—" : hover.topic + 1
             }`
-          : "Mueve el cursor para inspeccionar; click para fijar."}
+          : "Move the cursor to inspect; click to pin."}
       </div>
     </div>
   );
