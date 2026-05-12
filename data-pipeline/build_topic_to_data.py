@@ -14,8 +14,15 @@ Each output answers, for every topic k:
 - top_documents_per_topic[k]: the top-N documents by theta_k with their
   spatial coordinates, label, and theta vector
 - dominant_topic_map: H x W array assigning each labelled pixel the
-  argmax of its theta (-1 for unlabelled or non-sampled pixels). Stored
-  as a binary uint8 sidecar in local/.
+  argmax of its theta (sentinel value 255 for unlabelled or non-sampled
+  pixels). The JSON ships a metadata stub
+  {format, shape, sentinel_unlabelled, path}; the actual uint8 data is
+  written to two locations:
+  - `data/local/topic_to_data/<scene>_dominant_topic_map.bin` (legacy
+    path, kept for backward compatibility)
+  - `data/derived/topic_to_data/<scene>_dominant_topic_map.bin`
+    (canonical path served by the FastAPI app and consumed by the
+    frontend RasterTab at `/generated/topic_to_data/<scene>_dominant_topic_map.bin`)
 
 This is the single most-asked-for analysis in the master plan and the
 audit's #4 gap. It replaces the previous class_topic_loadings (which
