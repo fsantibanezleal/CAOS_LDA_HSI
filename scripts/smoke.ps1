@@ -130,4 +130,67 @@ foreach ($path in $paths) {
     Write-Host "OK $($response.StatusCode) $url"
 }
 
+# ---- SPA shell content checks (cycle 108) -------------------------------
+# Status-code-only checks let an empty/broken React build pass smoke green
+# (lesson from cycle 99-101: xstate matching bug shipped to prod with
+# smoke 84/84). Below we verify the SPA shell is non-trivial AND that its
+# entry chunk contains the canonical version marker baked in by Vite.
+$baseTrimmed = $BaseUrl.TrimEnd('/')
+$rootUrl = "$baseTrimmed/"
+$rootResp = Invoke-WebRequest -UseBasicParsing -Uri $rootUrl
+$rootBody = $rootResp.Content
+$rootLen = $rootBody.Length
+if ($rootLen -lt 500) {
+    throw "SPA shell check failed: body of $rootUrl is only $rootLen chars (<500)"
+}
+if ($rootBody -notmatch '<div id="root"') {
+    throw "SPA shell check failed: body of $rootUrl has no <div id=`"root`">"
+}
+$entryMatch = [regex]::Match($rootBody, '<script[^>]+type="module"[^>]+src="([^"]+)"')
+if (-not $entryMatch.Success) {
+    throw "SPA shell check failed: no <script type=`"module`" src=`"...`"> in $rootUrl"
+}
+$entrySrc = $entryMatch.Groups[1].Value
+if ($entrySrc -match '^https?://') {
+    $entryUrl = $entrySrc
+} elseif ($entrySrc.StartsWith('/')) {
+    $entryUrl = "$baseTrimmed$entrySrc"
+} else {
+    $entryUrl = "$baseTrimmed/$entrySrc"
+}
+$entryResp = Invoke-WebRequest -UseBasicParsing -Uri $entryUrl
+$entryBody = $entryResp.Content
+$entryLen = $entryBody.Length
+if ($entryLen -lt 1000) {
+    throw "SPA bundle check failed: $entryUrl is only $entryLen bytes (<1000)"
+}
+# The version string lives in version.ts and is normally bundled into the
+# main entry chunk. If a future refactor moves it into a lazy chunk, search
+# modulepreload assets too.
+$versionFound = $null
+if ($entryBody -match 'cycle [0-9]+') {
+    $versionFound = "entry"
+} else {
+    $preloadMatches = [regex]::Matches($rootBody, '<link[^>]+rel="modulepreload"[^>]+href="([^"]+)"')
+    foreach ($pm in $preloadMatches) {
+        $preloadSrc = $pm.Groups[1].Value
+        if ($preloadSrc -match '^https?://') {
+            $preloadUrl = $preloadSrc
+        } elseif ($preloadSrc.StartsWith('/')) {
+            $preloadUrl = "$baseTrimmed$preloadSrc"
+        } else {
+            $preloadUrl = "$baseTrimmed/$preloadSrc"
+        }
+        $pResp = Invoke-WebRequest -UseBasicParsing -Uri $preloadUrl
+        if ($pResp.Content -match 'cycle [0-9]+') {
+            $versionFound = "preload:$preloadUrl"
+            break
+        }
+    }
+}
+if (-not $versionFound) {
+    throw "SPA bundle check failed: no `"cycle N`" version marker in entry chunk or modulepreload chunks"
+}
+Write-Host "OK shell $($rootLen)B + entry bundle $($entryLen)B at $entryUrl (version marker in $versionFound)"
+
 Write-Host "Smoke checks passed for $BaseUrl"
