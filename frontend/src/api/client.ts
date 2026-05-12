@@ -278,6 +278,16 @@ export type DominantTopicMapMeta = {
   path: string;
 };
 
+export type ThetaGridMeta = {
+  format: "binary_float32";
+  shape: [number, number, number];
+  dtype: "float32";
+  sentinel: "all_zero_vector";
+  byte_order?: "little_endian" | "big_endian";
+  path: string;
+  served_path?: string;
+};
+
 export type TopicToData = {
   scene_id: string;
   scene_name?: string;
@@ -294,6 +304,7 @@ export type TopicToData = {
   theta_embedding_explained_variance: number[];
   top_documents_per_topic?: TopDocumentForTopic[][];
   dominant_topic_map?: DominantTopicMapMeta;
+  theta_grid?: ThetaGridMeta;
   generated_at?: string;
   builder_version?: string;
 };
