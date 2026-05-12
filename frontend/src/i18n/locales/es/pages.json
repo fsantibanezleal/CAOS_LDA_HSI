@@ -106,7 +106,7 @@
       "step5_body": "Los 21 datasets con su acceso, raíz local y archivos fuente.",
       "step6_tag": "Lab",
       "step6_title": "Workspace",
-      "step6_body": "Flujo guiado familia → conjunto → representación → 11 tabs por escena etiquetada.",
+      "step6_body": "Flujo guiado familia → conjunto → representación → 27 tabs por escena etiquetada, agrupadas en Datos crudos · Modelo de tópicos · Geometría espacial · Diagnósticos.",
       "step7_tag": "Eval",
       "step7_title": "Benchmarks",
       "step7_body": "16 cards: multi-axis battery, Bayesian HDI, K-curve, β-collapse, neural-topic head-to-head, …"
@@ -225,7 +225,7 @@
           "Sensible a init: σ(ARI) ≈ 0.03 a través de N=5 seeds."
         ],
         "hypothesis": "Encoder amortizado debería igualar LDA en ARI y mejorar c_v gracias al decoder neural.",
-        "findings": "Gana c_v 6/6 escenas vs LDA y ETM. Pierde ARI 4/6 vs LDA (5/6 vs ETM). Confirma tradeoff explícito: coherence vs discriminability. Regla operativa: ProdLDA para interpretabilidad, LDA para clustering."
+        "findings": "Gana c_v 6/6 escenas vs LDA y ETM. Pierde ARI 4/6 vs LDA y 6/6 vs ETM bajo estimación multi-seed N=5 (cycle 63). Confirma tradeoff explícito: coherence vs discriminability. Regla operativa: ProdLDA para interpretabilidad, LDA para clustering."
       },
       "etm": {
         "label": "ETM · Embedded Topic Model",
@@ -237,7 +237,7 @@
           "Mejor para vocabularios grandes; HSI tiene V ≈ 200 bandas."
         ],
         "hypothesis": "Embedding compartido entre palabras debería ayudar cuando hay redundancia espectral (bandas correlacionadas).",
-        "findings": "ETM > ProdLDA en ARI 5/6 escenas (ProdLDA gana sólo en KSC). Coherencia c_v middle: ProdLDA > ETM > LDA. ETM es el mejor compromiso ARI+c_v."
+        "findings": "ETM > ProdLDA en ARI 6/6 escenas bajo estimación multi-seed N=5 (cycle 63 — la única victoria single-seed de ProdLDA en KSC desaparece con la varianza). Coherencia c_v middle: ProdLDA > ETM > LDA. ETM es el mejor compromiso ARI+c_v."
       },
       "nmf": {
         "label": "NMF · K=8",
@@ -297,7 +297,7 @@
           "Stride 2 entre capas reduce dimensión espectral progresivamente."
         ],
         "hypothesis": "El espectro hiperespectral tiene autocorrelación banda-a-banda. CAE-1D debe capturar features locales (bordes, picos) mejor que PCA/AE denso.",
-        "findings": "Mejor estabilidad de seeds (ARI std 15–20% menor que LDA en 5/6 escenas). Silhouette igualada a PCA pero σ menor. Es la opción default de compresión deep cuando se busca estabilidad."
+        "findings": "Se ubica en el medio de la escalera de estabilidad-9-métodos (por debajo de LDA / NMF / CAE-2D, por encima de CAE-3D / dense-AE / β-VAE — ver README finding #6). Silhouette igualada a PCA. El bias inductivo 1D conv sobre autocorrelación banda-banda lo hace el encoder deep más cercano a PCA en el tradeoff ARI / σ."
       },
       "cae_2d": {
         "label": "CAE-2D · K=8 (anchor)",
@@ -345,7 +345,7 @@
           "Default canónico aquí: β = 2."
         ],
         "hypothesis": "Latente desentrelazado debería ayudar interpretabilidad sin sacrificar mucho reconstrucción.",
-        "findings": "A β = 2, comparable a CAE-1D en ARI/NMI. K-curve sweep β ∈ {1, 2, 8, 16} muestra collapse documentado a β ≥ 8 (KL → 0, sólo el prior queda). β = 2 es el sweet spot."
+        "findings": "A β = 2, comparable a CAE-1D en ARI/NMI. β-sweep sobre β ∈ {1, 2, 4, 8, 16} (cycle 42, 5-β grid) muestra collapse documentado a β ≥ 8 (KL → 0, sólo el prior queda). β = 2 es el sweet spot."
       },
       "endmember": {
         "label": "Endmembers · NFINDR + NNLS",

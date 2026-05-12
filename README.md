@@ -23,14 +23,23 @@ every deploy.
 ## Live deployment
 
 - **Public URL**: <https://lda-hsi.fasl-work.com>
-- **Smoke**: 87/87 GET endpoints return 200 in <10 s, run as part of
-  every `deploy/update.sh` (see [`scripts/smoke.sh`](scripts/smoke.sh)
-  and [`scripts/smoke.ps1`](scripts/smoke.ps1))
+- **Smoke**: 109/109 GET endpoints return 200 in <10 s + four SPA
+  shell content assertions added in cycle 108 (body length ≥ 500
+  chars, `<div id="root"`, `<script type="module"`, `cycle N`
+  version marker in entry chunk or any modulepreload chunk). Runs
+  as part of every `deploy/update.sh` (see
+  [`scripts/smoke.sh`](scripts/smoke.sh) and
+  [`scripts/smoke.ps1`](scripts/smoke.ps1)). The content
+  assertions close the empty-body deploy class that escaped in
+  cycles 99-101.
 - **Manifest**: 1592 derived artifacts (1359 JSON + 147 binary +
   27 PNG), audited zero-issues by [`data-pipeline/audit_manifest.py`](data-pipeline/audit_manifest.py)
-- **API surface**: ~104 endpoints across 6 labelled scenes × 17
-  per-scene endpoints + 5 HIDSAG subsets × 6 endpoints + 12 cross-scene
-  endpoints — full catalog at the [Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads)
+- **API surface**: ~110 endpoints across 6 labelled scenes × ~17
+  per-scene endpoints + 5 HIDSAG subsets × 6 endpoints + 12
+  cross-scene endpoints + `/api/wordifications` (108-config
+  corpus index, cycle 102) + `/api/lda-sweep/<scene>` (K-sweep
+  per scene, cycle 107) — full catalog at the
+  [Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads)
   wiki page
 
 ## Architecture at a glance
@@ -80,7 +89,9 @@ every deploy.
                  │              Tailwind v4 + react-i18next +         │
                  │              TanStack Query v5 + Zustand + XState) │
                  │  Pages: Overview · Methodology · Databases ·       │
-                 │         Workspace (11 tabs) · Benchmarks (16 cards)│
+                 │         Workspace (27 tabs in 4 groups:            │
+                 │           Raw / Topic model / Spatial / Diagnostics)│
+                 │         · Benchmarks (16 cards)                    │
                  └──────────────────────┘
 ```
 
@@ -185,6 +196,42 @@ visually and the Bayesian endpoints make decisive:
 7. **GPU acceleration ~50–120× for the deep / neural family**
    (cycle 59). Full `cae_3d_full` K-curve {4, 8, 16, 32} × 6 scenes
    went from ~9–12 h CPU to ~10 min GPU on RTX 4070 Laptop.
+
+### Frontend cycles 100–108 (Step 3-8 closure + smoke hardening)
+
+After the analytical surface stabilised at cycles 51–63, cycles
+100–108 closed every remaining gap in the Workspace 8-step flow
+(`_CAOS_MANAGE/wip/caos-lda-hsi/web-app-spec.md`):
+
+- **c100** — FalseColorBandPicker (Step 4 raw RGB) with 4
+  scientific presets: True colour 660/550/450, Vegetation NIR
+  800/660/550, SWIR mineral 2200/1650/660, Water absorption
+  1400/1900/2200. Renders 8000 stratified samples as SVG.
+- **c101** — ApplyToDocumentTab (Step 7) — closes the spec's
+  *Apply-to-document* step entirely. DocPicker + DocDetailPanel +
+  PerTopicLabelBars; computes per-doc θ vs scene marginal ratio.
+- **c102** — RecipesTab (Step 4 corpus) — V1..V12 × {U, Q, L} ×
+  {8, 16, 32} explorer over `/api/wordifications`. Surfaces D, B,
+  V_full, V_actual, entropy, doc-length distribution, top tokens.
+- **c103** — 2nd-topic compare overlay on Step 5 dominant-topic
+  raster + Pairwise overlap card (|A|, |B|, 4-neighbor adjacency
+  count proxying spatial confusability).
+- **c104** — P(topic|label) inverse heatmap toggle on Step 6.
+  Computes `P(t|L) = N_t·P(L|t) / Σ_t' N_t'·P(L|t')` client-side
+  from already-loaded `topic_to_data`. No new API.
+- **c105** — Topic↔topic similarity graph overlay on Step 6.
+  JS-MDS layout + cosine-similarity edges with threshold slider
+  (0.30 → 0.95, default 0.70) + top-6 most-similar pairs panel.
+- **c106** — Per-recipe V1..V12 SVG schematics in Methodology >
+  Representations. 12 ~130×78 px illustrations + one-line captions.
+- **c107** — K-sweep model-selection explorer (new `qkexplore`
+  tab) over `/api/lda-sweep/<scene>` with K ∈ {4, 6, 8, 10, 12, 16}.
+  Renders perplexity / topic_diversity / matched_cosine curves
+  and the builder-recommended K (★ canonical, ● recommended).
+- **c108** — Smoke harness hardening. Adds SPA shell content
+  assertions (body length, `<div id="root"`, `<script type="module"`,
+  entry-chunk version marker) so empty-body deploys fail smoke
+  instead of being reported green.
 
 ## Quick start
 

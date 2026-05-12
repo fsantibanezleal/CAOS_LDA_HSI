@@ -889,7 +889,7 @@ function ExploreStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            16 panels across raw data, topic model output, spatial geometry, and diagnostics.
+            27 panels across raw data, topic model output, spatial geometry, and diagnostics.
             Loaded on demand — pick a tab below to fetch its dedicated backend artefact.
           </p>
         </div>
@@ -5338,7 +5338,7 @@ function FamilyPickerStep({
 /* =========================================================================
    Scene briefing hero — appears at top of Workspace when a labelled scene
    is loaded. Shows quick stats + class palette + topic count + spectral
-   envelope mini-viz for at-a-glance scene context across all 11 tabs.
+   envelope mini-viz for at-a-glance scene context across all 27 tabs.
    =======================================================================*/
 
 function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | null }) {
