@@ -3137,6 +3137,7 @@ function RasterTab({
               labels={
                 meta.p_label_given_topic_dominant[selectedTopic] ?? []
               }
+              perTopicLabel={meta.p_label_given_topic_dominant}
             />
           )}
       </div>
@@ -3144,19 +3145,61 @@ function RasterTab({
   );
 }
 
+type RoutedPrediction = {
+  label_id: number;
+  name: string;
+  color: string;
+  p: number;
+};
+
+function computeRoutedPrediction(
+  thetaFull: number[],
+  perTopicLabel: import("@/api/client").LabelCell[][],
+): RoutedPrediction[] {
+  const K = thetaFull.length;
+  if (K === 0 || perTopicLabel.length === 0) return [];
+  const firstRow = perTopicLabel[0]!;
+  const L = firstRow.length;
+  if (L === 0) return [];
+  const acc: { p: number; label_id: number; name: string; color: string }[] =
+    firstRow.map((c) => ({
+      p: 0,
+      label_id: c.label_id,
+      name: c.name,
+      color: c.color,
+    }));
+  for (let k = 0; k < K; k++) {
+    const t = thetaFull[k] ?? 0;
+    if (t <= 0) continue;
+    const row = perTopicLabel[k];
+    if (!row) continue;
+    for (let l = 0; l < L; l++) {
+      acc[l]!.p += t * (row[l]?.p ?? 0);
+    }
+  }
+  let total = 0;
+  for (const a of acc) total += a.p;
+  if (total > 0) for (const a of acc) a.p = a.p / total;
+  return acc;
+}
+
 function TopDocumentsPreview({
   topic,
   docs,
   labels,
+  perTopicLabel,
 }: {
   topic: number;
   docs: import("@/api/client").TopDocumentForTopic[];
   labels: import("@/api/client").LabelCell[];
+  perTopicLabel: import("@/api/client").LabelCell[][];
 }) {
+  const [openDocId, setOpenDocId] = useState<string | null>(null);
   if (docs.length === 0) return null;
   const labelColor = (id: number) =>
     labels.find((l) => l.label_id === id)?.color ?? "var(--color-fg-faint)";
   const top = docs.slice(0, 8);
+  const openDoc = openDocId ? top.find((d) => d.doc_id === openDocId) : null;
   return (
     <div
       className="mt-5 rounded-md border p-3 text-[12.5px]"
@@ -3176,61 +3219,203 @@ function TopDocumentsPreview({
         style={{ color: "var(--color-fg-faint)" }}
       >
         Documents (labelled pixels) ranked by θ at this topic.
-        From <span className="font-mono">topic_to_data.top_documents_per_topic</span>.
+        Click a row to see the per-doc topic-routed-soft prediction
+        (computed as <span className="font-mono">Σ θ_d[k]·P(L|k)</span>
+        with no extra fetch). Δ badge = top-1 prediction disagrees with
+        ground truth.
       </p>
       <ul className="space-y-1.5">
         {top.map((d) => {
           const w = Math.min(100, d.theta_k * 100);
+          const pred = computeRoutedPrediction(d.theta_full, perTopicLabel);
+          const sortedPred = [...pred].sort((a, b) => b.p - a.p);
+          const top1 = sortedPred[0];
+          const disagree =
+            top1 !== undefined && top1.label_id !== d.label_id && top1.p > 0;
+          const isOpen = openDocId === d.doc_id;
+          return (
+            <li key={d.doc_id} className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setOpenDocId(isOpen ? null : d.doc_id)}
+                className="w-full grid grid-cols-[110px_1fr_auto_18px] gap-2 items-center text-left"
+                style={{ color: "var(--color-fg-subtle)" }}
+              >
+                <span
+                  className="font-mono text-[11.5px]"
+                  style={{ color: "var(--color-fg)" }}
+                  title={d.doc_id}
+                >
+                  ({d.xy[0]}, {d.xy[1]})
+                </span>
+                <div
+                  className="h-2 rounded-sm relative"
+                  style={{
+                    backgroundColor: "var(--color-panel)",
+                    border: "1px solid var(--color-border)",
+                  }}
+                  title={`θ at topic ${topic + 1} = ${d.theta_k.toFixed(3)}`}
+                >
+                  <div
+                    className="h-full rounded-sm"
+                    style={{
+                      width: `${w}%`,
+                      backgroundColor: "var(--color-accent)",
+                      opacity: 0.85,
+                    }}
+                  />
+                </div>
+                <span
+                  className="inline-flex items-center gap-1.5 font-mono text-[11px]"
+                  style={{ color: "var(--color-fg)" }}
+                >
+                  <span
+                    aria-hidden
+                    className="inline-block w-2 h-2 rounded-sm"
+                    style={{ backgroundColor: labelColor(d.label_id) }}
+                  />
+                  <span className="truncate max-w-[120px]" title={d.label_name}>
+                    {d.label_name}
+                  </span>
+                  <span style={{ color: "var(--color-fg-faint)" }}>
+                    {d.theta_k.toFixed(2)}
+                  </span>
+                </span>
+                <span
+                  className="inline-flex items-center justify-center font-mono text-[11px] font-semibold"
+                  style={{
+                    color: disagree
+                      ? "var(--color-warn)"
+                      : "var(--color-fg-faint)",
+                  }}
+                  title={
+                    disagree
+                      ? `top-1 prediction (${top1!.name}) ≠ ground truth (${d.label_name})`
+                      : `top-1 prediction agrees with ground truth`
+                  }
+                >
+                  {disagree ? "Δ" : "✓"}
+                </span>
+              </button>
+              {isOpen && openDoc?.doc_id === d.doc_id && (
+                <DocPredictionPanel doc={d} pred={sortedPred} />
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function DocPredictionPanel({
+  doc,
+  pred,
+}: {
+  doc: import("@/api/client").TopDocumentForTopic;
+  pred: RoutedPrediction[];
+}) {
+  const top5 = pred.slice(0, 5);
+  return (
+    <div
+      className="ml-[120px] mt-1 mb-2 rounded-md border p-2.5 text-[11.5px]"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+      }}
+    >
+      <div
+        className="text-[10.5px] uppercase tracking-wider mb-1.5"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Topic-routed-soft prediction · doc {doc.doc_id}
+      </div>
+      <p
+        className="text-[11px] mb-1.5"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        <span className="font-mono">P(L|d) = Σ_k θ_d[k] · P(L|k)</span>
+        {" — "}computed from doc&apos;s θ and per-topic label distribution
+        (already in the topic_to_data payload).
+      </p>
+      <ul className="space-y-1">
+        {top5.map((p, idx) => {
+          const w = Math.min(100, p.p * 100);
+          const isGround = p.label_id === doc.label_id;
+          const isPred1 = idx === 0;
           return (
             <li
-              key={d.doc_id}
-              className="grid grid-cols-[110px_1fr_auto] gap-2 items-center"
+              key={p.label_id}
+              className="grid grid-cols-[140px_1fr_56px] gap-2 items-center"
               style={{ color: "var(--color-fg-subtle)" }}
             >
               <span
-                className="font-mono text-[11.5px]"
+                className="inline-flex items-center gap-1.5 truncate"
                 style={{ color: "var(--color-fg)" }}
-                title={d.doc_id}
               >
-                ({d.xy[0]}, {d.xy[1]})
+                <span
+                  aria-hidden
+                  className="inline-block w-2 h-2 rounded-sm shrink-0"
+                  style={{ backgroundColor: p.color }}
+                />
+                <span className="truncate" title={p.name}>
+                  {p.name}
+                </span>
+                {isPred1 && (
+                  <span
+                    className="text-[9.5px] font-mono ml-0.5"
+                    style={{ color: "var(--color-accent)" }}
+                    title="top-1 routed prediction"
+                  >
+                    ★
+                  </span>
+                )}
+                {isGround && (
+                  <span
+                    className="text-[9.5px] font-mono ml-0.5"
+                    style={{ color: "var(--color-warn)" }}
+                    title="ground-truth label"
+                  >
+                    ●
+                  </span>
+                )}
               </span>
               <div
-                className="h-2 rounded-sm relative"
+                className="h-1.5 rounded-sm relative"
                 style={{
-                  backgroundColor: "var(--color-panel)",
+                  backgroundColor: "var(--color-bg)",
                   border: "1px solid var(--color-border)",
                 }}
-                title={`θ at topic ${topic + 1} = ${d.theta_k.toFixed(3)}`}
+                title={`${(p.p * 100).toFixed(2)}%`}
               >
                 <div
                   className="h-full rounded-sm"
                   style={{
                     width: `${w}%`,
-                    backgroundColor: "var(--color-accent)",
-                    opacity: 0.85,
+                    backgroundColor: isPred1
+                      ? "var(--color-accent)"
+                      : "var(--color-fg-faint)",
+                    opacity: isPred1 ? 0.9 : 0.55,
                   }}
                 />
               </div>
               <span
-                className="inline-flex items-center gap-1.5 font-mono text-[11px]"
+                className="font-mono text-[11px] text-right"
                 style={{ color: "var(--color-fg)" }}
               >
-                <span
-                  aria-hidden
-                  className="inline-block w-2 h-2 rounded-sm"
-                  style={{ backgroundColor: labelColor(d.label_id) }}
-                />
-                <span className="truncate max-w-[120px]" title={d.label_name}>
-                  {d.label_name}
-                </span>
-                <span style={{ color: "var(--color-fg-faint)" }}>
-                  {d.theta_k.toFixed(2)}
-                </span>
+                {(p.p * 100).toFixed(2)}%
               </span>
             </li>
           );
         })}
       </ul>
+      <p
+        className="text-[10.5px] mt-2"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        ★ = top-1 routed prediction · ● = ground-truth label · disagreement
+        between the two is the "Δ" badge in the row above.
+      </p>
     </div>
   );
 }
