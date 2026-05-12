@@ -1379,6 +1379,7 @@ function TopicsTab({
 }) {
   const [lambda, setLambda] = useState<number>(0.5);
   const [simThreshold, setSimThreshold] = useState<number>(0.7);
+  const [pairTopic, setPairTopic] = useState<number | null>(null);
 
   const topPairs = useMemo(() => {
     if (!data) return [];
@@ -1720,6 +1721,201 @@ function TopicsTab({
           </div>
         </div>
       </div>
+
+      {data.topic_pair_log_odds && selectedTopic !== null && (
+        <div
+          className="rounded-lg border p-5"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+            boxShadow: "var(--color-shadow)",
+          }}
+        >
+          <header className="flex items-baseline justify-between gap-3 mb-2">
+            <h4
+              className="text-base font-semibold"
+              style={{ color: "var(--color-fg)" }}
+            >
+              Distinguishing words — topic {selectedTopic + 1} vs ___
+            </h4>
+            <div className="flex items-center gap-2">
+              <span
+                className="text-[11px] uppercase tracking-wider"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                pair with
+              </span>
+              <select
+                value={pairTopic ?? ""}
+                onChange={(e) =>
+                  setPairTopic(e.target.value === "" ? null : Number(e.target.value))
+                }
+                className="rounded-md border px-2 py-1 text-sm"
+                style={{
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--color-bg)",
+                  color: "var(--color-fg)",
+                }}
+              >
+                <option value="">— pick a 2nd topic —</option>
+                {Array.from({ length: data.topic_count }, (_, k) => k)
+                  .filter((k) => k !== selectedTopic)
+                  .map((k) => (
+                    <option key={k} value={k}>
+                      topic {k + 1}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </header>
+          <p
+            className="text-sm mb-3"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Tokens ranked by log-odds = log(P(w | k<sub>A</sub>) / P(w | k<sub>B</sub>)).
+            Left column = words more characteristic of topic {selectedTopic + 1}; right
+            column = words more characteristic of the paired topic. Pre-computed by
+            <span className="font-mono"> build_topic_views.py</span>; no API call.
+          </p>
+          {pairTopic === null ? (
+            <p
+              className="text-[12px]"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Pick a second topic above to populate this panel.
+            </p>
+          ) : (
+            <DistinguishingWordsGrid
+              data={data.topic_pair_log_odds}
+              a={selectedTopic}
+              b={pairTopic}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DistinguishingWordsGrid({
+  data,
+  a,
+  b,
+}: {
+  data: Record<string, import("@/api/client").TopicPairLogOddsToken[]>;
+  a: number;
+  b: number;
+}) {
+  const aOverB = data[`${a}->${b}`] ?? [];
+  const bOverA = data[`${b}->${a}`] ?? [];
+  if (aOverB.length === 0 && bOverA.length === 0) {
+    return (
+      <p
+        className="text-[12px]"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        No log-odds shipped for this scene (older topic_views artefact).
+      </p>
+    );
+  }
+  const maxAbs = Math.max(
+    ...aOverB.map((t) => Math.abs(t.log_odds)),
+    ...bOverA.map((t) => Math.abs(t.log_odds)),
+    1e-6,
+  );
+  return (
+    <div className="grid sm:grid-cols-2 gap-5">
+      <DistinguishingWordsColumn
+        title={`top ↑ in topic ${a + 1}`}
+        tokens={aOverB.slice(0, 12)}
+        maxAbs={maxAbs}
+        ratioLabel={(t) =>
+          `P(${a + 1})=${(t.p_in_i * 100).toFixed(3)}% · P(${b + 1})=${(t.p_in_j * 100).toFixed(3)}%`
+        }
+      />
+      <DistinguishingWordsColumn
+        title={`top ↑ in topic ${b + 1}`}
+        tokens={bOverA.slice(0, 12)}
+        maxAbs={maxAbs}
+        ratioLabel={(t) =>
+          `P(${b + 1})=${(t.p_in_i * 100).toFixed(3)}% · P(${a + 1})=${(t.p_in_j * 100).toFixed(3)}%`
+        }
+      />
+    </div>
+  );
+}
+
+function DistinguishingWordsColumn({
+  title,
+  tokens,
+  maxAbs,
+  ratioLabel,
+}: {
+  title: string;
+  tokens: import("@/api/client").TopicPairLogOddsToken[];
+  maxAbs: number;
+  ratioLabel: (t: import("@/api/client").TopicPairLogOddsToken) => string;
+}) {
+  return (
+    <div>
+      <div
+        className="text-[11px] uppercase tracking-wider mb-2"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        {title}
+      </div>
+      {tokens.length === 0 ? (
+        <p
+          className="text-[12px]"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          No tokens above significance threshold.
+        </p>
+      ) : (
+        <ul className="space-y-1.5">
+          {tokens.map((t) => {
+            const w = Math.min(100, (Math.abs(t.log_odds) / maxAbs) * 100);
+            return (
+              <li
+                key={t.token}
+                className="grid grid-cols-[80px_1fr_auto] gap-2 items-center text-[12px]"
+                style={{ color: "var(--color-fg-subtle)" }}
+              >
+                <span
+                  className="font-mono truncate"
+                  title={t.token}
+                  style={{ color: "var(--color-fg)" }}
+                >
+                  {t.token}
+                </span>
+                <div
+                  className="h-2 rounded-sm relative"
+                  style={{
+                    backgroundColor: "var(--color-bg)",
+                    border: "1px solid var(--color-border)",
+                  }}
+                  title={ratioLabel(t)}
+                >
+                  <div
+                    className="h-full rounded-sm"
+                    style={{
+                      width: `${w}%`,
+                      backgroundColor: "var(--color-accent)",
+                      opacity: 0.85,
+                    }}
+                  />
+                </div>
+                <span
+                  className="font-mono text-[11px]"
+                  style={{ color: "var(--color-fg)" }}
+                >
+                  {t.log_odds.toFixed(2)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
