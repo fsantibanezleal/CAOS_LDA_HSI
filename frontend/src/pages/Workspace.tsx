@@ -9624,6 +9624,7 @@ function QKExploreTab({
   const div = sweep.grid.map((g) => g.topic_diversity_mean);
   const cos = sweep.grid.map((g) => g.matched_cosine_mean ?? 0);
   const canonicalK = 12;
+  const recommendedK = sweep.recommended_K ?? null;
 
   return (
     <div className="space-y-5">
@@ -9655,6 +9656,35 @@ function QKExploreTab({
           <em>not</em> supported because each combo would require ~minutes of
           server compute.
         </p>
+        {recommendedK !== null && (
+          <div
+            className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 mb-3 text-[12.5px]"
+            style={{
+              borderColor: "var(--color-accent)",
+              backgroundColor: "var(--color-accent-soft)",
+              color: "var(--color-accent)",
+            }}
+          >
+            <span className="font-semibold">Builder recommendation:</span>
+            <span className="font-mono">K={recommendedK}</span>
+            {sweep.recommendation_method && (
+              <span
+                className="font-mono text-[11px]"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                ({sweep.recommendation_method})
+              </span>
+            )}
+            {recommendedK !== canonicalK && (
+              <span
+                className="text-[11px] italic"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                — differs from canonical K={canonicalK}
+              </span>
+            )}
+          </div>
+        )}
         <div className="grid lg:grid-cols-3 gap-4">
           <SweepCurveCard
             title="Perplexity (test)"
@@ -9719,19 +9749,22 @@ function QKExploreTab({
           <tbody>
             {sweep.grid.map((g) => {
               const isCanon = g.K === canonicalK;
+              const isRec = recommendedK !== null && g.K === recommendedK;
               return (
                 <tr
                   key={g.K}
                   style={{
                     borderTop: "1px solid var(--color-border)",
-                    backgroundColor: isCanon
-                      ? "var(--color-accent-soft)"
-                      : "transparent",
+                    backgroundColor:
+                      isCanon || isRec
+                        ? "var(--color-accent-soft)"
+                        : "transparent",
                   }}
                 >
                   <td className="py-1 pr-3 font-mono">
                     K={g.K}
                     {isCanon ? " ★" : ""}
+                    {isRec && !isCanon ? " ●" : ""}
                   </td>
                   <td className="py-1 pr-3 text-right font-mono">
                     {g.perplexity_test_mean.toFixed(3)}
@@ -9764,7 +9797,11 @@ function QKExploreTab({
           className="text-[11.5px] mt-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          ★ = canonical K used everywhere else in the Workspace. For Q
+          ★ = canonical K used everywhere else in the Workspace.{" "}
+          {recommendedK !== null && recommendedK !== canonicalK
+            ? "● = builder-recommended K from sweep aggregation. "
+            : ""}
+          For Q
           sensitivity (vocabulary granularity), see the{" "}
           <span className="font-mono">robust</span> tab.
         </p>
