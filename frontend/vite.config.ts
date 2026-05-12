@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { execSync } from "node:child_process";
 
-const apiTarget = process.env.VITE_API_BASE ?? "http://127.0.0.1:8105";
+const apiTarget = process.env.VITE_PROXY_TARGET ?? "http://127.0.0.1:8105";
 
 function readGitShortSha(): string {
   try {
