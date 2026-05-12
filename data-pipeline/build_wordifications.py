@@ -26,8 +26,23 @@ For each (recipe, quant_scheme, Q, scene) the builder writes:
     vocab.json        token list, recipe metadata, sampling info
 
   data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json
-    small summary: D, V_actual, doc-length quartiles, zero-token-doc rate,
-    top-N tokens by global frequency, corpus_marginal entropy bits
+    small summary with these keys:
+    - scene_id, recipe, scheme, Q             identification
+    - B, D, V_full, V_actual                  corpus dimensions
+    - doc_length_distribution: mean / std / min / p25 / p50 / p75 / max
+    - zero_token_doc_rate                     fraction of documents whose
+                                              tokenisation produced zero
+                                              non-stopword tokens (rare,
+                                              flag for degenerate combos)
+    - corpus_marginal_entropy_bits            Shannon entropy of the global
+                                              token distribution; vocabulary
+                                              sparsity diagnostic
+    - top_tokens_by_count: list of {token, count, p_global}
+    - wavelengths_nm_first_last               [first, last] wavelength so the
+                                              UI can label the spectral axis
+                                              without re-fetching the full grid
+    - local_doc_term_path                     pointer to the .npz local sidecar
+    - generated_at, builder_version           provenance
 
 Quantization schemes (per_spectrum domain — each spectrum is normalised
 into [0, 1] then binned with Q breakpoints):

@@ -18,7 +18,8 @@ The derived JSON contains:
   relevance(lambda) = lambda * log P(w|k) + (1 - lambda) * log lift
   with lift = P(w|k) / P_global(w) using the *real* corpus marginal
 - topic_distance_matrices: cosine on phi, Jensen-Shannon on phi,
-  Hellinger on phi, Jaccard on top-30 words
+  Hellinger on phi, Jaccard on top-15 words (`topic_word_jaccard_top15`
+  in the JSON; not top-30 as an older revision of this docstring stated)
 - topic_intertopic_2d_js, topic_intertopic_3d_js: classical MDS on the
   Jensen-Shannon distance matrix (LDAvis-faithful 2D + the 3D the user
   asked for)
