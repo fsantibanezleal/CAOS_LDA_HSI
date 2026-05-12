@@ -12,6 +12,7 @@ import {
   type PickInfo,
 } from "@/components/plots/DominantTopicRaster";
 import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
+import { TopicGraph } from "@/components/plots/TopicGraph";
 import { SpectralBrowser } from "@/components/plots/SpectralBrowser";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
 import { StabilityHeatmap } from "@/components/plots/StabilityHeatmap";
@@ -1362,6 +1363,22 @@ function TopicsTab({
   setSelectedTopic: (k: number | null) => void;
 }) {
   const [lambda, setLambda] = useState<number>(0.5);
+  const [simThreshold, setSimThreshold] = useState<number>(0.7);
+
+  const topPairs = useMemo(() => {
+    if (!data) return [];
+    const dist = data.topic_distance_cosine;
+    const K = dist.length;
+    const out: { i: number; j: number; sim: number }[] = [];
+    for (let i = 0; i < K; i++) {
+      for (let j = i + 1; j < K; j++) {
+        const sim = Math.max(0, Math.min(1, 1 - (dist[i]?.[j] ?? 1)));
+        out.push({ i, j, sim });
+      }
+    }
+    out.sort((a, b) => b.sim - a.sim);
+    return out;
+  }, [data]);
 
   if (isLoading)
     return <p style={{ color: "var(--color-fg-faint)" }}>Loading topics…</p>;
@@ -1562,6 +1579,130 @@ function TopicsTab({
               </button>
             );
           })}
+        </div>
+      </div>
+
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <header className="flex items-baseline justify-between gap-3 mb-2">
+          <h4
+            className="text-base font-semibold"
+            style={{ color: "var(--color-fg)" }}
+          >
+            Topic↔topic similarity graph
+          </h4>
+          <div className="flex items-center gap-2">
+            <span
+              className="text-[11px] uppercase tracking-wider"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              edge threshold
+            </span>
+            <input
+              type="range"
+              min={0.3}
+              max={0.95}
+              step={0.05}
+              value={simThreshold}
+              onChange={(e) => setSimThreshold(parseFloat(e.target.value))}
+              style={{ width: 120 }}
+            />
+            <span
+              className="font-mono text-[12px]"
+              style={{ color: "var(--color-fg)" }}
+            >
+              {simThreshold.toFixed(2)}
+            </span>
+          </div>
+        </header>
+        <p
+          className="text-sm mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Nodes at JS-MDS coordinates; an edge appears between every topic
+          pair whose cosine similarity (1 − topic_distance_cosine) exceeds
+          the threshold. Edge thickness encodes similarity, node area
+          encodes prevalence. Click any node to select it.
+        </p>
+        <div className="grid lg:grid-cols-[1fr_220px] gap-5 items-start">
+          <TopicGraph
+            coords={data.topic_intertopic_2d_js}
+            prevalence={data.topic_prevalence}
+            distanceCosine={data.topic_distance_cosine}
+            threshold={simThreshold}
+            selectedTopic={selectedTopic}
+            onSelect={(k) =>
+              setSelectedTopic(k === selectedTopic ? null : k)
+            }
+          />
+          <div
+            className="rounded-md border p-3 text-[13px]"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "var(--color-bg)",
+            }}
+          >
+            <div
+              className="text-[11px] uppercase tracking-wider mb-2"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Top similar pairs
+            </div>
+            <ul className="space-y-1.5">
+              {topPairs.slice(0, 6).map((p) => {
+                const ciA =
+                  TOPIC_COLORS[p.i % TOPIC_COLORS.length] ?? "#0ea5e9";
+                const ciB =
+                  TOPIC_COLORS[p.j % TOPIC_COLORS.length] ?? "#0ea5e9";
+                return (
+                  <li
+                    key={`${p.i}-${p.j}`}
+                    className="flex items-center gap-2"
+                    style={{ color: "var(--color-fg-subtle)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="inline-block w-2.5 h-2.5 rounded-sm"
+                      style={{ backgroundColor: ciA }}
+                    />
+                    <span className="font-mono">t{p.i + 1}</span>
+                    <span style={{ color: "var(--color-fg-faint)" }}>
+                      ↔
+                    </span>
+                    <span
+                      aria-hidden
+                      className="inline-block w-2.5 h-2.5 rounded-sm"
+                      style={{ backgroundColor: ciB }}
+                    />
+                    <span className="font-mono">t{p.j + 1}</span>
+                    <span
+                      className="ml-auto font-mono"
+                      style={{
+                        color:
+                          p.sim >= simThreshold
+                            ? "var(--color-fg)"
+                            : "var(--color-fg-faint)",
+                      }}
+                    >
+                      {p.sim.toFixed(3)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            <p
+              className="text-[11px] mt-2"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Pairs above the threshold render an edge in the graph.
+            </p>
+          </div>
         </div>
       </div>
     </div>
