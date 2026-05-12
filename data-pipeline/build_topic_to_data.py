@@ -23,6 +23,18 @@ Each output answers, for every topic k:
   - `data/derived/topic_to_data/<scene>_dominant_topic_map.bin`
     (canonical path served by the FastAPI app and consumed by the
     frontend RasterTab at `/generated/topic_to_data/<scene>_dominant_topic_map.bin`)
+- theta_grid (cycle 121): full (H, W, K) float32 sidecar so the
+  frontend can inspect any pixel's posterior, not just the top-N docs
+  shipped in top_documents_per_topic. Sampled labelled pixels carry
+  their fitted theta vector; all other pixels carry an all-zero vector
+  (an illegal LDA simplex value, used as the implicit "no fit"
+  sentinel). The JSON ships a metadata stub
+  {format, shape, dtype, sentinel, byte_order, path, served_path};
+  the actual float32 data is written to two locations:
+  - `data/local/topic_to_data/<scene>_theta_grid.bin` (legacy)
+  - `data/derived/topic_to_data/<scene>_theta_grid.bin` (canonical,
+    served by FastAPI; consumed by the RasterTab pixel-click handler
+    at `/generated/topic_to_data/<scene>_theta_grid.bin`).
 
 This is the single most-asked-for analysis in the master plan and the
 audit's #4 gap. It replaces the previous class_topic_loadings (which
@@ -185,6 +197,22 @@ def build_for_scene(scene_id: str) -> dict | None:
     derived_map_path.parent.mkdir(parents=True, exist_ok=True)
     derived_map_path.write_bytes(dominant_map_2d.tobytes())
 
+    # Per-pixel theta grid (cycle 121): full (H, W, K) float32 sidecar so
+    # any pixel can be inspected on the frontend without an extra fetch.
+    # Sampled labelled pixels carry their fitted theta vector; all other
+    # pixels carry an all-zero vector (an illegal LDA simplex value that
+    # serves as the implicit "no fit" sentinel).
+    theta_grid = np.zeros((h * w, K), dtype=np.float32)
+    for d_idx, pixel_idx in enumerate(sample_pixel_indices):
+        theta_grid[int(pixel_idx)] = theta[d_idx].astype(np.float32)
+    theta_grid_2d = theta_grid.reshape(h, w, K)
+    theta_grid_path = LOCAL_OUT_DIR / f"{scene_id}_theta_grid.bin"
+    theta_grid_path.write_bytes(theta_grid_2d.tobytes())
+    derived_theta_grid_path = (
+        DERIVED_DIR / "topic_to_data" / f"{scene_id}_theta_grid.bin"
+    )
+    derived_theta_grid_path.write_bytes(theta_grid_2d.tobytes())
+
     # Theta projection 2D via PCA — useful for the document-embedding panel
     theta_centered = theta - theta.mean(axis=0, keepdims=True)
     u, s, _ = np.linalg.svd(theta_centered, full_matrices=False)
@@ -216,6 +244,15 @@ def build_for_scene(scene_id: str) -> dict | None:
             "sentinel_unlabelled": 255,
             "path": str(map_path.relative_to(ROOT)).replace("\\", "/"),
             "served_path": str(derived_map_path.relative_to(ROOT)).replace("\\", "/"),
+        },
+        "theta_grid": {
+            "format": "binary_float32",
+            "shape": [int(h), int(w), int(K)],
+            "dtype": "float32",
+            "sentinel": "all_zero_vector",
+            "byte_order": "little_endian",
+            "path": str(theta_grid_path.relative_to(ROOT)).replace("\\", "/"),
+            "served_path": str(derived_theta_grid_path.relative_to(ROOT)).replace("\\", "/"),
         },
         "theta_embedding_pca_2d": [
             {

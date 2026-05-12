@@ -203,6 +203,11 @@ CLAIMS_ALLOWED = [
         "source_pattern": "topic_to_data/<scene>.dominant_topic_map",
     },
     {
+        "id": "theta_grid",
+        "description": "H x W x K per-pixel theta posterior float32 sidecar (cycle 121). Sampled labelled pixels carry their fitted theta vector; all other pixels carry an all-zero vector as implicit no-fit sentinel. Powers the click-any-pixel pixel-detail panel on the raster tab.",
+        "source_pattern": "topic_to_data/<scene>_theta_grid.bin",
+    },
+    {
         "id": "theta_embedding_pca_2d_3d",
         "description": "PCA 2D and 3D coordinates of theta per document (sampled to 2k), coloured by label / dominant topic / confidence",
         "source_pattern": "topic_to_data/<scene>.theta_embedding_pca_*",
