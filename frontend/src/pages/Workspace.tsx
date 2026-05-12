@@ -3127,7 +3127,110 @@ function RasterTab({
             )}
           </div>
         </div>
+
+        {selectedTopic !== null &&
+          meta.top_documents_per_topic &&
+          meta.top_documents_per_topic[selectedTopic] && (
+            <TopDocumentsPreview
+              topic={selectedTopic}
+              docs={meta.top_documents_per_topic[selectedTopic]!}
+              labels={
+                meta.p_label_given_topic_dominant[selectedTopic] ?? []
+              }
+            />
+          )}
       </div>
+    </div>
+  );
+}
+
+function TopDocumentsPreview({
+  topic,
+  docs,
+  labels,
+}: {
+  topic: number;
+  docs: import("@/api/client").TopDocumentForTopic[];
+  labels: import("@/api/client").LabelCell[];
+}) {
+  if (docs.length === 0) return null;
+  const labelColor = (id: number) =>
+    labels.find((l) => l.label_id === id)?.color ?? "var(--color-fg-faint)";
+  const top = docs.slice(0, 8);
+  return (
+    <div
+      className="mt-5 rounded-md border p-3 text-[12.5px]"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-bg)",
+      }}
+    >
+      <div
+        className="text-[11px] uppercase tracking-wider mb-2"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Top documents — topic {topic + 1}
+      </div>
+      <p
+        className="text-[11.5px] mb-2 leading-snug"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Documents (labelled pixels) ranked by θ at this topic.
+        From <span className="font-mono">topic_to_data.top_documents_per_topic</span>.
+      </p>
+      <ul className="space-y-1.5">
+        {top.map((d) => {
+          const w = Math.min(100, d.theta_k * 100);
+          return (
+            <li
+              key={d.doc_id}
+              className="grid grid-cols-[110px_1fr_auto] gap-2 items-center"
+              style={{ color: "var(--color-fg-subtle)" }}
+            >
+              <span
+                className="font-mono text-[11.5px]"
+                style={{ color: "var(--color-fg)" }}
+                title={d.doc_id}
+              >
+                ({d.xy[0]}, {d.xy[1]})
+              </span>
+              <div
+                className="h-2 rounded-sm relative"
+                style={{
+                  backgroundColor: "var(--color-panel)",
+                  border: "1px solid var(--color-border)",
+                }}
+                title={`θ at topic ${topic + 1} = ${d.theta_k.toFixed(3)}`}
+              >
+                <div
+                  className="h-full rounded-sm"
+                  style={{
+                    width: `${w}%`,
+                    backgroundColor: "var(--color-accent)",
+                    opacity: 0.85,
+                  }}
+                />
+              </div>
+              <span
+                className="inline-flex items-center gap-1.5 font-mono text-[11px]"
+                style={{ color: "var(--color-fg)" }}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2 h-2 rounded-sm"
+                  style={{ backgroundColor: labelColor(d.label_id) }}
+                />
+                <span className="truncate max-w-[120px]" title={d.label_name}>
+                  {d.label_name}
+                </span>
+                <span style={{ color: "var(--color-fg-faint)" }}>
+                  {d.theta_k.toFixed(2)}
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
