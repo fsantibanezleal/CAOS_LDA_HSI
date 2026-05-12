@@ -128,4 +128,74 @@ for path in "${paths[@]}"; do
   echo "OK $status $url"
 done
 
+# ---- SPA shell content checks (cycle 108) -------------------------------
+# Status-code-only checks let an empty/broken React build pass smoke green
+# (lesson from cycle 99-101: xstate matching bug shipped to prod with
+# smoke 84/84). Below we verify the SPA shell is non-trivial AND that its
+# entry chunk contains the canonical version marker baked in by Vite.
+root_url="${BASE_URL}/"
+root_body="$(curl -L -s "$root_url")"
+root_len=${#root_body}
+if [[ "$root_len" -lt 500 ]]; then
+  echo "SPA shell check failed: body of $root_url is only $root_len chars (<500)" >&2
+  exit 1
+fi
+if ! grep -q '<div id="root"' <<<"$root_body"; then
+  echo "SPA shell check failed: body of $root_url has no <div id=\"root\">" >&2
+  exit 1
+fi
+entry_src="$(grep -oE '<script[^>]+type="module"[^>]+src="[^"]+"' <<<"$root_body" \
+  | head -1 \
+  | grep -oE 'src="[^"]+"' \
+  | sed -E 's/.*src="([^"]+)".*/\1/')"
+if [[ -z "$entry_src" ]]; then
+  echo "SPA shell check failed: no <script type=\"module\" src=\"...\"> in $root_url" >&2
+  exit 1
+fi
+case "$entry_src" in
+  http://*|https://*)
+    entry_url="$entry_src"
+    ;;
+  /*)
+    entry_url="${BASE_URL}${entry_src}"
+    ;;
+  *)
+    entry_url="${BASE_URL}/${entry_src}"
+    ;;
+esac
+entry_body="$(curl -L -s "$entry_url")"
+entry_len=${#entry_body}
+if [[ "$entry_len" -lt 1000 ]]; then
+  echo "SPA bundle check failed: $entry_url is only $entry_len bytes (<1000)" >&2
+  exit 1
+fi
+# The version string lives in version.ts and is normally bundled into the
+# main entry chunk (because AppFooter imports it). If a future refactor
+# moves it into a lazy chunk, search modulepreload assets too.
+version_found=""
+if grep -qE 'cycle [0-9]+' <<<"$entry_body"; then
+  version_found="entry"
+else
+  preload_srcs="$(grep -oE '<link[^>]+rel="modulepreload"[^>]+href="[^"]+"' <<<"$root_body" \
+    | grep -oE 'href="[^"]+"' \
+    | sed -E 's/.*href="([^"]+)".*/\1/')"
+  while IFS= read -r preload_src; do
+    [[ -z "$preload_src" ]] && continue
+    case "$preload_src" in
+      http://*|https://*) preload_url="$preload_src" ;;
+      /*) preload_url="${BASE_URL}${preload_src}" ;;
+      *) preload_url="${BASE_URL}/${preload_src}" ;;
+    esac
+    if curl -L -s "$preload_url" | grep -qE 'cycle [0-9]+'; then
+      version_found="preload:$preload_url"
+      break
+    fi
+  done <<<"$preload_srcs"
+fi
+if [[ -z "$version_found" ]]; then
+  echo "SPA bundle check failed: no \"cycle N\" version marker in entry chunk or modulepreload chunks" >&2
+  exit 1
+fi
+echo "OK shell ${root_len}B + entry bundle ${entry_len}B at $entry_url (version marker in $version_found)"
+
 echo "Smoke checks passed for $BASE_URL"
