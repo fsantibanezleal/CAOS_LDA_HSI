@@ -454,6 +454,7 @@
       "probe": "Linear probe",
       "robust": "Robustez · Q + cross-scene",
       "agreement": "Acuerdo entre métodos · narrativas",
+      "applydoc": "Aplicar a documento · Step 7",
       "unmixing": "Unmixing · endmembers",
       "usgs": "USGS · librería v7",
       "metrics": "Reconstrucción + MI",
