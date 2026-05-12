@@ -2118,6 +2118,7 @@ function RasterTab({
   setSelectedTopic: (k: number | null) => void;
 }) {
   const [pick, setPick] = useState<PickInfo | null>(null);
+  const [compareTopic, setCompareTopic] = useState<number | null>(null);
 
   // Derive served path from the JSON metadata. The pipeline writes a
   // companion .bin in data/derived/topic_to_data/ so the frontend can
@@ -2131,6 +2132,49 @@ function RasterTab({
     enabled: meta !== null,
     retry: false,
   });
+
+  const overlapStats = useMemo(() => {
+    if (!buf.data || !meta) return null;
+    if (selectedTopic === null || compareTopic === null) return null;
+    if (selectedTopic === compareTopic) return null;
+    const grid = new Uint8Array(buf.data);
+    const [h, w] = meta.spatial_shape;
+    const SENT = 255;
+    let countA = 0;
+    let countB = 0;
+    let labelled = 0;
+    let adjacent = 0;
+    for (let i = 0; i < grid.length; i++) {
+      const t = grid[i]!;
+      if (t === SENT || t >= meta.topic_count) continue;
+      labelled++;
+      if (t === selectedTopic) countA++;
+      else if (t === compareTopic) countB++;
+    }
+    for (let r = 0; r < h; r++) {
+      for (let c = 0; c < w; c++) {
+        const t = grid[r * w + c]!;
+        if (t !== selectedTopic) continue;
+        if (c + 1 < w) {
+          const tr = grid[r * w + c + 1]!;
+          if (tr === compareTopic) adjacent++;
+        }
+        if (r + 1 < h) {
+          const td = grid[(r + 1) * w + c]!;
+          if (td === compareTopic) adjacent++;
+        }
+        if (c > 0) {
+          const tl = grid[r * w + c - 1]!;
+          if (tl === compareTopic) adjacent++;
+        }
+        if (r > 0) {
+          const tu = grid[(r - 1) * w + c]!;
+          if (tu === compareTopic) adjacent++;
+        }
+      }
+    }
+    return { countA, countB, labelled, adjacent };
+  }, [buf.data, meta, selectedTopic, compareTopic]);
 
   if (isLoading)
     return (
@@ -2211,6 +2255,7 @@ function RasterTab({
               sentinelUnlabelled={255}
               topicCount={meta.topic_count}
               selectedTopic={selectedTopic}
+              compareTopic={compareTopic}
               onPick={(p) => setPick(p)}
             />
           )}
@@ -2306,6 +2351,197 @@ function RasterTab({
                 })}
               </div>
             </div>
+
+            {selectedTopic !== null && (
+              <div>
+                <div
+                  className="text-[11px] uppercase tracking-wider mb-2"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  Compare with
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setCompareTopic(null)}
+                    className="rounded-md border px-2.5 py-1 text-[12px]"
+                    style={{
+                      borderColor:
+                        compareTopic === null
+                          ? "var(--color-accent)"
+                          : "var(--color-border)",
+                      backgroundColor:
+                        compareTopic === null
+                          ? "var(--color-accent-soft)"
+                          : "var(--color-panel)",
+                      color:
+                        compareTopic === null
+                          ? "var(--color-accent)"
+                          : "var(--color-fg-subtle)",
+                    }}
+                  >
+                    none
+                  </button>
+                  {Array.from({ length: meta.topic_count }, (_, k) => {
+                    const isCmp = compareTopic === k;
+                    const isPrimary = selectedTopic === k;
+                    const color =
+                      TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+                    return (
+                      <button
+                        key={k}
+                        type="button"
+                        disabled={isPrimary}
+                        onClick={() =>
+                          setCompareTopic(isCmp ? null : k)
+                        }
+                        className="rounded-md border px-2.5 py-1 text-[12px] inline-flex items-center gap-1.5"
+                        style={{
+                          borderColor: isCmp
+                            ? "var(--color-accent)"
+                            : "var(--color-border)",
+                          backgroundColor: isCmp
+                            ? "var(--color-accent-soft)"
+                            : "var(--color-panel)",
+                          color: isPrimary
+                            ? "var(--color-fg-faint)"
+                            : isCmp
+                              ? "var(--color-fg)"
+                              : "var(--color-fg-subtle)",
+                          opacity: isPrimary ? 0.4 : 1,
+                          cursor: isPrimary ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        <span
+                          aria-hidden
+                          className="inline-block w-2.5 h-2.5 rounded-sm"
+                          style={{ backgroundColor: color }}
+                        />
+                        topic {k + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {overlapStats && selectedTopic !== null && compareTopic !== null && (
+              <div
+                className="rounded-md border p-3 text-[13px]"
+                style={{
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--color-bg)",
+                }}
+              >
+                <div
+                  className="text-[11px] uppercase tracking-wider mb-2"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  Pairwise overlap — topic {selectedTopic + 1} vs topic{" "}
+                  {compareTopic + 1}
+                </div>
+                <ul className="space-y-1.5">
+                  <li
+                    className="flex items-center gap-2"
+                    style={{ color: "var(--color-fg-subtle)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="inline-block w-2.5 h-2.5 rounded-sm shrink-0"
+                      style={{
+                        backgroundColor:
+                          TOPIC_COLORS[
+                            selectedTopic % TOPIC_COLORS.length
+                          ] ?? "#0ea5e9",
+                      }}
+                    />
+                    <span className="flex-1">
+                      topic {selectedTopic + 1} dominant
+                    </span>
+                    <span
+                      className="font-mono"
+                      style={{ color: "var(--color-fg)" }}
+                    >
+                      {overlapStats.countA}{" "}
+                      <span
+                        style={{ color: "var(--color-fg-faint)" }}
+                      >
+                        (
+                        {overlapStats.labelled > 0
+                          ? (
+                              (overlapStats.countA /
+                                overlapStats.labelled) *
+                              100
+                            ).toFixed(1)
+                          : "0.0"}
+                        %)
+                      </span>
+                    </span>
+                  </li>
+                  <li
+                    className="flex items-center gap-2"
+                    style={{ color: "var(--color-fg-subtle)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="inline-block w-2.5 h-2.5 rounded-sm shrink-0"
+                      style={{
+                        backgroundColor:
+                          TOPIC_COLORS[
+                            compareTopic % TOPIC_COLORS.length
+                          ] ?? "#0ea5e9",
+                      }}
+                    />
+                    <span className="flex-1">
+                      topic {compareTopic + 1} dominant
+                    </span>
+                    <span
+                      className="font-mono"
+                      style={{ color: "var(--color-fg)" }}
+                    >
+                      {overlapStats.countB}{" "}
+                      <span
+                        style={{ color: "var(--color-fg-faint)" }}
+                      >
+                        (
+                        {overlapStats.labelled > 0
+                          ? (
+                              (overlapStats.countB /
+                                overlapStats.labelled) *
+                              100
+                            ).toFixed(1)
+                          : "0.0"}
+                        %)
+                      </span>
+                    </span>
+                  </li>
+                  <li
+                    className="flex items-center gap-2 pt-1.5"
+                    style={{
+                      color: "var(--color-fg-subtle)",
+                      borderTop: "1px dashed var(--color-border)",
+                    }}
+                  >
+                    <span className="flex-1">
+                      4-neighbor adjacency
+                    </span>
+                    <span
+                      className="font-mono"
+                      style={{ color: "var(--color-fg)" }}
+                    >
+                      {overlapStats.adjacent}
+                    </span>
+                  </li>
+                </ul>
+                <p
+                  className="text-[11px] mt-2"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  Adjacency proxies spatial confusability. Higher = topics
+                  share long borders.
+                </p>
+              </div>
+            )}
 
             {labels && (
               <div
