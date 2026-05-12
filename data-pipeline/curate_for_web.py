@@ -263,6 +263,11 @@ CLAIMS_ALLOWED = [
         "source_pattern": "groupings/<method>/<scene>.json",
     },
     {
+        "id": "groupings_assignment_binaries",
+        "description": "Per-pixel grouping assignment binaries (uint16/uint32 H x W) for every (method, scene) pair (cycle 123). Mirrored from data/local/groupings/ so the public web app can render segmentation overlays on the raw tab without recomputing.",
+        "source_pattern": "groupings/<method>/<scene>/assignment.bin",
+    },
+    {
         "id": "cross_method_agreement_matrix",
         "description": "Pairwise ARI / NMI / V-measure matrix between every grouping method (label, dominant LDA topic, every method from build_groupings) per scene. Quantifies how different ways of grouping spectra agree or disagree.",
         "source_pattern": "cross_method_agreement/<scene>.{ari_matrix,nmi_matrix,v_measure_matrix}",
