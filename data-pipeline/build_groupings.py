@@ -234,11 +234,21 @@ def build_for_scene(scene_id: str) -> list[dict]:
         bin_path = local_dir / "assignment.bin"
         bin_path.write_bytes(arr.tobytes())
 
+        # Cycle 123: also mirror the assignment binary to data/derived/ so
+        # the FastAPI app can serve it for the raw-tab segmentation overlay.
+        # The JSON already shipped a local-only path; we add `served_path`
+        # pointing at the derived copy. Backwards-compatible.
+        derived_bin_dir = DERIVED_OUT_ROOT / method_name / scene_id
+        derived_bin_dir.mkdir(parents=True, exist_ok=True)
+        derived_bin_path = derived_bin_dir / "assignment.bin"
+        derived_bin_path.write_bytes(arr.tobytes())
+
         summary = assignment_summary(assignment, flat, flat_labels, valid_2d)
         summary["scene_id"] = scene_id
         summary["method"] = method_name
         summary["spatial_shape"] = [int(h), int(w)]
         summary["assignment_path"] = str(bin_path.relative_to(ROOT)).replace("\\", "/")
+        summary["served_path"] = str(derived_bin_path.relative_to(ROOT)).replace("\\", "/")
         summary["assignment_format"] = fmt
         summary["assignment_dtype_max_id"] = int(max_id)
         summary["wavelengths_nm"] = [round(float(x), 2) for x in approximate_wavelengths(config, b).tolist()]

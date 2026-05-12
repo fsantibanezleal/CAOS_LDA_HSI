@@ -458,6 +458,10 @@ export const api = {
     request<FelzenszwalbGroupings>(
       `/generated/groupings/felzenszwalb/${encodeURIComponent(sceneId)}.json`,
     ),
+  felzenszwalbGroupingsByMethod: (method: string, sceneId: string) =>
+    request<FelzenszwalbGroupings>(
+      `/generated/groupings/${encodeURIComponent(method)}/${encodeURIComponent(sceneId)}.json`,
+    ),
   crossMethodAgreement: (sceneId: string) =>
     request<CrossMethodAgreement>(
       `/generated/cross_method_agreement/${encodeURIComponent(sceneId)}.json`,
@@ -1023,11 +1027,20 @@ export type MethodNarratives = {
 };
 
 export type FelzenszwalbGroupings = {
+  scene_id?: string;
+  method?: string;
+  spatial_shape?: [number, number];
   n_groups: number;
   group_size_distribution: { min: number; p25: number; p50: number; p75: number; max: number };
   between_within_variance_ratio: number;
   agreement_vs_label: { ari: number; nmi: number; v_measure: number; n_labelled_pixels: number };
   mean_spectrum_per_group: { group_id: number; size: number; mean: number[] }[];
+  assignment_path?: string;
+  served_path?: string;
+  assignment_format?: "binary_uint16_le" | "binary_uint32_le";
+  assignment_dtype_max_id?: number;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type WordificationsIndexItem = {
