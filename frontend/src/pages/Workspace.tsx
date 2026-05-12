@@ -1428,6 +1428,7 @@ function TopicsTab({
 
   return (
     <div className="space-y-6">
+      <LdaConfigBadge data={data} />
       <div className="grid lg:grid-cols-[480px_1fr] gap-5 items-start">
         <div
           className="rounded-lg border p-4"
@@ -1791,6 +1792,88 @@ function TopicsTab({
               b={pairTopic}
             />
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LdaConfigBadge({
+  data,
+}: {
+  data: import("@/api/client").TopicViews;
+}) {
+  const [open, setOpen] = useState(false);
+  const cfg = data.lda_config;
+  const pp = data.perplexity;
+  if (!cfg && pp === undefined) return null;
+  const items: { label: string; value: string }[] = [];
+  if (cfg) {
+    items.push(
+      { label: "fit", value: cfg.method },
+      { label: "α", value: cfg.doc_topic_prior.toFixed(2) },
+      { label: "η", value: cfg.topic_word_prior.toFixed(2) },
+      { label: "max_iter", value: String(cfg.max_iter) },
+      { label: "seed", value: String(cfg.random_state) },
+      { label: "samples/class", value: String(cfg.samples_per_class) },
+    );
+  }
+  return (
+    <div
+      className="rounded-md border px-3 py-2 text-[12px]"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-bg)",
+        color: "var(--color-fg-subtle)",
+      }}
+    >
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        {items.map((it, i) => (
+          <span key={i} className="font-mono">
+            <span style={{ color: "var(--color-fg-faint)" }}>
+              {it.label}=
+            </span>
+            <span style={{ color: "var(--color-fg)" }}>{it.value}</span>
+          </span>
+        ))}
+        {pp !== undefined && (
+          <span className="font-mono ml-auto">
+            <span style={{ color: "var(--color-fg-faint)" }}>
+              held-out perplexity{" "}
+            </span>
+            <span style={{ color: "var(--color-accent)" }}>
+              {pp.toFixed(3)}
+            </span>
+          </span>
+        )}
+        {cfg && (
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className="text-[11px] underline"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            {open ? "fewer" : "more"}
+          </button>
+        )}
+      </div>
+      {open && cfg && (
+        <div
+          className="mt-1.5 pt-1.5 font-mono text-[11.5px]"
+          style={{
+            borderTop: "1px dashed var(--color-border)",
+            color: "var(--color-fg-faint)",
+          }}
+        >
+          wordification ={" "}
+          <span style={{ color: "var(--color-fg)" }}>
+            {cfg.wordification}
+          </span>
+          {"  ·  "}
+          quantization_scale ={" "}
+          <span style={{ color: "var(--color-fg)" }}>
+            {cfg.quantization_scale}
+          </span>
         </div>
       )}
     </div>
