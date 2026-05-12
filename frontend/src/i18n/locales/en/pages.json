@@ -440,6 +440,7 @@
       "routed": "Routed · ranking",
       "interpret": "Interpretability cards",
       "recipes": "Recipes · V1..V12 · Q",
+      "qkexplore": "K-sweep · model selection",
       "supertopics": "Super-topics · cross-scene",
       "raster": "Spatial map",
       "embed3d": "Embedding 3D · θ-PCA",
