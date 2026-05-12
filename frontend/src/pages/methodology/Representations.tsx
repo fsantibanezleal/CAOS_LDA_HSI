@@ -6,6 +6,7 @@ import { Equation } from "@/components/Equation";
 import { Figure } from "@/components/Figure";
 import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
+import { RecipeSchematicsGrid } from "@/components/methodology/RecipeSchematics";
 import { cn } from "@/lib/cn";
 
 type MethodFamily = "topic" | "neural-topic" | "compression" | "deep" | "unmixing";
@@ -187,6 +188,28 @@ export default function MethodologyRepresentations() {
         <p className="mb-3 text-[14px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
           {t("pages:methodology_representations.recipes_lead")}
         </p>
+        <h3
+          className="text-[13px] uppercase tracking-widest font-semibold mt-2 mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Per-recipe schematics
+        </h3>
+        <p
+          className="mb-3 text-[13px] leading-relaxed"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          Each card sketches a single recipe's tokenization. These are
+          conceptual — actual implementations operate on the full
+          B-band spectrum, with binning controlled by scheme ∈ &#123;U,Q,L&#125;
+          and Q ∈ &#123;8,16,32&#125;.
+        </p>
+        <RecipeSchematicsGrid />
+        <h3
+          className="text-[13px] uppercase tracking-widest font-semibold mt-6 mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Availability grid
+        </h3>
         <Figure caption={t("pages:methodology_representations.recipes_figure_caption")}>
           <RecipeGridSVG />
         </Figure>
