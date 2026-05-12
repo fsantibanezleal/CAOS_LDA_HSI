@@ -233,6 +233,113 @@ After the analytical surface stabilised at cycles 51–63, cycles
   entry-chunk version marker) so empty-body deploys fail smoke
   instead of being reported green.
 
+### Frontend cycles 109–124 (consistency audit + per-pixel inference)
+
+Cycles 109–124 closed the consistency audit (#374; 36 findings, 18 P0
+all closed) and turned the c112 TypeScript-type extensions into
+concrete UI affordances:
+
+- **c109–c111, c118, c124** — wiki rolled forward through c123 across
+  five pages: `Web-App-Workflow-and-GUI` (lede rewrite + 27-tab list +
+  §13.2 cycle-by-cycle paragraphs c64..c123), `Corpus-Construction`
+  (V1 band-frequency alias note), `Backend-Architecture`
+  (new §5b Workspace-Tab Endpoint Mapping, §13.14a wordifications,
+  §13.14b lda-sweep, §13.14c per-pixel theta_grid, §13.14e
+  segmentation assignment binaries, smoke 109/109),
+  `Mathematical-Background` (§23 Bayes inversion for c104, §24
+  topic-topic similarity threshold-edge graph for c105, §25 routed-
+  soft prediction formalism for c120/c122), `Local-Reproduction-
+  Guide` (cycle 108 smoke contract).
+- **c112** — TypeScript types extended for parity with the live API
+  (TopicViews, TopicToData, LdaSweep, WordificationPayload now expose
+  every JSON key the backend emits including the previously-unused
+  `topic_pair_log_odds`, `lda_config`, `perplexity`,
+  `top_documents_per_topic`, `dominant_topic_map` metadata,
+  `recommended_K`, `wavelengths_nm_first_last`). The qkexplore tab
+  now renders the builder-recommended K (K=4 on Indian Pines) as
+  both an accent chip + table marker.
+- **c113** — i18n + README + in-code copy harmonised: 11→27 tabs;
+  smoke 87→109 + SPA shell content assertions; ETM beats ProdLDA
+  6/6 (not 5/6); β-grid {1,2,4,8,16}; CAE-1D mid-ladder reconciled
+  with the README headline #6 stability claim.
+- **c114** — Builder docstring drift fixes: jaccard top-15 (not
+  top-30) on `topic_word_jaccard_top15`; dominant_topic_map dual
+  paths (local + derived) with sentinel 255 (not −1); full
+  16-key list on the wordifications JSON output; lda-sweep formula
+  unweighted sum (not "/ 3" as the docstring said).
+- **c115** — `web-app-spec.md` Steps 1-8 carry inline ✅ / ⚠️ status
+  with cycle refs (in the management repo).
+- **c116** — Topic-pair distinguishing-words panel on the topics
+  tab. Reads `topic_pair_log_odds`; renders two side-by-side ranked
+  lists of tokens characteristic of topic A vs topic B with
+  |log_odds| / max bars.
+- **c117** — LDA config + held-out perplexity badge above the
+  intertopic map on the topics tab.
+- **c119** — Top-N documents preview card on the raster tab when a
+  topic is selected; lists top-8 labelled pixels with (row, col),
+  θ bar, and label.
+- **c120** — Client-side topic-routed-soft prediction
+  `P(L|d) = Σ_k θ_d[k] · P(L|k)` per doc, with a Δ badge when the
+  top-1 prediction disagrees with the ground-truth label and a
+  per-doc drilldown panel showing the top-5 sorted predictions.
+- **c121** — Per-pixel theta sidecar: every labelled scene now
+  ships a `(H, W, K)` float32 binary at
+  `data/derived/topic_to_data/<scene>_theta_grid.bin` (168 KB
+  Salinas-A → 18 MB Botswana; ~48 MB total). Sampled labelled
+  pixels carry their fitted θ vector; all other pixels carry an
+  all-zero sentinel vector.
+- **c122** — Click-any-pixel handler on the raster tab. Lazy-fetches
+  the c121 theta_grid sidecar; on pixel-click renders a
+  PixelDetailCard with top-6 θ as a ranked clickable bar chart +
+  top-3 topic-routed-soft prediction + sum-check. Closes Step 7
+  per-pixel inference end-to-end.
+- **c123** — Spatial segmentation overlay panel on the raw tab.
+  5-method picker (Felzenszwalb / SLIC-500 / SLIC-2000 / Patch-7
+  / Patch-15). Backend mirrored 36 assignment binaries (6 methods
+  × 6 scenes) from `data/local/groupings/` to
+  `data/derived/groupings/`. Canvas raster with deterministic
+  Knuth-hash hue per segment-id + per-method stats panel.
+
+### Per-pixel inference architecture (after cycle 122)
+
+The pipeline now supports per-pixel topic inspection without an
+inference roundtrip:
+
+```
+build_topic_views.py  →  phi.npy + theta.npy + sample_pixel_indices.npy
+        │                                            │
+        ▼                                            ▼
+build_topic_to_data.py: writes
+  - <scene>.json                       (p_label_given_topic + topic embeddings)
+  - <scene>_dominant_topic_map.bin     uint8 (H×W) argmax(θ) per pixel
+  - <scene>_theta_grid.bin             float32 (H×W×K) full θ per pixel
+        │
+        ▼
+FastAPI serves /generated/topic_to_data/<scene>_theta_grid.bin
+        │
+        ▼
+Frontend RasterTab pixel-click handler:
+  1. Reads K floats at offset (row * W + col) * K from theta_grid
+  2. Computes P(L|d) = Σ_k θ_d[k] · P(L|k) (≈12 multiplies / 12 adds for K=12)
+  3. Renders top-6 of θ + top-3 routed prediction
+```
+
+The same theta_grid powers the c120 per-doc prediction and (in
+principle) any future per-pixel affordance that needs the full θ
+posterior. Sum check at the panel's top-right confirms the simplex
+constraint `Σ_k θ_d[k] ≈ 1`.
+
+### Manifest growth
+
+| Cycle | Total artifacts | New |
+|---|---|---|
+| pre-c100 | 1592 | baseline |
+| c121 (theta_grid sidecars) | 1598 | +6 (one per labelled scene) |
+| c123 (segmentation assignment binaries) | 1634 | +36 (6 methods × 6 scenes) |
+
+Audit reports 0 issues at every step; smoke 109/109 + SPA shell
+content checks pass on every deploy.
+
 ## Quick start
 
 ### Setup (CPU-only, portable)
