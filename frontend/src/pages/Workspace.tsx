@@ -2674,6 +2674,21 @@ function RasterTab({
     retry: false,
   });
 
+  // Cycle 121 per-pixel theta sidecar. Loaded lazily so users who
+  // never click a pixel don't pay the bandwidth. Sizes range from
+  // 168 KB (Salinas-A) to 18 MB (Botswana); a single round-trip per
+  // scene per session.
+  const thetaGrid = useQuery({
+    queryKey: ["theta-grid", meta?.scene_id],
+    queryFn: () => {
+      const path = `/generated/topic_to_data/${meta!.scene_id}_theta_grid.bin`;
+      return api.buffer(path);
+    },
+    enabled: meta !== null && !!meta?.theta_grid,
+    retry: false,
+    staleTime: 30 * 60_000,
+  });
+
   const overlapStats = useMemo(() => {
     if (!buf.data || !meta) return null;
     if (selectedTopic === null || compareTopic === null) return null;
@@ -2823,10 +2838,22 @@ function RasterTab({
                 </div>
               ) : (
                 <span style={{ color: "var(--color-fg-faint)" }}>
-                  Click cualquier pixel del raster.
+                  Click any pixel on the raster.
                 </span>
               )}
             </div>
+
+            {pick && meta.theta_grid && (
+              <PixelDetailCard
+                pick={pick}
+                meta={meta}
+                thetaGridBuffer={thetaGrid.data ?? null}
+                isLoading={thetaGrid.isLoading}
+                onSelectTopic={(k) =>
+                  setSelectedTopic(k === selectedTopic ? null : k)
+                }
+              />
+            )}
 
             <div>
               <div
@@ -3415,6 +3442,226 @@ function DocPredictionPanel({
       >
         ★ = top-1 routed prediction · ● = ground-truth label · disagreement
         between the two is the "Δ" badge in the row above.
+      </p>
+    </div>
+  );
+}
+
+function PixelDetailCard({
+  pick,
+  meta,
+  thetaGridBuffer,
+  isLoading,
+  onSelectTopic,
+}: {
+  pick: PickInfo;
+  meta: import("@/api/client").TopicToData;
+  thetaGridBuffer: ArrayBuffer | null;
+  isLoading: boolean;
+  onSelectTopic: (k: number) => void;
+}) {
+  const K = meta.topic_count;
+  const [, w] = meta.spatial_shape;
+  const theta = useMemo(() => {
+    if (!thetaGridBuffer) return null;
+    const view = new Float32Array(thetaGridBuffer);
+    const offset = (pick.row * w + pick.col) * K;
+    if (offset + K > view.length) return null;
+    return Array.from(view.slice(offset, offset + K));
+  }, [thetaGridBuffer, pick.row, pick.col, w, K]);
+
+  const sum = theta ? theta.reduce((s, v) => s + v, 0) : 0;
+  const hasFit = theta !== null && sum > 1e-6;
+
+  const pred = useMemo(() => {
+    if (!hasFit || !theta) return [];
+    const p = computeRoutedPrediction(theta, meta.p_label_given_topic_dominant);
+    return [...p].sort((a, b) => b.p - a.p).slice(0, 5);
+  }, [hasFit, theta, meta.p_label_given_topic_dominant]);
+
+  const orderedThetas = useMemo(() => {
+    if (!hasFit || !theta) return [];
+    return theta
+      .map((v, k) => ({ k, v }))
+      .sort((a, b) => b.v - a.v);
+  }, [hasFit, theta]);
+
+  if (isLoading) {
+    return (
+      <div
+        className="rounded-md border p-3 text-[12px]"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-bg)",
+          color: "var(--color-fg-faint)",
+        }}
+      >
+        Loading per-pixel θ sidecar…
+      </div>
+    );
+  }
+  if (!hasFit) {
+    return (
+      <div
+        className="rounded-md border p-3 text-[12px]"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-bg)",
+          color: "var(--color-fg-faint)",
+        }}
+      >
+        No LDA fit at pixel ({pick.row}, {pick.col}). This pixel was not
+        in the labelled sample used to fit LDA (sentinel all-zero θ).
+      </div>
+    );
+  }
+  const topK = orderedThetas[0]?.k ?? 0;
+  return (
+    <div
+      className="rounded-md border p-3 text-[12.5px]"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-bg)",
+      }}
+    >
+      <div className="flex items-baseline justify-between mb-2">
+        <div
+          className="text-[11px] uppercase tracking-wider"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          θ at ({pick.row}, {pick.col}) · dominant t{topK + 1}
+        </div>
+        <span
+          className="font-mono text-[11px]"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Σ = {sum.toFixed(3)}
+        </span>
+      </div>
+      <ul className="space-y-1 mb-3">
+        {orderedThetas.slice(0, 6).map(({ k, v }) => {
+          const wPct = Math.min(100, v * 100);
+          const color = TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+          return (
+            <li
+              key={k}
+              className="grid grid-cols-[58px_1fr_44px] gap-2 items-center"
+              style={{ color: "var(--color-fg-subtle)" }}
+            >
+              <button
+                type="button"
+                onClick={() => onSelectTopic(k)}
+                className="inline-flex items-center gap-1.5 font-mono text-[11.5px] text-left"
+                style={{ color: "var(--color-fg)" }}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2 h-2 rounded-sm"
+                  style={{ backgroundColor: color }}
+                />
+                t{k + 1}
+              </button>
+              <div
+                className="h-1.5 rounded-sm relative"
+                style={{
+                  backgroundColor: "var(--color-panel)",
+                  border: "1px solid var(--color-border)",
+                }}
+              >
+                <div
+                  className="h-full rounded-sm"
+                  style={{
+                    width: `${wPct}%`,
+                    backgroundColor: color,
+                    opacity: 0.85,
+                  }}
+                />
+              </div>
+              <span
+                className="font-mono text-[11px] text-right"
+                style={{ color: "var(--color-fg)" }}
+              >
+                {v.toFixed(3)}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <div
+        className="text-[11px] uppercase tracking-wider mb-1.5"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Routed-soft prediction (top-3)
+      </div>
+      {pred.length === 0 ? (
+        <span
+          className="text-[11.5px]"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          No per-label distribution at this pixel.
+        </span>
+      ) : (
+        <ul className="space-y-0.5">
+          {pred.slice(0, 3).map((p, i) => (
+            <li
+              key={p.label_id}
+              className="grid grid-cols-[150px_1fr_44px] gap-2 items-center text-[11.5px]"
+              style={{ color: "var(--color-fg-subtle)" }}
+            >
+              <span
+                className="inline-flex items-center gap-1.5 truncate"
+                style={{ color: "var(--color-fg)" }}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2 h-2 rounded-sm shrink-0"
+                  style={{ backgroundColor: p.color }}
+                />
+                <span className="truncate" title={p.name}>
+                  {p.name}
+                </span>
+                {i === 0 && (
+                  <span
+                    className="text-[9.5px] font-mono"
+                    style={{ color: "var(--color-accent)" }}
+                  >
+                    ★
+                  </span>
+                )}
+              </span>
+              <div
+                className="h-1.5 rounded-sm relative"
+                style={{
+                  backgroundColor: "var(--color-panel)",
+                  border: "1px solid var(--color-border)",
+                }}
+              >
+                <div
+                  className="h-full rounded-sm"
+                  style={{
+                    width: `${Math.min(100, p.p * 100)}%`,
+                    backgroundColor:
+                      i === 0 ? "var(--color-accent)" : "var(--color-fg-faint)",
+                    opacity: i === 0 ? 0.9 : 0.5,
+                  }}
+                />
+              </div>
+              <span
+                className="font-mono text-[11px] text-right"
+                style={{ color: "var(--color-fg)" }}
+              >
+                {(p.p * 100).toFixed(1)}%
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p
+        className="text-[10.5px] mt-2"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Per-pixel θ from <span className="font-mono">theta_grid.bin</span>
+        {" "}(cycle 121). Click a topic bar to isolate it on the raster.
       </p>
     </div>
   );
