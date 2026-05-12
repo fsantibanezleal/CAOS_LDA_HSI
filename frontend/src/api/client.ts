@@ -383,6 +383,12 @@ export const api = {
     request<DocumentCardsFile>(
       `/generated/interpretability/${encodeURIComponent(sceneId)}/document_cards.json`,
     ),
+  wordificationsIndex: () =>
+    request<WordificationsIndex>(`/api/wordifications`),
+  wordification: (sceneId: string, recipe: string, scheme: string, q: number) =>
+    request<WordificationPayload>(
+      `/api/wordifications/${encodeURIComponent(sceneId)}/${encodeURIComponent(recipe)}/${encodeURIComponent(scheme)}/${q}`,
+    ),
   quantizationSensitivity: (sceneId: string) =>
     request<QuantizationSensitivity>(
       `/generated/quantization_sensitivity/${encodeURIComponent(sceneId)}.json`,
@@ -928,6 +934,44 @@ export type FelzenszwalbGroupings = {
   between_within_variance_ratio: number;
   agreement_vs_label: { ari: number; nmi: number; v_measure: number; n_labelled_pixels: number };
   mean_spectrum_per_group: { group_id: number; size: number; mean: number[] }[];
+};
+
+export type WordificationsIndexItem = {
+  id: string;
+  path: string;
+  bytes: number;
+};
+export type WordificationsIndex = {
+  count: number;
+  items: WordificationsIndexItem[];
+};
+
+export type WordificationTopToken = {
+  token: string;
+  count: number;
+  p_global: number;
+};
+export type WordificationPayload = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  B: number;
+  D: number;
+  V_full: number;
+  V_actual: number;
+  doc_length_distribution: {
+    mean: number;
+    std: number;
+    min: number;
+    p25: number;
+    p50: number;
+    p75: number;
+    max: number;
+  };
+  zero_token_doc_rate?: number;
+  corpus_marginal_entropy_bits?: number;
+  top_tokens_by_count?: WordificationTopToken[];
 };
 
 export type EndmemberBaseline = {
