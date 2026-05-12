@@ -8,6 +8,7 @@ type Props = {
   sentinelUnlabelled: number;
   topicCount: number;
   selectedTopic: number | null;
+  compareTopic?: number | null;
   onPick: (info: PickInfo) => void;
 };
 
@@ -38,8 +39,13 @@ export function DominantTopicRaster({
   sentinelUnlabelled,
   topicCount,
   selectedTopic,
+  compareTopic,
   onPick,
 }: Props) {
+  const compare =
+    compareTopic !== undefined && compareTopic !== null && compareTopic !== selectedTopic
+      ? compareTopic
+      : null;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hover, setHover] = useState<PickInfo | null>(null);
   const [h, w] = shape;
@@ -75,7 +81,10 @@ export function DominantTopicRaster({
         img.data[off + 3] = 0;
         continue;
       }
-      const dim = selectedTopic !== null && selectedTopic !== t;
+      const isPrimary = selectedTopic !== null && selectedTopic === t;
+      const isCompare = compare !== null && compare === t;
+      const anyIsolated = selectedTopic !== null || compare !== null;
+      const dim = anyIsolated && !isPrimary && !isCompare;
       const [r, g, b] = palette[t]!;
       img.data[off] = r;
       img.data[off + 1] = g;
@@ -83,7 +92,7 @@ export function DominantTopicRaster({
       img.data[off + 3] = dim ? 56 : 230;
     }
     ctx.putImageData(img, 0, 0);
-  }, [grid, w, h, sentinelUnlabelled, topicCount, palette, selectedTopic]);
+  }, [grid, w, h, sentinelUnlabelled, topicCount, palette, selectedTopic, compare]);
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
