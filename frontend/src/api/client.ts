@@ -198,6 +198,24 @@ export type TopWord = {
   relevance: number;
 };
 
+export type TopicPairLogOddsToken = {
+  token: string;
+  log_odds: number;
+  p_in_i: number;
+  p_in_j: number;
+};
+
+export type LdaConfig = {
+  method: string;
+  max_iter: number;
+  doc_topic_prior: number;
+  topic_word_prior: number;
+  random_state: number;
+  wordification: string;
+  quantization_scale: number;
+  samples_per_class: number;
+};
+
 export type TopicViews = {
   scene_id: string;
   scene_name: string;
@@ -209,9 +227,18 @@ export type TopicViews = {
   topic_prevalence: number[];
   topic_band_profiles: number[][];
   topic_distance_cosine: number[][];
+  topic_distance_js?: number[][];
+  topic_distance_hellinger?: number[][];
+  topic_word_jaccard_top15?: number[][];
   topic_intertopic_2d_js: [number, number][];
   topic_intertopic_3d_js: [number, number, number][];
   top_words_per_topic: Record<string, TopWord[][]>;
+  topic_pair_log_odds?: Record<string, TopicPairLogOddsToken[]>;
+  corpus_marginal?: number[];
+  lda_config?: LdaConfig;
+  perplexity?: number;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type LabelCell = {
@@ -235,8 +262,25 @@ export type EmbeddingPoint3D = EmbeddingPoint2D & {
   z: number;
 };
 
+export type TopDocumentForTopic = {
+  doc_id: string;
+  theta_k: number;
+  label_id: number;
+  label_name: string;
+  xy: [number, number];
+  theta_full: number[];
+};
+
+export type DominantTopicMapMeta = {
+  format: "binary_uint8";
+  shape: [number, number];
+  sentinel_unlabelled: number;
+  path: string;
+};
+
 export type TopicToData = {
   scene_id: string;
+  scene_name?: string;
   topic_count: number;
   document_count: number;
   spatial_shape: [number, number];
@@ -248,6 +292,10 @@ export type TopicToData = {
   theta_embedding_pca_2d: EmbeddingPoint2D[];
   theta_embedding_pca_3d: EmbeddingPoint3D[];
   theta_embedding_explained_variance: number[];
+  top_documents_per_topic?: TopDocumentForTopic[][];
+  dominant_topic_map?: DominantTopicMapMeta;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export const api = {
@@ -453,6 +501,10 @@ export type LdaSweep = {
   quantization_scale: number;
   train_fraction: number;
   grid: LdaSweepEntry[];
+  recommended_K?: number;
+  recommendation_method?: string;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type RateDistortionCurve = {
@@ -1003,6 +1055,10 @@ export type WordificationPayload = {
   zero_token_doc_rate?: number;
   corpus_marginal_entropy_bits?: number;
   top_tokens_by_count?: WordificationTopToken[];
+  wavelengths_nm_first_last?: [number, number];
+  local_doc_term_path?: string;
+  generated_at?: string;
+  builder_version?: string;
 };
 
 export type EndmemberBaseline = {
