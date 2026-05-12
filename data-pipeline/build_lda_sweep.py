@@ -10,8 +10,12 @@ seeds in {0, 1, 2, 3, 4} and compute:
 
 Output: data/derived/lda_sweep/<scene>.json
 
-Picks a recommended K per scene as the K that maximises (-perplexity_norm
-+ NPMI + matched_cosine_mean) / 3.
+Picks a recommended K per scene as the K that maximises the unweighted
+sum (-perplexity_test_norm + npmi_mean + matched_cosine_mean), where
+perplexity_test_norm is the test-set perplexity rescaled to [0, 1]
+across the K_grid before negation. The recommendation_method string in
+the JSON output records this formula verbatim so the UI can display it
+without recomputing.
 """
 from __future__ import annotations
 
