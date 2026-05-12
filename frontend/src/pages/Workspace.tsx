@@ -16,6 +16,7 @@ import { SpectralBrowser } from "@/components/plots/SpectralBrowser";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
 import { StabilityHeatmap } from "@/components/plots/StabilityHeatmap";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
+import { InverseLabelHeatmap } from "@/components/plots/InverseLabelHeatmap";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily, RepresentationKind } from "@/state/useSelectionStore";
@@ -1650,6 +1651,42 @@ function TopicLabelTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const [direction, setDirection] = useState<"forward" | "inverse">(
+    "forward",
+  );
+
+  const inverse = useMemo(() => {
+    if (!data) return null;
+    const fwd = data.p_label_given_topic_dominant;
+    const counts = data.docs_per_topic_dominant;
+    const K = fwd.length;
+    const L = fwd[0]?.length ?? 0;
+    if (K === 0 || L === 0) return null;
+    const rows: number[][] = [];
+    const labelMeta: { label_id: number; name: string; color: string }[] = [];
+    for (let l = 0; l < L; l++) {
+      const cell0 = fwd[0]![l]!;
+      labelMeta.push({
+        label_id: cell0.label_id,
+        name: cell0.name,
+        color: cell0.color,
+      });
+      const row = new Array<number>(K).fill(0);
+      let denom = 0;
+      for (let k = 0; k < K; k++) {
+        const p = fwd[k]?.[l]?.p ?? 0;
+        const n = counts[k] ?? 0;
+        const joint = n * p;
+        row[k] = joint;
+        denom += joint;
+      }
+      if (denom > 0) {
+        for (let k = 0; k < K; k++) row[k] = row[k]! / denom;
+      }
+      rows.push(row);
+    }
+    return { matrix: rows, labels: labelMeta, K };
+  }, [data]);
 
   if (isLoading)
     return <p style={{ color: "var(--color-fg-faint)" }}>Loading topic–label matrix…</p>;
@@ -1688,28 +1725,97 @@ function TopicLabelTab({
           boxShadow: "var(--color-shadow)",
         }}
       >
-        <h4
-          className="text-base font-semibold mb-2"
-          style={{ color: "var(--color-fg)" }}
-        >
-          P(label | topic) · dominant assignment
-        </h4>
+        <div className="flex items-start justify-between gap-4 mb-2">
+          <h4
+            className="text-base font-semibold"
+            style={{ color: "var(--color-fg)" }}
+          >
+            {direction === "forward"
+              ? "P(label | topic) · dominant assignment"
+              : "P(topic | label) · dominant assignment"}
+          </h4>
+          <div
+            role="tablist"
+            aria-label="Heatmap direction"
+            className="inline-flex rounded-md border"
+            style={{
+              borderColor: "var(--color-border)",
+              backgroundColor: "var(--color-bg)",
+            }}
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={direction === "forward"}
+              onClick={() => setDirection("forward")}
+              className="px-2.5 py-1 text-[12px] rounded-l-md"
+              style={{
+                backgroundColor:
+                  direction === "forward"
+                    ? "var(--color-accent-soft)"
+                    : "transparent",
+                color:
+                  direction === "forward"
+                    ? "var(--color-accent)"
+                    : "var(--color-fg-subtle)",
+              }}
+            >
+              P(label | topic)
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={direction === "inverse"}
+              onClick={() => setDirection("inverse")}
+              className="px-2.5 py-1 text-[12px] rounded-r-md"
+              style={{
+                backgroundColor:
+                  direction === "inverse"
+                    ? "var(--color-accent-soft)"
+                    : "transparent",
+                color:
+                  direction === "inverse"
+                    ? "var(--color-accent)"
+                    : "var(--color-fg-subtle)",
+                borderLeft: "1px solid var(--color-border)",
+              }}
+            >
+              P(topic | label)
+            </button>
+          </div>
+        </div>
         <p
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Each row is one topic; cells show the fraction of pixels assigned to that
-          topic (by dominant θ) that carry each label. The bordered cell is the
-          dominant per row. Click a row to highlight it and see the detail below.
+          {direction === "forward"
+            ? "Each row is one topic; cells show the fraction of pixels assigned to that topic (by dominant θ) that carry each label. The bordered cell is the dominant per row. Click a row to highlight it and see the detail below."
+            : "Each row is one label; cells show the fraction of pixels carrying that label whose dominant topic is k. Computed as P(t|L) = N_t · P(L|t) / Σ_t' N_t' · P(L|t'). Click a column to select that topic."}
         </p>
         <div className="overflow-x-auto">
-          <TopicLabelHeatmap
-            matrix={matrix}
-            selectedTopic={selectedTopic}
-            onSelectTopic={(k) =>
-              setSelectedTopic(k === selectedTopic ? null : k)
-            }
-          />
+          {direction === "forward" ? (
+            <TopicLabelHeatmap
+              matrix={matrix}
+              selectedTopic={selectedTopic}
+              onSelectTopic={(k) =>
+                setSelectedTopic(k === selectedTopic ? null : k)
+              }
+            />
+          ) : inverse ? (
+            <InverseLabelHeatmap
+              matrix={inverse.matrix}
+              labels={inverse.labels}
+              topicCount={inverse.K}
+              selectedTopic={selectedTopic}
+              onSelectTopic={(k) =>
+                setSelectedTopic(k === selectedTopic ? null : k)
+              }
+            />
+          ) : (
+            <p style={{ color: "var(--color-fg-faint)" }}>
+              No inverse matrix to render.
+            </p>
+          )}
         </div>
       </div>
 
