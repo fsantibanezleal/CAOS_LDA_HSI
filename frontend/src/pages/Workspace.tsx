@@ -144,10 +144,9 @@ export default function Workspace() {
   }, [data]);
 
   const currentStepIndex = (() => {
-    const v = String(state.value);
-    if (v === "pickFamily") return 0;
-    if (v === "pickSubset") return 1;
-    if (v === "pickRep") return 2;
+    if (state.matches("pickFamily")) return 0;
+    if (state.matches("pickSubset")) return 1;
+    if (state.matches("pickRep")) return 2;
     return 3;
   })();
 
@@ -159,7 +158,7 @@ export default function Workspace() {
       <Stepper currentIndex={currentStepIndex} state={state.value} ctx={state.context} />
 
       <div className="mt-8">
-        {String(state.value) === "pickFamily" && (
+        {state.matches("pickFamily") && (
           <FamilyPickerStep
             isLoading={isLoading}
             error={error as Error | null}
@@ -170,7 +169,7 @@ export default function Workspace() {
           />
         )}
 
-        {String(state.value) === "pickSubset" && (
+        {state.matches("pickSubset") && (
           <SubsetPickerStep
             family={state.context.family}
             entries={
@@ -182,7 +181,7 @@ export default function Workspace() {
           />
         )}
 
-        {String(state.value) === "pickRep" && (
+        {state.matches("pickRep") && (
           <RepresentationPickerStep
             subsetId={state.context.subset}
             onBack={() => send({ type: "BACK" })}
@@ -190,7 +189,7 @@ export default function Workspace() {
           />
         )}
 
-        {String(state.value).startsWith("explore") && (
+        {state.matches("explore") && (
           <ExploreStep
             subsetId={state.context.subset}
             rep={state.context.rep}
