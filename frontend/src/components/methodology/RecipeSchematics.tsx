@@ -537,7 +537,7 @@ const SCHEMATICS: {
   {
     id: "V7",
     title: "V7 absorption-triplet",
-    caption: "Tokens = positions/widths of the strongest absorption valleys.",
+    caption: "Each strongest absorption valley → triplet token (centroid-band bucket, depth bin, area bin).",
     Component: RecipeV7Svg,
   },
   {
@@ -555,7 +555,7 @@ const SCHEMATICS: {
   {
     id: "V10",
     title: "V10 band-group",
-    caption: "Bands are grouped contiguously; per-group statistics become tokens.",
+    caption: "Three coarse spectral regions (VNIR / SWIR-1 / SWIR-2) → one mean-bin token per region.",
     Component: RecipeV10Svg,
   },
   {
