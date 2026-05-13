@@ -311,6 +311,16 @@ def get_grouping(method: str, scene_id: str) -> dict:
     return _load_or_404(get_settings().grouping_path(method, scene_id))
 
 
+def get_band_masks_index() -> dict:
+    return _load_or_404(get_settings().band_masks_index_path)
+
+
+def get_band_mask_summary(scene_id: str, mask_id: str) -> dict:
+    return _load_or_404(
+        get_settings().band_mask_summary_path(scene_id, mask_id)
+    )
+
+
 def get_groupings_index() -> dict:
     base = get_settings().groupings_dir
     if not base.exists():

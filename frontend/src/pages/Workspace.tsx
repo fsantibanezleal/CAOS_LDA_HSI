@@ -554,6 +554,7 @@ type ExploreTab =
   | "agreement"
   | "applydoc"
   | "qkexplore"
+  | "bandmask"
   | "stability"
   | "deep"
   | "usgs"
@@ -634,7 +635,7 @@ function ExploreStep({
         return;
       }
       if (e.key === "[" || e.key === "]") {
-        const order: ExploreTab[] = ["raw", "browser", "topics", "topiclabel", "routed", "interpret", "supertopics", "raster", "embed3d", "repfit", "compare3d", "spatial", "stability", "deep", "anomaly", "neural", "gating", "unmixing", "llm", "probe", "robust", "qkexplore", "agreement", "usgs", "metrics"];
+        const order: ExploreTab[] = ["raw", "browser", "topics", "topiclabel", "routed", "interpret", "supertopics", "raster", "embed3d", "repfit", "compare3d", "spatial", "stability", "deep", "anomaly", "neural", "gating", "unmixing", "llm", "probe", "robust", "qkexplore", "bandmask", "agreement", "usgs", "metrics"];
         const idx = order.indexOf(tab);
         if (idx === -1) return;
         const next = e.key === "]" ? (idx + 1) % order.length : (idx - 1 + order.length) % order.length;
@@ -763,6 +764,12 @@ function ExploreStep({
     enabled: isLabelled && tab === "qkexplore",
     staleTime: 30 * 60_000,
   });
+  const bandMaskIndexQ = useQuery({
+    queryKey: ["band-masks-index"],
+    queryFn: () => api.bandMasksIndex(),
+    enabled: isLabelled && tab === "bandmask",
+    staleTime: 30 * 60_000,
+  });
 
   const topicAnomaly = useQuery({
     queryKey: ["topic-anomaly", subsetId],
@@ -889,7 +896,7 @@ function ExploreStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            27 panels across raw data, topic model output, spatial geometry, and diagnostics.
+            28 panels across raw data, topic model output, spatial geometry, and diagnostics.
             Loaded on demand — pick a tab below to fetch its dedicated backend artefact.
           </p>
         </div>
@@ -978,6 +985,7 @@ function ExploreStep({
                   { id: "probe" as const, label: t("pages:workspace.tabs.probe") },
                   { id: "robust" as const, label: t("pages:workspace.tabs.robust") },
                   { id: "qkexplore" as const, label: t("pages:workspace.tabs.qkexplore") },
+                  { id: "bandmask" as const, label: t("pages:workspace.tabs.bandmask") },
                   { id: "agreement" as const, label: t("pages:workspace.tabs.agreement") },
                   { id: "applydoc" as const, label: t("pages:workspace.tabs.applydoc") },
                   { id: "unmixing" as const, label: t("pages:workspace.tabs.unmixing") },
@@ -1179,6 +1187,14 @@ function ExploreStep({
               isLoading={ldaSweepQ.isLoading}
               error={ldaSweepQ.error as Error | null}
               sweep={ldaSweepQ.data ?? null}
+            />
+          )}
+          {tab === "bandmask" && subsetId && (
+            <BandMaskTab
+              sceneId={subsetId}
+              isLoading={bandMaskIndexQ.isLoading}
+              error={bandMaskIndexQ.error as Error | null}
+              index={bandMaskIndexQ.data ?? null}
             />
           )}
           {tab === "spatial" && (
@@ -6393,7 +6409,7 @@ function FamilyPickerStep({
 /* =========================================================================
    Scene briefing hero — appears at top of Workspace when a labelled scene
    is loaded. Shows quick stats + class palette + topic count + spectral
-   envelope mini-viz for at-a-glance scene context across all 27 tabs.
+   envelope mini-viz for at-a-glance scene context across all 28 tabs.
    =======================================================================*/
 
 function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | null }) {
@@ -9864,6 +9880,7 @@ const TAB_WIKI_PAGE: Record<ExploreTab, string> = {
   applydoc: "Multi-Axis-Addendum-B",
   recipes: "Corpus-Construction",
   qkexplore: "Mathematical-Background",
+  bandmask: "Mathematical-Background",
   neural: "Mathematical-Background",
   gating: "Multi-Axis-Addendum-B",
   llm: "Multi-Axis-Addendum-B",
@@ -11021,6 +11038,356 @@ function SweepCurveCard({
           K
         </text>
       </svg>
+    </div>
+  );
+}
+
+function BandMaskTab({
+  sceneId,
+  isLoading,
+  error,
+  index,
+}: {
+  sceneId: string;
+  isLoading: boolean;
+  error: Error | null;
+  index: import("@/api/client").BandMaskIndex | null;
+}) {
+  const [maskId, setMaskId] = useState<string | null>(null);
+  const summaryQ = useQuery({
+    queryKey: ["band-mask-summary", sceneId, maskId],
+    queryFn: () => api.bandMaskSummary(sceneId, maskId!),
+    enabled: maskId !== null,
+    staleTime: 30 * 60_000,
+  });
+
+  if (isLoading)
+    return <p style={{ color: "var(--color-fg-faint)" }}>Loading band-mask index…</p>;
+  if (error)
+    return (
+      <div
+        className="rounded-lg border p-6"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <p style={{ color: "var(--color-warn)" }}>
+          Could not load /api/band-masks: {error.message}
+        </p>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Run <span className="font-mono">scripts/local.* build-band-masked-topic-models</span> to generate the index locally.
+        </p>
+      </div>
+    );
+  if (!index) return null;
+
+  const sceneEntries = index.entries.filter((e) => e.scene_id === sceneId);
+  const maskDefs = index.mask_definitions;
+
+  return (
+    <div className="space-y-5">
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Step 8 · band-mask sweep
+        </h4>
+        <p
+          className="text-sm mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Four band-restricted LDA fits per labelled scene, each one a fresh
+          canonical-K refit on a band-restricted corpus. The user can ask:
+          "what would the topics look like if we only saw the VNIR / SWIR /
+          non-water-corrupted / top-50-discriminative bands?". Hyperparameters
+          mirror the canonical fit (V1 band-frequency, online VB, α=0.45,
+          η=0.20, seed=42) so only the band-selection axis differs. The
+          summary below ships precomputed; click any mask to drill into the
+          per-topic detail.
+        </p>
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {Object.entries(maskDefs).map(([id, def]) => {
+            const entry = sceneEntries.find((e) => e.mask_id === id);
+            const skipped = entry?.skipped ?? false;
+            const isSel = maskId === id;
+            return (
+              <li key={id}>
+                <button
+                  type="button"
+                  onClick={() => !skipped && setMaskId(isSel ? null : id)}
+                  disabled={skipped}
+                  className="w-full text-left rounded-md border p-3 transition-all"
+                  style={{
+                    borderColor: isSel
+                      ? "var(--color-accent)"
+                      : "var(--color-border)",
+                    backgroundColor: isSel
+                      ? "var(--color-accent-soft)"
+                      : "var(--color-bg)",
+                    opacity: skipped ? 0.4 : 1,
+                    cursor: skipped ? "not-allowed" : "pointer",
+                  }}
+                >
+                  <div
+                    className="font-mono text-[13px] font-semibold mb-0.5"
+                    style={{
+                      color: isSel ? "var(--color-accent)" : "var(--color-fg)",
+                    }}
+                  >
+                    {def.label}
+                  </div>
+                  <div
+                    className="text-[11.5px] leading-snug mb-1"
+                    style={{ color: "var(--color-fg-faint)" }}
+                  >
+                    {def.description}
+                  </div>
+                  {skipped ? (
+                    <div
+                      className="text-[11px] font-mono"
+                      style={{ color: "var(--color-warn)" }}
+                    >
+                      skipped: {entry?.reason}
+                    </div>
+                  ) : entry ? (
+                    <div
+                      className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11.5px] font-mono mt-1.5"
+                      style={{ color: "var(--color-fg-subtle)" }}
+                    >
+                      <span>
+                        <span style={{ color: "var(--color-fg-faint)" }}>
+                          bands:{" "}
+                        </span>
+                        <span style={{ color: "var(--color-fg)" }}>
+                          {entry.n_bands_kept}/{entry.n_bands_full}
+                        </span>
+                      </span>
+                      <span>
+                        <span style={{ color: "var(--color-fg-faint)" }}>
+                          K:{" "}
+                        </span>
+                        <span style={{ color: "var(--color-fg)" }}>
+                          {entry.topic_count}
+                        </span>
+                      </span>
+                      <span>
+                        <span style={{ color: "var(--color-fg-faint)" }}>
+                          ppl:{" "}
+                        </span>
+                        <span style={{ color: "var(--color-fg)" }}>
+                          {entry.perplexity_train?.toFixed(2) ?? "—"}
+                        </span>
+                      </span>
+                      <span>
+                        <span style={{ color: "var(--color-fg-faint)" }}>
+                          ARI:{" "}
+                        </span>
+                        <span style={{ color: "var(--color-fg)" }}>
+                          {entry.ari_dominant_vs_label?.toFixed(3) ?? "—"}
+                        </span>
+                      </span>
+                    </div>
+                  ) : (
+                    <div
+                      className="text-[11px]"
+                      style={{ color: "var(--color-fg-faint)" }}
+                    >
+                      not built for this scene
+                    </div>
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <p
+          className="text-[11px] mt-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          ARI = adjusted-Rand-index of <span className="font-mono">argmax θ_d</span> vs ground-truth label. Lower perplexity is better; higher ARI is better. Compare to the canonical (no-mask) fit on the <span className="font-mono">topics</span> / <span className="font-mono">topiclabel</span> tabs.
+        </p>
+      </div>
+
+      {maskId && summaryQ.data && (
+        <BandMaskDetailCard summary={summaryQ.data} />
+      )}
+      {maskId && summaryQ.isLoading && (
+        <p style={{ color: "var(--color-fg-faint)" }}>Loading {maskId} summary…</p>
+      )}
+      {maskId && summaryQ.error && (
+        <p style={{ color: "var(--color-warn)" }}>
+          Could not load {maskId} summary: {(summaryQ.error as Error).message}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function BandMaskDetailCard({
+  summary,
+}: {
+  summary: import("@/api/client").BandMaskSummary;
+}) {
+  const K = summary.topic_count;
+  return (
+    <div
+      className="rounded-lg border p-5"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <header className="mb-3">
+        <h4
+          className="text-base font-semibold"
+          style={{ color: "var(--color-fg)" }}
+        >
+          {summary.mask_label}
+        </h4>
+        <p
+          className="text-sm mt-1"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {summary.mask_description}
+        </p>
+      </header>
+      <div className="grid sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
+        <BandMaskStat label="bands kept" value={`${summary.n_bands_kept}/${summary.n_bands_full}`} />
+        <BandMaskStat label="K" value={String(K)} />
+        <BandMaskStat label="D" value={summary.document_count.toLocaleString()} />
+        <BandMaskStat label="V" value={summary.vocabulary_size.toLocaleString()} />
+        <BandMaskStat label="perplexity (train)" value={summary.perplexity_train.toFixed(3)} />
+        <BandMaskStat label="ARI vs label" value={summary.ari_dominant_vs_label.toFixed(4)} />
+      </div>
+      <div
+        className="rounded-md border p-3 text-[11.5px] mb-3"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-bg)",
+          color: "var(--color-fg-faint)",
+        }}
+      >
+        Wavelength range kept: {summary.wavelengths_nm_kept_first_last[0].toFixed(1)} – {summary.wavelengths_nm_kept_first_last[1].toFixed(1)} nm
+        {" · "}
+        first ten bands kept: <span className="font-mono">{summary.kept_band_indices.slice(0, 10).join(", ")}</span>
+        {summary.kept_band_indices.length > 10 ? ", …" : ""}
+      </div>
+      <div className="grid lg:grid-cols-2 gap-5">
+        <div>
+          <h5
+            className="text-[12px] uppercase tracking-widest font-semibold mb-2"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Top words per topic (λ=0.5)
+          </h5>
+          <ul className="space-y-1.5 text-[12px]">
+            {summary.top_words_per_topic_lambda_05.map((words, k) => {
+              const color =
+                TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+              return (
+                <li
+                  key={k}
+                  className="grid grid-cols-[60px_1fr] gap-2 items-baseline"
+                  style={{ color: "var(--color-fg-subtle)" }}
+                >
+                  <span
+                    className="inline-flex items-center gap-1.5 font-mono"
+                    style={{ color: "var(--color-fg)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="inline-block w-2 h-2 rounded-sm"
+                      style={{ backgroundColor: color }}
+                    />
+                    t{k + 1}
+                  </span>
+                  <span className="font-mono text-[11.5px]">
+                    {words.slice(0, 8).join(" · ")}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div>
+          <h5
+            className="text-[12px] uppercase tracking-widest font-semibold mb-2"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            P(label | topic dominant)
+          </h5>
+          <ul className="space-y-1.5 text-[12px]">
+            {summary.p_label_given_topic_dominant.map((labels, k) => {
+              const sorted = [...labels].sort((a, b) => b.p - a.p).slice(0, 3);
+              const color =
+                TOPIC_COLORS[k % TOPIC_COLORS.length] ?? "#0ea5e9";
+              return (
+                <li
+                  key={k}
+                  className="grid grid-cols-[60px_1fr] gap-2 items-baseline"
+                  style={{ color: "var(--color-fg-subtle)" }}
+                >
+                  <span
+                    className="inline-flex items-center gap-1.5 font-mono"
+                    style={{ color: "var(--color-fg)" }}
+                  >
+                    <span
+                      aria-hidden
+                      className="inline-block w-2 h-2 rounded-sm"
+                      style={{ backgroundColor: color }}
+                    />
+                    t{k + 1}
+                  </span>
+                  <span className="font-mono text-[11.5px]">
+                    {sorted
+                      .map((l) => `${l.name} ${(l.p * 100).toFixed(0)}%`)
+                      .join(" · ")}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BandMaskStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div
+      className="rounded-md border p-2.5"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-bg)",
+      }}
+    >
+      <div
+        className="text-[10.5px] uppercase tracking-wider"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        {label}
+      </div>
+      <div
+        className="text-[14px] font-mono mt-0.5"
+        style={{ color: "var(--color-fg)" }}
+      >
+        {value}
+      </div>
     </div>
   );
 }
