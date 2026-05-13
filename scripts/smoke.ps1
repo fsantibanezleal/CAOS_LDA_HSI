@@ -72,6 +72,7 @@ $paths = @(
     "/api/topic-variants",
     "/api/lda-sweep/indian-pines-corrected",
     "/api/band-masks",
+    "/api/band-masks/canonical-comparison",
     "/api/band-masks/indian-pines-corrected/vnir",
     "/api/band-masks/indian-pines-corrected/swir",
     "/api/band-masks/indian-pines-corrected/no_water",
