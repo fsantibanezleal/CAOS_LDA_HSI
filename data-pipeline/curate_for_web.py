@@ -63,6 +63,9 @@ BUILDER_DIRS = [
     ("build_representations", "representations"),
     ("build_lda_sweep", "lda_sweep"),
     ("build_band_masked_topic_models", "band_masks"),
+    # build_band_mask_canonical_comparison shares the band_masks/ output
+    # directory; not listed here to avoid double counting. Surfaces via
+    # claims_allowed only.
     ("build_dmr_lda_hidsag", "topic_variants/dmr_lda_hidsag"),
     ("build_optuna_hyperparam_search", "lda_hyperparam_search"),
     ("build_linear_probe_panel", "linear_probe_panel"),
@@ -287,6 +290,11 @@ CLAIMS_ALLOWED = [
         "id": "band_masks_theta_grid",
         "description": "H x W x K float32 per-pixel theta grid for the cycle-126 (scene, mask) LDA refit. Sentinel all-zero vector for non-sampled pixels. Same contract as the canonical theta_grid sidecar from cycle 121.",
         "source_pattern": "band_masks/<scene>/<mask>/theta_grid.bin",
+    },
+    {
+        "id": "band_masks_canonical_comparison",
+        "description": "Cycle-127 post-processor: per (scene, mask) comparison vs the canonical no-mask fit — paired ARI of dominant-topic maps, Hungarian-aligned swap rate, n_topic_swaps absolute count, mean and max Hungarian-aligned KL between canonical and masked P(L|t), plus the Hungarian topic-id assignment dict. Read-only post-processor; no new LDA fits.",
+        "source_pattern": "band_masks/canonical_comparison.json",
     },
     {
         "id": "cross_method_agreement_matrix",

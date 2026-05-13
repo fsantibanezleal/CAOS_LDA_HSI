@@ -445,6 +445,8 @@ export const api = {
   wordificationsIndex: () =>
     request<WordificationsIndex>(`/api/wordifications`),
   bandMasksIndex: () => request<BandMaskIndex>(`/api/band-masks`),
+  bandMasksCanonicalComparison: () =>
+    request<BandMaskCanonicalComparison>(`/api/band-masks/canonical-comparison`),
   bandMaskSummary: (sceneId: string, maskId: string) =>
     request<BandMaskSummary>(
       `/api/band-masks/${encodeURIComponent(sceneId)}/${encodeURIComponent(maskId)}`,
@@ -1071,6 +1073,33 @@ export type BandMaskIndex = {
     { label: string; description: string }
   >;
   entries: BandMaskIndexEntry[];
+};
+
+export type BandMaskComparisonEntry = {
+  scene_id: string;
+  mask_id: string;
+  skipped?: boolean;
+  reason?: string;
+  n_paired_pixels?: number;
+  paired_ari_dominant_topics?: number | null;
+  swap_rate_under_hungarian_alignment?: number;
+  n_topic_swaps?: number;
+  kl_p_label_given_topic_mean?: number | null;
+  kl_p_label_given_topic_max?: number | null;
+  hungarian_assignment?: Record<string, number>;
+  topic_count_canonical?: number;
+  topic_count_masked?: number;
+  n_bands_full?: number;
+  n_bands_kept?: number;
+  ari_dominant_vs_label_masked?: number;
+  perplexity_train_masked?: number;
+};
+
+export type BandMaskCanonicalComparison = {
+  generated_at: string;
+  builder_version: string;
+  description: string;
+  entries: BandMaskComparisonEntry[];
 };
 
 export type BandMaskSummary = {

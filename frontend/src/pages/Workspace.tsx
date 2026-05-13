@@ -11060,6 +11060,11 @@ function BandMaskTab({
     enabled: maskId !== null,
     staleTime: 30 * 60_000,
   });
+  const comparisonQ = useQuery({
+    queryKey: ["band-masks-comparison"],
+    queryFn: () => api.bandMasksCanonicalComparison(),
+    staleTime: 30 * 60_000,
+  });
 
   if (isLoading)
     return <p style={{ color: "var(--color-fg-faint)" }}>Loading band-mask index…</p>;
@@ -11221,8 +11226,22 @@ function BandMaskTab({
         </p>
       </div>
 
+      {comparisonQ.data && (
+        <BandMaskComparisonOverview
+          sceneId={sceneId}
+          comparison={comparisonQ.data}
+        />
+      )}
+
       {maskId && summaryQ.data && (
-        <BandMaskDetailCard summary={summaryQ.data} />
+        <BandMaskDetailCard
+          summary={summaryQ.data}
+          comparison={
+            comparisonQ.data?.entries.find(
+              (e) => e.scene_id === sceneId && e.mask_id === maskId,
+            ) ?? null
+          }
+        />
       )}
       {maskId && summaryQ.isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>Loading {maskId} summary…</p>
@@ -11238,8 +11257,10 @@ function BandMaskTab({
 
 function BandMaskDetailCard({
   summary,
+  comparison,
 }: {
   summary: import("@/api/client").BandMaskSummary;
+  comparison: import("@/api/client").BandMaskComparisonEntry | null;
 }) {
   const K = summary.topic_count;
   return (
@@ -11363,6 +11384,192 @@ function BandMaskDetailCard({
           </ul>
         </div>
       </div>
+
+      {comparison && !comparison.skipped && (
+        <div
+          className="mt-5 rounded-md border p-3"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-bg)",
+          }}
+        >
+          <div
+            className="text-[11px] uppercase tracking-wider mb-2"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            vs canonical fit (cycle 127 post-processor)
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+            <BandMaskStat
+              label="paired ARI dominant"
+              value={
+                comparison.paired_ari_dominant_topics != null
+                  ? comparison.paired_ari_dominant_topics.toFixed(4)
+                  : "—"
+              }
+            />
+            <BandMaskStat
+              label="swap rate (Hungarian)"
+              value={
+                comparison.swap_rate_under_hungarian_alignment != null
+                  ? `${(comparison.swap_rate_under_hungarian_alignment * 100).toFixed(1)}%`
+                  : "—"
+              }
+            />
+            <BandMaskStat
+              label="KL P(L|t) mean"
+              value={
+                comparison.kl_p_label_given_topic_mean != null
+                  ? comparison.kl_p_label_given_topic_mean.toFixed(2)
+                  : "—"
+              }
+            />
+            <BandMaskStat
+              label="KL P(L|t) max"
+              value={
+                comparison.kl_p_label_given_topic_max != null
+                  ? comparison.kl_p_label_given_topic_max.toFixed(2)
+                  : "—"
+              }
+            />
+          </div>
+          <p
+            className="text-[11.5px] mb-2"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Paired ARI measures how much the dominant-topic assignments shift
+            under the mask (1.0 = identical; 0.0 = unrelated). Swap rate counts,
+            under a Hungarian alignment of topic ids, the fraction of pixels
+            whose dominant topic changed. KL is the mean / max KL divergence
+            between canonical P(L|t) and masked P(L|t) for the Hungarian-aligned
+            topic pairs (higher = the masked fit assigns labels very differently
+            to its matched topics).
+          </p>
+          {comparison.hungarian_assignment && (
+            <div className="text-[11.5px]">
+              <div
+                className="text-[10.5px] uppercase tracking-wider mb-1"
+                style={{ color: "var(--color-fg-faint)" }}
+              >
+                Hungarian topic-id alignment (canonical → masked)
+              </div>
+              <div className="flex flex-wrap gap-2 font-mono">
+                {Object.entries(comparison.hungarian_assignment)
+                  .sort((a, b) => Number(a[0]) - Number(b[0]))
+                  .map(([can, mas]) => (
+                    <span
+                      key={can}
+                      className="rounded-sm border px-1.5 py-0.5"
+                      style={{
+                        borderColor: "var(--color-border)",
+                        color: "var(--color-fg)",
+                      }}
+                    >
+                      t{Number(can) + 1}→t{(mas as number) + 1}
+                    </span>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BandMaskComparisonOverview({
+  sceneId,
+  comparison,
+}: {
+  sceneId: string;
+  comparison: import("@/api/client").BandMaskCanonicalComparison;
+}) {
+  const sceneEntries = comparison.entries.filter(
+    (e) => e.scene_id === sceneId && !e.skipped,
+  );
+  if (sceneEntries.length === 0) return null;
+  return (
+    <div
+      className="rounded-lg border p-5"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <h4
+        className="text-base font-semibold mb-2"
+        style={{ color: "var(--color-fg)" }}
+      >
+        Canonical-vs-masked comparison (all masks for this scene)
+      </h4>
+      <p
+        className="text-[12.5px] mb-3"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        Cycle-127 read-only post-processor. Paired ARI = adjusted-Rand-index
+        of the dominant-topic map under the mask vs the canonical fit on
+        pixels labelled in both. Swap rate = fraction of pixels whose
+        Hungarian-aligned dominant topic differs. Lower paired ARI / higher
+        swap rate ⇒ the masked fit yields a substantially different topic
+        assignment than the canonical fit.
+      </p>
+      <table
+        className="w-full text-[12px]"
+        style={{ color: "var(--color-fg)" }}
+      >
+        <thead>
+          <tr style={{ color: "var(--color-fg-faint)" }}>
+            <th className="text-left font-mono text-[11px] pb-1 pr-3">mask</th>
+            <th className="text-right font-mono text-[11px] pb-1 pr-3">paired ARI</th>
+            <th className="text-right font-mono text-[11px] pb-1 pr-3">swap rate</th>
+            <th className="text-right font-mono text-[11px] pb-1 pr-3">KL mean</th>
+            <th className="text-right font-mono text-[11px] pb-1 pr-3">KL max</th>
+            <th className="text-right font-mono text-[11px] pb-1 pr-3">ARI vs label</th>
+            <th className="text-right font-mono text-[11px] pb-1">ppl</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sceneEntries.map((e) => (
+            <tr
+              key={e.mask_id}
+              style={{ borderTop: "1px solid var(--color-border)" }}
+            >
+              <td className="py-1 pr-3 font-mono">{e.mask_id}</td>
+              <td className="py-1 pr-3 text-right font-mono">
+                {e.paired_ari_dominant_topics != null
+                  ? e.paired_ari_dominant_topics.toFixed(4)
+                  : "—"}
+              </td>
+              <td className="py-1 pr-3 text-right font-mono">
+                {e.swap_rate_under_hungarian_alignment != null
+                  ? `${(e.swap_rate_under_hungarian_alignment * 100).toFixed(1)}%`
+                  : "—"}
+              </td>
+              <td className="py-1 pr-3 text-right font-mono">
+                {e.kl_p_label_given_topic_mean != null
+                  ? e.kl_p_label_given_topic_mean.toFixed(2)
+                  : "—"}
+              </td>
+              <td className="py-1 pr-3 text-right font-mono">
+                {e.kl_p_label_given_topic_max != null
+                  ? e.kl_p_label_given_topic_max.toFixed(2)
+                  : "—"}
+              </td>
+              <td className="py-1 pr-3 text-right font-mono">
+                {e.ari_dominant_vs_label_masked != null
+                  ? e.ari_dominant_vs_label_masked.toFixed(3)
+                  : "—"}
+              </td>
+              <td className="py-1 text-right font-mono">
+                {e.perplexity_train_masked != null
+                  ? e.perplexity_train_masked.toFixed(2)
+                  : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -398,6 +398,19 @@ def band_masks_index() -> dict:
         ) from exc
 
 
+@router.get("/band-masks/canonical-comparison")
+def band_masks_canonical_comparison() -> dict:
+    from app.services.content import get_band_masks_canonical_comparison
+    try:
+        return get_band_masks_canonical_comparison()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="band_masks canonical_comparison not generated yet; run "
+            "scripts/local.* build-band-mask-canonical-comparison",
+        ) from exc
+
+
 @router.get("/band-masks/{scene_id}/{mask_id}")
 def band_mask_summary(scene_id: str, mask_id: str) -> dict:
     from app.services.content import get_band_mask_summary
