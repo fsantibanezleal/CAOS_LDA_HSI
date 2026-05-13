@@ -89,7 +89,7 @@ every deploy.
                  │              Tailwind v4 + react-i18next +         │
                  │              TanStack Query v5 + Zustand + XState) │
                  │  Pages: Overview · Methodology · Databases ·       │
-                 │         Workspace (27 tabs in 4 groups:            │
+                 │         Workspace (28 tabs in 4 groups:            │
                  │           Raw / Topic model / Spatial / Diagnostics)│
                  │         · Benchmarks (16 cards)                    │
                  └──────────────────────┘

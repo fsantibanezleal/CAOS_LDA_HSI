@@ -106,7 +106,7 @@
       "step5_body": "The 21 datasets with their access path, local root and source files.",
       "step6_tag": "Lab",
       "step6_title": "Workspace",
-      "step6_body": "Guided flow family → subset → representation → 27 tabs per labelled scene, grouped into Raw data · Topic model · Spatial geometry · Diagnostics.",
+      "step6_body": "Guided flow family → subset → representation → 28 tabs per labelled scene, grouped into Raw data · Topic model · Spatial geometry · Diagnostics.",
       "step7_tag": "Eval",
       "step7_title": "Benchmarks",
       "step7_body": "16 cards: multi-axis battery, Bayesian HDI, K-curve, β-collapse, neural-topic head-to-head, …"
@@ -441,6 +441,7 @@
       "interpret": "Interpretability cards",
       "recipes": "Recipes · V1..V12 · Q",
       "qkexplore": "K-sweep · model selection",
+      "bandmask": "Band-mask · Step 8",
       "supertopics": "Super-topics · cross-scene",
       "raster": "Spatial map",
       "embed3d": "Embedding 3D · θ-PCA",

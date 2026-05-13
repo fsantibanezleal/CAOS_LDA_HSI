@@ -62,6 +62,7 @@ BUILDER_DIRS = [
     ("build_interpretability", "interpretability"),
     ("build_representations", "representations"),
     ("build_lda_sweep", "lda_sweep"),
+    ("build_band_masked_topic_models", "band_masks"),
     ("build_dmr_lda_hidsag", "topic_variants/dmr_lda_hidsag"),
     ("build_optuna_hyperparam_search", "lda_hyperparam_search"),
     ("build_linear_probe_panel", "linear_probe_panel"),
@@ -266,6 +267,26 @@ CLAIMS_ALLOWED = [
         "id": "groupings_assignment_binaries",
         "description": "Per-pixel grouping assignment binaries (uint16/uint32 H x W) for every (method, scene) pair (cycle 123). Mirrored from data/local/groupings/ so the public web app can render segmentation overlays on the raw tab without recomputing.",
         "source_pattern": "groupings/<method>/<scene>/assignment.bin",
+    },
+    {
+        "id": "band_masks_index",
+        "description": "Master index of the cycle-126 band-mask sweep (6 scenes x 4 masks = 24 refits). Lists each (scene, mask) tuple with topic_count, n_bands_kept/full, perplexity_train, ARI of dominant topic vs ground-truth label, and a pointer to its summary.json.",
+        "source_pattern": "band_masks/index.json",
+    },
+    {
+        "id": "band_masks_summary",
+        "description": "Per (scene, mask) LDA refit summary (cycle 126): phi top-words at lambda=0.5, K x K cosine distance matrix, P(label|topic dominant), kept_band_indices, perplexity, ARI, LDA config, sentinel-doc-grid metadata for the sidecars below.",
+        "source_pattern": "band_masks/<scene>/<mask>/summary.json",
+    },
+    {
+        "id": "band_masks_dominant_topic_map",
+        "description": "H x W uint8 per-pixel dominant-topic map for the cycle-126 (scene, mask) LDA refit. Sentinel 255 for unlabelled / non-sampled pixels.",
+        "source_pattern": "band_masks/<scene>/<mask>/dominant_topic_map.bin",
+    },
+    {
+        "id": "band_masks_theta_grid",
+        "description": "H x W x K float32 per-pixel theta grid for the cycle-126 (scene, mask) LDA refit. Sentinel all-zero vector for non-sampled pixels. Same contract as the canonical theta_grid sidecar from cycle 121.",
+        "source_pattern": "band_masks/<scene>/<mask>/theta_grid.bin",
     },
     {
         "id": "cross_method_agreement_matrix",
