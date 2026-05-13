@@ -321,6 +321,10 @@ def get_band_mask_summary(scene_id: str, mask_id: str) -> dict:
     )
 
 
+def get_band_masks_canonical_comparison() -> dict:
+    return _load_or_404(get_settings().band_masks_canonical_comparison_path)
+
+
 def get_groupings_index() -> dict:
     base = get_settings().groupings_dir
     if not base.exists():

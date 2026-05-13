@@ -195,6 +195,12 @@ class Settings(BaseSettings):
             / "summary.json"
         )
 
+    @property
+    def band_masks_canonical_comparison_path(self) -> Path:
+        return (
+            self.data_path / "derived" / "band_masks" / "canonical_comparison.json"
+        )
+
     def cross_method_agreement_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "cross_method_agreement" / f"{scene_id}.json"
 
