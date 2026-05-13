@@ -106,7 +106,7 @@
       "step5_body": "Los 21 datasets con su acceso, raíz local y archivos fuente.",
       "step6_tag": "Lab",
       "step6_title": "Workspace",
-      "step6_body": "Flujo guiado familia → conjunto → representación → 27 tabs por escena etiquetada, agrupadas en Datos crudos · Modelo de tópicos · Geometría espacial · Diagnósticos.",
+      "step6_body": "Flujo guiado familia → conjunto → representación → 28 tabs por escena etiquetada, agrupadas en Datos crudos · Modelo de tópicos · Geometría espacial · Diagnósticos.",
       "step7_tag": "Eval",
       "step7_title": "Benchmarks",
       "step7_body": "16 cards: multi-axis battery, Bayesian HDI, K-curve, β-collapse, neural-topic head-to-head, …"
@@ -441,6 +441,7 @@
       "interpret": "Cards de interpretabilidad",
       "recipes": "Recetas · V1..V12 · Q",
       "qkexplore": "Barrido de K · selección",
+      "bandmask": "Máscara de bandas · Step 8",
       "supertopics": "Super-tópicos · cross-scene",
       "raster": "Mapa espacial",
       "embed3d": "Embedding 3D · θ-PCA",

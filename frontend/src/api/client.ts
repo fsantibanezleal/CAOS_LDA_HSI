@@ -444,6 +444,11 @@ export const api = {
     ),
   wordificationsIndex: () =>
     request<WordificationsIndex>(`/api/wordifications`),
+  bandMasksIndex: () => request<BandMaskIndex>(`/api/band-masks`),
+  bandMaskSummary: (sceneId: string, maskId: string) =>
+    request<BandMaskSummary>(
+      `/api/band-masks/${encodeURIComponent(sceneId)}/${encodeURIComponent(maskId)}`,
+    ),
   wordification: (sceneId: string, recipe: string, scheme: string, q: number) =>
     request<WordificationPayload>(
       `/api/wordifications/${encodeURIComponent(sceneId)}/${encodeURIComponent(recipe)}/${encodeURIComponent(scheme)}/${q}`,
@@ -1041,6 +1046,60 @@ export type FelzenszwalbGroupings = {
   assignment_dtype_max_id?: number;
   generated_at?: string;
   builder_version?: string;
+};
+
+export type BandMaskIndexEntry = {
+  scene_id: string;
+  mask_id: string;
+  mask_label?: string;
+  topic_count?: number;
+  n_bands_full?: number;
+  n_bands_kept?: number;
+  perplexity_train?: number;
+  ari_dominant_vs_label?: number;
+  mean_confidence?: number;
+  summary_path?: string;
+  skipped?: boolean;
+  reason?: string;
+};
+
+export type BandMaskIndex = {
+  generated_at: string;
+  builder_version: string;
+  mask_definitions: Record<
+    string,
+    { label: string; description: string }
+  >;
+  entries: BandMaskIndexEntry[];
+};
+
+export type BandMaskSummary = {
+  scene_id: string;
+  mask_id: string;
+  mask_label: string;
+  mask_description: string;
+  spatial_shape: [number, number];
+  topic_count: number;
+  document_count: number;
+  vocabulary_size: number;
+  n_bands_full: number;
+  n_bands_kept: number;
+  kept_band_indices: number[];
+  wavelengths_nm_kept_first_last: [number, number];
+  wavelengths_nm_kept: number[];
+  topic_prevalence: number[];
+  topic_distance_cosine: number[][];
+  top_words_per_topic_lambda_05: string[][];
+  p_label_given_topic_dominant: LabelCell[][];
+  docs_per_topic_dominant: number[];
+  perplexity_train: number;
+  ari_dominant_vs_label: number;
+  mean_confidence: number;
+  lda_config: LdaConfig;
+  dominant_topic_map: DominantTopicMapMeta;
+  theta_grid: ThetaGridMeta;
+  generated_at: string;
+  builder_version: string;
 };
 
 export type WordificationsIndexItem = {

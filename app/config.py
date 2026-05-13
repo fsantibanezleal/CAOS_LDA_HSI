@@ -181,6 +181,20 @@ class Settings(BaseSettings):
     def groupings_dir(self) -> Path:
         return self.data_path / "derived" / "groupings"
 
+    @property
+    def band_masks_index_path(self) -> Path:
+        return self.data_path / "derived" / "band_masks" / "index.json"
+
+    def band_mask_summary_path(self, scene_id: str, mask_id: str) -> Path:
+        return (
+            self.data_path
+            / "derived"
+            / "band_masks"
+            / scene_id
+            / mask_id
+            / "summary.json"
+        )
+
     def cross_method_agreement_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "cross_method_agreement" / f"{scene_id}.json"
 

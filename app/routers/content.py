@@ -385,6 +385,31 @@ def wordification(scene_id: str, recipe: str, scheme: str, q: int) -> dict:
         ) from exc
 
 
+@router.get("/band-masks")
+def band_masks_index() -> dict:
+    from app.services.content import get_band_masks_index
+    try:
+        return get_band_masks_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="band_masks index not generated yet; run "
+            "scripts/local.* build-band-masked-topic-models",
+        ) from exc
+
+
+@router.get("/band-masks/{scene_id}/{mask_id}")
+def band_mask_summary(scene_id: str, mask_id: str) -> dict:
+    from app.services.content import get_band_mask_summary
+    try:
+        return get_band_mask_summary(scene_id, mask_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"band_mask {scene_id}/{mask_id} not generated yet",
+        ) from exc
+
+
 @router.get("/groupings")
 def groupings_index() -> dict:
     from app.services.content import get_groupings_index
