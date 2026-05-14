@@ -201,6 +201,20 @@ class Settings(BaseSettings):
             self.data_path / "derived" / "band_masks" / "canonical_comparison.json"
         )
 
+    @property
+    def band_masks_hidsag_index_path(self) -> Path:
+        return self.data_path / "derived" / "band_masks_hidsag" / "index.json"
+
+    def band_masks_hidsag_summary_path(self, subset_code: str, mask_id: str) -> Path:
+        return (
+            self.data_path
+            / "derived"
+            / "band_masks_hidsag"
+            / subset_code
+            / mask_id
+            / "summary.json"
+        )
+
     def cross_method_agreement_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "cross_method_agreement" / f"{scene_id}.json"
 

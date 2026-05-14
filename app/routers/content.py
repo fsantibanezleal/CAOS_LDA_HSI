@@ -423,6 +423,31 @@ def band_mask_summary(scene_id: str, mask_id: str) -> dict:
         ) from exc
 
 
+@router.get("/band-masks-hidsag")
+def band_masks_hidsag_index() -> dict:
+    from app.services.content import get_band_masks_hidsag_index
+    try:
+        return get_band_masks_hidsag_index()
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="band_masks_hidsag index not generated yet; run "
+            "scripts/local.* build-band-masked-topic-models-hidsag",
+        ) from exc
+
+
+@router.get("/band-masks-hidsag/{subset_code}/{mask_id}")
+def band_masks_hidsag_summary(subset_code: str, mask_id: str) -> dict:
+    from app.services.content import get_band_masks_hidsag_summary
+    try:
+        return get_band_masks_hidsag_summary(subset_code, mask_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=f"band_masks_hidsag {subset_code}/{mask_id} not generated yet",
+        ) from exc
+
+
 @router.get("/groupings")
 def groupings_index() -> dict:
     from app.services.content import get_groupings_index
