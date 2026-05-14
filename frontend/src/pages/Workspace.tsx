@@ -37,6 +37,7 @@ import {
   computeRoutedPrediction,
 } from "./workspace/helpers/routedPrediction";
 import { BandMaskTab } from "./workspace/tabs/BandMaskTab";
+import { HidsagBandMaskTab } from "./workspace/tabs/HidsagBandMaskTab";
 import { ApplyToDocumentTab } from "./workspace/tabs/ApplyToDocumentTab";
 import { RecipesTab } from "./workspace/tabs/RecipesTab";
 import { QKExploreTab } from "./workspace/tabs/QKExploreTab";
@@ -763,6 +764,12 @@ function ExploreStep({
     enabled: isLabelled && tab === "bandmask",
     staleTime: 30 * 60_000,
   });
+  const bandMaskHidsagIndexQ = useQuery({
+    queryKey: ["band-masks-hidsag-index"],
+    queryFn: () => api.bandMasksHidsagIndex(),
+    enabled: isHidsag && tab === "bandmask",
+    staleTime: 30 * 60_000,
+  });
 
   const topicAnomaly = useQuery({
     queryKey: ["topic-anomaly", subsetId],
@@ -1095,12 +1102,20 @@ function ExploreStep({
               sweep={ldaSweepQ.data ?? null}
             />
           )}
-          {tab === "bandmask" && subsetId && (
+          {tab === "bandmask" && subsetId && isLabelled && (
             <BandMaskTab
               sceneId={subsetId}
               isLoading={bandMaskIndexQ.isLoading}
               error={bandMaskIndexQ.error as Error | null}
               index={bandMaskIndexQ.data ?? null}
+            />
+          )}
+          {tab === "bandmask" && subsetId && isHidsag && (
+            <HidsagBandMaskTab
+              subsetCode={toHidsagSubsetCode(subsetId)}
+              isLoading={bandMaskHidsagIndexQ.isLoading}
+              error={bandMaskHidsagIndexQ.error as Error | null}
+              index={bandMaskHidsagIndexQ.data ?? null}
             />
           )}
           {tab === "spatial" && (
