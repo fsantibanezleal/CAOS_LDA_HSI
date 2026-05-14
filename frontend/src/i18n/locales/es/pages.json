@@ -385,6 +385,11 @@
   "workspace": {
     "title": "Laboratorio",
     "lead": "Flujo guiado en cuatro pasos: familia → conjunto → representación → explorar. Cada paso depende de los anteriores; puedes retroceder en cualquier momento.",
+    "spectral_envelopes_help": "La banda sombreada es el rango p25–p75; la línea es la mediana. Haz click sobre una clase para aislarla; click nuevamente para ver todas.",
+    "raster_isolate_topic": "Aislar un tópico",
+    "embed3d_color_by_topic": "Tópico dominante",
+    "embed3d_color_by_label": "Etiqueta",
+    "embed3d_isolate_topic": "Aislar tópico",
     "step": {
       "family": "Familia de datos",
       "subset": "Conjunto",

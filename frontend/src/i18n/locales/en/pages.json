@@ -385,6 +385,11 @@
   "workspace": {
     "title": "Workspace",
     "lead": "Guided flow in four steps: family → subset → representation → explore. Each step depends on the previous; you can go back at any time.",
+    "spectral_envelopes_help": "The shaded band is the p25–p75 range; the line is the median. Click on a class to isolate it; click again to bring all classes back.",
+    "raster_isolate_topic": "Isolate a topic",
+    "embed3d_color_by_topic": "Dominant topic",
+    "embed3d_color_by_label": "Label",
+    "embed3d_isolate_topic": "Isolate topic",
     "step": {
       "family": "Dataset family",
       "subset": "Subset",
