@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Github, Globe, Sparkles } from "lucide-react";
+import { FileText, Github, Globe, Sparkles } from "lucide-react";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
 const EXTERNAL = {
   orcid: "https://orcid.org/0000-0002-3614-2087",
   github: "https://github.com/fsantibanezleal/CAOS_LDA_HSI",
+  paper: "https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper",
   site: "https://fasl-work.com",
 };
 
@@ -84,6 +85,16 @@ export function Header() {
             className="p-2 rounded-md hover:opacity-100 opacity-70 transition-opacity"
           >
             <Github size={18} />
+          </a>
+          <a
+            href={EXTERNAL.paper}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={t("common:external.paper")}
+            title={t("common:external.paper")}
+            className="p-2 rounded-md hover:opacity-100 opacity-70 transition-opacity"
+          >
+            <FileText size={18} />
           </a>
           <a
             href={EXTERNAL.site}
