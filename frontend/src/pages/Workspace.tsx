@@ -19,6 +19,7 @@ import { StabilityHeatmap } from "@/components/plots/StabilityHeatmap";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
 import { InverseLabelHeatmap } from "@/components/plots/InverseLabelHeatmap";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
+import { TopicSpectrumComparison } from "@/components/plots/TopicSpectrumComparison";
 import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily, RepresentationKind } from "@/state/useSelectionStore";
 import { cn } from "@/lib/cn";
@@ -1775,6 +1776,43 @@ function TopicsTab({
             );
           })}
         </div>
+      </div>
+
+      <div
+        className="rounded-lg border p-5"
+        style={{
+          borderColor: "var(--color-border)",
+          backgroundColor: "var(--color-panel)",
+          boxShadow: "var(--color-shadow)",
+        }}
+      >
+        <h4
+          className="text-base font-semibold mb-2"
+          style={{ color: "var(--color-fg)" }}
+        >
+          Comparación multi-topic con features físicas
+        </h4>
+        <p
+          className="text-sm mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Pick up to four topics and compare their basis spectra side
+          by side. Absorption / reflectance features (chlorophyll,
+          red-edge, leaf-water, atmospheric water, cellulose, Al-OH /
+          kaolinite, calcite) are annotated as dotted verticals so the
+          physical interpretation can be read off the figure. A
+          pairwise cosine-distance mini-table summarises how visually
+          distinct the selected topics are.
+        </p>
+        <TopicSpectrumComparison
+          wavelengths={data.wavelengths_nm}
+          bandProfiles={data.topic_band_profiles}
+          topicPrevalence={data.topic_prevalence}
+          topicDistanceCosine={data.topic_distance_cosine}
+          initialSelection={
+            selectedTopic !== null ? [selectedTopic] : undefined
+          }
+        />
       </div>
 
       <div
