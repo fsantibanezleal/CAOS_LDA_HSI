@@ -1,4 +1,13 @@
 # CAOS LDA HSI smoke-test runner.
+#
+# Windows note: Invoke-WebRequest uses the system TLS stack (Schannel).
+# Schannel performs CRL revocation checking with no soft-fail option.
+# If the CA's CRL endpoint is unreachable from the runner, smoke fails
+# with CRYPT_E_NO_REVOCATION_CHECK. To work around this, either set
+# `[System.Net.ServicePointManager]::CheckCertificateRevocationList = $false`
+# at the top of your harness shim, or run against a local backend
+# (http://127.0.0.1:8105) which avoids the public TLS chain entirely.
+# The default base URL above is already the local backend.
 
 [CmdletBinding()]
 param(
