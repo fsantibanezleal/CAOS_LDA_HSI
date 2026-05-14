@@ -1304,6 +1304,7 @@ function RawTab({
   data: import("@/api/client").ScenePerScene | null;
   sceneId: string | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>Loading EDA…</p>
@@ -1368,8 +1369,7 @@ function RawTab({
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          The shaded band is the p25–p75 range; the line is the median. Click on
-          una clase para aislarla, click de nuevo para volver a ver todas.
+          {t("pages:workspace.spectral_envelopes_help")}
         </p>
         <SpectralByClass
           wavelengths={data.wavelengths_nm}
@@ -2068,6 +2068,7 @@ function LdaConfigBadge({
   if (cfg) {
     items.push(
       { label: "fit", value: cfg.method },
+      { label: "K", value: String(data.topic_count) },
       { label: "α", value: cfg.doc_topic_prior.toFixed(2) },
       { label: "η", value: cfg.topic_word_prior.toFixed(2) },
       { label: "max_iter", value: String(cfg.max_iter) },
@@ -2915,6 +2916,7 @@ function RasterTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [pick, setPick] = useState<PickInfo | null>(null);
   const [compareTopic, setCompareTopic] = useState<number | null>(null);
 
@@ -2931,17 +2933,19 @@ function RasterTab({
     retry: false,
   });
 
-  // Cycle 121 per-pixel theta sidecar. Loaded lazily so users who
-  // never click a pixel don't pay the bandwidth. Sizes range from
-  // 168 KB (Salinas-A) to 18 MB (Botswana); a single round-trip per
-  // scene per session.
+  // Cycle 121 per-pixel theta sidecar. Loaded **only when the user
+  // first clicks a pixel** so users who never click pay zero bandwidth.
+  // Sizes range from 168 KB (Salinas-A) to 18 MB (Botswana); the fetch
+  // is a single round-trip per scene per session, cached for 30 min.
+  // (Cycle 131: gate on pick !== null instead of mount-time so the
+  // bandwidth bill is opt-in.)
   const thetaGrid = useQuery({
     queryKey: ["theta-grid", meta?.scene_id],
     queryFn: () => {
       const path = `/generated/topic_to_data/${meta!.scene_id}_theta_grid.bin`;
       return api.buffer(path);
     },
-    enabled: meta !== null && !!meta?.theta_grid,
+    enabled: meta !== null && !!meta?.theta_grid && pick !== null,
     retry: false,
     staleTime: 30 * 60_000,
   });
@@ -3117,7 +3121,7 @@ function RasterTab({
                 className="text-[11px] uppercase tracking-wider mb-2"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Aislar un topic
+                {t("pages:workspace.raster_isolate_topic")}
               </div>
               <div className="flex flex-wrap gap-1.5">
                 <button
@@ -3733,7 +3737,7 @@ function PixelDetailCard({
   const pred = useMemo(() => {
     if (!hasFit || !theta) return [];
     const p = computeRoutedPrediction(theta, meta.p_label_given_topic_dominant);
-    return [...p].sort((a, b) => b.p - a.p).slice(0, 5);
+    return [...p].sort((a, b) => b.p - a.p).slice(0, 3);
   }, [hasFit, theta, meta.p_label_given_topic_dominant]);
 
   const orderedThetas = useMemo(() => {
@@ -5890,6 +5894,7 @@ function Embed3DTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [colorBy, setColorBy] = useState<"topic" | "label">("topic");
   const [pickedDoc, setPickedDoc] = useState<{ docId: number; index: number } | null>(
     null,
@@ -5979,8 +5984,8 @@ function Embed3DTab({
                 color: "var(--color-fg)",
               }}
             >
-              <option value="topic">Dominant topic</option>
-              <option value="label">Etiqueta</option>
+              <option value="topic">{t("pages:workspace.embed3d_color_by_topic")}</option>
+              <option value="label">{t("pages:workspace.embed3d_color_by_label")}</option>
             </select>
           </div>
         </header>
@@ -6006,7 +6011,7 @@ function Embed3DTab({
               className="text-[11px] uppercase tracking-wider mb-1.5"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Aislar topic
+              {t("pages:workspace.embed3d_isolate_topic")}
             </div>
             <div className="flex flex-wrap gap-1.5">
               <button
@@ -10743,6 +10748,7 @@ function QKExploreTab({
               <span
                 className="font-mono text-[11px]"
                 style={{ color: "var(--color-fg-faint)" }}
+                title="Composite score: perplexity is rescaled to [0,1] across the K grid before being negated, then summed unweighted with npmi_mean and matched_cosine_mean (both already in their natural [0,1] range)."
               >
                 ({sweep.recommendation_method})
               </span>
@@ -10756,6 +10762,18 @@ function QKExploreTab({
               </span>
             )}
           </div>
+        )}
+        {recommendedK !== null && recommendedK !== canonicalK && (
+          <p
+            className="text-[11.5px] mb-3"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            <em>Note:</em> the canonical Workspace fit retains K={canonicalK}{" "}
+            for cross-scene comparability. The composite score above is a
+            model-selection observation, not a mandate — the rest of the
+            app (topics, raster, applydoc, etc.) keeps reading the K=
+            {canonicalK} canonical fit.
+          </p>
         )}
         <div className="grid lg:grid-cols-3 gap-4">
           <SweepCurveCard
@@ -11060,9 +11078,16 @@ function BandMaskTab({
     enabled: maskId !== null,
     staleTime: 30 * 60_000,
   });
+  // Gate the canonical-comparison fetch on the user having selected a
+  // band-mask card. Most users browsing the bandmask tab will be reading
+  // the BandMaskComparisonOverview table that is rendered immediately,
+  // which IS the comparison payload — so we keep the fetch eager here.
+  // sceneId stays in the query key so a SceneQuickSwitch invalidates
+  // the cache rather than silently re-using a stale dataset's table.
   const comparisonQ = useQuery({
-    queryKey: ["band-masks-comparison"],
+    queryKey: ["band-masks-comparison", sceneId],
     queryFn: () => api.bandMasksCanonicalComparison(),
+    enabled: !!sceneId,
     staleTime: 30 * 60_000,
   });
 
