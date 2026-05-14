@@ -451,6 +451,12 @@ export const api = {
     request<BandMaskSummary>(
       `/api/band-masks/${encodeURIComponent(sceneId)}/${encodeURIComponent(maskId)}`,
     ),
+  bandMasksHidsagIndex: () =>
+    request<BandMaskHidsagIndex>(`/api/band-masks-hidsag`),
+  bandMasksHidsagSummary: (subsetCode: string, maskId: string) =>
+    request<BandMaskHidsagSummary>(
+      `/api/band-masks-hidsag/${encodeURIComponent(subsetCode)}/${encodeURIComponent(maskId)}`,
+    ),
   wordification: (sceneId: string, recipe: string, scheme: string, q: number) =>
     request<WordificationPayload>(
       `/api/wordifications/${encodeURIComponent(sceneId)}/${encodeURIComponent(recipe)}/${encodeURIComponent(scheme)}/${q}`,
@@ -1100,6 +1106,64 @@ export type BandMaskCanonicalComparison = {
   builder_version: string;
   description: string;
   entries: BandMaskComparisonEntry[];
+};
+
+export type BandMaskHidsagIndexEntry = {
+  subset_code: string;
+  mask_id: string;
+  mask_label?: string;
+  topic_count?: number;
+  n_bands_full?: number;
+  n_bands_kept?: number;
+  perplexity_train?: number;
+  mean_confidence?: number;
+  summary_path?: string;
+  skipped?: boolean;
+  reason?: string;
+};
+
+export type BandMaskHidsagIndex = {
+  generated_at: string;
+  builder_version: string;
+  modality: string;
+  mask_definitions: Record<string, { label: string; description: string }>;
+  entries: BandMaskHidsagIndexEntry[];
+};
+
+export type HidsagCovariateProbability = {
+  covariate: string;
+  count: number;
+  p: number;
+};
+
+export type BandMaskHidsagSummary = {
+  subset_code: string;
+  mask_id: string;
+  mask_label: string;
+  mask_description: string;
+  modality: string;
+  topic_count: number;
+  document_count: number;
+  vocabulary_size: number;
+  n_bands_full: number;
+  n_bands_kept: number;
+  kept_band_indices: number[];
+  wavelengths_nm_kept_first_last: [number, number];
+  wavelengths_nm_kept: number[];
+  topic_prevalence: number[];
+  topic_distance_cosine: number[][];
+  top_words_per_topic_lambda_05: string[][];
+  p_covariate_given_topic_dominant: HidsagCovariateProbability[][];
+  docs_per_topic_dominant: number[];
+  perplexity_train: number;
+  mean_confidence: number;
+  doc_names: string[];
+  sample_names: string[];
+  covariates: string[];
+  theta_per_doc: number[][];
+  lda_config: LdaConfig;
+  generated_at: string;
+  builder_version: string;
 };
 
 export type BandMaskSummary = {
