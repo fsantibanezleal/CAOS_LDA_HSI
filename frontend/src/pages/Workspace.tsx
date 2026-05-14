@@ -23,6 +23,20 @@ import { workspaceMachine } from "@/state/workspaceMachine";
 import type { DatasetFamily, RepresentationKind } from "@/state/useSelectionStore";
 import { cn } from "@/lib/cn";
 
+// Workspace tab registry + per-phase grouping + per-tab wiki map
+// (cycle 133 modularisation of what used to be inlined in this file).
+import {
+  type ExploreTab,
+  EXPLORE_TAB_ORDER,
+  TAB_WIKI_PAGE,
+  WIKI_BASE,
+} from "./workspace/state/tabs";
+import { ExploreNav } from "./workspace/components/ExploreNav";
+import {
+  type RoutedPrediction,
+  computeRoutedPrediction,
+} from "./workspace/helpers/routedPrediction";
+
 const Scatter3D = lazy(() =>
   import("@/components/plots/Scatter3D").then((m) => ({ default: m.Scatter3D })),
 );
@@ -530,35 +544,9 @@ function RepresentationPickerStep({
   );
 }
 
-type ExploreTab =
-  | "raw"
-  | "browser"
-  | "topics"
-  | "topiclabel"
-  | "routed"
-  | "raster"
-  | "embed3d"
-  | "repfit"
-  | "compare3d"
-  | "spatial"
-  | "unmixing"
-  | "interpret"
-  | "recipes"
-  | "supertopics"
-  | "anomaly"
-  | "neural"
-  | "gating"
-  | "llm"
-  | "probe"
-  | "robust"
-  | "agreement"
-  | "applydoc"
-  | "qkexplore"
-  | "bandmask"
-  | "stability"
-  | "deep"
-  | "usgs"
-  | "metrics";
+// ExploreTab + EXPLORE_TAB_ORDER + EXPLORE_PHASES + TAB_WIKI_PAGE +
+// WIKI_BASE moved to ./workspace/state/tabs.ts (cycle 133). Imported
+// at the top of this file.
 
 const TOPIC_FAMILY_REPS = new Set(["lda", "lda_sparse", "lda_tomo", "hdp", "ctm", "prodlda"]);
 const REPRESENTATION_ENDPOINT_METHOD: Record<string, string> = {
@@ -635,7 +623,7 @@ function ExploreStep({
         return;
       }
       if (e.key === "[" || e.key === "]") {
-        const order: ExploreTab[] = ["raw", "browser", "topics", "topiclabel", "routed", "interpret", "supertopics", "raster", "embed3d", "repfit", "compare3d", "spatial", "stability", "deep", "anomaly", "neural", "gating", "unmixing", "llm", "probe", "robust", "qkexplore", "bandmask", "agreement", "usgs", "metrics"];
+        const order = EXPLORE_TAB_ORDER;
         const idx = order.indexOf(tab);
         if (idx === -1) return;
         const next = e.key === "]" ? (idx + 1) % order.length : (idx - 1 + order.length) % order.length;
@@ -940,94 +928,7 @@ function ExploreStep({
               backdropFilter: "blur(8px)",
             }}
           >
-            {([
-              {
-                category: t("pages:workspace.tabs.group_raw"),
-                color: "rgba(56, 189, 248, 1)",
-                tabs: [
-                  { id: "raw" as const, label: t("pages:workspace.tabs.raw") },
-                  { id: "browser" as const, label: t("pages:workspace.tabs.browser") },
-                ],
-              },
-              {
-                category: t("pages:workspace.tabs.group_topics"),
-                color: "rgba(40, 160, 80, 1)",
-                tabs: [
-                  { id: "topics" as const, label: t("pages:workspace.tabs.topics") },
-                  { id: "topiclabel" as const, label: t("pages:workspace.tabs.topiclabel") },
-                  { id: "routed" as const, label: t("pages:workspace.tabs.routed") },
-                  { id: "interpret" as const, label: t("pages:workspace.tabs.interpret") },
-                  { id: "recipes" as const, label: t("pages:workspace.tabs.recipes") },
-                  { id: "supertopics" as const, label: t("pages:workspace.tabs.supertopics") },
-                ],
-              },
-              {
-                category: t("pages:workspace.tabs.group_spatial"),
-                color: "rgba(170, 60, 200, 1)",
-                tabs: [
-                  { id: "raster" as const, label: t("pages:workspace.tabs.raster") },
-                  { id: "embed3d" as const, label: t("pages:workspace.tabs.embed3d") },
-                  { id: "repfit" as const, label: t("pages:workspace.tabs.repfit") },
-                  { id: "compare3d" as const, label: t("pages:workspace.tabs.compare3d") },
-                  { id: "spatial" as const, label: t("pages:workspace.tabs.spatial") },
-                ],
-              },
-              {
-                category: t("pages:workspace.tabs.group_diagnostics"),
-                color: "rgba(214, 140, 40, 1)",
-                tabs: [
-                  { id: "stability" as const, label: t("pages:workspace.tabs.stability") },
-                  { id: "deep" as const, label: t("pages:workspace.tabs.deep") },
-                  { id: "anomaly" as const, label: t("pages:workspace.tabs.anomaly") },
-                  { id: "neural" as const, label: t("pages:workspace.tabs.neural") },
-                  { id: "gating" as const, label: t("pages:workspace.tabs.gating") },
-                  { id: "llm" as const, label: t("pages:workspace.tabs.llm") },
-                  { id: "probe" as const, label: t("pages:workspace.tabs.probe") },
-                  { id: "robust" as const, label: t("pages:workspace.tabs.robust") },
-                  { id: "qkexplore" as const, label: t("pages:workspace.tabs.qkexplore") },
-                  { id: "bandmask" as const, label: t("pages:workspace.tabs.bandmask") },
-                  { id: "agreement" as const, label: t("pages:workspace.tabs.agreement") },
-                  { id: "applydoc" as const, label: t("pages:workspace.tabs.applydoc") },
-                  { id: "unmixing" as const, label: t("pages:workspace.tabs.unmixing") },
-                  { id: "usgs" as const, label: t("pages:workspace.tabs.usgs") },
-                  { id: "metrics" as const, label: t("pages:workspace.tabs.metrics") },
-                ],
-              },
-            ] as { category: string; color: string; tabs: { id: ExploreTab; label: string }[] }[]).map((group) => (
-              <div key={group.category} className="flex items-baseline flex-wrap gap-2">
-                <span
-                  className="text-[10px] uppercase tracking-widest font-semibold pr-2 w-32 shrink-0"
-                  style={{ color: group.color }}
-                >
-                  {group.category}
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {group.tabs.map((opt) => {
-                    const isActive = tab === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        role="tab"
-                        aria-selected={isActive}
-                        type="button"
-                        onClick={() => setTab(opt.id)}
-                        className={cn(
-                          "rounded-md border px-3 py-1.5 text-[13px] transition-all",
-                          isActive ? "font-semibold shadow-sm" : "opacity-80 hover:opacity-100",
-                        )}
-                        style={{
-                          borderColor: isActive ? group.color : "var(--color-border)",
-                          backgroundColor: isActive ? "var(--color-accent-soft)" : "var(--color-panel)",
-                          color: isActive ? group.color : "var(--color-fg)",
-                        }}
-                      >
-                        {opt.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+            <ExploreNav tab={tab} setTab={setTab} t={t} />
           </nav>
 
           {selectedTopic !== null && (
@@ -3433,43 +3334,9 @@ function RasterTab({
   );
 }
 
-type RoutedPrediction = {
-  label_id: number;
-  name: string;
-  color: string;
-  p: number;
-};
-
-function computeRoutedPrediction(
-  thetaFull: number[],
-  perTopicLabel: import("@/api/client").LabelCell[][],
-): RoutedPrediction[] {
-  const K = thetaFull.length;
-  if (K === 0 || perTopicLabel.length === 0) return [];
-  const firstRow = perTopicLabel[0]!;
-  const L = firstRow.length;
-  if (L === 0) return [];
-  const acc: { p: number; label_id: number; name: string; color: string }[] =
-    firstRow.map((c) => ({
-      p: 0,
-      label_id: c.label_id,
-      name: c.name,
-      color: c.color,
-    }));
-  for (let k = 0; k < K; k++) {
-    const t = thetaFull[k] ?? 0;
-    if (t <= 0) continue;
-    const row = perTopicLabel[k];
-    if (!row) continue;
-    for (let l = 0; l < L; l++) {
-      acc[l]!.p += t * (row[l]?.p ?? 0);
-    }
-  }
-  let total = 0;
-  for (const a of acc) total += a.p;
-  if (total > 0) for (const a of acc) a.p = a.p / total;
-  return acc;
-}
+// RoutedPrediction + computeRoutedPrediction moved to
+// ./workspace/helpers/routedPrediction.ts (cycle 133). Re-export the
+// type name as an alias so the existing usages here compile unchanged.
 
 function TopDocumentsPreview({
   topic,
@@ -9794,6 +9661,7 @@ const TOPIC_AWARE_TABS: { id: ExploreTab; label: string }[] = [
   { id: "spatial", label: "Spatial" },
 ];
 
+
 function TopicContextStrip({
   selectedTopic,
   onClear,
@@ -9866,39 +9734,6 @@ function TopicContextStrip({
     </div>
   );
 }
-
-const TAB_WIKI_PAGE: Record<ExploreTab, string> = {
-  raw: "Web-App-Workflow",
-  browser: "Web-App-Workflow",
-  topics: "Mathematical-Background",
-  topiclabel: "Mathematical-Background",
-  routed: "Multi-Axis-Addendum-B",
-  raster: "Backend-Architecture",
-  embed3d: "Backend-Architecture",
-  repfit: "Multi-Axis-Addendum-B",
-  compare3d: "Multi-Axis-Addendum-B",
-  interpret: "Mathematical-Background",
-  supertopics: "Corpus-Construction",
-  unmixing: "Multi-Axis-Addendum-B",
-  spatial: "Multi-Axis-Addendum-B",
-  agreement: "Multi-Axis-Addendum-B",
-  applydoc: "Multi-Axis-Addendum-B",
-  recipes: "Corpus-Construction",
-  qkexplore: "Mathematical-Background",
-  bandmask: "Mathematical-Background",
-  neural: "Mathematical-Background",
-  gating: "Multi-Axis-Addendum-B",
-  llm: "Multi-Axis-Addendum-B",
-  probe: "Multi-Axis-Addendum-B",
-  robust: "Multi-Axis-Addendum-B",
-  stability: "Multi-Axis-Addendum-B",
-  deep: "Mathematical-Background",
-  anomaly: "Multi-Axis-Addendum-B",
-  usgs: "Corpus-Construction",
-  metrics: "Bayesian-Method-Comparison",
-};
-
-const WIKI_BASE = "https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki";
 
 function TabFooter({ tab }: { tab: ExploreTab }) {
   const wikiPage = TAB_WIKI_PAGE[tab];
