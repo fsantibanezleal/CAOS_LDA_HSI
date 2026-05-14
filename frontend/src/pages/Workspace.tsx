@@ -2068,6 +2068,7 @@ function LdaConfigBadge({
   if (cfg) {
     items.push(
       { label: "fit", value: cfg.method },
+      { label: "K", value: String(data.topic_count) },
       { label: "α", value: cfg.doc_topic_prior.toFixed(2) },
       { label: "η", value: cfg.topic_word_prior.toFixed(2) },
       { label: "max_iter", value: String(cfg.max_iter) },
@@ -2932,17 +2933,19 @@ function RasterTab({
     retry: false,
   });
 
-  // Cycle 121 per-pixel theta sidecar. Loaded lazily so users who
-  // never click a pixel don't pay the bandwidth. Sizes range from
-  // 168 KB (Salinas-A) to 18 MB (Botswana); a single round-trip per
-  // scene per session.
+  // Cycle 121 per-pixel theta sidecar. Loaded **only when the user
+  // first clicks a pixel** so users who never click pay zero bandwidth.
+  // Sizes range from 168 KB (Salinas-A) to 18 MB (Botswana); the fetch
+  // is a single round-trip per scene per session, cached for 30 min.
+  // (Cycle 131: gate on pick !== null instead of mount-time so the
+  // bandwidth bill is opt-in.)
   const thetaGrid = useQuery({
     queryKey: ["theta-grid", meta?.scene_id],
     queryFn: () => {
       const path = `/generated/topic_to_data/${meta!.scene_id}_theta_grid.bin`;
       return api.buffer(path);
     },
-    enabled: meta !== null && !!meta?.theta_grid,
+    enabled: meta !== null && !!meta?.theta_grid && pick !== null,
     retry: false,
     staleTime: 30 * 60_000,
   });
@@ -3734,7 +3737,7 @@ function PixelDetailCard({
   const pred = useMemo(() => {
     if (!hasFit || !theta) return [];
     const p = computeRoutedPrediction(theta, meta.p_label_given_topic_dominant);
-    return [...p].sort((a, b) => b.p - a.p).slice(0, 5);
+    return [...p].sort((a, b) => b.p - a.p).slice(0, 3);
   }, [hasFit, theta, meta.p_label_given_topic_dominant]);
 
   const orderedThetas = useMemo(() => {
