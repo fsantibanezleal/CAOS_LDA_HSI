@@ -325,6 +325,16 @@ def get_band_masks_canonical_comparison() -> dict:
     return _load_or_404(get_settings().band_masks_canonical_comparison_path)
 
 
+def get_band_masks_hidsag_index() -> dict:
+    return _load_or_404(get_settings().band_masks_hidsag_index_path)
+
+
+def get_band_masks_hidsag_summary(subset_code: str, mask_id: str) -> dict:
+    return _load_or_404(
+        get_settings().band_masks_hidsag_summary_path(subset_code, mask_id)
+    )
+
+
 def get_groupings_index() -> dict:
     base = get_settings().groupings_dir
     if not base.exists():

@@ -63,6 +63,7 @@ BUILDER_DIRS = [
     ("build_representations", "representations"),
     ("build_lda_sweep", "lda_sweep"),
     ("build_band_masked_topic_models", "band_masks"),
+    ("build_band_masked_topic_models_hidsag", "band_masks_hidsag"),
     # build_band_mask_canonical_comparison shares the band_masks/ output
     # directory; not listed here to avoid double counting. Surfaces via
     # claims_allowed only.
@@ -295,6 +296,16 @@ CLAIMS_ALLOWED = [
         "id": "band_masks_canonical_comparison",
         "description": "Cycle-127 post-processor: per (scene, mask) comparison vs the canonical no-mask fit — paired ARI of dominant-topic maps, Hungarian-aligned swap rate, n_topic_swaps absolute count, mean and max Hungarian-aligned KL between canonical and masked P(L|t), plus the Hungarian topic-id assignment dict. Read-only post-processor; no new LDA fits.",
         "source_pattern": "band_masks/canonical_comparison.json",
+    },
+    {
+        "id": "band_masks_hidsag_index",
+        "description": "Cycle-138 HIDSAG band-mask sweep master index — 5 subsets x 4 masks = 20 entries. Each entry lists subset_code, mask_id, topic_count, n_bands_kept/full, perplexity_train, summary_path.",
+        "source_pattern": "band_masks_hidsag/index.json",
+    },
+    {
+        "id": "band_masks_hidsag_summary",
+        "description": "Per (HIDSAG subset, mask) LDA refit summary (cycle 138): phi top-words at lambda=0.5, K x K cosine distance matrix, P(covariate | topic_dominant), kept_band_indices, perplexity, theta_per_doc, LDA config. Differs from labelled-scene band_masks in that HIDSAG has no spatial grid — outputs are per-document, not per-pixel.",
+        "source_pattern": "band_masks_hidsag/<subset>/<mask>/summary.json",
     },
     {
         "id": "cross_method_agreement_matrix",
