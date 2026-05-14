@@ -1804,15 +1804,22 @@ function TopicsTab({
           pairwise cosine-distance mini-table summarises how visually
           distinct the selected topics are.
         </p>
-        <TopicSpectrumComparison
-          wavelengths={data.wavelengths_nm}
-          bandProfiles={data.topic_band_profiles}
-          topicPrevalence={data.topic_prevalence}
-          topicDistanceCosine={data.topic_distance_cosine}
-          initialSelection={
-            selectedTopic !== null ? [selectedTopic] : undefined
-          }
-        />
+        {selectedTopic !== null ? (
+          <TopicSpectrumComparison
+            wavelengths={data.wavelengths_nm}
+            bandProfiles={data.topic_band_profiles}
+            topicPrevalence={data.topic_prevalence}
+            topicDistanceCosine={data.topic_distance_cosine}
+            initialSelection={[selectedTopic]}
+          />
+        ) : (
+          <TopicSpectrumComparison
+            wavelengths={data.wavelengths_nm}
+            bandProfiles={data.topic_band_profiles}
+            topicPrevalence={data.topic_prevalence}
+            topicDistanceCosine={data.topic_distance_cosine}
+          />
+        )}
       </div>
 
       <div
