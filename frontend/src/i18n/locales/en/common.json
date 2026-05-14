@@ -13,7 +13,8 @@
   },
   "external": {
     "orcid": "ORCID",
-    "github": "GitHub",
+    "github": "GitHub (code)",
+    "paper": "Paper (manuscript)",
     "site": "fasl-work.com"
   }
 }
