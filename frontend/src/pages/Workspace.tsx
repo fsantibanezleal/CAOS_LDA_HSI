@@ -620,6 +620,22 @@ function ExploreStep({
   );
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
+  // Reset selectedTopic + tab when the user switches scene or rep.
+  // Topic IDs are not portable across scenes (topic 3 on Pavia U is
+  // a different cluster than topic 3 on Indian Pines); a stale topic
+  // selection produces confusing highlighting after a SWITCH_SUBSET.
+  // Likewise, tab=interpret on a topic-model rep is meaningless after
+  // the user switches to a PCA rep.
+  const scopeKey = `${subsetId ?? ""}|${rep ?? ""}`;
+  const prevScopeRef = useRef(scopeKey);
+  useEffect(() => {
+    if (prevScopeRef.current === scopeKey) return;
+    prevScopeRef.current = scopeKey;
+    setSelectedTopic(null);
+    setTab(defaultTab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scopeKey]);
+
   // Mirror tab + selectedTopic to URL.
   // Don't write the default tab to the URL — keeps it short for the
   // common case ("?family=...&subset=...&rep=..." is enough; tab is
