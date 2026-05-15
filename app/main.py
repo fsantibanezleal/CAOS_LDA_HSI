@@ -65,9 +65,19 @@ if _dist.is_dir():
     def root() -> FileResponse:
         return FileResponse(_dist / "index.html", headers=INDEX_HEADERS)
 
+    _dist_resolved = _dist.resolve()
+
     @app.get("/{path:path}", include_in_schema=False)
     def spa_fallback(path: str) -> FileResponse:
-        target = _dist / path
+        # Guard against path traversal: a request like
+        # "/../app/config.py" would otherwise resolve to a file outside
+        # _dist. nginx normalises in prod, but the FastAPI route is
+        # reachable on 127.0.0.1:8105 even there.
+        target = (_dist / path).resolve()
+        try:
+            target.relative_to(_dist_resolved)
+        except ValueError:
+            return FileResponse(_dist / "index.html", headers=INDEX_HEADERS)
         if target.is_file():
             return FileResponse(target)
         return FileResponse(_dist / "index.html", headers=INDEX_HEADERS)

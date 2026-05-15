@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 import re
 import zipfile
 from pathlib import Path
@@ -167,6 +168,11 @@ def main() -> None:
         "samples": samples,
     }
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    payload.update({
+        "framework_axis": "Compact spectral-library samples (USGS / ECOSTRESS curated) consumed by the spectral browser tab",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "builder_version": "build_spectral_library_samples v0.2",
+    })
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)
     print(f"Wrote spectral-library payload to {OUTPUT_PATH}")

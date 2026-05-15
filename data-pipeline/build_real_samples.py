@@ -8,6 +8,7 @@ regimes are treated as topics or topic-like strata.
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
@@ -648,6 +649,11 @@ def main() -> None:
         "source": "Official UPV/EHU scenes and compact public unmixing scenes",
         "scenes": scenes,
     }
+    payload.update({
+        "framework_axis": "Compact per-scene real-sample summaries (class distribution + class mean spectra) consumed by Overview + Databases",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "builder_version": "build_real_samples v0.2",
+    })
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)
     print(f"Wrote derived real-scene payload to {OUTPUT_PATH}")
