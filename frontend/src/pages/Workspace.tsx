@@ -33,6 +33,7 @@ import {
   WIKI_BASE,
 } from "./workspace/state/tabs";
 import { ExploreNav } from "./workspace/components/ExploreNav";
+import { TabEmpty } from "./workspace/components/TabStates";
 import {
   type RoutedPrediction,
   computeRoutedPrediction,
@@ -1294,7 +1295,7 @@ function RawTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   return (
     <div className="space-y-8">
@@ -1642,7 +1643,7 @@ function TopicsTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const lambdaKey = `lambda_${lambda.toFixed(1)}`;
   const topWords = data.top_words_per_topic[lambdaKey];
@@ -2414,7 +2415,7 @@ function TopicLabelTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const matrix = data.p_label_given_topic_dominant;
 
@@ -2700,7 +2701,7 @@ function RoutedTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const ranking = data.ranking_by_macro_f1_mean;
   // global x-axis range: pad around min/max CI95
@@ -4307,7 +4308,7 @@ function UsgsTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const top = selectedTopic !== null ? data.top_n_per_topic[selectedTopic] : null;
   const chapterHist =
@@ -5149,7 +5150,7 @@ function StabilityTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const sceneSum = data.scene_stability_summary;
   const perTopic = data.per_topic_stability_summary;
@@ -5903,7 +5904,7 @@ function Embed3DTab({
         </p>
       </div>
     );
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const points = data.theta_embedding_pca_3d;
   const ev = data.theta_embedding_explained_variance;
@@ -7049,7 +7050,7 @@ function RepresentationFitTab({
       </div>
     );
   }
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const points: import("@/api/client").EmbeddingPoint3D[] = (data.scatter_2d_3d_subsample ?? []).map((p) => ({
     doc_id: p.i,
@@ -7256,7 +7257,7 @@ function UnmixingTab({
       </div>
     );
   }
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const rmseRaw = asNum(data.reconstruction_rmse_full_set);
   const rmseNorm = asNum(data.reconstruction_rmse_normalised);
@@ -7988,7 +7989,7 @@ function LlmTeaLeavesTab({
       </div>
     );
   }
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const attempted = data.per_topic.filter((t) => !t.skipped);
   return (
@@ -8095,7 +8096,7 @@ function LinearProbeTab({
       </div>
     );
   }
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const methods = Object.entries(data.method_metrics);
   const sorted = data.ranking_by_macro_f1_mean
@@ -9557,7 +9558,7 @@ function SuperTopicsTab({
       </div>
     );
   }
-  if (!data) return null;
+  if (!data) return <TabEmpty />;
 
   const cuts = data.cuts ?? [];
   const availableCuts = cuts.map((c) => c.cut_level);
