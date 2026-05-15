@@ -18,9 +18,9 @@ const LABELLED_SCENES = [
 const HEADLINE_DEFS = [
   { keyLabel: "datasets_label", keySub: "datasets_sub", value: "21", href: "/databases" },
   { keyLabel: "recipes_label", keySub: "recipes_sub", value: "12", href: "/methodology/representations" },
-  { keyLabel: "builders_label", keySub: "builders_sub", value: "57", href: "/methodology/pipeline" },
-  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1592", href: "/benchmarks" },
-  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "104", href: "/benchmarks" },
+  { keyLabel: "builders_label", keySub: "builders_sub", value: "67", href: "/methodology/pipeline" },
+  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1706", href: "/benchmarks" },
+  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "86", href: "/benchmarks" },
   { keyLabel: "variants_label", keySub: "variants_sub", value: "11", href: "/methodology/representations" },
 ] as const;
 
