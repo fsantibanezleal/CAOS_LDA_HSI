@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -19,6 +20,18 @@ OUTPUT_PATH = CORE_DERIVED_DIR / "local_dataset_inventory.json"
 
 def main() -> None:
     payload = build_local_inventory()
+    payload.update({
+        "framework_axis": (
+            "Infrastructure: unified local dataset inventory used by "
+            "the validation backend and by audit_manifest.py. Not a "
+            "single F-axis but underpins every per-scene/per-subset "
+            "axis as the canonical 'which datasets are local?' "
+            "ground truth."
+        ),
+        "generated_at": datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"),
+        "builder_version": "build_local_inventory v0.2",
+    })
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)
