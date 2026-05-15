@@ -73,3 +73,14 @@ button {
 * {
   box-sizing: border-box;
 }
+
+/* Keyboard focus ring for SVG topic-bubbles in IntertopicMap.
+   Only visible under :focus-visible (i.e. keyboard navigation),
+   not when the user clicks the bubble (that path already uses
+   the selected-state highlight). */
+g[role="button"]:focus-visible .topic-focus-ring {
+  opacity: 0.9;
+}
+g[role="button"]:focus {
+  outline: none;
+}

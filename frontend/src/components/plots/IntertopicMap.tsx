@@ -105,12 +105,23 @@ export function IntertopicMap({
           const isSel = selectedTopic === k;
           const r = radius(prevalence[k] ?? 0);
           const color = TOPIC_PALETTE[k % TOPIC_PALETTE.length] ?? "#0ea5e9";
+          const prevPct = ((prevalence[k] ?? 0) * 100).toFixed(1);
           return (
             <g
               key={k}
               transform={`translate(${x(cx)}, ${y(cy)})`}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", outline: "none" }}
               onClick={() => onSelect(k)}
+              role="button"
+              tabIndex={0}
+              aria-label={`topic ${k + 1}, prevalence ${prevPct} percent${isSel ? ", selected" : ""}`}
+              aria-pressed={isSel}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelect(k);
+                }
+              }}
             >
               <circle
                 r={r}
@@ -118,6 +129,16 @@ export function IntertopicMap({
                 opacity={isSel ? 0.55 : 0.32}
                 stroke={color}
                 strokeWidth={isSel ? 2.5 : 1.3}
+              />
+              {/* keyboard-focus ring (CSS focus-visible) */}
+              <circle
+                r={r + 4}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeDasharray="3 3"
+                opacity="0"
+                className="topic-focus-ring"
               />
               <text
                 textAnchor="middle"
