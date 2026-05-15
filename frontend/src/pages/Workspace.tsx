@@ -115,18 +115,36 @@ export default function Workspace() {
     queryFn: api.inventory,
   });
 
-  // Restore state from URL on first inventory load
+  // Restore state from URL on first inventory load.
+  // Supports two URL shapes:
+  //   ?family=X&subset=Y&rep=Z   (canonical)
+  //   ?scene=<subset>            (shortcut from Overview SceneCard links —
+  //                               infers family from the inventory)
+  // If `rep` is missing on a labelled scene, defaults to "lda" so the user
+  // lands on Explore with the canonical topic basis pre-selected.
   useEffect(() => {
     if (restoredRef.current) return;
     if (!data) return;
-    const fam = searchParams.get("family");
-    const sub = searchParams.get("subset");
+    let fam = searchParams.get("family");
+    let sub = searchParams.get("subset");
     const rp = searchParams.get("rep");
+    const sceneShortcut = searchParams.get("scene");
+    // ?scene= shortcut: look up the dataset entry and use its family_id
+    if (!sub && sceneShortcut) {
+      const ds = data.datasets.find((d) => d.id === sceneShortcut);
+      if (ds) {
+        sub = ds.id;
+        fam = ds.family_id as DatasetFamily;
+      }
+    }
     if (fam) {
       send({ type: "PICK_FAMILY", family: fam as DatasetFamily });
       if (sub) {
         send({ type: "PICK_SUBSET", subset: sub });
-        if (rp) send({ type: "PICK_REP", rep: rp as RepresentationKind });
+        // Default rep to canonical LDA when none is supplied, so Explore
+        // is reachable in one click from the scene shortcut.
+        const resolvedRep = (rp ?? "lda") as RepresentationKind;
+        send({ type: "PICK_REP", rep: resolvedRep });
       }
     }
     restoredRef.current = true;
@@ -555,7 +573,7 @@ function RepresentationPickerStep({
 // WIKI_BASE moved to ./workspace/state/tabs.ts (cycle 133). Imported
 // at the top of this file.
 
-const TOPIC_FAMILY_REPS = new Set(["lda", "lda_sparse", "lda_tomo", "hdp", "ctm", "prodlda"]);
+const TOPIC_FAMILY_REPS = new Set(["lda", "lda_sparse", "lda_tomo", "hdp", "ctm", "prodlda", "etm"]);
 const REPRESENTATION_ENDPOINT_METHOD: Record<string, string> = {
   pca: "pca_8",
   nmf: "nmf_8",
@@ -589,16 +607,26 @@ function ExploreStep({
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get("tab") as ExploreTab | null;
   const urlTopic = searchParams.get("topic");
-  const [tab, setTab] = useState<ExploreTab>(urlTab ?? "raw");
+  // When the chosen representation is a topic model the user almost
+  // always wants to see the topics first; only fall back to the EDA
+  // tab when the representation is something else (PCA, NMF, deep
+  // encoders) where there are no topic-side panels to land on.
+  const defaultTab: ExploreTab = rep && TOPIC_FAMILY_REPS.has(rep)
+    ? "topics"
+    : "raw";
+  const [tab, setTab] = useState<ExploreTab>(urlTab ?? defaultTab);
   const [selectedTopic, setSelectedTopic] = useState<number | null>(
     urlTopic != null && /^\d+$/.test(urlTopic) ? Number(urlTopic) : null,
   );
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
-  // Mirror tab + selectedTopic to URL
+  // Mirror tab + selectedTopic to URL.
+  // Don't write the default tab to the URL — keeps it short for the
+  // common case ("?family=...&subset=...&rep=..." is enough; tab is
+  // implicit until the user navigates away from the default).
   useEffect(() => {
     const next = new URLSearchParams(searchParams);
-    if (tab && tab !== "raw") next.set("tab", tab);
+    if (tab && tab !== defaultTab) next.set("tab", tab);
     else next.delete("tab");
     if (selectedTopic !== null) next.set("topic", String(selectedTopic));
     else next.delete("topic");
