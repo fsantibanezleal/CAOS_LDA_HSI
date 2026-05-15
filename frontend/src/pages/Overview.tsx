@@ -19,7 +19,7 @@ const HEADLINE_DEFS = [
   { keyLabel: "datasets_label", keySub: "datasets_sub", value: "21", href: "/databases" },
   { keyLabel: "recipes_label", keySub: "recipes_sub", value: "12", href: "/methodology/representations" },
   { keyLabel: "builders_label", keySub: "builders_sub", value: "67", href: "/methodology/pipeline" },
-  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1706", href: "/benchmarks" },
+  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1706", href: "/workspace" },
   { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "86", href: "/benchmarks" },
   { keyLabel: "variants_label", keySub: "variants_sub", value: "11", href: "/methodology/representations" },
 ] as const;
@@ -98,6 +98,7 @@ export default function Overview() {
 
   return (
     <PageShell title={t("pages:overview.title")} lead={t("pages:overview.lead")}>
+      <LandingCTA />
       <HeroSpectralViz scenes={heroScenes.data ?? null} />
       <HeadlineNumbers />
       <FindingsCarousel />
@@ -107,6 +108,61 @@ export default function Overview() {
       <MethodCoverage />
       <ReadingPath />
     </PageShell>
+  );
+}
+
+/* =========================================================================
+   0. Landing CTA — one sentence + 2 primary actions
+   =======================================================================*/
+
+function LandingCTA() {
+  const { t } = useTranslation(["pages"]);
+  return (
+    <div
+      className="rounded-xl border px-6 py-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+        boxShadow: "var(--color-shadow)",
+      }}
+    >
+      <p
+        className="text-base lg:text-lg leading-snug max-w-3xl"
+        style={{ color: "var(--color-fg)" }}
+      >
+        {t("pages:overview.landing_cta.lead", {
+          defaultValue:
+            "Probabilistic topic models on hyperspectral imagery — a multi-axis evaluation framework that asks whether LDA basis spectra add interpretable value over deep encoders for HSI scene classification.",
+        })}
+      </p>
+      <div className="flex gap-2 flex-wrap" role="group" aria-label="primary actions">
+        <Link
+          to="/workspace"
+          className="rounded-md px-4 py-2 text-sm font-semibold transition-opacity"
+          style={{
+            backgroundColor: "var(--color-accent)",
+            color: "var(--color-on-accent, white)",
+          }}
+        >
+          {t("pages:overview.landing_cta.open_workspace", {
+            defaultValue: "Open the Workspace →",
+          })}
+        </Link>
+        <Link
+          to="/methodology"
+          className="rounded-md px-4 py-2 text-sm font-semibold border transition-opacity"
+          style={{
+            borderColor: "var(--color-border)",
+            color: "var(--color-fg)",
+            backgroundColor: "transparent",
+          }}
+        >
+          {t("pages:overview.landing_cta.read_methodology", {
+            defaultValue: "Read the methodology",
+          })}
+        </Link>
+      </div>
+    </div>
   );
 }
 
@@ -411,10 +467,12 @@ function HeadlineNumbers() {
 function FindingsCarousel() {
   const { t } = useTranslation(["pages"]);
   const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
   useEffect(() => {
+    if (paused) return;
     const timer = setInterval(() => setIdx((i) => (i + 1) % FINDINGS.length), 7000);
     return () => clearInterval(timer);
-  }, []);
+  }, [paused]);
   const cur = FINDINGS[idx]!;
 
   return (
@@ -426,6 +484,12 @@ function FindingsCarousel() {
           backgroundColor: "var(--color-panel)",
           boxShadow: "var(--color-shadow)",
         }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocusCapture={() => setPaused(true)}
+        onBlurCapture={() => setPaused(false)}
+        aria-roledescription="carousel"
+        aria-label={t("pages:overview.findings.section_badge", { idx: idx + 1, total: FINDINGS.length })}
       >
         <div
           aria-hidden="true"
