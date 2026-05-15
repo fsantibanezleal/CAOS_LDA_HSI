@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
@@ -331,6 +332,11 @@ def main() -> None:
         "source": "Official orthomosaics from the MicaSense RedEdge sample page",
         "scenes": scenes,
     }
+    payload.update({
+        "framework_axis": "Compact per-scene field-sample summaries for the Databases page",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "builder_version": "build_field_samples v0.2",
+    })
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)
     print(f"Wrote derived field-scene payload to {OUTPUT_PATH}")

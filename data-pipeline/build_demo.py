@@ -10,6 +10,7 @@ small, deterministic, fully public example that explains:
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from itertools import permutations
 from pathlib import Path
 
@@ -341,6 +342,11 @@ def build_demo() -> dict:
 def main() -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     payload = build_demo()
+    payload.update({
+        "framework_axis": "Demo bundle: snapshot consumed by /demo route",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "builder_version": "build_demo v0.2",
+    })
     with OUTPUT.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2, ensure_ascii=False)
     print(f"Wrote demo payload to {OUTPUT}")

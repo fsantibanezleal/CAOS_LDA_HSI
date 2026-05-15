@@ -9,6 +9,7 @@ modelling service.
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -253,6 +254,12 @@ def main() -> None:
         ],
         "scene_diagnostics": scene_diagnostics,
         "library_diagnostics": library_diagnostics,
+        "framework_axis": "Cross-axis: derived analysis bundle "
+                           "consumed by the Benchmarks page; not a single "
+                           "F-axis but joins scene + library views.",
+        "generated_at": datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"),
+        "builder_version": "build_analysis_payload v0.1",
     }
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
