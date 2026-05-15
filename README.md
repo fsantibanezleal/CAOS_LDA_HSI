@@ -32,8 +32,8 @@ every deploy.
   [`scripts/smoke.ps1`](scripts/smoke.ps1)). The content
   assertions close the empty-body deploy class that escaped in
   cycles 99-101.
-- **Manifest**: 1592 derived artifacts (1359 JSON + 147 binary +
-  27 PNG), audited zero-issues by [`data-pipeline/audit_manifest.py`](data-pipeline/audit_manifest.py)
+- **Manifest**: 1706 derived artifacts (1466 JSON + 209 binary +
+  31 PNG, count refreshed 2026-05-15), audited zero-issues by [`data-pipeline/audit_manifest.py`](data-pipeline/audit_manifest.py)
 - **API surface**: ~110 endpoints across 6 labelled scenes × ~17
   per-scene endpoints + 5 HIDSAG subsets × 6 endpoints + 12
   cross-scene endpoints + `/api/wordifications` (108-config
@@ -89,8 +89,9 @@ every deploy.
                  │              Tailwind v4 + react-i18next +         │
                  │              TanStack Query v5 + Zustand + XState) │
                  │  Pages: Overview · Methodology · Databases ·       │
-                 │         Workspace (28 tabs in 4 groups:            │
-                 │           Raw / Topic model / Spatial / Diagnostics)│
+                 │         Workspace (28 tabs in 6 phases:            │
+                 │           Data / Topics / Geometry / Drilldown /   │
+                 │           Manipulate / Stability — cycle 132)      │
                  │         · Benchmarks (16 cards)                    │
                  └──────────────────────┘
 ```
@@ -490,7 +491,7 @@ Every cycle that lands in production includes:
 3. PR `task/* → develop` with squash-merge + branch deletion
 4. PR `develop → main` titled `Deploy: <summary>` and merged via merge-commit
 5. SSH `bash deploy/update.sh` against the VPS
-6. Smoke harness verifies 87/87
+6. Smoke harness verifies 109/109 GET endpoints + 4 SPA-shell content assertions
 7. Cadence comments: PR comment + issue comment + close
 8. Management repo updates: `deployments/caos-lda-hsi.md` + `wip/caos-lda-hsi/current-state.md`
 
