@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { PageFallback } from "@/components/PageFallback";
+import { CommandPalette } from "@/components/CommandPalette";
 
 const Overview = lazy(() => import("@/pages/Overview"));
 const Methodology = lazy(() => import("@/pages/Methodology"));
@@ -27,6 +28,7 @@ export function App() {
       style={{ backgroundColor: "var(--color-bg)", color: "var(--color-fg)" }}
     >
       <Header />
+      <CommandPalette />
       <main className="flex-1 w-full">
         <Suspense fallback={<PageFallback />}>
           <Routes>

@@ -200,6 +200,53 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
+      <Section
+        id="axis-crosswalk"
+        title="F-axes (paper) ↔ B-axes (wiki / web app)"
+        lead="The companion paper introduces a twelve-axis Framework (F-1..F-12). This site and the wiki use a different B-1..B-12 taxonomy that predates the paper. The two share three concepts under different ordinals; the crosswalk below makes the mapping explicit."
+      >
+        <p>
+          Both taxonomies are kept on purpose: the wiki's B-axes are the
+          empirical evaluation battery the project ran across ~150
+          iterative cycles; the paper's F-axes are the formal twelve-axis
+          framework that a journal reviewer reads. Pick the taxonomy that
+          fits the audience.
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table
+            className="w-full text-sm border-collapse"
+            style={{ borderColor: "var(--color-border)" }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: "var(--color-panel)" }}>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>F (paper)</th>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>Paper axis name</th>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>B (wiki)</th>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>Wiki axis name</th>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>Workspace surface</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-1</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Classification (hierarchical Bayesian)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-1</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Linear probe panel</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › probe / Benchmarks</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-2</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Coherence (c_v, NPMI, U-Mass)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › topics (top-words panel)</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-3</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Seed stability</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-6</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Seed stability</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › stability / deep</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-4</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Capacity sensitivity (K-sweep)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › qkexplore</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-5</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Band-mask robustness</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › bandmask</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-6</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Cross-method agreement</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › agreement</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-7</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Topic–label coupling</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › topiclabel / interpret</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-8</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Per-topic Hungarian identity</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › bandmask (Hungarian panel)</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-9</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>HIDSAG preprocessing stability</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Benchmarks (HIDSAG cross-prep)</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-10</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Cross-scene topic transfer</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-8</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Cross-scene transfer</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › robust</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-11</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Rate–distortion of θ</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-2</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Rate-distortion curve</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › metrics</td></tr>
+              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-12</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>External baseline (literature OA)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(deferred in paper Suppl F)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Benchmarks (literature panel)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm" style={{ color: "var(--color-fg-faint)" }}>
+          Wiki-only B-axes not in the paper: B-3 topic-routed classifier, B-4 mutual information, B-5 embedded baseline, B-7 USGS spectral library alignment, B-9 anomaly detection, B-10 spatial coherence, B-11 endmember baseline, B-12 LLM tea-leaves. These remain part of the project's evaluation battery but were not included in the twelve-axis paper framework.
+        </p>
+      </Section>
+
       <Section id="see-also" title="How to continue">
         <p>
           The Workspace lets you <em>apply</em> a model to a specific document

@@ -35,6 +35,10 @@ import {
 import { ExploreNav } from "./workspace/components/ExploreNav";
 import { TabEmpty } from "./workspace/components/TabStates";
 import {
+  RecentlyViewed,
+  useTrackRecentScene,
+} from "./workspace/components/RecentlyViewed";
+import {
   type RoutedPrediction,
   computeRoutedPrediction,
 } from "./workspace/helpers/routedPrediction";
@@ -621,6 +625,10 @@ function ExploreStep({
   );
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
+  // Track (scene, rep) in localStorage so RecentlyViewed can render
+  // jump-back chips on subsequent visits.
+  const recentHistory = useTrackRecentScene(subsetId, rep);
+
   // Reset selectedTopic + tab when the user switches scene or rep.
   // Topic IDs are not portable across scenes (topic 3 on Pavia U is
   // a different cluster than topic 3 on Indian Pines); a stale topic
@@ -973,6 +981,11 @@ function ExploreStep({
           <SceneQuickSwitch
             currentScene={subsetId!}
             onSwitch={(s) => onSwitchScene(s)}
+          />
+          <RecentlyViewed
+            currentScene={subsetId}
+            currentRep={rep}
+            history={recentHistory}
           />
           <SceneBriefingHero subsetId={subsetId!} rep={rep} />
 
