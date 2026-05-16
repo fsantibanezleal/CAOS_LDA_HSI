@@ -3,6 +3,13 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
 
+from app.models.band_masks import (
+    BandMaskCanonicalComparisonResponse,
+    BandMaskHidsagSummaryResponse,
+    BandMaskSummaryResponse,
+    BandMasksHidsagIndexResponse,
+    BandMasksIndexResponse,
+)
 from app.models.schemas import (
     AnalysisPayload,
     AppPayload,
@@ -385,11 +392,15 @@ def wordification(scene_id: str, recipe: str, scheme: str, q: int) -> dict:
         ) from exc
 
 
-@router.get("/band-masks")
-def band_masks_index() -> dict:
+@router.get(
+    "/band-masks",
+    response_model=BandMasksIndexResponse,
+    response_model_exclude_none=True,
+)
+def band_masks_index() -> BandMasksIndexResponse:
     from app.services.content import get_band_masks_index
     try:
-        return get_band_masks_index()
+        return BandMasksIndexResponse.model_validate(get_band_masks_index())
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -398,11 +409,17 @@ def band_masks_index() -> dict:
         ) from exc
 
 
-@router.get("/band-masks/canonical-comparison")
-def band_masks_canonical_comparison() -> dict:
+@router.get(
+    "/band-masks/canonical-comparison",
+    response_model=BandMaskCanonicalComparisonResponse,
+    response_model_exclude_none=True,
+)
+def band_masks_canonical_comparison() -> BandMaskCanonicalComparisonResponse:
     from app.services.content import get_band_masks_canonical_comparison
     try:
-        return get_band_masks_canonical_comparison()
+        return BandMaskCanonicalComparisonResponse.model_validate(
+            get_band_masks_canonical_comparison()
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -411,11 +428,17 @@ def band_masks_canonical_comparison() -> dict:
         ) from exc
 
 
-@router.get("/band-masks/{scene_id}/{mask_id}")
-def band_mask_summary(scene_id: str, mask_id: str) -> dict:
+@router.get(
+    "/band-masks/{scene_id}/{mask_id}",
+    response_model=BandMaskSummaryResponse,
+    response_model_exclude_none=True,
+)
+def band_mask_summary(scene_id: str, mask_id: str) -> BandMaskSummaryResponse:
     from app.services.content import get_band_mask_summary
     try:
-        return get_band_mask_summary(scene_id, mask_id)
+        return BandMaskSummaryResponse.model_validate(
+            get_band_mask_summary(scene_id, mask_id)
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -423,11 +446,17 @@ def band_mask_summary(scene_id: str, mask_id: str) -> dict:
         ) from exc
 
 
-@router.get("/band-masks-hidsag")
-def band_masks_hidsag_index() -> dict:
+@router.get(
+    "/band-masks-hidsag",
+    response_model=BandMasksHidsagIndexResponse,
+    response_model_exclude_none=True,
+)
+def band_masks_hidsag_index() -> BandMasksHidsagIndexResponse:
     from app.services.content import get_band_masks_hidsag_index
     try:
-        return get_band_masks_hidsag_index()
+        return BandMasksHidsagIndexResponse.model_validate(
+            get_band_masks_hidsag_index()
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -436,11 +465,19 @@ def band_masks_hidsag_index() -> dict:
         ) from exc
 
 
-@router.get("/band-masks-hidsag/{subset_code}/{mask_id}")
-def band_masks_hidsag_summary(subset_code: str, mask_id: str) -> dict:
+@router.get(
+    "/band-masks-hidsag/{subset_code}/{mask_id}",
+    response_model=BandMaskHidsagSummaryResponse,
+    response_model_exclude_none=True,
+)
+def band_masks_hidsag_summary(
+    subset_code: str, mask_id: str
+) -> BandMaskHidsagSummaryResponse:
     from app.services.content import get_band_masks_hidsag_summary
     try:
-        return get_band_masks_hidsag_summary(subset_code, mask_id)
+        return BandMaskHidsagSummaryResponse.model_validate(
+            get_band_masks_hidsag_summary(subset_code, mask_id)
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
