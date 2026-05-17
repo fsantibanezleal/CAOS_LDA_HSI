@@ -240,44 +240,46 @@ def app_data() -> AppPayload:
 # ============================================================================
 
 
-def _serve_or_404(loader, scene_id: str | None, hint: str):
-    from app.services.content import (
-        get_eda_per_scene,
-        get_topic_views,
-        get_topic_to_data,
-        get_spectral_browser_metadata,
-        get_spectral_density_manifest,
-        get_validation_blocks,
-        get_derived_manifest,
-    )
+def _serve_or_404(loader, *args, hint: str):
+    """Invoke `loader(*args)` and translate FileNotFoundError to 404.
+
+    Closes the dead-helper finding from issue #440 (1.1 + 1.3) — the
+    previous body imported six callables it never used and only worked
+    for the (loader, scene_id) shape. The new signature accepts any
+    positional args, so handlers that take 0, 1, 2 or 4 path params all
+    use the same helper.
+    """
     try:
-        return loader(scene_id) if scene_id else loader()
+        return loader(*args)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=hint) from exc
+
+
+def _typed_or_404(model, loader, *args, hint: str):
+    """`_serve_or_404` + Pydantic `model_validate` in one call.
+
+    Lets a typed route body collapse to a single statement.
+    """
+    return model.model_validate(_serve_or_404(loader, *args, hint=hint))
 
 
 @router.get("/manifest")
 def derived_manifest() -> dict:
     from app.services.content import get_derived_manifest
-    try:
-        return get_derived_manifest()
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="manifest not generated yet; run scripts/local.* curate-for-web",
-        ) from exc
+    return _serve_or_404(
+        get_derived_manifest,
+        hint="manifest not generated yet; run scripts/local.* curate-for-web",
+    )
 
 
 @router.get("/eda/per-scene/{scene_id}")
 def eda_per_scene(scene_id: str) -> dict:
     from app.services.content import get_eda_per_scene
-    try:
-        return get_eda_per_scene(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"eda views for '{scene_id}' not generated yet; run scripts/local.* build-eda-per-scene",
-        ) from exc
+    return _serve_or_404(
+        get_eda_per_scene,
+        scene_id,
+        hint=f"eda views for '{scene_id}' not generated yet; run scripts/local.* build-eda-per-scene",
+    )
 
 
 @router.get(
@@ -287,13 +289,12 @@ def eda_per_scene(scene_id: str) -> dict:
 )
 def topic_views(scene_id: str) -> TopicViewsResponse:
     from app.services.content import get_topic_views
-    try:
-        return TopicViewsResponse.model_validate(get_topic_views(scene_id))
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"topic views for '{scene_id}' not generated yet; run scripts/local.* build-topic-views",
-        ) from exc
+    return _typed_or_404(
+        TopicViewsResponse,
+        get_topic_views,
+        scene_id,
+        hint=f"topic views for '{scene_id}' not generated yet; run scripts/local.* build-topic-views",
+    )
 
 
 @router.get(
@@ -303,37 +304,32 @@ def topic_views(scene_id: str) -> TopicViewsResponse:
 )
 def topic_to_data(scene_id: str) -> TopicToDataResponse:
     from app.services.content import get_topic_to_data
-    try:
-        return TopicToDataResponse.model_validate(get_topic_to_data(scene_id))
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"topic-to-data for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-data",
-        ) from exc
+    return _typed_or_404(
+        TopicToDataResponse,
+        get_topic_to_data,
+        scene_id,
+        hint=f"topic-to-data for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-data",
+    )
 
 
 @router.get("/spectral-browser/{scene_id}")
 def spectral_browser(scene_id: str) -> dict:
     from app.services.content import get_spectral_browser_metadata
-    try:
-        return get_spectral_browser_metadata(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"spectral browser for '{scene_id}' not generated yet; run scripts/local.* build-spectral-browser",
-        ) from exc
+    return _serve_or_404(
+        get_spectral_browser_metadata,
+        scene_id,
+        hint=f"spectral browser for '{scene_id}' not generated yet; run scripts/local.* build-spectral-browser",
+    )
 
 
 @router.get("/spectral-density/{scene_id}")
 def spectral_density(scene_id: str) -> dict:
     from app.services.content import get_spectral_density_manifest
-    try:
-        return get_spectral_density_manifest(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"spectral density for '{scene_id}' not generated yet; run scripts/local.* build-spectral-density",
-        ) from exc
+    return _serve_or_404(
+        get_spectral_density_manifest,
+        scene_id,
+        hint=f"spectral density for '{scene_id}' not generated yet; run scripts/local.* build-spectral-density",
+    )
 
 
 @router.get(
@@ -343,37 +339,32 @@ def spectral_density(scene_id: str) -> dict:
 )
 def validation_blocks(scene_id: str) -> ValidationBlocksResponse:
     from app.services.content import get_validation_blocks
-    try:
-        return ValidationBlocksResponse.model_validate(get_validation_blocks(scene_id))
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"validation blocks for '{scene_id}' not generated yet; run scripts/local.* build-validation-blocks",
-        ) from exc
+    return _typed_or_404(
+        ValidationBlocksResponse,
+        get_validation_blocks,
+        scene_id,
+        hint=f"validation blocks for '{scene_id}' not generated yet; run scripts/local.* build-validation-blocks",
+    )
 
 
 @router.get("/eda/hidsag/{subset_code}")
 def eda_hidsag(subset_code: str) -> dict:
     from app.services.content import get_eda_hidsag
-    try:
-        return get_eda_hidsag(subset_code)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"HIDSAG EDA for '{subset_code}' not generated yet; run scripts/local.* build-eda-hidsag",
-        ) from exc
+    return _serve_or_404(
+        get_eda_hidsag,
+        subset_code,
+        hint=f"HIDSAG EDA for '{subset_code}' not generated yet; run scripts/local.* build-eda-hidsag",
+    )
 
 
 @router.get("/topic-to-library/{scene_id}")
 def topic_to_library(scene_id: str) -> dict:
     from app.services.content import get_topic_to_library
-    try:
-        return get_topic_to_library(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"topic-to-library for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-library",
-        ) from exc
+    return _serve_or_404(
+        get_topic_to_library,
+        scene_id,
+        hint=f"topic-to-library for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-library",
+    )
 
 
 @router.get(
@@ -383,13 +374,12 @@ def topic_to_library(scene_id: str) -> dict:
 )
 def spatial_validation(scene_id: str) -> SpatialValidationResponse:
     from app.services.content import get_spatial_validation
-    try:
-        return SpatialValidationResponse.model_validate(get_spatial_validation(scene_id))
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"spatial validation for '{scene_id}' not generated yet; run scripts/local.* build-spatial-validation",
-        ) from exc
+    return _typed_or_404(
+        SpatialValidationResponse,
+        get_spatial_validation,
+        scene_id,
+        hint=f"spatial validation for '{scene_id}' not generated yet; run scripts/local.* build-spatial-validation",
+    )
 
 
 @router.get(
@@ -399,13 +389,11 @@ def spatial_validation(scene_id: str) -> SpatialValidationResponse:
 )
 def wordifications_index() -> WordificationsIndexResponse:
     from app.services.content import get_wordifications_index
-    try:
-        return WordificationsIndexResponse.model_validate(get_wordifications_index())
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="wordifications not generated yet; run scripts/local.* build-wordifications",
-        ) from exc
+    return _typed_or_404(
+        WordificationsIndexResponse,
+        get_wordifications_index,
+        hint="wordifications not generated yet; run scripts/local.* build-wordifications",
+    )
 
 
 @router.get(
@@ -417,15 +405,12 @@ def wordification(
     scene_id: str, recipe: str, scheme: str, q: int
 ) -> WordificationResponse:
     from app.services.content import get_wordification
-    try:
-        return WordificationResponse.model_validate(
-            get_wordification(scene_id, recipe, scheme, q)
-        )
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"wordification {scene_id}/{recipe}/{scheme}/Q{q} not generated yet",
-        ) from exc
+    return _typed_or_404(
+        WordificationResponse,
+        get_wordification,
+        scene_id, recipe, scheme, q,
+        hint=f"wordification {scene_id}/{recipe}/{scheme}/Q{q} not generated yet",
+    )
 
 
 @router.get(
@@ -435,14 +420,14 @@ def wordification(
 )
 def band_masks_index() -> BandMasksIndexResponse:
     from app.services.content import get_band_masks_index
-    try:
-        return BandMasksIndexResponse.model_validate(get_band_masks_index())
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="band_masks index not generated yet; run "
-            "scripts/local.* build-band-masked-topic-models",
-        ) from exc
+    return _typed_or_404(
+        BandMasksIndexResponse,
+        get_band_masks_index,
+        hint=(
+            "band_masks index not generated yet; run "
+            "scripts/local.* build-band-masked-topic-models"
+        ),
+    )
 
 
 @router.get(
@@ -452,16 +437,14 @@ def band_masks_index() -> BandMasksIndexResponse:
 )
 def band_masks_canonical_comparison() -> BandMaskCanonicalComparisonResponse:
     from app.services.content import get_band_masks_canonical_comparison
-    try:
-        return BandMaskCanonicalComparisonResponse.model_validate(
-            get_band_masks_canonical_comparison()
-        )
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="band_masks canonical_comparison not generated yet; run "
-            "scripts/local.* build-band-mask-canonical-comparison",
-        ) from exc
+    return _typed_or_404(
+        BandMaskCanonicalComparisonResponse,
+        get_band_masks_canonical_comparison,
+        hint=(
+            "band_masks canonical_comparison not generated yet; run "
+            "scripts/local.* build-band-mask-canonical-comparison"
+        ),
+    )
 
 
 @router.get(
@@ -471,15 +454,12 @@ def band_masks_canonical_comparison() -> BandMaskCanonicalComparisonResponse:
 )
 def band_mask_summary(scene_id: str, mask_id: str) -> BandMaskSummaryResponse:
     from app.services.content import get_band_mask_summary
-    try:
-        return BandMaskSummaryResponse.model_validate(
-            get_band_mask_summary(scene_id, mask_id)
-        )
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"band_mask {scene_id}/{mask_id} not generated yet",
-        ) from exc
+    return _typed_or_404(
+        BandMaskSummaryResponse,
+        get_band_mask_summary,
+        scene_id, mask_id,
+        hint=f"band_mask {scene_id}/{mask_id} not generated yet",
+    )
 
 
 @router.get(
@@ -489,16 +469,14 @@ def band_mask_summary(scene_id: str, mask_id: str) -> BandMaskSummaryResponse:
 )
 def band_masks_hidsag_index() -> BandMasksHidsagIndexResponse:
     from app.services.content import get_band_masks_hidsag_index
-    try:
-        return BandMasksHidsagIndexResponse.model_validate(
-            get_band_masks_hidsag_index()
-        )
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="band_masks_hidsag index not generated yet; run "
-            "scripts/local.* build-band-masked-topic-models-hidsag",
-        ) from exc
+    return _typed_or_404(
+        BandMasksHidsagIndexResponse,
+        get_band_masks_hidsag_index,
+        hint=(
+            "band_masks_hidsag index not generated yet; run "
+            "scripts/local.* build-band-masked-topic-models-hidsag"
+        ),
+    )
 
 
 @router.get(
@@ -510,99 +488,75 @@ def band_masks_hidsag_summary(
     subset_code: str, mask_id: str
 ) -> BandMaskHidsagSummaryResponse:
     from app.services.content import get_band_masks_hidsag_summary
-    try:
-        return BandMaskHidsagSummaryResponse.model_validate(
-            get_band_masks_hidsag_summary(subset_code, mask_id)
-        )
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"band_masks_hidsag {subset_code}/{mask_id} not generated yet",
-        ) from exc
+    return _typed_or_404(
+        BandMaskHidsagSummaryResponse,
+        get_band_masks_hidsag_summary,
+        subset_code, mask_id,
+        hint=f"band_masks_hidsag {subset_code}/{mask_id} not generated yet",
+    )
 
 
 @router.get("/groupings")
 def groupings_index() -> dict:
     from app.services.content import get_groupings_index
-    try:
-        return get_groupings_index()
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="groupings not generated yet; run scripts/local.* build-groupings",
-        ) from exc
+    return _serve_or_404(
+        get_groupings_index,
+        hint="groupings not generated yet; run scripts/local.* build-groupings",
+    )
 
 
 @router.get("/groupings/{method}/{scene_id}")
 def grouping(method: str, scene_id: str) -> dict:
     from app.services.content import get_grouping
-    try:
-        return get_grouping(method, scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"grouping {method}/{scene_id} not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_grouping, method, scene_id,
+        hint=f"grouping {method}/{scene_id} not generated yet",
+    )
 
 
 @router.get("/cross-method-agreement/{scene_id}")
 def cross_method_agreement(scene_id: str) -> dict:
     from app.services.content import get_cross_method_agreement
-    try:
-        return get_cross_method_agreement(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"cross-method agreement for '{scene_id}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_cross_method_agreement, scene_id,
+        hint=f"cross-method agreement for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/method-statistics-hidsag/{subset_code}")
 def method_statistics_hidsag(subset_code: str) -> dict:
     from app.services.content import get_method_statistics_hidsag
-    try:
-        return get_method_statistics_hidsag(subset_code)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"method statistics for HIDSAG '{subset_code}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_method_statistics_hidsag, subset_code,
+        hint=f"method statistics for HIDSAG '{subset_code}' not generated yet",
+    )
 
 
 @router.get("/external-validation/{scene_id}/literature")
 def external_validation_literature(scene_id: str) -> dict:
     from app.services.content import get_external_validation_literature
-    try:
-        return get_external_validation_literature(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"literature alignment for '{scene_id}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_external_validation_literature, scene_id,
+        hint=f"literature alignment for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/external-validation/hidsag/{subset_code}/methods")
 def external_validation_hidsag_methods(subset_code: str) -> dict:
     from app.services.content import get_external_validation_hidsag_methods
-    try:
-        return get_external_validation_hidsag_methods(subset_code)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"HIDSAG method summary for '{subset_code}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_external_validation_hidsag_methods, subset_code,
+        hint=f"HIDSAG method summary for '{subset_code}' not generated yet",
+    )
 
 
 @router.get("/narratives/{scene_id}")
 def narratives(scene_id: str) -> dict:
     from app.services.content import get_narratives
-    try:
-        return get_narratives(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"narrative for '{scene_id}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_narratives, scene_id,
+        hint=f"narrative for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/interpretability/{scene_id}/{card_type}")
@@ -610,85 +564,73 @@ def interpretability(scene_id: str, card_type: str) -> dict:
     from app.services.content import get_interpretability
     if card_type not in ("topic_cards", "band_cards", "document_cards"):
         raise HTTPException(status_code=400, detail="card_type must be topic_cards | band_cards | document_cards")
-    try:
-        return get_interpretability(scene_id, card_type)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"interpretability {card_type} for '{scene_id}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_interpretability, scene_id, card_type,
+        hint=f"interpretability {card_type} for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/quantization-sensitivity/{scene_id}")
 def quantization_sensitivity(scene_id: str) -> dict:
     from app.services.content import get_quantization_sensitivity
-    try:
-        return get_quantization_sensitivity(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"quantization sensitivity for '{scene_id}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_quantization_sensitivity, scene_id,
+        hint=f"quantization sensitivity for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/topic-variants")
 def topic_variants_index() -> dict:
     from app.services.content import get_topic_variants_index
-    try:
-        return get_topic_variants_index()
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="topic variants not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_topic_variants_index,
+        hint="topic variants not generated yet",
+    )
 
 
 @router.get("/topic-variants/{variant}/{scene_id}")
 def topic_variant(variant: str, scene_id: str) -> dict:
     from app.services.content import get_topic_variant
-    try:
-        return get_topic_variant(variant, scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"topic variant {variant}/{scene_id} not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_topic_variant, variant, scene_id,
+        hint=f"topic variant {variant}/{scene_id} not generated yet",
+    )
 
 
 @router.get("/lda-sweep/{scene_id}")
 def lda_sweep(scene_id: str) -> dict:
     from app.services.content import get_lda_sweep
-    try:
-        return get_lda_sweep(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"lda_sweep for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_lda_sweep, scene_id,
+        hint=f"lda_sweep for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/representations")
 def representations_index() -> dict:
     from app.services.content import get_representations_index
-    try:
-        return get_representations_index()
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail="representations not generated yet") from exc
+    return _serve_or_404(
+        get_representations_index,
+        hint="representations not generated yet",
+    )
 
 
 @router.get("/representations/{method}/{scene_id}")
 def representation(method: str, scene_id: str) -> dict:
     from app.services.content import get_representation
-    try:
-        return get_representation(method, scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"representation {method}/{scene_id} not generated yet") from exc
+    return _serve_or_404(
+        get_representation, method, scene_id,
+        hint=f"representation {method}/{scene_id} not generated yet",
+    )
 
 
 @router.get("/dmr-lda-hidsag/{subset_code}")
 def dmr_lda_hidsag(subset_code: str) -> dict:
     from app.services.content import get_dmr_lda_hidsag
-    try:
-        return get_dmr_lda_hidsag(subset_code)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"dmr_lda_hidsag for '{subset_code}' not generated yet") from exc
+    return _serve_or_404(
+        get_dmr_lda_hidsag, subset_code,
+        hint=f"dmr_lda_hidsag for '{subset_code}' not generated yet",
+    )
 
 
 @router.get("/bayesian-comparison/{task_type}")
@@ -699,114 +641,114 @@ def bayesian_comparison(task_type: str) -> dict:
         get_bayesian_comparison,
     )
     if task_type == "classification-labelled":
-        try:
-            return get_bayesian_classification_labelled()
-        except FileNotFoundError as exc:
-            raise HTTPException(status_code=404, detail="bayesian_comparison labelled-classification not generated yet") from exc
+        return _serve_or_404(
+            get_bayesian_classification_labelled,
+            hint="bayesian_comparison labelled-classification not generated yet",
+        )
     if task_type == "classification-labelled-deep":
-        try:
-            return get_bayesian_classification_labelled_deep()
-        except FileNotFoundError as exc:
-            raise HTTPException(status_code=404, detail="bayesian_comparison labelled-classification-deep not generated yet") from exc
+        return _serve_or_404(
+            get_bayesian_classification_labelled_deep,
+            hint="bayesian_comparison labelled-classification-deep not generated yet",
+        )
     if task_type not in ("regression", "classification"):
         raise HTTPException(
             status_code=400,
             detail="task_type must be regression | classification | classification-labelled | classification-labelled-deep",
         )
-    try:
-        return get_bayesian_comparison(task_type)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"bayesian_comparison for '{task_type}' not generated yet") from exc
+    return _serve_or_404(
+        get_bayesian_comparison, task_type,
+        hint=f"bayesian_comparison for '{task_type}' not generated yet",
+    )
 
 
 @router.get("/optuna-search/{scene_id}")
 def optuna_search(scene_id: str) -> dict:
     from app.services.content import get_optuna_search
-    try:
-        return get_optuna_search(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"optuna_search for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_optuna_search, scene_id,
+        hint=f"optuna_search for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/linear-probe-panel/{scene_id}")
 def linear_probe_panel(scene_id: str) -> dict:
     from app.services.content import get_linear_probe_panel
-    try:
-        return get_linear_probe_panel(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"linear_probe_panel for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_linear_probe_panel, scene_id,
+        hint=f"linear_probe_panel for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/mutual-information/{scene_id}")
 def mutual_information(scene_id: str) -> dict:
     from app.services.content import get_mutual_information
-    try:
-        return get_mutual_information(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"mutual_information for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_mutual_information, scene_id,
+        hint=f"mutual_information for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/mutual-information/hidsag/{subset_code}")
 def mutual_information_hidsag(subset_code: str) -> dict:
     from app.services.content import get_mutual_information_hidsag
-    try:
-        return get_mutual_information_hidsag(subset_code)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"mutual_information for HIDSAG '{subset_code}' not generated yet") from exc
+    return _serve_or_404(
+        get_mutual_information_hidsag, subset_code,
+        hint=f"mutual_information for HIDSAG '{subset_code}' not generated yet",
+    )
 
 
 @router.get("/rate-distortion-curve/{scene_id}")
 def rate_distortion_curve(scene_id: str) -> dict:
     from app.services.content import get_rate_distortion_curve
-    try:
-        return get_rate_distortion_curve(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"rate_distortion_curve for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_rate_distortion_curve, scene_id,
+        hint=f"rate_distortion_curve for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/topic-routed-classifier/{scene_id}")
 def topic_routed_classifier(scene_id: str) -> dict:
     from app.services.content import get_topic_routed_classifier
-    try:
-        return get_topic_routed_classifier(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_routed_classifier for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_topic_routed_classifier, scene_id,
+        hint=f"topic_routed_classifier for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/topic-routed-deep-gate/{scene_id}")
 def topic_routed_deep_gate(scene_id: str) -> dict:
     from app.services.content import get_topic_routed_deep_gate
-    try:
-        return get_topic_routed_deep_gate(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_routed_deep_gate for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_topic_routed_deep_gate, scene_id,
+        hint=f"topic_routed_deep_gate for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/neural-topic-comparison/{scene_id}")
 def neural_topic_comparison(scene_id: str) -> dict:
     from app.services.content import get_neural_topic_comparison
-    try:
-        return get_neural_topic_comparison(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"neural_topic_comparison for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_neural_topic_comparison, scene_id,
+        hint=f"neural_topic_comparison for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/neural-topic-seed-stability/{scene_id}")
 def neural_topic_seed_stability(scene_id: str) -> dict:
     from app.services.content import get_neural_topic_seed_stability
-    try:
-        return get_neural_topic_seed_stability(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"neural_topic_seed_stability for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_neural_topic_seed_stability, scene_id,
+        hint=f"neural_topic_seed_stability for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/embedded-baseline/{scene_id}")
 def embedded_baseline(scene_id: str) -> dict:
     from app.services.content import get_embedded_baseline
-    try:
-        return get_embedded_baseline(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"embedded_baseline for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_embedded_baseline, scene_id,
+        hint=f"embedded_baseline for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/topic-stability/{scene_id}")
@@ -815,7 +757,10 @@ def topic_stability(scene_id: str, k_offset: int = 0) -> dict:
     try:
         return get_topic_stability(scene_id, k_offset=k_offset)
     except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_stability for '{scene_id}' k_offset={k_offset} not generated yet") from exc
+        raise HTTPException(
+            status_code=404,
+            detail=f"topic_stability for '{scene_id}' k_offset={k_offset} not generated yet",
+        ) from exc
 
 
 @router.get("/deep-seed-stability/{scene_id}")
@@ -824,16 +769,19 @@ def deep_seed_stability(scene_id: str, method: str = "cae_1d_8", n_seeds: int = 
     try:
         return get_deep_seed_stability(scene_id, method=method, n_seeds=n_seeds)
     except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"deep_seed_stability for '{scene_id}' method '{method}' n_seeds={n_seeds} not generated yet") from exc
+        raise HTTPException(
+            status_code=404,
+            detail=f"deep_seed_stability for '{scene_id}' method '{method}' n_seeds={n_seeds} not generated yet",
+        ) from exc
 
 
 @router.get("/deep-anomaly/{scene_id}")
 def deep_anomaly(scene_id: str) -> dict:
     from app.services.content import get_deep_anomaly
-    try:
-        return get_deep_anomaly(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"deep_anomaly for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_deep_anomaly, scene_id,
+        hint=f"deep_anomaly for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/classical-seed-stability/{scene_id}")
@@ -842,88 +790,91 @@ def classical_seed_stability(scene_id: str, method: str = "pca_8") -> dict:
     try:
         return get_classical_seed_stability(scene_id, method=method)
     except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"classical_seed_stability for '{scene_id}' method '{method}' not generated yet") from exc
+        raise HTTPException(
+            status_code=404,
+            detail=f"classical_seed_stability for '{scene_id}' method '{method}' not generated yet",
+        ) from exc
 
 
 @router.get("/topic-to-usgs-v7/{scene_id}")
 def topic_to_usgs_v7(scene_id: str) -> dict:
     from app.services.content import get_topic_to_usgs_v7
-    try:
-        return get_topic_to_usgs_v7(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_to_usgs_v7 for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_topic_to_usgs_v7, scene_id,
+        hint=f"topic_to_usgs_v7 for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/hidsag-cross-preprocessing-stability/{subset_code}")
 def hidsag_cross_preprocessing_stability(subset_code: str) -> dict:
     from app.services.content import get_hidsag_cross_preprocessing_stability
-    try:
-        return get_hidsag_cross_preprocessing_stability(subset_code)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"hidsag_cross_preprocessing_stability for '{subset_code}' not generated yet",
-        ) from exc
+    return _serve_or_404(
+        get_hidsag_cross_preprocessing_stability, subset_code,
+        hint=f"hidsag_cross_preprocessing_stability for '{subset_code}' not generated yet",
+    )
 
 
 @router.get("/topic-anomaly/{scene_id}")
 def topic_anomaly(scene_id: str) -> dict:
     from app.services.content import get_topic_anomaly
-    try:
-        return get_topic_anomaly(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_anomaly for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_topic_anomaly, scene_id,
+        hint=f"topic_anomaly for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/topic-spatial-continuous/{scene_id}")
 def topic_spatial_continuous(scene_id: str) -> dict:
     from app.services.content import get_topic_spatial_continuous
-    try:
-        return get_topic_spatial_continuous(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_spatial_continuous for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_topic_spatial_continuous, scene_id,
+        hint=f"topic_spatial_continuous for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/topic-spatial-full/{scene_id}")
 def topic_spatial_full(scene_id: str) -> dict:
     from app.services.content import get_topic_spatial_full
-    try:
-        return get_topic_spatial_full(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"topic_spatial_full for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_topic_spatial_full, scene_id,
+        hint=f"topic_spatial_full for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/endmember-baseline/{scene_id}")
 def endmember_baseline(scene_id: str) -> dict:
     from app.services.content import get_endmember_baseline
-    try:
-        return get_endmember_baseline(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"endmember_baseline for '{scene_id}' not generated yet") from exc
+    return _serve_or_404(
+        get_endmember_baseline, scene_id,
+        hint=f"endmember_baseline for '{scene_id}' not generated yet",
+    )
 
 
 @router.get("/llm-tea-leaves/{scene_id}")
 def llm_tea_leaves(scene_id: str) -> dict:
     from app.services.content import get_llm_tea_leaves
-    try:
-        return get_llm_tea_leaves(scene_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=f"llm_tea_leaves for '{scene_id}' not generated yet (set ANTHROPIC_API_KEY and run build_b12_llm_tea_leaves)") from exc
+    return _serve_or_404(
+        get_llm_tea_leaves, scene_id,
+        hint=(
+            f"llm_tea_leaves for '{scene_id}' not generated yet "
+            "(set ANTHROPIC_API_KEY and run build_b12_llm_tea_leaves)"
+        ),
+    )
 
 
 @router.get("/super-topics")
 def super_topics() -> dict:
     from app.services.content import get_super_topics
-    try:
-        return get_super_topics()
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail="super_topics not generated yet") from exc
+    return _serve_or_404(
+        get_super_topics,
+        hint="super_topics not generated yet",
+    )
 
 
 @router.get("/cross-scene-transfer")
 def cross_scene_transfer() -> dict:
     from app.services.content import get_cross_scene_transfer
-    try:
-        return get_cross_scene_transfer()
-    except FileNotFoundError as exc:
-        raise HTTPException(status_code=404, detail="cross_scene_transfer not generated yet") from exc
+    return _serve_or_404(
+        get_cross_scene_transfer,
+        hint="cross_scene_transfer not generated yet",
+    )
