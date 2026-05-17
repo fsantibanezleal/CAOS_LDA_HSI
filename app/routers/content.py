@@ -10,6 +10,14 @@ from app.models.band_masks import (
     BandMasksHidsagIndexResponse,
     BandMasksIndexResponse,
 )
+from app.models.precompute import (
+    SpatialValidationResponse,
+    TopicToDataResponse,
+    TopicViewsResponse,
+    ValidationBlocksResponse,
+    WordificationResponse,
+    WordificationsIndexResponse,
+)
 from app.models.schemas import (
     AnalysisPayload,
     AppPayload,
@@ -272,11 +280,15 @@ def eda_per_scene(scene_id: str) -> dict:
         ) from exc
 
 
-@router.get("/topic-views/{scene_id}")
-def topic_views(scene_id: str) -> dict:
+@router.get(
+    "/topic-views/{scene_id}",
+    response_model=TopicViewsResponse,
+    response_model_exclude_none=True,
+)
+def topic_views(scene_id: str) -> TopicViewsResponse:
     from app.services.content import get_topic_views
     try:
-        return get_topic_views(scene_id)
+        return TopicViewsResponse.model_validate(get_topic_views(scene_id))
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -284,11 +296,15 @@ def topic_views(scene_id: str) -> dict:
         ) from exc
 
 
-@router.get("/topic-to-data/{scene_id}")
-def topic_to_data(scene_id: str) -> dict:
+@router.get(
+    "/topic-to-data/{scene_id}",
+    response_model=TopicToDataResponse,
+    response_model_exclude_none=True,
+)
+def topic_to_data(scene_id: str) -> TopicToDataResponse:
     from app.services.content import get_topic_to_data
     try:
-        return get_topic_to_data(scene_id)
+        return TopicToDataResponse.model_validate(get_topic_to_data(scene_id))
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -320,11 +336,15 @@ def spectral_density(scene_id: str) -> dict:
         ) from exc
 
 
-@router.get("/validation-blocks/{scene_id}")
-def validation_blocks(scene_id: str) -> dict:
+@router.get(
+    "/validation-blocks/{scene_id}",
+    response_model=ValidationBlocksResponse,
+    response_model_exclude_none=True,
+)
+def validation_blocks(scene_id: str) -> ValidationBlocksResponse:
     from app.services.content import get_validation_blocks
     try:
-        return get_validation_blocks(scene_id)
+        return ValidationBlocksResponse.model_validate(get_validation_blocks(scene_id))
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -356,11 +376,15 @@ def topic_to_library(scene_id: str) -> dict:
         ) from exc
 
 
-@router.get("/spatial/{scene_id}")
-def spatial_validation(scene_id: str) -> dict:
+@router.get(
+    "/spatial/{scene_id}",
+    response_model=SpatialValidationResponse,
+    response_model_exclude_none=True,
+)
+def spatial_validation(scene_id: str) -> SpatialValidationResponse:
     from app.services.content import get_spatial_validation
     try:
-        return get_spatial_validation(scene_id)
+        return SpatialValidationResponse.model_validate(get_spatial_validation(scene_id))
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -368,11 +392,15 @@ def spatial_validation(scene_id: str) -> dict:
         ) from exc
 
 
-@router.get("/wordifications")
-def wordifications_index() -> dict:
+@router.get(
+    "/wordifications",
+    response_model=WordificationsIndexResponse,
+    response_model_exclude_none=True,
+)
+def wordifications_index() -> WordificationsIndexResponse:
     from app.services.content import get_wordifications_index
     try:
-        return get_wordifications_index()
+        return WordificationsIndexResponse.model_validate(get_wordifications_index())
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -380,11 +408,19 @@ def wordifications_index() -> dict:
         ) from exc
 
 
-@router.get("/wordifications/{scene_id}/{recipe}/{scheme}/{q}")
-def wordification(scene_id: str, recipe: str, scheme: str, q: int) -> dict:
+@router.get(
+    "/wordifications/{scene_id}/{recipe}/{scheme}/{q}",
+    response_model=WordificationResponse,
+    response_model_exclude_none=True,
+)
+def wordification(
+    scene_id: str, recipe: str, scheme: str, q: int
+) -> WordificationResponse:
     from app.services.content import get_wordification
     try:
-        return get_wordification(scene_id, recipe, scheme, q)
+        return WordificationResponse.model_validate(
+            get_wordification(scene_id, recipe, scheme, q)
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
