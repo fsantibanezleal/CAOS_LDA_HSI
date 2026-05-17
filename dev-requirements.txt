@@ -1,0 +1,6 @@
+# Pinned dev-only deps for the backend test suite (closes #440 P1
+# item 1.7). Keep in sync with the versions installed in the
+# developer venv; the prod systemd unit on Hetzner only installs
+# requirements.txt.
+pytest==8.4.2
+httpx==0.27.2
