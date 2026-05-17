@@ -17,10 +17,20 @@ class Settings(BaseSettings):
     app_host: str = "127.0.0.1"
     app_port: int = 8105
 
-    allowed_origins: str = (
-        "http://localhost:5173,http://127.0.0.1:5173,"
-        "http://localhost:8105,https://lda-hsi.fasl-work.com"
+    # Dev origins (vite + uvicorn local). Used when app_env is anything
+    # other than "production".
+    dev_origins: str = (
+        "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8105"
     )
+    # Prod origins. Used when app_env == "production". Locked down to the
+    # public URL so the live API does not advertise CORS access to
+    # localhost.
+    prod_origins: str = "https://lda-hsi.fasl-work.com"
+
+    # Back-compat: if a deployment still sets ALLOWED_ORIGINS, honour it
+    # verbatim instead of the env-keyed split. Leave the default empty
+    # so the new behaviour is opt-out, not opt-in.
+    allowed_origins: str = ""
 
     frontend_dist: str = "frontend/dist"
     data_dir: str = "data"
@@ -33,7 +43,13 @@ class Settings(BaseSettings):
 
     @property
     def origins(self) -> list[str]:
-        return [origin.strip() for origin in self.allowed_origins.split(",") if origin.strip()]
+        if self.allowed_origins.strip():
+            raw = self.allowed_origins
+        elif self.app_env.lower() == "production":
+            raw = self.prod_origins
+        else:
+            raw = self.dev_origins
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
 
     @property
     def frontend_dist_path(self) -> Path:
