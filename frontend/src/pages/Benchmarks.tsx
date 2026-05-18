@@ -2473,7 +2473,7 @@ function HidsagPreprocessing() {
         <>
           {data.methods?.policies && data.methods.policies.length > 0 && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-2 mb-4">
-              {data.methods.policies.map((p) => (
+              {data.methods.policies.map((p: { policy_id: string; policy_name: string; description: string }) => (
                 <div
                   key={p.policy_id}
                   className="rounded-md border p-3 text-[12.5px] leading-relaxed"
@@ -2501,7 +2501,7 @@ function HidsagPreprocessing() {
             </div>
           )}
           <div className="space-y-6 mt-2">
-            {data.subsets.map((s) => (
+            {data.subsets.map((s: import("@/api/client").HidsagPreprocessingSubset) => (
               <PreprocessingSubsetCard key={s.subset_code} subset={s} />
             ))}
           </div>
