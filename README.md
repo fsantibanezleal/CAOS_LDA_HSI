@@ -23,17 +23,17 @@ every deploy.
 ## Live deployment
 
 - **Public URL**: <https://lda-hsi.fasl-work.com>
-- **Smoke**: 109/109 GET endpoints return 200 in <10 s + four SPA
-  shell content assertions added in cycle 108 (body length ≥ 500
-  chars, `<div id="root"`, `<script type="module"`, `cycle N`
-  version marker in entry chunk or any modulepreload chunk). Runs
-  as part of every `deploy/update.sh` (see
+- **Smoke**: 133/133 OK lines on every `deploy/update.sh` run
+  (131 GET endpoints + 1 SPA shell + 1 entry-bundle version-marker
+  content assertion). The content assertions close the empty-body
+  deploy class that escaped in cycles 99-101 (see
   [`scripts/smoke.sh`](scripts/smoke.sh) and
-  [`scripts/smoke.ps1`](scripts/smoke.ps1)). The content
-  assertions close the empty-body deploy class that escaped in
-  cycles 99-101.
-- **Manifest**: 1706 derived artifacts (1466 JSON + 209 binary +
-  31 PNG, count refreshed 2026-05-15), audited zero-issues by [`data-pipeline/audit_manifest.py`](data-pipeline/audit_manifest.py)
+  [`scripts/smoke.ps1`](scripts/smoke.ps1)). Endpoint inventory is
+  the source of truth — count is `grep -c '"/' scripts/smoke.sh`.
+- **Manifest**: 1726 derived artifacts (JSON + binary + PNG; the
+  full inventory lives in `data/derived/manifests/index.json` and
+  is the authoritative source), audited zero-issues by
+  [`data-pipeline/audit_manifest.py`](data-pipeline/audit_manifest.py).
 - **API surface**: ~110 endpoints across 6 labelled scenes × ~17
   per-scene endpoints + 5 HIDSAG subsets × 6 endpoints + 12
   cross-scene endpoints + `/api/wordifications` (108-config
@@ -246,7 +246,7 @@ concrete UI affordances:
   (V1 band-frequency alias note), `Backend-Architecture`
   (new §5b Workspace-Tab Endpoint Mapping, §13.14a wordifications,
   §13.14b lda-sweep, §13.14c per-pixel theta_grid, §13.14e
-  segmentation assignment binaries, smoke 109/109),
+  segmentation assignment binaries, smoke 133/133),
   `Mathematical-Background` (§23 Bayes inversion for c104, §24
   topic-topic similarity threshold-edge graph for c105, §25 routed-
   soft prediction formalism for c120/c122), `Local-Reproduction-
@@ -259,10 +259,12 @@ concrete UI affordances:
   `recommended_K`, `wavelengths_nm_first_last`). The qkexplore tab
   now renders the builder-recommended K (K=4 on Indian Pines) as
   both an accent chip + table marker.
-- **c113** — i18n + README + in-code copy harmonised: 11→27 tabs;
-  smoke 87→109 + SPA shell content assertions; ETM beats ProdLDA
-  6/6 (not 5/6); β-grid {1,2,4,8,16}; CAE-1D mid-ladder reconciled
-  with the README headline #6 stability claim.
+- **c113** — i18n + README + in-code copy harmonised: tab count
+  brought in line with what the code actually ships (currently
+  28 tabs in 6 phases — see `frontend/src/pages/workspace/state/tabs.ts`);
+  smoke 87→109 → 133 + SPA shell content assertions; ETM beats
+  ProdLDA 6/6 (not 5/6); β-grid {1,2,4,8,16}; CAE-1D mid-ladder
+  reconciled with the README headline #6 stability claim.
 - **c114** — Builder docstring drift fixes: jaccard top-15 (not
   top-30) on `topic_word_jaccard_top15`; dominant_topic_map dual
   paths (local + derived) with sentinel 255 (not −1); full
@@ -338,8 +340,8 @@ constraint `Σ_k θ_d[k] ≈ 1`.
 | c121 (theta_grid sidecars) | 1598 | +6 (one per labelled scene) |
 | c123 (segmentation assignment binaries) | 1634 | +36 (6 methods × 6 scenes) |
 
-Audit reports 0 issues at every step; smoke 109/109 + SPA shell
-content checks pass on every deploy.
+Audit reports 0 issues at every step; smoke 133/133 (131 GET +
+2 SPA-shell checks) passes on every deploy.
 
 ## Quick start
 
@@ -397,8 +399,11 @@ production API.
 ```
 
 Runs `scripts/smoke.{sh,ps1}` against `https://lda-hsi.fasl-work.com`,
-asserting HTTP 200 on 87 endpoints in <10 s. The same harness runs
-on the VPS as the last step of every `deploy/update.sh`.
+asserting HTTP 200 on 131 endpoints + 2 SPA-shell content checks
+in <10 s (133/133 OK lines). The same harness runs on the VPS as
+the last step of every `deploy/update.sh`. The endpoint count is
+the source of truth — read it with `grep -c '"/' scripts/smoke.sh`
+rather than hard-coding here.
 
 ## Repository layout
 
@@ -491,7 +496,7 @@ Every cycle that lands in production includes:
 3. PR `task/* → develop` with squash-merge + branch deletion
 4. PR `develop → main` titled `Deploy: <summary>` and merged via merge-commit
 5. SSH `bash deploy/update.sh` against the VPS
-6. Smoke harness verifies 109/109 GET endpoints + 4 SPA-shell content assertions
+6. Smoke harness verifies 131 GET endpoints + 2 SPA-shell content assertions (133/133 OK)
 7. Cadence comments: PR comment + issue comment + close
 8. Management repo updates: `deployments/caos-lda-hsi.md` + `wip/caos-lda-hsi/current-state.md`
 
