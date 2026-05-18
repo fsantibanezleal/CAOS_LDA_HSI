@@ -5,19 +5,22 @@ import json
 from datetime import datetime, timezone
 import warnings
 from dataclasses import dataclass
-from pathlib import Path
 
 import numpy as np
 from PIL import Image
 from sklearn.decomposition import LatentDirichletAllocation
 from tifffile import imread
 
+# c280: route through research_core.paths instead of redefining ROOT
+# locally (continues #444 P1 3.2 sweep).
+from research_core.paths import DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
+
 
 warnings.filterwarnings("ignore", message=".*GDAL_NODATA.*")
 
-ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = ROOT / "data" / "raw" / "micasense"
-OUTPUT_DIR = ROOT / "data" / "derived" / "field"
+RAW_DIR = _RC_RAW_DIR / "micasense"
+OUTPUT_DIR = DERIVED_DIR / "field"
 PREVIEW_DIR = OUTPUT_DIR / "previews"
 OUTPUT_PATH = OUTPUT_DIR / "field_samples.json"
 

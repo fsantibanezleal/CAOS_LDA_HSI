@@ -10,7 +10,6 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Literal
 
 import numpy as np
@@ -18,11 +17,15 @@ from PIL import Image
 from scipy.io import loadmat
 from sklearn.decomposition import LatentDirichletAllocation
 
+# c280: route through research_core.paths instead of redefining ROOT
+# locally (continues #444 P1 3.2 sweep).
+from research_core.paths import DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-UPV_RAW_DIR = ROOT / "data" / "raw" / "upv_ehu"
-UNMIXING_RAW_DIR = ROOT / "data" / "raw" / "borsoi_mua"
-OUTPUT_DIR = ROOT / "data" / "derived" / "real"
+
+UPV_RAW_DIR = _RC_RAW_DIR / "upv_ehu"
+UNMIXING_RAW_DIR = _RC_RAW_DIR / "borsoi_mua"
+OUTPUT_DIR = DERIVED_DIR / "real"
 PREVIEW_DIR = OUTPUT_DIR / "previews"
 OUTPUT_PATH = OUTPUT_DIR / "real_samples.json"
 
