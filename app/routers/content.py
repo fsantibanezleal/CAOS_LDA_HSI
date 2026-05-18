@@ -11,9 +11,15 @@ from app.models.band_masks import (
     BandMasksIndexResponse,
 )
 from app.models.precompute import (
+    BayesianComparison,
+    CountItemsIndex,
     CrossMethodAgreement,
     CrossSceneTransfer,
     DeepAnomaly,
+    GroupingDetail,
+    LlmTeaLeaves,
+    Manifest,
+    TopicVariantDetail,
     DmrLdaHidsag,
     EdaHidsag,
     EdaPerScene,
@@ -357,10 +363,14 @@ def _typed_or_404(model, loader, *args, hint: str):
     return model.model_validate(_serve_or_404(loader, *args, hint=hint))
 
 
-@router.get("/manifest")
-def derived_manifest() -> dict:
-    return _serve_or_404(
-        get_derived_manifest,
+@router.get(
+    "/manifest",
+    response_model=Manifest,
+    response_model_exclude_none=True,
+)
+def derived_manifest() -> Manifest:
+    return _typed_or_404(
+        Manifest, get_derived_manifest,
         hint="manifest not generated yet; run scripts/local.* curate-for-web",
     )
 
@@ -598,18 +608,26 @@ def band_masks_hidsag_summary(
     )
 
 
-@router.get("/groupings")
-def groupings_index() -> dict:
-    return _serve_or_404(
-        get_groupings_index,
+@router.get(
+    "/groupings",
+    response_model=CountItemsIndex,
+    response_model_exclude_none=True,
+)
+def groupings_index() -> CountItemsIndex:
+    return _typed_or_404(
+        CountItemsIndex, get_groupings_index,
         hint="groupings not generated yet; run scripts/local.* build-groupings",
     )
 
 
-@router.get("/groupings/{method}/{scene_id}")
-def grouping(method: str, scene_id: str) -> dict:
-    return _serve_or_404(
-        get_grouping, method, scene_id,
+@router.get(
+    "/groupings/{method}/{scene_id}",
+    response_model=GroupingDetail,
+    response_model_exclude_none=True,
+)
+def grouping(method: str, scene_id: str) -> GroupingDetail:
+    return _typed_or_404(
+        GroupingDetail, get_grouping, method, scene_id,
         hint=f"grouping {method}/{scene_id} not generated yet",
     )
 
@@ -700,18 +718,26 @@ def quantization_sensitivity(scene_id: str) -> QuantizationSensitivity:
     )
 
 
-@router.get("/topic-variants")
-def topic_variants_index() -> dict:
-    return _serve_or_404(
-        get_topic_variants_index,
+@router.get(
+    "/topic-variants",
+    response_model=CountItemsIndex,
+    response_model_exclude_none=True,
+)
+def topic_variants_index() -> CountItemsIndex:
+    return _typed_or_404(
+        CountItemsIndex, get_topic_variants_index,
         hint="topic variants not generated yet",
     )
 
 
-@router.get("/topic-variants/{variant}/{scene_id}")
-def topic_variant(variant: str, scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_variant, variant, scene_id,
+@router.get(
+    "/topic-variants/{variant}/{scene_id}",
+    response_model=TopicVariantDetail,
+    response_model_exclude_none=True,
+)
+def topic_variant(variant: str, scene_id: str) -> TopicVariantDetail:
+    return _typed_or_404(
+        TopicVariantDetail, get_topic_variant, variant, scene_id,
         hint=f"topic variant {variant}/{scene_id} not generated yet",
     )
 
@@ -728,10 +754,14 @@ def lda_sweep(scene_id: str) -> LdaSweep:
     )
 
 
-@router.get("/representations")
-def representations_index() -> dict:
-    return _serve_or_404(
-        get_representations_index,
+@router.get(
+    "/representations",
+    response_model=CountItemsIndex,
+    response_model_exclude_none=True,
+)
+def representations_index() -> CountItemsIndex:
+    return _typed_or_404(
+        CountItemsIndex, get_representations_index,
         hint="representations not generated yet",
     )
 
@@ -760,16 +790,20 @@ def dmr_lda_hidsag(subset_code: str) -> DmrLdaHidsag:
     )
 
 
-@router.get("/bayesian-comparison/{task_type}")
-def bayesian_comparison(task_type: str) -> dict:
+@router.get(
+    "/bayesian-comparison/{task_type}",
+    response_model=BayesianComparison,
+    response_model_exclude_none=True,
+)
+def bayesian_comparison(task_type: str) -> BayesianComparison:
     if task_type == "classification-labelled":
-        return _serve_or_404(
-            get_bayesian_classification_labelled,
+        return _typed_or_404(
+            BayesianComparison, get_bayesian_classification_labelled,
             hint="bayesian_comparison labelled-classification not generated yet",
         )
     if task_type == "classification-labelled-deep":
-        return _serve_or_404(
-            get_bayesian_classification_labelled_deep,
+        return _typed_or_404(
+            BayesianComparison, get_bayesian_classification_labelled_deep,
             hint="bayesian_comparison labelled-classification-deep not generated yet",
         )
     if task_type not in ("regression", "classification"):
@@ -777,8 +811,8 @@ def bayesian_comparison(task_type: str) -> dict:
             status_code=400,
             detail="task_type must be regression | classification | classification-labelled | classification-labelled-deep",
         )
-    return _serve_or_404(
-        get_bayesian_comparison, task_type,
+    return _typed_or_404(
+        BayesianComparison, get_bayesian_comparison, task_type,
         hint=f"bayesian_comparison for '{task_type}' not generated yet",
     )
 
@@ -1040,10 +1074,14 @@ def endmember_baseline(scene_id: str) -> EndmemberBaseline:
     )
 
 
-@router.get("/llm-tea-leaves/{scene_id}")
-def llm_tea_leaves(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_llm_tea_leaves, scene_id,
+@router.get(
+    "/llm-tea-leaves/{scene_id}",
+    response_model=LlmTeaLeaves,
+    response_model_exclude_none=True,
+)
+def llm_tea_leaves(scene_id: str) -> LlmTeaLeaves:
+    return _typed_or_404(
+        LlmTeaLeaves, get_llm_tea_leaves, scene_id,
         hint=(
             f"llm_tea_leaves for '{scene_id}' not generated yet "
             "(set ANTHROPIC_API_KEY and run build_b12_llm_tea_leaves)"

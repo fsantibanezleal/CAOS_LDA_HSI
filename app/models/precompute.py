@@ -935,3 +935,141 @@ class MethodStatisticsHidsag(BaseModel):
     ranking: dict[str, Any] | None = None
     generated_at: str | None = None
     builder_version: str | None = None
+
+
+# ============================================================================
+# c254: final-slice models — manifest, groupings, topic-variants,
+# representations index, bayesian-comparison, llm-tea-leaves.
+# Closes #440 P1 1.2 fully at 82 of 82 routes (100%).
+# ============================================================================
+
+
+class ManifestArtifact(BaseModel):
+    model_config = _PassThroughConfig
+    path: str | None = None
+    bytes: int | None = None
+    sha256: str | None = None
+    builder: str | None = None
+
+
+class ManifestClaim(BaseModel):
+    model_config = _PassThroughConfig
+    claim: str | None = None
+    source: str | None = None
+
+
+class Manifest(BaseModel):
+    """Derived-artefacts manifest emitted by curate-for-web."""
+    model_config = _PassThroughConfig
+    generated_at: str
+    git_sha: str | None = None
+    builders: dict[str, Any] = Field(default_factory=dict)
+    scenes: list[str] = Field(default_factory=list)
+    artifacts: list[dict[str, Any]] = Field(default_factory=list)
+    claims_allowed: list[dict[str, Any]] = Field(default_factory=list)
+    rule: str | None = None
+
+
+# Index envelopes for groupings / topic-variants / representations all
+# share the {count, items: [...]} shape (computed dynamically by the
+# service layer). One generic model handles all three.
+
+
+class IndexItem(BaseModel):
+    model_config = _PassThroughConfig
+    # No fixed keys — different routes name the discriminator field
+    # differently (method vs variant vs subset_code etc).
+
+
+class CountItemsIndex(BaseModel):
+    """Generic envelope for groupings/topic-variants/representations
+    index responses: {count: int, items: [...]}.
+    """
+    model_config = _PassThroughConfig
+    count: int
+    items: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class GroupingDetail(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    method: str
+    n_groups: int | None = None
+    group_size_distribution: dict[str, Any] | None = None
+    between_within_variance_ratio: float | None = None
+    agreement_vs_label: dict[str, Any] | None = None
+    mean_spectrum_per_group: list[dict[str, Any]] | None = None
+    spatial_shape: list[int] | None = None
+    assignment_path: str | None = None
+    assignment_format: str | None = None
+    assignment_dtype_max_id: int | None = None
+    wavelengths_nm: list[float] | None = None
+    served_path: str | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
+
+
+class TopicVariantDetail(BaseModel):
+    """ETM / ProdLDA / DMR-LDA / Gensim multicore variant detail."""
+    model_config = _PassThroughConfig
+    scene_id: str
+    variant: str
+    topic_count: int
+    vocabulary_size: int | None = None
+    topic_prevalence: list[float] | None = None
+    top_words_per_topic: list[Any] | None = None
+    wavelengths_nm: list[float] | None = None
+    fit_meta: dict[str, Any] | None = None
+    downstream_kmeans_vs_label: dict[str, Any] | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
+
+
+class BayesianMethodPosterior(BaseModel):
+    model_config = _PassThroughConfig
+    method: str
+    posterior_mean: float | None = None
+    posterior_std: float | None = None
+    hdi94_lo: float | None = None
+    hdi94_hi: float | None = None
+
+
+class BayesianComparison(BaseModel):
+    """Common envelope for all task_type variants of /bayesian-comparison.
+
+    Different task_types ("regression" | "classification" |
+    "classification-labelled" | "classification-labelled-deep")
+    populate slightly different subsets of fields; all fields are
+    optional to absorb the polymorphism without separate response
+    models per task.
+    """
+    # Disable the "model_" protected-namespace warning for model_summary.
+    model_config = ConfigDict(extra="allow", protected_namespaces=())
+    task_type: str | None = None
+    scope: str | None = None
+    n_observations: int | None = None
+    n_methods: int | None = None
+    n_scenes: int | None = None
+    n_subsets: int | None = None
+    n_folds: int | None = None
+    n_targets: int | None = None
+    method_names: list[str] | None = None
+    scene_names: list[str] | None = None
+    subset_names: list[str] | None = None
+    method_posteriors: list[dict[str, Any]] | None = None
+    pairwise_p_a_gt_b: dict[str, Any] | None = None
+    model_summary: str | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
+
+
+class LlmTeaLeaves(BaseModel):
+    """Permissive envelope — no live JSON exists in the test fixture
+    tree, so we cannot tighten the schema. The route returns whatever
+    `build_b12_llm_tea_leaves` produced when ANTHROPIC_API_KEY was set.
+    """
+    model_config = _PassThroughConfig
+    scene_id: str
+    framework_axis: str | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
