@@ -33,7 +33,7 @@ import {
   WIKI_BASE,
 } from "./workspace/state/tabs";
 import { ExploreNav } from "./workspace/components/ExploreNav";
-import { TabEmpty } from "./workspace/components/TabStates";
+import { TabEmpty, TabLoading } from "./workspace/components/TabStates";
 import {
   RecentlyViewed,
   useTrackRecentScene,
@@ -42,11 +42,29 @@ import {
   type RoutedPrediction,
   computeRoutedPrediction,
 } from "./workspace/helpers/routedPrediction";
-import { BandMaskTab } from "./workspace/tabs/BandMaskTab";
-import { HidsagBandMaskTab } from "./workspace/tabs/HidsagBandMaskTab";
-import { ApplyToDocumentTab } from "./workspace/tabs/ApplyToDocumentTab";
-import { RecipesTab } from "./workspace/tabs/RecipesTab";
-import { QKExploreTab } from "./workspace/tabs/QKExploreTab";
+// Tabs are lazy-loaded so the Workspace entry chunk does not ship
+// their heavy dependencies (e.g. interactive plots in BandMaskTab,
+// HIDSAG covariate machinery, recipe pickers) until the user
+// actually navigates to that tab. Closes #441 P1 2.7 partial.
+const BandMaskTab = lazy(() =>
+  import("./workspace/tabs/BandMaskTab").then((m) => ({ default: m.BandMaskTab })),
+);
+const HidsagBandMaskTab = lazy(() =>
+  import("./workspace/tabs/HidsagBandMaskTab").then((m) => ({
+    default: m.HidsagBandMaskTab,
+  })),
+);
+const ApplyToDocumentTab = lazy(() =>
+  import("./workspace/tabs/ApplyToDocumentTab").then((m) => ({
+    default: m.ApplyToDocumentTab,
+  })),
+);
+const RecipesTab = lazy(() =>
+  import("./workspace/tabs/RecipesTab").then((m) => ({ default: m.RecipesTab })),
+);
+const QKExploreTab = lazy(() =>
+  import("./workspace/tabs/QKExploreTab").then((m) => ({ default: m.QKExploreTab })),
+);
 import { UnmixingStat } from "./workspace/components/StatCard";
 
 const Scatter3D = lazy(() =>
@@ -1092,12 +1110,14 @@ function ExploreStep({
             />
           )}
           {tab === "recipes" && (
-            <RecipesTab
-              sceneId={subsetId!}
-              isLoading={wordifIndex.isLoading}
-              error={wordifIndex.error as Error | null}
-              index={wordifIndex.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <RecipesTab
+                sceneId={subsetId!}
+                isLoading={wordifIndex.isLoading}
+                error={wordifIndex.error as Error | null}
+                index={wordifIndex.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "supertopics" && (
             <SuperTopicsTab
@@ -1155,27 +1175,33 @@ function ExploreStep({
             />
           )}
           {tab === "qkexplore" && (
-            <QKExploreTab
-              isLoading={ldaSweepQ.isLoading}
-              error={ldaSweepQ.error as Error | null}
-              sweep={ldaSweepQ.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <QKExploreTab
+                isLoading={ldaSweepQ.isLoading}
+                error={ldaSweepQ.error as Error | null}
+                sweep={ldaSweepQ.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "bandmask" && subsetId && isLabelled && (
-            <BandMaskTab
-              sceneId={subsetId}
-              isLoading={bandMaskIndexQ.isLoading}
-              error={bandMaskIndexQ.error as Error | null}
-              index={bandMaskIndexQ.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <BandMaskTab
+                sceneId={subsetId}
+                isLoading={bandMaskIndexQ.isLoading}
+                error={bandMaskIndexQ.error as Error | null}
+                index={bandMaskIndexQ.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "bandmask" && subsetId && isHidsag && (
-            <HidsagBandMaskTab
-              subsetCode={toHidsagSubsetCode(subsetId)}
-              isLoading={bandMaskHidsagIndexQ.isLoading}
-              error={bandMaskHidsagIndexQ.error as Error | null}
-              index={bandMaskHidsagIndexQ.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <HidsagBandMaskTab
+                subsetCode={toHidsagSubsetCode(subsetId)}
+                isLoading={bandMaskHidsagIndexQ.isLoading}
+                error={bandMaskHidsagIndexQ.error as Error | null}
+                index={bandMaskHidsagIndexQ.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "spatial" && (
             <SpatialStructureTab
@@ -1196,15 +1222,17 @@ function ExploreStep({
             />
           )}
           {tab === "applydoc" && (
-            <ApplyToDocumentTab
-              isLoading={applyDocs.isLoading || applyTopicViews.isLoading || applyTopicToData.isLoading}
-              error={(applyDocs.error as Error | null) ?? (applyTopicViews.error as Error | null) ?? (applyTopicToData.error as Error | null)}
-              docs={applyDocs.data ?? null}
-              topicViews={applyTopicViews.data ?? null}
-              topicToData={applyTopicToData.data ?? null}
-              selectedTopic={selectedTopic}
-              setSelectedTopic={setSelectedTopic}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <ApplyToDocumentTab
+                isLoading={applyDocs.isLoading || applyTopicViews.isLoading || applyTopicToData.isLoading}
+                error={(applyDocs.error as Error | null) ?? (applyTopicViews.error as Error | null) ?? (applyTopicToData.error as Error | null)}
+                docs={applyDocs.data ?? null}
+                topicViews={applyTopicViews.data ?? null}
+                topicToData={applyTopicToData.data ?? null}
+                selectedTopic={selectedTopic}
+                setSelectedTopic={setSelectedTopic}
+              />
+            </Suspense>
           )}
           {tab === "browser" && (
             <SpectralBrowserTab
