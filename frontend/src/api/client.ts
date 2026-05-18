@@ -144,38 +144,10 @@ export type MethodStatistics = {
   labeled_scenes: SceneMethodStats[];
 };
 
-export type ClassEntry = {
-  label_id: number;
-  name: string;
-  count: number;
-  rel_freq: number;
-  color: string;
-};
-
-export type ClassMeanSpectrum = {
-  mean: number[];
-  std: number[];
-  p5: number[];
-  p25: number[];
-  p50: number[];
-  p75: number[];
-  p95: number[];
-};
-
-export type ScenePerScene = {
-  scene_id: string;
-  scene_name: string;
-  sensor: string;
-  family_id: string;
-  spatial_shape: [number, number];
-  n_pixels: number;
-  n_labelled_pixels: number;
-  n_classes: number;
-  imbalance_gini: number;
-  wavelengths_nm: number[];
-  class_distribution: ClassEntry[];
-  class_mean_spectra: Record<string, ClassMeanSpectrum>;
-};
+// EDA family types extracted to `./eda.ts` in c267. Re-exported here
+// so `@/api/client` imports keep working.
+export type { ClassEntry, ClassMeanSpectrum, ScenePerScene } from "./eda";
+import type { ScenePerScene } from "./eda";
 
 export type TopWord = {
   token: string;
