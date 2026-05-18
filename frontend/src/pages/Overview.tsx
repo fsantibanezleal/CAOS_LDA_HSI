@@ -253,8 +253,18 @@ function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | null }) {
             viewBox={`0 0 ${W} ${H}`}
             className="w-full h-auto"
             role="img"
-            aria-label="Class mean spectra of Indian Pines"
+            aria-labelledby="hero-spectra-title hero-spectra-desc"
           >
+            <title id="hero-spectra-title">
+              Class mean spectra of Indian Pines, {series.length} classes overlaid
+            </title>
+            <desc id="hero-spectra-desc">
+              {series.length === 0
+                ? "Reflectance loading — wavelength axis 400 to 2500 nm."
+                : `Reflectance curves of the ${series.length} Indian Pines land-cover ` +
+                  `classes plotted against wavelength 400 to 2500 nm. Top three by ` +
+                  `prevalence: ${series.slice(0, 3).map((s) => s.name).join(", ")}.`}
+            </desc>
             {/* axis grid */}
             {[0.0, 0.25, 0.5, 0.75, 1.0].map((g) => (
               <line

@@ -11,8 +11,20 @@ from app.models.band_masks import (
     BandMasksIndexResponse,
 )
 from app.models.precompute import (
+    CrossSceneTransfer,
+    EdaHidsag,
+    EdaPerScene,
+    LdaSweep,
+    LinearProbePanel,
+    MutualInformation,
+    MutualInformationHidsag,
+    QuantizationSensitivity,
     SpatialValidationResponse,
+    SpectralBrowserMetadata,
+    SpectralDensityManifest,
+    SuperTopics,
     TopicToDataResponse,
+    TopicToLibrary,
     TopicViewsResponse,
     ValidationBlocksResponse,
     WordificationResponse,
@@ -329,9 +341,14 @@ def derived_manifest() -> dict:
     )
 
 
-@router.get("/eda/per-scene/{scene_id}")
-def eda_per_scene(scene_id: str) -> dict:
-    return _serve_or_404(
+@router.get(
+    "/eda/per-scene/{scene_id}",
+    response_model=EdaPerScene,
+    response_model_exclude_none=True,
+)
+def eda_per_scene(scene_id: str) -> EdaPerScene:
+    return _typed_or_404(
+        EdaPerScene,
         get_eda_per_scene,
         scene_id,
         hint=f"eda views for '{scene_id}' not generated yet; run scripts/local.* build-eda-per-scene",
@@ -366,18 +383,28 @@ def topic_to_data(scene_id: str) -> TopicToDataResponse:
     )
 
 
-@router.get("/spectral-browser/{scene_id}")
-def spectral_browser(scene_id: str) -> dict:
-    return _serve_or_404(
+@router.get(
+    "/spectral-browser/{scene_id}",
+    response_model=SpectralBrowserMetadata,
+    response_model_exclude_none=True,
+)
+def spectral_browser(scene_id: str) -> SpectralBrowserMetadata:
+    return _typed_or_404(
+        SpectralBrowserMetadata,
         get_spectral_browser_metadata,
         scene_id,
         hint=f"spectral browser for '{scene_id}' not generated yet; run scripts/local.* build-spectral-browser",
     )
 
 
-@router.get("/spectral-density/{scene_id}")
-def spectral_density(scene_id: str) -> dict:
-    return _serve_or_404(
+@router.get(
+    "/spectral-density/{scene_id}",
+    response_model=SpectralDensityManifest,
+    response_model_exclude_none=True,
+)
+def spectral_density(scene_id: str) -> SpectralDensityManifest:
+    return _typed_or_404(
+        SpectralDensityManifest,
         get_spectral_density_manifest,
         scene_id,
         hint=f"spectral density for '{scene_id}' not generated yet; run scripts/local.* build-spectral-density",
@@ -398,18 +425,28 @@ def validation_blocks(scene_id: str) -> ValidationBlocksResponse:
     )
 
 
-@router.get("/eda/hidsag/{subset_code}")
-def eda_hidsag(subset_code: str) -> dict:
-    return _serve_or_404(
+@router.get(
+    "/eda/hidsag/{subset_code}",
+    response_model=EdaHidsag,
+    response_model_exclude_none=True,
+)
+def eda_hidsag(subset_code: str) -> EdaHidsag:
+    return _typed_or_404(
+        EdaHidsag,
         get_eda_hidsag,
         subset_code,
         hint=f"HIDSAG EDA for '{subset_code}' not generated yet; run scripts/local.* build-eda-hidsag",
     )
 
 
-@router.get("/topic-to-library/{scene_id}")
-def topic_to_library(scene_id: str) -> dict:
-    return _serve_or_404(
+@router.get(
+    "/topic-to-library/{scene_id}",
+    response_model=TopicToLibrary,
+    response_model_exclude_none=True,
+)
+def topic_to_library(scene_id: str) -> TopicToLibrary:
+    return _typed_or_404(
+        TopicToLibrary,
         get_topic_to_library,
         scene_id,
         hint=f"topic-to-library for '{scene_id}' not generated yet; run scripts/local.* build-topic-to-library",
@@ -603,10 +640,14 @@ def interpretability(scene_id: str, card_type: str) -> dict:
     )
 
 
-@router.get("/quantization-sensitivity/{scene_id}")
-def quantization_sensitivity(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_quantization_sensitivity, scene_id,
+@router.get(
+    "/quantization-sensitivity/{scene_id}",
+    response_model=QuantizationSensitivity,
+    response_model_exclude_none=True,
+)
+def quantization_sensitivity(scene_id: str) -> QuantizationSensitivity:
+    return _typed_or_404(
+        QuantizationSensitivity, get_quantization_sensitivity, scene_id,
         hint=f"quantization sensitivity for '{scene_id}' not generated yet",
     )
 
@@ -627,10 +668,14 @@ def topic_variant(variant: str, scene_id: str) -> dict:
     )
 
 
-@router.get("/lda-sweep/{scene_id}")
-def lda_sweep(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_lda_sweep, scene_id,
+@router.get(
+    "/lda-sweep/{scene_id}",
+    response_model=LdaSweep,
+    response_model_exclude_none=True,
+)
+def lda_sweep(scene_id: str) -> LdaSweep:
+    return _typed_or_404(
+        LdaSweep, get_lda_sweep, scene_id,
         hint=f"lda_sweep for '{scene_id}' not generated yet",
     )
 
@@ -690,26 +735,38 @@ def optuna_search(scene_id: str) -> dict:
     )
 
 
-@router.get("/linear-probe-panel/{scene_id}")
-def linear_probe_panel(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_linear_probe_panel, scene_id,
+@router.get(
+    "/linear-probe-panel/{scene_id}",
+    response_model=LinearProbePanel,
+    response_model_exclude_none=True,
+)
+def linear_probe_panel(scene_id: str) -> LinearProbePanel:
+    return _typed_or_404(
+        LinearProbePanel, get_linear_probe_panel, scene_id,
         hint=f"linear_probe_panel for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/mutual-information/{scene_id}")
-def mutual_information(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_mutual_information, scene_id,
+@router.get(
+    "/mutual-information/{scene_id}",
+    response_model=MutualInformation,
+    response_model_exclude_none=True,
+)
+def mutual_information(scene_id: str) -> MutualInformation:
+    return _typed_or_404(
+        MutualInformation, get_mutual_information, scene_id,
         hint=f"mutual_information for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/mutual-information/hidsag/{subset_code}")
-def mutual_information_hidsag(subset_code: str) -> dict:
-    return _serve_or_404(
-        get_mutual_information_hidsag, subset_code,
+@router.get(
+    "/mutual-information/hidsag/{subset_code}",
+    response_model=MutualInformationHidsag,
+    response_model_exclude_none=True,
+)
+def mutual_information_hidsag(subset_code: str) -> MutualInformationHidsag:
+    return _typed_or_404(
+        MutualInformationHidsag, get_mutual_information_hidsag, subset_code,
         hint=f"mutual_information for HIDSAG '{subset_code}' not generated yet",
     )
 
@@ -862,17 +919,25 @@ def llm_tea_leaves(scene_id: str) -> dict:
     )
 
 
-@router.get("/super-topics")
-def super_topics() -> dict:
-    return _serve_or_404(
-        get_super_topics,
+@router.get(
+    "/super-topics",
+    response_model=SuperTopics,
+    response_model_exclude_none=True,
+)
+def super_topics() -> SuperTopics:
+    return _typed_or_404(
+        SuperTopics, get_super_topics,
         hint="super_topics not generated yet",
     )
 
 
-@router.get("/cross-scene-transfer")
-def cross_scene_transfer() -> dict:
-    return _serve_or_404(
-        get_cross_scene_transfer,
+@router.get(
+    "/cross-scene-transfer",
+    response_model=CrossSceneTransfer,
+    response_model_exclude_none=True,
+)
+def cross_scene_transfer() -> CrossSceneTransfer:
+    return _typed_or_404(
+        CrossSceneTransfer, get_cross_scene_transfer,
         hint="cross_scene_transfer not generated yet",
     )
