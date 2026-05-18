@@ -615,3 +615,323 @@ class MutualInformationHidsag(BaseModel):
     framework_axis: str | None = None
     generated_at: str
     builder_version: str
+
+
+# ============================================================================
+# c249: fourth-slice models — agreement, narrative, interpretability,
+# representations, topic-routed, neural-topic, rate-distortion, stability,
+# anomaly, USGS, endmember.
+# ============================================================================
+
+
+class CrossMethodAgreement(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    spatial_shape: list[int]
+    n_compared_pixels: int
+    method_names: list[str]
+    ari_matrix: list[list[float]]
+    nmi_matrix: list[list[float]]
+    v_measure_matrix: list[list[float]] | None = None
+    agreement_vs_label_summary: list[dict[str, Any]] = Field(default_factory=list)
+    agreement_vs_topic_dominant_summary: list[dict[str, Any]] = Field(default_factory=list)
+    generated_at: str
+    builder_version: str
+
+
+class Narratives(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    method_narratives: dict[str, Any] = Field(default_factory=dict)
+    generated_at: str
+    builder_version: str
+
+
+class InterpretabilityCards(BaseModel):
+    """Common envelope for topic_cards / band_cards / document_cards.
+
+    The interior structure differs per card_type so the cards list is
+    typed as dict[str, Any]; the route returns this same envelope for
+    all three card_type variants.
+    """
+    model_config = _PassThroughConfig
+    scene_id: str
+    K: int | None = None
+    topic_cards: list[dict[str, Any]] | None = None
+    band_cards: list[dict[str, Any]] | None = None
+    document_cards: list[dict[str, Any]] | None = None
+    generated_at: str
+    builder_version: str
+
+
+class RepresentationFitMeta(BaseModel):
+    model_config = _PassThroughConfig
+    explained_variance_ratio: list[float] | None = None
+    explained_variance_total: float | None = None
+    reconstruction_rmse: float | None = None
+
+
+class Representation(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    method: str
+    n_documents: int
+    n_bands_input: int
+    latent_dim: int
+    fit_meta: dict[str, Any] | None = None
+    silhouette_label: dict[str, Any] | None = None
+    downstream_kmeans_vs_label: dict[str, Any] | None = None
+    scatter_pca_3d_explained_variance: list[float] | None = None
+    scatter_2d_3d_subsample: list[dict[str, Any]] | None = None
+    features_local_path: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicRoutedClassifier(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K: int
+    n_classes: int
+    n_documents: int
+    samples_per_class: int
+    wordification: str
+    quantization_scale: int
+    head: str
+    split: str
+    method_metrics: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    ranking_by_macro_f1_mean: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class NeuralTopicComparison(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    n_documents: int
+    n_classes: int | None = None
+    methods: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    ranking_by_ari: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class NeuralTopicSeedStability(BaseModel):
+    """Per-scene seed stability for ProdLDA / ETM / LDA."""
+    model_config = _PassThroughConfig
+    scene_id: str
+    n_seeds: int | None = None
+    methods: dict[str, dict[str, Any]] | None = None
+    method_metrics: dict[str, dict[str, Any]] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class RateDistortionCurve(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K_grid: list[int]
+    doc_term_shape: list[int]
+    train_fraction: float
+    wordification: str
+    quantization_scale: int
+    samples_per_class: int
+    method_curves: dict[str, Any] = Field(default_factory=dict)
+    rmse_test_table_by_K: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicStability(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K: int
+    seeds: list[int]
+    wordification: str
+    quantization_scale: int
+    samples_per_class: int
+    seed_pair_matched_cosine_mean: list[list[float]]
+    seed_pair_matched_cosine_min: list[list[float]] | None = None
+    seed_pair_matched_cosine_std: list[list[float]] | None = None
+    per_topic_matched_cosine_vs_seed0: list[list[float]] | None = None
+    per_topic_stability_summary: list[dict[str, Any]] | None = None
+    scene_stability_summary: dict[str, Any] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class SeedStability(BaseModel):
+    """Common envelope for classical_seed_stability + deep_seed_stability."""
+    model_config = _PassThroughConfig
+    scene_id: str
+    method: str
+    n_seeds: int
+    latent_dim: int | None = None
+    samples_per_class: int | None = None
+    ari_vs_gt_per_seed: list[float] | None = None
+    nmi_vs_gt_per_seed: list[float] | None = None
+    ari_mean: float | None = None
+    ari_std: float | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class DeepAnomaly(BaseModel):
+    """Per-method anomaly-indicator block. Methods like cae_1d_8 and
+    beta_vae_8 appear as top-level keys with method-specific payloads.
+    """
+    model_config = _PassThroughConfig
+    scene_id: str
+    n_documents: int
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicAnomaly(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    n_documents: int
+    indicators: dict[str, Any]
+    anomaly_to_misclassification_correlation: dict[str, Any]
+    per_class_summary: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicSpatialContinuous(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    spatial_shape: list[int]
+    n_sampled_pixels: int
+    per_topic_continuous_spatial: list[dict[str, Any]] = Field(default_factory=list)
+    aggregated_morans_I_mean_over_topics: float | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicSpatialFull(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int | None = None
+    spatial_shape: list[int] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicToUsgsV7(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    library_subset: str
+    library_sample_count: int
+    library_chapter_counts: dict[str, int] | None = None
+    top_n_per_topic: list[list[dict[str, Any]]]
+    generated_at: str
+    builder_version: str
+
+
+class EndmemberBaseline(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K: int | None = None
+    n_pixels_used: int | None = None
+    n_bands: int | None = None
+    endmember_extractors: list[str] | dict[str, Any] | None = None
+    unmixing_method: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class HidsagCrossPreprocessingStability(BaseModel):
+    model_config = _PassThroughConfig
+    subset_code: str | None = None
+    methods: list[str] | None = None
+    matched_jaccard_top15: list[list[float]] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class TopicRoutedDeepGate(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K: int | None = None
+    n_classes: int | None = None
+    n_documents: int | None = None
+    method_metrics: dict[str, dict[str, Any]] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class EmbeddedBaseline(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K: int | None = None
+    n_classes: int | None = None
+    n_documents: int | None = None
+    method_metrics: dict[str, dict[str, Any]] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class OptunaSearch(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    trials: list[dict[str, Any]] | None = None
+    best_trial: dict[str, Any] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class DmrLdaHidsag(BaseModel):
+    model_config = _PassThroughConfig
+    subset_code: str
+    K: int | None = None
+    covariates: list[str] | None = None
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class ExternalValidationLiterature(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    entries: list[dict[str, Any]] | None = None
+    methods: list[dict[str, Any]] | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
+
+
+class ExternalValidationHidsagMethods(BaseModel):
+    model_config = _PassThroughConfig
+    subset_code: str
+    methods: list[dict[str, Any]] | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
+
+
+class MethodStatisticsHidsag(BaseModel):
+    model_config = _PassThroughConfig
+    subset_code: str | None = None
+    dataset_id: str | None = None
+    dataset_name: str | None = None
+    methods: dict[str, dict[str, Any]] | None = None
+    paired_comparisons: dict[str, Any] | None = None
+    ranking: dict[str, Any] | None = None
+    generated_at: str | None = None
+    builder_version: str | None = None
