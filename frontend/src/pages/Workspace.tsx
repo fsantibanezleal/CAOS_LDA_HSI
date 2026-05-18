@@ -6228,6 +6228,7 @@ function Stepper({
   ctx: { family: string | null; subset: string | null; rep: string | null };
 }) {
   void state;
+  const { t } = useTranslation(["pages"]);
   const labels = STEPS;
   return (
     <ol
@@ -6273,7 +6274,7 @@ function Stepper({
             >
               {i + 1}
             </span>
-            <span>{s.label}</span>
+            <span>{t(`workspace.step.${s.key}` as never, s.label) as string}</span>
             {isDone && i === 0 && ctx.family && (
               <span
                 className="text-xs font-mono opacity-70"
