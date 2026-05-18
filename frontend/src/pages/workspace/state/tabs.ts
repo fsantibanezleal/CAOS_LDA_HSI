@@ -66,6 +66,7 @@ export const EXPLORE_TAB_ORDER: ExploreTab[] = [
   "bandmask",
   "agreement",
   "applydoc",
+  "recipes",
   "usgs",
   "metrics",
 ];
