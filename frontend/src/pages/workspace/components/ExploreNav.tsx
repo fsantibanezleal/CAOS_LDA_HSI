@@ -48,21 +48,33 @@ export function ExploreNav({
         {EXPLORE_PHASES.map((phase) => {
           const isActive = phase.id === activePhaseId;
           const isContainingCurrent = phase.id === currentPhase.id;
+          const containsActiveSuffix = isContainingCurrent && !isActive ? " — contains active tab" : "";
           return (
             <button
               key={phase.id}
               type="button"
               role="tab"
+              id={`phase-tab-${phase.id}`}
+              aria-controls={`phase-panel-${phase.id}`}
               aria-selected={isActive}
-              aria-label={`${phase.label} (${phase.tabs.length} tabs)`}
+              aria-label={`${phase.label} (${phase.tabs.length} tabs)${containsActiveSuffix}`}
               onClick={() => setActivePhaseId(phase.id)}
-              title={phase.description}
+              title={phase.description + (isContainingCurrent && !isActive ? " (contains the active tab)" : "")}
               className={cn(
-                "rounded-md border px-3.5 py-2 text-[13px] font-semibold transition-all inline-flex items-center gap-2",
+                "rounded-md border-l-4 border-y border-r px-3.5 py-2 text-[13px] font-semibold transition-all inline-flex items-center gap-2",
                 isActive ? "shadow-sm" : "opacity-70 hover:opacity-100",
               )}
               style={{
-                borderColor: isActive ? phase.color : "var(--color-border)",
+                // Left-border in phase color gives a non-color-only signal
+                // for phases that contain the active tab (WCAG 1.4.1).
+                borderLeftColor: isContainingCurrent
+                  ? phase.color
+                  : isActive
+                    ? phase.color
+                    : "var(--color-border)",
+                borderTopColor: isActive ? phase.color : "var(--color-border)",
+                borderBottomColor: isActive ? phase.color : "var(--color-border)",
+                borderRightColor: isActive ? phase.color : "var(--color-border)",
                 backgroundColor: isActive
                   ? "var(--color-accent-soft)"
                   : "var(--color-panel)",
@@ -84,59 +96,65 @@ export function ExploreNav({
               </span>
               {isContainingCurrent && !isActive && (
                 <span
-                  aria-hidden
-                  className="inline-block w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: phase.color }}
-                  title="contains the active tab"
-                />
+                  className="text-[10.5px] font-normal italic"
+                  style={{ color: "var(--color-fg-faint)" }}
+                >
+                  · active
+                </span>
               )}
             </button>
           );
         })}
       </div>
-      <p
-        className="text-[11.5px] italic"
-        style={{ color: "var(--color-fg-faint)" }}
-      >
-        {activePhase.description}
-      </p>
       <div
-        role="tablist"
-        aria-label={`${activePhase.label} panels`}
-        className="flex flex-wrap gap-1.5"
+        role="tabpanel"
+        id={`phase-panel-${activePhase.id}`}
+        aria-labelledby={`phase-tab-${activePhase.id}`}
       >
-        {activePhase.tabs.map((opt) => {
-          const isActive = tab === opt.id;
-          const label = t(
-            `pages:workspace.tabs.${opt.labelKey}` as never,
-          ) as string;
-          return (
-            <button
-              key={opt.id}
-              role="tab"
-              aria-selected={isActive}
-              type="button"
-              onClick={() => setTab(opt.id)}
-              className={cn(
-                "rounded-md border px-3 py-1.5 text-[13px] transition-all",
-                isActive
-                  ? "font-semibold shadow-sm"
-                  : "opacity-80 hover:opacity-100",
-              )}
-              style={{
-                borderColor: isActive
-                  ? activePhase.color
-                  : "var(--color-border)",
-                backgroundColor: isActive
-                  ? "var(--color-accent-soft)"
-                  : "var(--color-panel)",
-                color: isActive ? activePhase.color : "var(--color-fg)",
-              }}
-            >
-              {label}
-            </button>
-          );
-        })}
+        <p
+          className="text-[11.5px] italic mb-2.5"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {activePhase.description}
+        </p>
+        <div
+          role="tablist"
+          aria-label={`${activePhase.label} panels`}
+          className="flex flex-wrap gap-1.5"
+        >
+          {activePhase.tabs.map((opt) => {
+            const isActive = tab === opt.id;
+            const label = t(
+              `pages:workspace.tabs.${opt.labelKey}` as never,
+            ) as string;
+            return (
+              <button
+                key={opt.id}
+                role="tab"
+                aria-selected={isActive}
+                type="button"
+                onClick={() => setTab(opt.id)}
+                className={cn(
+                  "rounded-md border px-3 py-1.5 text-[13px] transition-all",
+                  isActive
+                    ? "font-semibold shadow-sm"
+                    : "opacity-80 hover:opacity-100",
+                )}
+                style={{
+                  borderColor: isActive
+                    ? activePhase.color
+                    : "var(--color-border)",
+                  backgroundColor: isActive
+                    ? "var(--color-accent-soft)"
+                    : "var(--color-panel)",
+                  color: isActive ? activePhase.color : "var(--color-fg)",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
