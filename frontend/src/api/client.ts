@@ -8,47 +8,34 @@
  * so `/api` and `/generated` are same-origin too.
  */
 
-const BASE = (import.meta.env.VITE_API_BASE ?? "").replace(/\/$/, "");
+// Shared HTTP primitives moved to `_http.ts` as part of the c261
+// api-client split (#441 P1 2.4). Re-exported for back-compat with
+// existing consumers that import `ApiError` from `@/api/client`.
+import { ApiError, request, requestBuffer } from "./_http";
+export { ApiError };
 
-export class ApiError extends Error {
-  status: number;
-  url: string;
-  constructor(message: string, status: number, url: string) {
-    super(message);
-    this.name = "ApiError";
-    this.status = status;
-    this.url = url;
-  }
-}
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const url = `${BASE}${path}`;
-  const res = await fetch(url, init);
-  if (!res.ok) {
-    throw new ApiError(
-      `Request failed: ${res.status} ${res.statusText}`,
-      res.status,
-      url,
-    );
-  }
-  return (await res.json()) as T;
-}
-
-async function requestBuffer(
-  path: string,
-  init?: RequestInit,
-): Promise<ArrayBuffer> {
-  const url = `${BASE}${path}`;
-  const res = await fetch(url, init);
-  if (!res.ok) {
-    throw new ApiError(
-      `Request failed: ${res.status} ${res.statusText}`,
-      res.status,
-      url,
-    );
-  }
-  return await res.arrayBuffer();
-}
+// Pull the BandMask family from its own module so we can both consume
+// the types here (the existing `api.bandMasks*` runtime methods stay
+// for back-compat) AND re-export them so `@/api/client` imports keep
+// working without per-file churn.
+import type {
+  BandMaskCanonicalComparison,
+  BandMaskHidsagIndex,
+  BandMaskHidsagSummary,
+  BandMaskIndex,
+  BandMaskSummary,
+} from "./bandmask";
+export type {
+  BandMaskCanonicalComparison,
+  BandMaskComparisonEntry,
+  BandMaskHidsagIndex,
+  BandMaskHidsagIndexEntry,
+  BandMaskHidsagSummary,
+  BandMaskIndex,
+  BandMaskIndexEntry,
+  BandMaskSummary,
+  HidsagCovariateProbability,
+} from "./bandmask";
 
 export type RawFile = {
   raw_dataset_id: string;
@@ -1056,144 +1043,6 @@ export type FelzenszwalbGroupings = {
   builder_version?: string;
 };
 
-export type BandMaskIndexEntry = {
-  scene_id: string;
-  mask_id: string;
-  mask_label?: string;
-  topic_count?: number;
-  n_bands_full?: number;
-  n_bands_kept?: number;
-  perplexity_train?: number;
-  ari_dominant_vs_label?: number;
-  mean_confidence?: number;
-  summary_path?: string;
-  skipped?: boolean;
-  reason?: string;
-};
-
-export type BandMaskIndex = {
-  generated_at: string;
-  builder_version: string;
-  mask_definitions: Record<
-    string,
-    { label: string; description: string }
-  >;
-  entries: BandMaskIndexEntry[];
-};
-
-export type BandMaskComparisonEntry = {
-  scene_id: string;
-  mask_id: string;
-  skipped?: boolean;
-  reason?: string;
-  n_paired_pixels?: number;
-  paired_ari_dominant_topics?: number | null;
-  swap_rate_under_hungarian_alignment?: number;
-  n_topic_swaps?: number;
-  kl_p_label_given_topic_mean?: number | null;
-  kl_p_label_given_topic_max?: number | null;
-  hungarian_assignment?: Record<string, number>;
-  topic_count_canonical?: number;
-  topic_count_masked?: number;
-  n_bands_full?: number;
-  n_bands_kept?: number;
-  ari_dominant_vs_label_masked?: number;
-  perplexity_train_masked?: number;
-};
-
-export type BandMaskCanonicalComparison = {
-  generated_at: string;
-  builder_version: string;
-  description: string;
-  entries: BandMaskComparisonEntry[];
-};
-
-export type BandMaskHidsagIndexEntry = {
-  subset_code: string;
-  mask_id: string;
-  mask_label?: string;
-  topic_count?: number;
-  n_bands_full?: number;
-  n_bands_kept?: number;
-  perplexity_train?: number;
-  mean_confidence?: number;
-  summary_path?: string;
-  skipped?: boolean;
-  reason?: string;
-};
-
-export type BandMaskHidsagIndex = {
-  generated_at: string;
-  builder_version: string;
-  modality: string;
-  mask_definitions: Record<string, { label: string; description: string }>;
-  entries: BandMaskHidsagIndexEntry[];
-};
-
-export type HidsagCovariateProbability = {
-  covariate: string;
-  count: number;
-  p: number;
-};
-
-export type BandMaskHidsagSummary = {
-  subset_code: string;
-  mask_id: string;
-  mask_label: string;
-  mask_description: string;
-  modality: string;
-  topic_count: number;
-  document_count: number;
-  vocabulary_size: number;
-  n_bands_full: number;
-  n_bands_kept: number;
-  kept_band_indices: number[];
-  wavelengths_nm_kept_first_last: [number, number];
-  wavelengths_nm_kept: number[];
-  topic_prevalence: number[];
-  topic_distance_cosine: number[][];
-  top_words_per_topic_lambda_05: string[][];
-  p_covariate_given_topic_dominant: HidsagCovariateProbability[][];
-  docs_per_topic_dominant: number[];
-  perplexity_train: number;
-  mean_confidence: number;
-  doc_names: string[];
-  sample_names: string[];
-  covariates: string[];
-  theta_per_doc: number[][];
-  lda_config: LdaConfig;
-  generated_at: string;
-  builder_version: string;
-};
-
-export type BandMaskSummary = {
-  scene_id: string;
-  mask_id: string;
-  mask_label: string;
-  mask_description: string;
-  spatial_shape: [number, number];
-  topic_count: number;
-  document_count: number;
-  vocabulary_size: number;
-  n_bands_full: number;
-  n_bands_kept: number;
-  kept_band_indices: number[];
-  wavelengths_nm_kept_first_last: [number, number];
-  wavelengths_nm_kept: number[];
-  topic_prevalence: number[];
-  topic_distance_cosine: number[][];
-  top_words_per_topic_lambda_05: string[][];
-  p_label_given_topic_dominant: LabelCell[][];
-  docs_per_topic_dominant: number[];
-  perplexity_train: number;
-  ari_dominant_vs_label: number;
-  mean_confidence: number;
-  lda_config: LdaConfig;
-  dominant_topic_map: DominantTopicMapMeta;
-  theta_grid: ThetaGridMeta;
-  generated_at: string;
-  builder_version: string;
-};
 
 export type WordificationsIndexItem = {
   id: string;

@@ -237,7 +237,8 @@ export function BandMaskTab({
           summary={summaryQ.data}
           comparison={
             comparisonQ.data?.entries.find(
-              (e) => e.scene_id === sceneId && e.mask_id === maskId,
+              (e: BandMaskComparisonEntry) =>
+                e.scene_id === sceneId && e.mask_id === maskId,
             ) ?? null
           }
         />

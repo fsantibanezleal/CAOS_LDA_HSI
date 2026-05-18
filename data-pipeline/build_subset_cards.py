@@ -424,6 +424,9 @@ def main() -> int:
         "source": "Compact public subset cards extracted from the interactive subset registry",
         "generated_at": generated_at,
         "cards": summaries,
+        # Closes #444 P1 item 3.1 (builder metadata envelope).
+        "framework_axis": "documentation: subset cards for the Workspace landing tabs",
+        "builder_version": "build_subset_cards v0.2",
     }
     with (OUT_DIR / "index.json").open("w", encoding="utf-8") as handle:
         json.dump(index, handle, ensure_ascii=False, indent=2, sort_keys=False)

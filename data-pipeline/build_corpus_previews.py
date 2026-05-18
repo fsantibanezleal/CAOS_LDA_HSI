@@ -9,9 +9,14 @@ from __future__ import annotations
 
 import json
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 from statistics import median
 from typing import Any, Iterable
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -347,8 +352,11 @@ def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
         "source": "Static corpus previews generated from compact derived spectral assets",
-        "generated_at": "2026-04-30",
         "previews": previews,
+        # Closes #444 P1 item 3.1 (builder metadata envelope).
+        "framework_axis": "documentation: corpus-previews static landing-card content",
+        "generated_at": _now_iso(),
+        "builder_version": "build_corpus_previews v0.2",
     }
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)

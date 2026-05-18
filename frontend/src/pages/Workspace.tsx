@@ -33,7 +33,7 @@ import {
   WIKI_BASE,
 } from "./workspace/state/tabs";
 import { ExploreNav } from "./workspace/components/ExploreNav";
-import { TabEmpty } from "./workspace/components/TabStates";
+import { TabEmpty, TabLoading } from "./workspace/components/TabStates";
 import {
   RecentlyViewed,
   useTrackRecentScene,
@@ -42,11 +42,39 @@ import {
   type RoutedPrediction,
   computeRoutedPrediction,
 } from "./workspace/helpers/routedPrediction";
-import { BandMaskTab } from "./workspace/tabs/BandMaskTab";
-import { HidsagBandMaskTab } from "./workspace/tabs/HidsagBandMaskTab";
-import { ApplyToDocumentTab } from "./workspace/tabs/ApplyToDocumentTab";
-import { RecipesTab } from "./workspace/tabs/RecipesTab";
-import { QKExploreTab } from "./workspace/tabs/QKExploreTab";
+// Tabs are lazy-loaded so the Workspace entry chunk does not ship
+// their heavy dependencies (e.g. interactive plots in BandMaskTab,
+// HIDSAG covariate machinery, recipe pickers) until the user
+// actually navigates to that tab. Closes #441 P1 2.7 partial.
+const BandMaskTab = lazy(() =>
+  import("./workspace/tabs/BandMaskTab").then((m) => ({ default: m.BandMaskTab })),
+);
+const HidsagBandMaskTab = lazy(() =>
+  import("./workspace/tabs/HidsagBandMaskTab").then((m) => ({
+    default: m.HidsagBandMaskTab,
+  })),
+);
+const ApplyToDocumentTab = lazy(() =>
+  import("./workspace/tabs/ApplyToDocumentTab").then((m) => ({
+    default: m.ApplyToDocumentTab,
+  })),
+);
+const RecipesTab = lazy(() =>
+  import("./workspace/tabs/RecipesTab").then((m) => ({ default: m.RecipesTab })),
+);
+const QKExploreTab = lazy(() =>
+  import("./workspace/tabs/QKExploreTab").then((m) => ({ default: m.QKExploreTab })),
+);
+const LlmTeaLeavesTab = lazy(() =>
+  import("./workspace/tabs/LlmTeaLeavesTab").then((m) => ({
+    default: m.LlmTeaLeavesTab,
+  })),
+);
+const LinearProbeTab = lazy(() =>
+  import("./workspace/tabs/LinearProbeTab").then((m) => ({
+    default: m.LinearProbeTab,
+  })),
+);
 import { UnmixingStat } from "./workspace/components/StatCard";
 
 const Scatter3D = lazy(() =>
@@ -1092,12 +1120,14 @@ function ExploreStep({
             />
           )}
           {tab === "recipes" && (
-            <RecipesTab
-              sceneId={subsetId!}
-              isLoading={wordifIndex.isLoading}
-              error={wordifIndex.error as Error | null}
-              index={wordifIndex.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <RecipesTab
+                sceneId={subsetId!}
+                isLoading={wordifIndex.isLoading}
+                error={wordifIndex.error as Error | null}
+                index={wordifIndex.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "supertopics" && (
             <SuperTopicsTab
@@ -1116,18 +1146,22 @@ function ExploreStep({
             />
           )}
           {tab === "llm" && (
-            <LlmTeaLeavesTab
-              isLoading={llmTeaLeaves.isLoading}
-              error={llmTeaLeaves.error as Error | null}
-              data={llmTeaLeaves.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <LlmTeaLeavesTab
+                isLoading={llmTeaLeaves.isLoading}
+                error={llmTeaLeaves.error as Error | null}
+                data={llmTeaLeaves.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "probe" && (
-            <LinearProbeTab
-              isLoading={linearProbe.isLoading}
-              error={linearProbe.error as Error | null}
-              data={linearProbe.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <LinearProbeTab
+                isLoading={linearProbe.isLoading}
+                error={linearProbe.error as Error | null}
+                data={linearProbe.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "neural" && (
             <NeuralTopicComparisonTab
@@ -1155,27 +1189,33 @@ function ExploreStep({
             />
           )}
           {tab === "qkexplore" && (
-            <QKExploreTab
-              isLoading={ldaSweepQ.isLoading}
-              error={ldaSweepQ.error as Error | null}
-              sweep={ldaSweepQ.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <QKExploreTab
+                isLoading={ldaSweepQ.isLoading}
+                error={ldaSweepQ.error as Error | null}
+                sweep={ldaSweepQ.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "bandmask" && subsetId && isLabelled && (
-            <BandMaskTab
-              sceneId={subsetId}
-              isLoading={bandMaskIndexQ.isLoading}
-              error={bandMaskIndexQ.error as Error | null}
-              index={bandMaskIndexQ.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <BandMaskTab
+                sceneId={subsetId}
+                isLoading={bandMaskIndexQ.isLoading}
+                error={bandMaskIndexQ.error as Error | null}
+                index={bandMaskIndexQ.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "bandmask" && subsetId && isHidsag && (
-            <HidsagBandMaskTab
-              subsetCode={toHidsagSubsetCode(subsetId)}
-              isLoading={bandMaskHidsagIndexQ.isLoading}
-              error={bandMaskHidsagIndexQ.error as Error | null}
-              index={bandMaskHidsagIndexQ.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <HidsagBandMaskTab
+                subsetCode={toHidsagSubsetCode(subsetId)}
+                isLoading={bandMaskHidsagIndexQ.isLoading}
+                error={bandMaskHidsagIndexQ.error as Error | null}
+                index={bandMaskHidsagIndexQ.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "spatial" && (
             <SpatialStructureTab
@@ -1196,15 +1236,17 @@ function ExploreStep({
             />
           )}
           {tab === "applydoc" && (
-            <ApplyToDocumentTab
-              isLoading={applyDocs.isLoading || applyTopicViews.isLoading || applyTopicToData.isLoading}
-              error={(applyDocs.error as Error | null) ?? (applyTopicViews.error as Error | null) ?? (applyTopicToData.error as Error | null)}
-              docs={applyDocs.data ?? null}
-              topicViews={applyTopicViews.data ?? null}
-              topicToData={applyTopicToData.data ?? null}
-              selectedTopic={selectedTopic}
-              setSelectedTopic={setSelectedTopic}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <ApplyToDocumentTab
+                isLoading={applyDocs.isLoading || applyTopicViews.isLoading || applyTopicToData.isLoading}
+                error={(applyDocs.error as Error | null) ?? (applyTopicViews.error as Error | null) ?? (applyTopicToData.error as Error | null)}
+                docs={applyDocs.data ?? null}
+                topicViews={applyTopicViews.data ?? null}
+                topicToData={applyTopicToData.data ?? null}
+                selectedTopic={selectedTopic}
+                setSelectedTopic={setSelectedTopic}
+              />
+            </Suspense>
           )}
           {tab === "browser" && (
             <SpectralBrowserTab
@@ -6228,6 +6270,7 @@ function Stepper({
   ctx: { family: string | null; subset: string | null; rep: string | null };
 }) {
   void state;
+  const { t } = useTranslation(["pages"]);
   const labels = STEPS;
   return (
     <ol
@@ -6273,7 +6316,7 @@ function Stepper({
             >
               {i + 1}
             </span>
-            <span>{s.label}</span>
+            <span>{t(`workspace.step.${s.key}` as never, s.label) as string}</span>
             {isDone && i === 0 && ctx.family && (
               <span
                 className="text-xs font-mono opacity-70"
@@ -7980,216 +8023,6 @@ function AnomalyMetric({
           {caption}
         </p>
       ) : null}
-    </div>
-  );
-}
-
-function LlmTeaLeavesTab({
-  isLoading,
-  error,
-  data,
-}: {
-  isLoading: boolean;
-  error: Error | null;
-  data: import("@/api/client").LlmTeaLeaves | null;
-}) {
-  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>Loading LLM tea-leaves evaluation…</p>;
-  if (error) {
-    return (
-      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p style={{ color: "var(--color-warn)" }}>Could not load LLM tea-leaves.</p>
-        <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
-      </div>
-    );
-  }
-  if (!data) return <TabEmpty />;
-
-  const attempted = data.per_topic.filter((t) => !t.skipped);
-  return (
-    <div className="space-y-5">
-      <div
-        className="rounded-xl border p-5 relative overflow-hidden"
-        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-      >
-        <div
-          aria-hidden
-          className="absolute top-0 left-0 right-0 h-1"
-          style={{ background: "linear-gradient(90deg, rgba(240, 228, 66, 1) 0%, rgba(214, 140, 40, 1) 100%)" }}
-        />
-        <h4 className="text-base font-semibold mt-1 mb-1" style={{ color: "var(--color-fg)" }}>
-          LLM tea leaves · word-intrusion test
-        </h4>
-        <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-          For each topic, top-N words by relevance λ get one intruder word inserted. An LLM
-          ({data.model}) is asked to pick the odd word out. Correct picks ⇒ topic is coherent
-          enough to make the intruder obvious. Higher accuracy ⇒ more interpretable topics.
-        </p>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <UnmixingStat label="model" value={data.model} />
-          <UnmixingStat label="λ relevance" value={data.lambda_used} />
-          <UnmixingStat label="top-N per topic" value={String(data.top_n_per_topic)} />
-          <UnmixingStat
-            label="intrusion accuracy"
-            value={`${(data.intrusion_accuracy * 100).toFixed(1)}% · ${data.n_correct_intrusion}/${data.n_attempted}`}
-          />
-        </div>
-      </div>
-
-      <div
-        className="rounded-lg border p-4"
-        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-      >
-        <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-          Per-topic intrusion results · {attempted.length} attempted of {data.topic_count}
-        </h4>
-        <div className="overflow-x-auto">
-          <table className="w-full text-[12px]" style={{ color: "var(--color-fg)" }}>
-            <thead>
-              <tr style={{ color: "var(--color-fg-faint)" }}>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">topic</th>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">top words</th>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">intruder</th>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">LLM picked</th>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">verdict</th>
-                <th className="text-left font-mono text-[11px] pb-1">LLM label</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.per_topic.map((t) => {
-                const correct = t.intrusion_correct;
-                return (
-                  <tr key={t.topic_id} style={{ borderTop: "1px solid var(--color-border)" }}>
-                    <td className="py-1 pr-3 font-mono">t{t.topic_id}</td>
-                    <td className="py-1 pr-3 font-mono text-[11px]">
-                      {t.skipped ? <span style={{ color: "var(--color-fg-faint)" }}>skipped ({t.reason})</span> : t.top_words?.slice(0, 5).join(", ")}
-                      {(t.top_words?.length ?? 0) > 5 ? <span style={{ color: "var(--color-fg-faint)" }}>, …</span> : null}
-                    </td>
-                    <td className="py-1 pr-3 font-mono">
-                      <span style={{ backgroundColor: "var(--color-accent-soft)", padding: "1px 4px", borderRadius: 3 }}>{t.intruder ?? "—"}</span>
-                    </td>
-                    <td className="py-1 pr-3 font-mono">{t.llm_chose ?? "—"}</td>
-                    <td className="py-1 pr-3 font-mono">
-                      {correct === true ? (
-                        <span style={{ color: "rgba(40,160,80,1)" }}>✓ correct</span>
-                      ) : correct === false ? (
-                        <span style={{ color: "rgba(214,39,40,1)" }}>✗ wrong</span>
-                      ) : (
-                        <span style={{ color: "var(--color-fg-faint)" }}>—</span>
-                      )}
-                    </td>
-                    <td className="py-1 truncate text-[11px]" style={{ maxWidth: 240 }} title={t.llm_label}>
-                      {t.llm_label ?? "—"}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LinearProbeTab({
-  isLoading,
-  error,
-  data,
-}: {
-  isLoading: boolean;
-  error: Error | null;
-  data: import("@/api/client").LinearProbePanel | null;
-}) {
-  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>Loading linear probe panel…</p>;
-  if (error) {
-    return (
-      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p style={{ color: "var(--color-warn)" }}>Could not load linear probe panel.</p>
-        <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
-      </div>
-    );
-  }
-  if (!data) return <TabEmpty />;
-
-  const methods = Object.entries(data.method_metrics);
-  const sorted = data.ranking_by_macro_f1_mean
-    ? data.ranking_by_macro_f1_mean.map((r) => [r.method, data.method_metrics[r.method]] as const).filter(([, m]) => !!m)
-    : methods.sort((a, b) => (b[1].macro_f1.mean - a[1].macro_f1.mean));
-
-  const maxF1 = sorted[0]?.[1]?.macro_f1.mean ?? 1;
-
-  return (
-    <div className="space-y-5">
-      <div
-        className="rounded-xl border p-5 relative overflow-hidden"
-        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-      >
-        <div
-          aria-hidden
-          className="absolute top-0 left-0 right-0 h-1"
-          style={{ background: "linear-gradient(90deg, rgba(56,189,248,1) 0%, rgba(40,160,80,1) 100%)" }}
-        />
-        <h4 className="text-base font-semibold mt-1 mb-1" style={{ color: "var(--color-fg)" }}>
-          Linear probe panel · {data.n_classes ?? "?"}-class macro F1
-        </h4>
-        <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-          Trains a linear classifier on each method's latent (K = {data.K ?? "?"}) and reports
-          macro-F1, accuracy, and balanced accuracy with 95% CI. Linear probing isolates the
-          representation's separability — a strong probe means the latent already arranges classes
-          in linear half-spaces.
-        </p>
-      </div>
-
-      <div
-        className="rounded-lg border p-4"
-        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-      >
-        <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-          Method ranking · macro F1
-        </h4>
-        <div className="overflow-x-auto">
-          <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
-            <thead>
-              <tr style={{ color: "var(--color-fg-faint)" }}>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">rank</th>
-                <th className="text-left font-mono text-[11px] pb-1 pr-3">method</th>
-                <th className="text-right font-mono text-[11px] pb-1 pr-3">macro F1</th>
-                <th className="text-right font-mono text-[11px] pb-1 pr-3">accuracy</th>
-                <th className="text-right font-mono text-[11px] pb-1 pr-3">balanced acc</th>
-                <th className="text-left font-mono text-[11px] pb-1">bar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map(([m, mm], i) => {
-                if (!mm) return null;
-                const f1 = mm.macro_f1;
-                const norm = f1.mean / Math.max(1e-9, maxF1);
-                return (
-                  <tr key={m} style={{ borderTop: "1px solid var(--color-border)" }}>
-                    <td className="py-1 pr-3 font-mono">{i + 1}</td>
-                    <td className="py-1 pr-3 font-mono">{m}</td>
-                    <td className="py-1 pr-3 text-right font-mono">
-                      {f1.mean.toFixed(3)}
-                      {f1.ci95 ? <span className="opacity-70 ml-1 text-[10.5px]">[{f1.ci95[0].toFixed(3)}, {f1.ci95[1].toFixed(3)}]</span> : null}
-                    </td>
-                    <td className="py-1 pr-3 text-right font-mono">
-                      {mm.accuracy.mean.toFixed(3)}
-                    </td>
-                    <td className="py-1 pr-3 text-right font-mono">
-                      {mm.balanced_accuracy ? mm.balanced_accuracy.mean.toFixed(3) : "—"}
-                    </td>
-                    <td className="py-1 w-[180px]">
-                      <div className="w-full h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>
-                        <div className="h-2 rounded" style={{ width: `${norm * 100}%`, backgroundColor: "var(--color-accent)" }} />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
 }
