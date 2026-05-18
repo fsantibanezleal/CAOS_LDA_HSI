@@ -253,6 +253,9 @@ def main() -> None:
                 "source": "Curated HIDSAG local subset",
                 "generated_at": str(date.today()),
                 "subsets": subset_rows,
+                # Closes #444 P1 item 3.1 (builder metadata envelope).
+                "framework_axis": "inventory: HIDSAG curated local subset",
+                "builder_version": "build_hidsag_curated_subset v0.2",
             },
             handle,
             indent=2,

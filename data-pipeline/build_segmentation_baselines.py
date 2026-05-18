@@ -298,6 +298,9 @@ def main() -> None:
             }
         ],
         "scenes": scenes,
+        # Closes #444 P1 item 3.1 (builder metadata envelope).
+        "framework_axis": "documentation: SLIC segmentation baseline reference",
+        "builder_version": "build_segmentation_baselines v0.2",
     }
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     with OUTPUT_PATH.open("w", encoding="utf-8") as handle:
