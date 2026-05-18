@@ -11,20 +11,44 @@ from app.models.band_masks import (
     BandMasksIndexResponse,
 )
 from app.models.precompute import (
+    CrossMethodAgreement,
     CrossSceneTransfer,
+    DeepAnomaly,
+    DmrLdaHidsag,
     EdaHidsag,
     EdaPerScene,
+    EmbeddedBaseline,
+    EndmemberBaseline,
+    ExternalValidationHidsagMethods,
+    ExternalValidationLiterature,
+    HidsagCrossPreprocessingStability,
+    InterpretabilityCards,
     LdaSweep,
     LinearProbePanel,
+    MethodStatisticsHidsag,
     MutualInformation,
     MutualInformationHidsag,
+    Narratives,
+    NeuralTopicComparison,
+    NeuralTopicSeedStability,
+    OptunaSearch,
     QuantizationSensitivity,
+    RateDistortionCurve,
+    Representation,
+    SeedStability,
     SpatialValidationResponse,
     SpectralBrowserMetadata,
     SpectralDensityManifest,
     SuperTopics,
+    TopicAnomaly,
+    TopicRoutedClassifier,
+    TopicRoutedDeepGate,
+    TopicSpatialContinuous,
+    TopicSpatialFull,
+    TopicStability,
     TopicToDataResponse,
     TopicToLibrary,
+    TopicToUsgsV7,
     TopicViewsResponse,
     ValidationBlocksResponse,
     WordificationResponse,
@@ -590,52 +614,76 @@ def grouping(method: str, scene_id: str) -> dict:
     )
 
 
-@router.get("/cross-method-agreement/{scene_id}")
-def cross_method_agreement(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_cross_method_agreement, scene_id,
+@router.get(
+    "/cross-method-agreement/{scene_id}",
+    response_model=CrossMethodAgreement,
+    response_model_exclude_none=True,
+)
+def cross_method_agreement(scene_id: str) -> CrossMethodAgreement:
+    return _typed_or_404(
+        CrossMethodAgreement, get_cross_method_agreement, scene_id,
         hint=f"cross-method agreement for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/method-statistics-hidsag/{subset_code}")
-def method_statistics_hidsag(subset_code: str) -> dict:
-    return _serve_or_404(
-        get_method_statistics_hidsag, subset_code,
+@router.get(
+    "/method-statistics-hidsag/{subset_code}",
+    response_model=MethodStatisticsHidsag,
+    response_model_exclude_none=True,
+)
+def method_statistics_hidsag(subset_code: str) -> MethodStatisticsHidsag:
+    return _typed_or_404(
+        MethodStatisticsHidsag, get_method_statistics_hidsag, subset_code,
         hint=f"method statistics for HIDSAG '{subset_code}' not generated yet",
     )
 
 
-@router.get("/external-validation/{scene_id}/literature")
-def external_validation_literature(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_external_validation_literature, scene_id,
+@router.get(
+    "/external-validation/{scene_id}/literature",
+    response_model=ExternalValidationLiterature,
+    response_model_exclude_none=True,
+)
+def external_validation_literature(scene_id: str) -> ExternalValidationLiterature:
+    return _typed_or_404(
+        ExternalValidationLiterature, get_external_validation_literature, scene_id,
         hint=f"literature alignment for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/external-validation/hidsag/{subset_code}/methods")
-def external_validation_hidsag_methods(subset_code: str) -> dict:
-    return _serve_or_404(
-        get_external_validation_hidsag_methods, subset_code,
+@router.get(
+    "/external-validation/hidsag/{subset_code}/methods",
+    response_model=ExternalValidationHidsagMethods,
+    response_model_exclude_none=True,
+)
+def external_validation_hidsag_methods(subset_code: str) -> ExternalValidationHidsagMethods:
+    return _typed_or_404(
+        ExternalValidationHidsagMethods, get_external_validation_hidsag_methods, subset_code,
         hint=f"HIDSAG method summary for '{subset_code}' not generated yet",
     )
 
 
-@router.get("/narratives/{scene_id}")
-def narratives(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_narratives, scene_id,
+@router.get(
+    "/narratives/{scene_id}",
+    response_model=Narratives,
+    response_model_exclude_none=True,
+)
+def narratives(scene_id: str) -> Narratives:
+    return _typed_or_404(
+        Narratives, get_narratives, scene_id,
         hint=f"narrative for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/interpretability/{scene_id}/{card_type}")
-def interpretability(scene_id: str, card_type: str) -> dict:
+@router.get(
+    "/interpretability/{scene_id}/{card_type}",
+    response_model=InterpretabilityCards,
+    response_model_exclude_none=True,
+)
+def interpretability(scene_id: str, card_type: str) -> InterpretabilityCards:
     if card_type not in ("topic_cards", "band_cards", "document_cards"):
         raise HTTPException(status_code=400, detail="card_type must be topic_cards | band_cards | document_cards")
-    return _serve_or_404(
-        get_interpretability, scene_id, card_type,
+    return _typed_or_404(
+        InterpretabilityCards, get_interpretability, scene_id, card_type,
         hint=f"interpretability {card_type} for '{scene_id}' not generated yet",
     )
 
@@ -688,18 +736,26 @@ def representations_index() -> dict:
     )
 
 
-@router.get("/representations/{method}/{scene_id}")
-def representation(method: str, scene_id: str) -> dict:
-    return _serve_or_404(
-        get_representation, method, scene_id,
+@router.get(
+    "/representations/{method}/{scene_id}",
+    response_model=Representation,
+    response_model_exclude_none=True,
+)
+def representation(method: str, scene_id: str) -> Representation:
+    return _typed_or_404(
+        Representation, get_representation, method, scene_id,
         hint=f"representation {method}/{scene_id} not generated yet",
     )
 
 
-@router.get("/dmr-lda-hidsag/{subset_code}")
-def dmr_lda_hidsag(subset_code: str) -> dict:
-    return _serve_or_404(
-        get_dmr_lda_hidsag, subset_code,
+@router.get(
+    "/dmr-lda-hidsag/{subset_code}",
+    response_model=DmrLdaHidsag,
+    response_model_exclude_none=True,
+)
+def dmr_lda_hidsag(subset_code: str) -> DmrLdaHidsag:
+    return _typed_or_404(
+        DmrLdaHidsag, get_dmr_lda_hidsag, subset_code,
         hint=f"dmr_lda_hidsag for '{subset_code}' not generated yet",
     )
 
@@ -727,10 +783,14 @@ def bayesian_comparison(task_type: str) -> dict:
     )
 
 
-@router.get("/optuna-search/{scene_id}")
-def optuna_search(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_optuna_search, scene_id,
+@router.get(
+    "/optuna-search/{scene_id}",
+    response_model=OptunaSearch,
+    response_model_exclude_none=True,
+)
+def optuna_search(scene_id: str) -> OptunaSearch:
+    return _typed_or_404(
+        OptunaSearch, get_optuna_search, scene_id,
         hint=f"optuna_search for '{scene_id}' not generated yet",
     )
 
@@ -771,58 +831,88 @@ def mutual_information_hidsag(subset_code: str) -> MutualInformationHidsag:
     )
 
 
-@router.get("/rate-distortion-curve/{scene_id}")
-def rate_distortion_curve(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_rate_distortion_curve, scene_id,
+@router.get(
+    "/rate-distortion-curve/{scene_id}",
+    response_model=RateDistortionCurve,
+    response_model_exclude_none=True,
+)
+def rate_distortion_curve(scene_id: str) -> RateDistortionCurve:
+    return _typed_or_404(
+        RateDistortionCurve, get_rate_distortion_curve, scene_id,
         hint=f"rate_distortion_curve for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/topic-routed-classifier/{scene_id}")
-def topic_routed_classifier(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_routed_classifier, scene_id,
+@router.get(
+    "/topic-routed-classifier/{scene_id}",
+    response_model=TopicRoutedClassifier,
+    response_model_exclude_none=True,
+)
+def topic_routed_classifier(scene_id: str) -> TopicRoutedClassifier:
+    return _typed_or_404(
+        TopicRoutedClassifier, get_topic_routed_classifier, scene_id,
         hint=f"topic_routed_classifier for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/topic-routed-deep-gate/{scene_id}")
-def topic_routed_deep_gate(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_routed_deep_gate, scene_id,
+@router.get(
+    "/topic-routed-deep-gate/{scene_id}",
+    response_model=TopicRoutedDeepGate,
+    response_model_exclude_none=True,
+)
+def topic_routed_deep_gate(scene_id: str) -> TopicRoutedDeepGate:
+    return _typed_or_404(
+        TopicRoutedDeepGate, get_topic_routed_deep_gate, scene_id,
         hint=f"topic_routed_deep_gate for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/neural-topic-comparison/{scene_id}")
-def neural_topic_comparison(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_neural_topic_comparison, scene_id,
+@router.get(
+    "/neural-topic-comparison/{scene_id}",
+    response_model=NeuralTopicComparison,
+    response_model_exclude_none=True,
+)
+def neural_topic_comparison(scene_id: str) -> NeuralTopicComparison:
+    return _typed_or_404(
+        NeuralTopicComparison, get_neural_topic_comparison, scene_id,
         hint=f"neural_topic_comparison for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/neural-topic-seed-stability/{scene_id}")
-def neural_topic_seed_stability(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_neural_topic_seed_stability, scene_id,
+@router.get(
+    "/neural-topic-seed-stability/{scene_id}",
+    response_model=NeuralTopicSeedStability,
+    response_model_exclude_none=True,
+)
+def neural_topic_seed_stability(scene_id: str) -> NeuralTopicSeedStability:
+    return _typed_or_404(
+        NeuralTopicSeedStability, get_neural_topic_seed_stability, scene_id,
         hint=f"neural_topic_seed_stability for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/embedded-baseline/{scene_id}")
-def embedded_baseline(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_embedded_baseline, scene_id,
+@router.get(
+    "/embedded-baseline/{scene_id}",
+    response_model=EmbeddedBaseline,
+    response_model_exclude_none=True,
+)
+def embedded_baseline(scene_id: str) -> EmbeddedBaseline:
+    return _typed_or_404(
+        EmbeddedBaseline, get_embedded_baseline, scene_id,
         hint=f"embedded_baseline for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/topic-stability/{scene_id}")
-def topic_stability(scene_id: str, k_offset: int = 0) -> dict:
+@router.get(
+    "/topic-stability/{scene_id}",
+    response_model=TopicStability,
+    response_model_exclude_none=True,
+)
+def topic_stability(scene_id: str, k_offset: int = 0) -> TopicStability:
     try:
-        return get_topic_stability(scene_id, k_offset=k_offset)
+        return TopicStability.model_validate(
+            get_topic_stability(scene_id, k_offset=k_offset)
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -830,10 +920,18 @@ def topic_stability(scene_id: str, k_offset: int = 0) -> dict:
         ) from exc
 
 
-@router.get("/deep-seed-stability/{scene_id}")
-def deep_seed_stability(scene_id: str, method: str = "cae_1d_8", n_seeds: int = 7) -> dict:
+@router.get(
+    "/deep-seed-stability/{scene_id}",
+    response_model=SeedStability,
+    response_model_exclude_none=True,
+)
+def deep_seed_stability(
+    scene_id: str, method: str = "cae_1d_8", n_seeds: int = 7
+) -> SeedStability:
     try:
-        return get_deep_seed_stability(scene_id, method=method, n_seeds=n_seeds)
+        return SeedStability.model_validate(
+            get_deep_seed_stability(scene_id, method=method, n_seeds=n_seeds)
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -841,18 +939,28 @@ def deep_seed_stability(scene_id: str, method: str = "cae_1d_8", n_seeds: int = 
         ) from exc
 
 
-@router.get("/deep-anomaly/{scene_id}")
-def deep_anomaly(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_deep_anomaly, scene_id,
+@router.get(
+    "/deep-anomaly/{scene_id}",
+    response_model=DeepAnomaly,
+    response_model_exclude_none=True,
+)
+def deep_anomaly(scene_id: str) -> DeepAnomaly:
+    return _typed_or_404(
+        DeepAnomaly, get_deep_anomaly, scene_id,
         hint=f"deep_anomaly for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/classical-seed-stability/{scene_id}")
-def classical_seed_stability(scene_id: str, method: str = "pca_8") -> dict:
+@router.get(
+    "/classical-seed-stability/{scene_id}",
+    response_model=SeedStability,
+    response_model_exclude_none=True,
+)
+def classical_seed_stability(scene_id: str, method: str = "pca_8") -> SeedStability:
     try:
-        return get_classical_seed_stability(scene_id, method=method)
+        return SeedStability.model_validate(
+            get_classical_seed_stability(scene_id, method=method)
+        )
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=404,
@@ -860,50 +968,74 @@ def classical_seed_stability(scene_id: str, method: str = "pca_8") -> dict:
         ) from exc
 
 
-@router.get("/topic-to-usgs-v7/{scene_id}")
-def topic_to_usgs_v7(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_to_usgs_v7, scene_id,
+@router.get(
+    "/topic-to-usgs-v7/{scene_id}",
+    response_model=TopicToUsgsV7,
+    response_model_exclude_none=True,
+)
+def topic_to_usgs_v7(scene_id: str) -> TopicToUsgsV7:
+    return _typed_or_404(
+        TopicToUsgsV7, get_topic_to_usgs_v7, scene_id,
         hint=f"topic_to_usgs_v7 for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/hidsag-cross-preprocessing-stability/{subset_code}")
-def hidsag_cross_preprocessing_stability(subset_code: str) -> dict:
-    return _serve_or_404(
-        get_hidsag_cross_preprocessing_stability, subset_code,
+@router.get(
+    "/hidsag-cross-preprocessing-stability/{subset_code}",
+    response_model=HidsagCrossPreprocessingStability,
+    response_model_exclude_none=True,
+)
+def hidsag_cross_preprocessing_stability(subset_code: str) -> HidsagCrossPreprocessingStability:
+    return _typed_or_404(
+        HidsagCrossPreprocessingStability, get_hidsag_cross_preprocessing_stability, subset_code,
         hint=f"hidsag_cross_preprocessing_stability for '{subset_code}' not generated yet",
     )
 
 
-@router.get("/topic-anomaly/{scene_id}")
-def topic_anomaly(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_anomaly, scene_id,
+@router.get(
+    "/topic-anomaly/{scene_id}",
+    response_model=TopicAnomaly,
+    response_model_exclude_none=True,
+)
+def topic_anomaly(scene_id: str) -> TopicAnomaly:
+    return _typed_or_404(
+        TopicAnomaly, get_topic_anomaly, scene_id,
         hint=f"topic_anomaly for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/topic-spatial-continuous/{scene_id}")
-def topic_spatial_continuous(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_spatial_continuous, scene_id,
+@router.get(
+    "/topic-spatial-continuous/{scene_id}",
+    response_model=TopicSpatialContinuous,
+    response_model_exclude_none=True,
+)
+def topic_spatial_continuous(scene_id: str) -> TopicSpatialContinuous:
+    return _typed_or_404(
+        TopicSpatialContinuous, get_topic_spatial_continuous, scene_id,
         hint=f"topic_spatial_continuous for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/topic-spatial-full/{scene_id}")
-def topic_spatial_full(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_topic_spatial_full, scene_id,
+@router.get(
+    "/topic-spatial-full/{scene_id}",
+    response_model=TopicSpatialFull,
+    response_model_exclude_none=True,
+)
+def topic_spatial_full(scene_id: str) -> TopicSpatialFull:
+    return _typed_or_404(
+        TopicSpatialFull, get_topic_spatial_full, scene_id,
         hint=f"topic_spatial_full for '{scene_id}' not generated yet",
     )
 
 
-@router.get("/endmember-baseline/{scene_id}")
-def endmember_baseline(scene_id: str) -> dict:
-    return _serve_or_404(
-        get_endmember_baseline, scene_id,
+@router.get(
+    "/endmember-baseline/{scene_id}",
+    response_model=EndmemberBaseline,
+    response_model_exclude_none=True,
+)
+def endmember_baseline(scene_id: str) -> EndmemberBaseline:
+    return _typed_or_404(
+        EndmemberBaseline, get_endmember_baseline, scene_id,
         hint=f"endmember_baseline for '{scene_id}' not generated yet",
     )
 
