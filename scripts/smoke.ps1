@@ -11,7 +11,9 @@
 
 [CmdletBinding()]
 param(
-    [string]$BaseUrl = "http://127.0.0.1:8105"
+    # BaseUrl precedence: -BaseUrl param > $env:SMOKE_BASE_URL > localhost default
+    # (closes #444 item 4.3).
+    [string]$BaseUrl = $(if ($env:SMOKE_BASE_URL) { $env:SMOKE_BASE_URL } else { "http://127.0.0.1:8105" })
 )
 
 $ErrorActionPreference = "Stop"
@@ -98,6 +100,20 @@ $paths = @(
     "/api/mutual-information/hidsag/MINERAL1",
     "/api/rate-distortion-curve/indian-pines-corrected",
     "/api/topic-routed-classifier/indian-pines-corrected",
+    "/api/topic-routed-deep-gate/indian-pines-corrected",
+    "/api/optuna-search/indian-pines-corrected",
+    "/api/hidsag-subset-inventory",
+    "/api/hidsag-curated-subset",
+    "/api/hidsag-cross-preprocessing-stability/MINERAL1",
+    "/api/groupings/slic_2000/indian-pines-corrected",
+    "/api/groupings/patch_15/indian-pines-corrected",
+    "/api/representations/cae_1d_8/indian-pines-corrected",
+    "/api/representations/nmf_8/indian-pines-corrected",
+    "/api/topic-views/salinas-corrected",
+    "/api/topic-views/kennedy-space-center",
+    "/api/topic-views/botswana",
+    "/api/spatial/salinas-a-corrected",
+    "/api/spatial/pavia-university",
     "/api/embedded-baseline/indian-pines-corrected",
     "/api/topic-stability/indian-pines-corrected",
     "/api/deep-seed-stability/indian-pines-corrected",

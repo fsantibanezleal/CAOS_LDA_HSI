@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE_URL="${1:-http://127.0.0.1:8105}"
+# BASE_URL precedence: positional arg > SMOKE_BASE_URL env var > localhost default.
+# Env var support added for CI / containerised callers (closes #444 item 4.3).
+BASE_URL="${1:-${SMOKE_BASE_URL:-http://127.0.0.1:8105}}"
 BASE_URL="${BASE_URL%/}"
 
 paths=(
@@ -86,6 +88,20 @@ paths=(
   "/api/mutual-information/hidsag/MINERAL1"
   "/api/rate-distortion-curve/indian-pines-corrected"
   "/api/topic-routed-classifier/indian-pines-corrected"
+  "/api/topic-routed-deep-gate/indian-pines-corrected"
+  "/api/optuna-search/indian-pines-corrected"
+  "/api/hidsag-subset-inventory"
+  "/api/hidsag-curated-subset"
+  "/api/hidsag-cross-preprocessing-stability/MINERAL1"
+  "/api/groupings/slic_2000/indian-pines-corrected"
+  "/api/groupings/patch_15/indian-pines-corrected"
+  "/api/representations/cae_1d_8/indian-pines-corrected"
+  "/api/representations/nmf_8/indian-pines-corrected"
+  "/api/topic-views/salinas-corrected"
+  "/api/topic-views/kennedy-space-center"
+  "/api/topic-views/botswana"
+  "/api/spatial/salinas-a-corrected"
+  "/api/spatial/pavia-university"
   "/api/embedded-baseline/indian-pines-corrected"
   "/api/topic-stability/indian-pines-corrected"
   "/api/deep-seed-stability/indian-pines-corrected"
