@@ -251,6 +251,9 @@ def main() -> None:
                 "patch_grid": {"rows": PATCH_GRID_ROWS, "cols": PATCH_GRID_COLS},
                 "npz_path": str(OUTPUT_NPZ_PATH),
                 "subsets": subset_summaries,
+                # Closes #444 P1 item 3.1 (builder metadata envelope).
+                "framework_axis": "documentation: HIDSAG patch-level region documents",
+                "builder_version": "build_hidsag_region_documents v0.2",
             },
             handle,
             indent=2,

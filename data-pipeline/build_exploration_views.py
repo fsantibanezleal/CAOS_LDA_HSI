@@ -445,7 +445,10 @@ def main() -> int:
         "generated_at": date.today().isoformat(),
         "scenes": scene_views,
         "spectral_library": library_view,
-        "hidsag": hidsag_view
+        "hidsag": hidsag_view,
+        # Closes #444 P1 item 3.1 (builder metadata envelope).
+        "framework_axis": "documentation: pre-computed Workspace landing views",
+        "builder_version": "build_exploration_views v0.2",
     }
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
