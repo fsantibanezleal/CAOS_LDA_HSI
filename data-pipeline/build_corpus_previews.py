@@ -14,15 +14,19 @@ from pathlib import Path
 from statistics import median
 from typing import Any, Iterable
 
+# c274: route through research_core.paths.DERIVED_DIR instead of
+# re-deriving ROOT locally (closes one of the 13 builders flagged in
+# #444 P1 item 3.2).
+from research_core.paths import DERIVED_DIR
+
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-ROOT = Path(__file__).resolve().parents[1]
-SPECTRAL_PATH = ROOT / "data" / "derived" / "spectral" / "library_samples.json"
-REAL_PATH = ROOT / "data" / "derived" / "real" / "real_samples.json"
-OUTPUT_DIR = ROOT / "data" / "derived" / "corpus"
+SPECTRAL_PATH = DERIVED_DIR / "spectral" / "library_samples.json"
+REAL_PATH = DERIVED_DIR / "real" / "real_samples.json"
+OUTPUT_DIR = DERIVED_DIR / "corpus"
 OUTPUT_PATH = OUTPUT_DIR / "corpus_previews.json"
 
 

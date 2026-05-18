@@ -12,7 +12,6 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from itertools import permutations
-from pathlib import Path
 
 import numpy as np
 from sklearn.decomposition import LatentDirichletAllocation
@@ -20,9 +19,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import LeaveOneOut
 
+# c274: route through research_core.paths.DATA_DIR instead of
+# re-deriving ROOT locally (closes one of the 13 builders flagged
+# in #444 P1 item 3.2).
+from research_core.paths import DATA_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "data" / "demo" / "demo.json"
+
+OUTPUT = DATA_DIR / "demo" / "demo.json"
 RNG = np.random.default_rng(42)
 
 

@@ -18,11 +18,15 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
 
+# c274: route through research_core.paths.DERIVED_DIR instead of
+# re-deriving ROOT locally (closes one of the 13 builders flagged in
+# #444 P1 item 3.2).
+from research_core.paths import DERIVED_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-REAL_PATH = ROOT / "data" / "derived" / "real" / "real_samples.json"
-SPECTRAL_PATH = ROOT / "data" / "derived" / "spectral" / "library_samples.json"
-OUTPUT_DIR = ROOT / "data" / "derived" / "analysis"
+
+REAL_PATH = DERIVED_DIR / "real" / "real_samples.json"
+SPECTRAL_PATH = DERIVED_DIR / "spectral" / "library_samples.json"
+OUTPUT_DIR = DERIVED_DIR / "analysis"
 OUTPUT_PATH = OUTPUT_DIR / "analysis.json"
 RANDOM_STATE = 42
 
