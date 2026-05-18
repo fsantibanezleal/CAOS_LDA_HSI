@@ -31,10 +31,11 @@ from typing import Any, Iterable
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[1]
-DERIVED = ROOT / "data" / "derived"
-OUT_PATH = DERIVED / "core" / "exploration_views.json"
+# c280: route through research_core.paths.DERIVED_DIR instead of
+# redefining ROOT locally (continues #444 P1 3.2 sweep).
+from research_core.paths import DERIVED_DIR as DERIVED  # noqa: E402
 
+OUT_PATH = DERIVED / "core" / "exploration_views.json"
 REAL_PATH = DERIVED / "real" / "real_samples.json"
 LIBRARY_PATH = DERIVED / "spectral" / "library_samples.json"
 HIDSAG_CURATED_PATH = DERIVED / "core" / "hidsag_curated_subset.json"

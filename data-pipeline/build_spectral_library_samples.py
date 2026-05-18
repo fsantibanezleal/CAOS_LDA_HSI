@@ -5,14 +5,17 @@ import json
 from datetime import datetime, timezone
 import re
 import zipfile
-from pathlib import Path
 
 import numpy as np
 
+# c280: route through research_core.paths instead of redefining ROOT
+# locally (continues #444 P1 3.2 sweep).
+from research_core.paths import DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = ROOT / "data" / "raw" / "usgs_splib07"
-OUTPUT_DIR = ROOT / "data" / "derived" / "spectral"
+
+RAW_DIR = _RC_RAW_DIR / "usgs_splib07"
+OUTPUT_DIR = DERIVED_DIR / "spectral"
 OUTPUT_PATH = OUTPUT_DIR / "library_samples.json"
 
 AVIRIS_WAVELENGTHS_NM = np.linspace(400.0, 2500.0, 224)
