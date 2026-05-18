@@ -268,3 +268,350 @@ class ValidationBlocksResponse(BaseModel):
     blocks: list[ValidationBlock] = Field(default_factory=list)
     generated_at: str
     builder_version: str
+
+
+# ---------------- eda per-scene ----------------
+
+
+class EdaClassDistributionRow(BaseModel):
+    model_config = _PassThroughConfig
+    label_id: int
+    name: str | None = None
+    count: int
+    p: float | None = None
+    color: str | None = None
+
+
+class EdaPerScene(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    scene_name: str
+    sensor: str | None = None
+    family_id: str | None = None
+    spatial_shape: list[int]
+    n_pixels: int
+    n_labelled_pixels: int
+    n_classes: int
+    imbalance_gini: float
+    wavelengths_nm: list[float]
+    class_distribution: list[EdaClassDistributionRow]
+    # Builder ships per-label spectrum stats as a dict keyed by label_id;
+    # value is {mean: [...], std: [...], ...}, not just the mean vector.
+    class_mean_spectra: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    class_distance_cosine: dict[str, Any] = Field(default_factory=dict)
+    class_distance_sam_radians: dict[str, Any] = Field(default_factory=dict)
+    band_discriminative: list[dict[str, Any]] = Field(default_factory=list)
+    silhouette_label_as_cluster_cosine: dict[str, Any] = Field(default_factory=dict)
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- eda hidsag ----------------
+
+
+class EdaHidsag(BaseModel):
+    model_config = _PassThroughConfig
+    subset_code: str
+    sample_count: int
+    measurement_count_total: int
+    numeric_variable_names: list[str]
+    numeric_variables: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    dominant_targets_by_mean: list[dict[str, Any]] = Field(default_factory=list)
+    correlation_pearson: dict[str, Any] = Field(default_factory=dict)
+    correlation_spearman: dict[str, Any] = Field(default_factory=dict)
+    modality_band_counts: dict[str, int] = Field(default_factory=dict)
+    measurement_tags_top: list[Any] = Field(default_factory=list)
+    spectrum_axis: list[dict[str, Any]] = Field(default_factory=list)
+    mean_spectrum_by_measurement: list[dict[str, Any]] = Field(default_factory=list)
+    mean_spectrum_by_measurement_stratum: list[Any] = Field(default_factory=list)
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- spectral browser ----------------
+
+
+class SpectralBrowserMetadata(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    scene_name: str
+    spatial_shape: list[int]
+    sampling_strategy: str
+    random_state: int
+    N: int
+    B: int
+    format: str
+    spectra_path: str
+    wavelengths_nm: list[float]
+    rows: list[dict[str, Any]]
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- spectral density ----------------
+
+
+class SpectralDensityBinPath(BaseModel):
+    model_config = _PassThroughConfig
+    path: str
+    n_pixels_sampled: int | None = None
+
+
+class SpectralDensityByLabel(BaseModel):
+    model_config = _PassThroughConfig
+    label_id: int
+    path: str
+    n_pixels_sampled: int | None = None
+
+
+class SpectralDensityByTopic(BaseModel):
+    model_config = _PassThroughConfig
+    topic_k: int
+    path: str
+    n_pixels_sampled: int | None = None
+
+
+class SpectralDensityManifest(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    scene_name: str
+    B: int
+    R_bins: int
+    reflectance_range: list[float]
+    wavelengths_nm: list[float]
+    format: str
+    shape_per_file: list[int]
+    density_global: SpectralDensityBinPath
+    density_by_label: list[dict[str, Any]] = Field(default_factory=list)
+    density_by_topic: list[dict[str, Any]] = Field(default_factory=list)
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- topic-to-library ----------------
+
+
+class TopicToLibrary(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    library_sensor_subset: str
+    library_sample_names: list[str]
+    library_sample_groups: list[str]
+    library_sample_count: int
+    topic_x_library_cosine: list[list[float]]
+    topic_x_library_sam_radians: list[list[float]]
+    top_n_per_topic: list[list[dict[str, Any]]]
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- quantization sensitivity ----------------
+
+
+class QuantizationProbe(BaseModel):
+    model_config = _PassThroughConfig
+    recipe: str | None = None
+    scheme: str | None = None
+    Q: int | None = None
+    matched_cosine_mean: float | None = None
+    ari: float | None = None
+
+
+class QuantizationSummary(BaseModel):
+    model_config = _PassThroughConfig
+    n_configs_compared: int
+    matched_cosine_mean_overall_mean: float
+    matched_cosine_mean_overall_min: float
+    ari_overall_mean: float
+    ari_overall_min: float
+    verdict: str | None = None
+
+
+class QuantizationSensitivity(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    canonical_recipe: str
+    canonical_scheme: str
+    canonical_Q: int
+    probes: list[dict[str, Any]] = Field(default_factory=list)
+    summary: QuantizationSummary
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- super-topics ----------------
+
+
+class SuperTopicMember(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str | None = None
+    topic_k: int | None = None
+    leaf_index: int | None = None
+
+
+class SuperTopicCut(BaseModel):
+    model_config = _PassThroughConfig
+    K_super: int | None = None
+    assignments: list[int] | None = None
+    cluster_sizes: list[int] | None = None
+
+
+class SuperTopics(BaseModel):
+    model_config = _PassThroughConfig
+    n_topics_total: int
+    n_scenes: int
+    scenes: list[str]
+    common_grid: dict[str, Any]
+    linkage_method: str
+    distance: str
+    linkage_matrix_round6: list[list[float]]
+    cuts: list[dict[str, Any]] = Field(default_factory=list)
+    scene_pair_super_topic_overlap_at_cut8: dict[str, Any] = Field(default_factory=dict)
+    members: list[dict[str, Any]] = Field(default_factory=list)
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- cross-scene transfer ----------------
+
+
+class CrossSceneTransferPair(BaseModel):
+    model_config = _PassThroughConfig
+    source_scene: str | None = None
+    target_scene: str | None = None
+    macro_f1: float | None = None
+
+
+class CrossSceneTransfer(BaseModel):
+    model_config = _PassThroughConfig
+    scene_order: list[str]
+    common_wavelength_grid: dict[str, Any]
+    wordification: str
+    quantization_scale: int
+    samples_per_class: int
+    split: str
+    head: str
+    transfer_matrix_macro_f1: list[list[float]]
+    transfer_pairs: list[dict[str, Any]]
+    scene_meta: list[dict[str, Any]]
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- lda sweep ----------------
+
+
+class LdaSweepGridEntry(BaseModel):
+    model_config = _PassThroughConfig
+    K: int | None = None
+    perplexity_test_norm: float | None = None
+    npmi_mean: float | None = None
+    matched_cosine_mean: float | None = None
+    score: float | None = None
+
+
+class LdaSweep(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    K_grid: list[int]
+    seeds: list[int]
+    samples_per_class: int
+    wordification: str
+    quantization_scale: int
+    train_fraction: float
+    grid: list[dict[str, Any]]
+    recommended_K: int
+    recommendation_method: str
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- linear probe panel ----------------
+
+
+class LinearProbeMethodMetrics(BaseModel):
+    model_config = _PassThroughConfig
+    accuracy: float | None = None
+    balanced_accuracy: float | None = None
+    macro_f1: float | None = None
+    latent_dim: int | None = None
+
+
+class LinearProbePairwiseHolm(BaseModel):
+    model_config = _PassThroughConfig
+    method: str | None = None
+    delta_macro_f1: float | None = None
+    p_holm: float | None = None
+    significant: bool | None = None
+
+
+class LinearProbeRanking(BaseModel):
+    model_config = _PassThroughConfig
+    method: str
+    macro_f1_mean: float | None = None
+    macro_f1_std: float | None = None
+    rank: int | None = None
+
+
+class LinearProbePanel(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    n_classes: int
+    n_documents: int
+    head: str
+    split: str
+    metric: str
+    method_metrics: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    pairwise_vs_theta_holm: list[dict[str, Any]] = Field(default_factory=list)
+    ranking_by_macro_f1_mean: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+# ---------------- mutual information ----------------
+
+
+class MutualInformationRanking(BaseModel):
+    model_config = _PassThroughConfig
+    method: str
+    joint_mi: float | None = None
+    rank: int | None = None
+
+
+class MutualInformation(BaseModel):
+    model_config = _PassThroughConfig
+    scene_id: str
+    topic_count: int
+    n_documents: int
+    label_entropy_nats: float
+    label_entropy_bits: float
+    method_mi: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    ranking_by_joint_mi: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
+
+
+class MutualInformationHidsagRanking(BaseModel):
+    model_config = _PassThroughConfig
+    target: str | None = None
+    max_mi: float | None = None
+    rank: int | None = None
+
+
+class MutualInformationHidsag(BaseModel):
+    model_config = _PassThroughConfig
+    subset_code: str
+    topic_count: int
+    document_count: int
+    covariates_in_dmr: list[str]
+    target_mi_against_theta: dict[str, Any] = Field(default_factory=dict)
+    ranking_by_max_mi: list[dict[str, Any]] = Field(default_factory=list)
+    framework_axis: str | None = None
+    generated_at: str
+    builder_version: str
