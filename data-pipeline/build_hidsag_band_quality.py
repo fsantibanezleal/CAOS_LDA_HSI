@@ -7,10 +7,13 @@ from pathlib import Path
 
 import numpy as np
 
+# c285: route through research_core.paths.CORE_DERIVED_DIR
+# (continues #444 P1 3.2 sweep).
+from research_core.paths import CORE_DERIVED_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-CURATED_PATH = ROOT / "data" / "derived" / "core" / "hidsag_curated_subset.json"
-OUTPUT_PATH = ROOT / "data" / "derived" / "core" / "hidsag_band_quality.json"
+
+CURATED_PATH = CORE_DERIVED_DIR / "hidsag_curated_subset.json"
+OUTPUT_PATH = CORE_DERIVED_DIR / "hidsag_band_quality.json"
 EDGE_TRIM_FRACTION = 0.01
 EDGE_TRIM_MIN = 4
 EDGE_TRIM_MAX = 12

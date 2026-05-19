@@ -7,15 +7,17 @@ import tempfile
 import zipfile
 from collections import Counter
 from datetime import date
-from pathlib import Path
 
 import h5py
 import numpy as np
 
+# c285: route through research_core.paths (continues #444 P1 3.2 sweep).
+from research_core.paths import CORE_DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = ROOT / "data" / "raw" / "hidsag"
-OUTPUT_PATH = ROOT / "data" / "derived" / "core" / "hidsag_curated_subset.json"
+
+RAW_DIR = _RC_RAW_DIR / "hidsag"
+OUTPUT_PATH = CORE_DERIVED_DIR / "hidsag_curated_subset.json"
 HIDSAG_MODALITY_ORDER = ["swir_low", "vnir_low", "vnir_high"]
 
 

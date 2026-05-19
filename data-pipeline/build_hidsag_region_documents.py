@@ -12,12 +12,15 @@ from pathlib import Path
 import h5py
 import numpy as np
 
+# c285: route through research_core.paths (continues #444 P1 3.2 sweep).
+from research_core.paths import CORE_DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-RAW_DIR = ROOT / "data" / "raw" / "hidsag"
-CURATED_PATH = ROOT / "data" / "derived" / "core" / "hidsag_curated_subset.json"
-OUTPUT_JSON_PATH = ROOT / "data" / "derived" / "core" / "hidsag_region_documents.json"
-OUTPUT_NPZ_PATH = ROOT / "data" / "derived" / "core" / "hidsag_region_documents.npz"
+
+RAW_DIR = _RC_RAW_DIR / "hidsag"
+CURATED_PATH = CORE_DERIVED_DIR / "hidsag_curated_subset.json"
+OUTPUT_JSON_PATH = CORE_DERIVED_DIR / "hidsag_region_documents.json"
+OUTPUT_NPZ_PATH = CORE_DERIVED_DIR / "hidsag_region_documents.npz"
 HIDSAG_MODALITY_ORDER = ["swir_low", "vnir_low", "vnir_high"]
 PATCH_GRID_ROWS = 3
 PATCH_GRID_COLS = 3

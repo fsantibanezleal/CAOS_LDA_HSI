@@ -16,10 +16,13 @@ from PIL import Image
 from scipy.io import loadmat
 from skimage.segmentation import slic
 
+# c285: route through research_core.paths (continues #444 P1 3.2 sweep).
+from research_core.paths import DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
 
-ROOT = Path(__file__).resolve().parents[1]
-UPV_RAW_DIR = ROOT / "data" / "raw" / "upv_ehu"
-OUTPUT_DIR = ROOT / "data" / "derived" / "baselines"
+
+UPV_RAW_DIR = _RC_RAW_DIR / "upv_ehu"
+OUTPUT_DIR = DERIVED_DIR / "baselines"
 PREVIEW_DIR = OUTPUT_DIR / "previews"
 OUTPUT_PATH = OUTPUT_DIR / "segmentation_baselines.json"
 

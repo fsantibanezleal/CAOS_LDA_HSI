@@ -57,10 +57,13 @@ from pathlib import Path
 from statistics import mean, median, pstdev
 from typing import Any
 
-REPO = Path(__file__).resolve().parents[1]
-RAW = REPO / "data" / "raw" / "hidsag"
-BAND_MASK = REPO / "data" / "derived" / "band_masks_hidsag"
-OUT = REPO / "data" / "derived" / "hidsag_topic_measurements"
+# c288: route through research_core.paths (closes #444 P1 3.2).
+from research_core.paths import DERIVED_DIR
+from research_core.paths import RAW_DIR as _RC_RAW_DIR
+
+RAW = _RC_RAW_DIR / "hidsag"
+BAND_MASK = DERIVED_DIR / "band_masks_hidsag"
+OUT = DERIVED_DIR / "hidsag_topic_measurements"
 
 SUBSETS = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"]
 

@@ -24,12 +24,13 @@ from __future__ import annotations
 
 import json
 from datetime import date
-from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parent.parent
-MANIFESTS = ROOT / "data" / "manifests"
-DERIVED = ROOT / "data" / "derived"
+# c288: route through research_core.paths (closes #444 P1 3.2 fully).
+from research_core.paths import DERIVED_DIR as DERIVED
+from research_core.paths import MANIFESTS_DIR as MANIFESTS
+
+
 OUT_DIR = DERIVED / "subsets"
 
 
