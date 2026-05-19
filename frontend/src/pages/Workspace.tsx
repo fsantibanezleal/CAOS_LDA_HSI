@@ -105,6 +105,16 @@ const CrossMethodAgreementTab = lazy(() =>
     default: m.CrossMethodAgreementTab,
   })),
 );
+const NeuralTopicComparisonTab = lazy(() =>
+  import("./workspace/tabs/NeuralTopicComparisonTab").then((m) => ({
+    default: m.NeuralTopicComparisonTab,
+  })),
+);
+const InterpretabilityTab = lazy(() =>
+  import("./workspace/tabs/InterpretabilityTab").then((m) => ({
+    default: m.InterpretabilityTab,
+  })),
+);
 import { UnmixingStat } from "./workspace/components/StatCard";
 
 const Scatter3D = lazy(() =>
@@ -1141,13 +1151,15 @@ function ExploreStep({
             />
           )}
           {tab === "interpret" && (
-            <InterpretabilityTab
-              isLoading={interpretTopics.isLoading || interpretBands.isLoading || interpretDocs.isLoading}
-              error={(interpretTopics.error as Error | null) ?? (interpretBands.error as Error | null) ?? (interpretDocs.error as Error | null)}
-              topics={interpretTopics.data ?? null}
-              bands={interpretBands.data ?? null}
-              docs={interpretDocs.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <InterpretabilityTab
+                isLoading={interpretTopics.isLoading || interpretBands.isLoading || interpretDocs.isLoading}
+                error={(interpretTopics.error as Error | null) ?? (interpretBands.error as Error | null) ?? (interpretDocs.error as Error | null)}
+                topics={interpretTopics.data ?? null}
+                bands={interpretBands.data ?? null}
+                docs={interpretDocs.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "recipes" && (
             <Suspense fallback={<TabLoading />}>
@@ -1198,12 +1210,14 @@ function ExploreStep({
             </Suspense>
           )}
           {tab === "neural" && (
-            <NeuralTopicComparisonTab
-              isLoading={neuralComp.isLoading || neuralSeed.isLoading}
-              error={(neuralComp.error as Error | null) ?? (neuralSeed.error as Error | null)}
-              comparison={neuralComp.data ?? null}
-              seedStability={neuralSeed.data ?? null}
-            />
+            <Suspense fallback={<TabLoading />}>
+              <NeuralTopicComparisonTab
+                isLoading={neuralComp.isLoading || neuralSeed.isLoading}
+                error={(neuralComp.error as Error | null) ?? (neuralSeed.error as Error | null)}
+                comparison={neuralComp.data ?? null}
+                seedStability={neuralSeed.data ?? null}
+              />
+            </Suspense>
           )}
           {tab === "gating" && (
             <Suspense fallback={<TabLoading />}>
@@ -7686,246 +7700,6 @@ function UnmixingBestMatchTable({ rows }: { rows: { topic_id: number; endmember_
   );
 }
 
-function InterpretabilityTab({
-  isLoading,
-  error,
-  topics,
-  bands,
-  docs,
-}: {
-  isLoading: boolean;
-  error: Error | null;
-  topics: import("@/api/client").TopicCardsFile | null;
-  bands: import("@/api/client").BandCardsFile | null;
-  docs: import("@/api/client").DocumentCardsFile | null;
-}) {
-  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>Loading interpretability cards…</p>;
-  if (error) {
-    return (
-      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p style={{ color: "var(--color-warn)" }}>Could not load interpretability cards.</p>
-        <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
-      </div>
-    );
-  }
-  return (
-    <div className="space-y-6">
-      {topics ? <InterpretTopicCardsGrid topics={topics} /> : null}
-      {bands ? <InterpretBandImportance bands={bands} /> : null}
-      {docs ? <InterpretDocumentSample docs={docs} K={topics?.K ?? 12} /> : null}
-    </div>
-  );
-}
-
-function InterpretTopicCardsGrid({ topics }: { topics: import("@/api/client").TopicCardsFile }) {
-  return (
-    <div>
-      <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-        Topic cards · K = {topics.K}
-      </h4>
-      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        One card per LDA topic. Peak wavelength = argmax of φ<sub>k</sub>; FWHM = full width at half-max
-        (sharpness of the spectral signature). p(label | topic) shows the top-3 classes whose
-        documents land on this topic dominantly.
-      </p>
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {topics.topic_cards.map((c) => {
-          const swatch = TOPIC_COLORS[c.topic_k % TOPIC_COLORS.length];
-          const topP = c.p_label_given_topic_top3?.[0]?.p ?? 0;
-          return (
-            <div
-              key={c.topic_k}
-              className="rounded-lg border p-3 relative overflow-hidden"
-              style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-            >
-              <div className="absolute top-0 left-0 right-0 h-1" aria-hidden style={{ backgroundColor: swatch }} />
-              <div className="flex items-baseline justify-between mt-1 mb-1.5">
-                <div className="flex items-baseline gap-2">
-                  <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: swatch }} />
-                  <span className="text-[13px] font-semibold font-mono" style={{ color: "var(--color-fg)" }}>topic {c.topic_k}</span>
-                </div>
-                <span className="text-[10px] uppercase tracking-widest font-medium" style={{ color: "var(--color-fg-faint)" }}>
-                  λ = {c.peak_wavelength_nm.toFixed(0)} nm
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[11.5px] font-mono mb-2" style={{ color: "var(--color-fg-faint)" }}>
-                <span>peak φ = {c.peak_value.toFixed(3)}</span>
-                <span>fwhm = {c.fwhm_nm.toFixed(0)} nm</span>
-              </div>
-              <div className="text-[10.5px] uppercase tracking-widest font-semibold mb-1" style={{ color: "var(--color-fg-faint)" }}>
-                Top labels
-              </div>
-              <div className="space-y-1">
-                {c.p_label_given_topic_top3.map((lab) => {
-                  const w = topP > 0 ? Math.max(2, (lab.p / topP) * 100) : 0;
-                  return (
-                    <div key={lab.label_id} className="flex items-baseline gap-2 text-[11.5px]">
-                      <span className="font-mono shrink-0" style={{ color: "var(--color-fg-faint)" }}>
-                        {lab.label_id}
-                      </span>
-                      <span className="truncate" style={{ color: "var(--color-fg)" }} title={lab.name}>
-                        {lab.name}
-                      </span>
-                      <span className="ml-auto font-mono text-[10.5px]" style={{ color: "var(--color-fg-faint)" }}>
-                        {(lab.p * 100).toFixed(1)}%
-                      </span>
-                      <div className="w-[60px] h-1.5 rounded ml-1 shrink-0" style={{ backgroundColor: "var(--color-border)" }}>
-                        <div className="h-1.5 rounded" style={{ width: `${w}%`, backgroundColor: swatch }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function InterpretBandImportance({ bands }: { bands: import("@/api/client").BandCardsFile }) {
-  const TOP = 24;
-  const sortedFisher = [...bands.band_cards].sort((a, b) => b.fisher_ratio - a.fisher_ratio).slice(0, TOP);
-  const maxFisher = sortedFisher[0]?.fisher_ratio ?? 1;
-  const sortedMI = [...bands.band_cards].sort((a, b) => b.mutual_info_vs_label - a.mutual_info_vs_label).slice(0, TOP);
-  const maxMI = sortedMI[0]?.mutual_info_vs_label ?? 1;
-
-  return (
-    <div
-      className="rounded-lg border p-4"
-      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-    >
-      <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-        Band importance · top {TOP} of {bands.n_bands}
-      </h4>
-      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Fisher ratio (between-class / within-class variance) ranks bands by class separability.
-        Mutual information against label is a non-parametric counterpart. Bands at 1100, 1400 and
-        1900 nm are usually water-absorption features.
-      </p>
-      <div className="grid md:grid-cols-2 gap-5">
-        <BandRankingList
-          title="Fisher ratio"
-          accent="rgba(40, 160, 80, 1)"
-          rows={sortedFisher.map((b) => ({ label: `band ${b.band_index} · ${b.wavelength_nm.toFixed(0)} nm`, value: b.fisher_ratio, max: maxFisher, p_value: b.p_value }))}
-        />
-        <BandRankingList
-          title="Mutual information"
-          accent="rgba(170, 60, 200, 1)"
-          rows={sortedMI.map((b) => ({ label: `band ${b.band_index} · ${b.wavelength_nm.toFixed(0)} nm`, value: b.mutual_info_vs_label, max: maxMI }))}
-        />
-      </div>
-    </div>
-  );
-}
-
-function BandRankingList({
-  title,
-  accent,
-  rows,
-}: {
-  title: string;
-  accent: string;
-  rows: { label: string; value: number; max: number; p_value?: number }[];
-}) {
-  return (
-    <div>
-      <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: accent }}>
-        {title}
-      </div>
-      <div className="space-y-1">
-        {rows.map((r, i) => {
-          const w = r.max > 0 ? Math.max(2, (r.value / r.max) * 100) : 0;
-          return (
-            <div key={`${title}-${i}`} className="flex items-baseline gap-2 text-[11.5px]">
-              <span className="font-mono w-4 text-right shrink-0" style={{ color: "var(--color-fg-faint)" }}>{i + 1}</span>
-              <span className="font-mono truncate" style={{ color: "var(--color-fg)" }} title={r.label}>
-                {r.label}
-              </span>
-              <span className="ml-auto font-mono text-[10.5px] shrink-0" style={{ color: "var(--color-fg-faint)" }}>
-                {r.value.toFixed(r.value >= 1 ? 2 : 3)}
-                {r.p_value !== undefined ? ` · p=${r.p_value < 0.0001 ? "<1e-4" : r.p_value.toFixed(3)}` : ""}
-              </span>
-              <div className="w-[120px] h-1.5 rounded shrink-0" style={{ backgroundColor: "var(--color-border)" }}>
-                <div className="h-1.5 rounded" style={{ width: `${w}%`, backgroundColor: accent }} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function InterpretDocumentSample({ docs, K }: { docs: import("@/api/client").DocumentCardsFile; K: number }) {
-  const [showN, setShowN] = useState(24);
-  const sample = docs.document_cards.slice(0, showN);
-
-  return (
-    <div
-      className="rounded-lg border p-4"
-      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-    >
-      <div className="flex items-baseline justify-between gap-3 mb-1 flex-wrap">
-        <h4 className="text-base font-semibold" style={{ color: "var(--color-fg)" }}>
-          Document cards · {showN} of {docs.n_documents}
-        </h4>
-        <div className="flex items-baseline gap-1.5">
-          {[12, 24, 48, docs.n_documents].map((n) => (
-            <button
-              key={`show-${n}`}
-              type="button"
-              onClick={() => setShowN(Math.min(n, docs.n_documents))}
-              className="rounded border px-2 py-0.5 text-[11px] font-mono"
-              style={{
-                borderColor: showN === n ? "var(--color-accent)" : "var(--color-border)",
-                color: showN === n ? "var(--color-accent)" : "var(--color-fg-faint)",
-                backgroundColor: showN === n ? "var(--color-accent-soft)" : "transparent",
-              }}
-            >
-              {n === docs.n_documents ? "all" : n}
-            </button>
-          ))}
-        </div>
-      </div>
-      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Each row is one document (pixel-as-document). Bar shows θ stacked across K = {K} topics
-        coloured by topic. Right columns = dominant topic and ground-truth label.
-      </p>
-      <div className="space-y-1">
-        {sample.map((doc) => {
-          let acc = 0;
-          return (
-            <div key={doc.doc_id} className="flex items-center gap-2 text-[11px]">
-              <span className="font-mono w-16 shrink-0" style={{ color: "var(--color-fg-faint)" }}>{doc.doc_id}</span>
-              <div className="flex-1 h-3 rounded overflow-hidden flex" style={{ backgroundColor: "var(--color-border)" }}>
-                {doc.theta_full.map((p, k) => {
-                  const w = p * 100;
-                  acc += w;
-                  return (
-                    <span
-                      key={`${doc.doc_id}-${k}`}
-                      style={{ width: `${w}%`, backgroundColor: TOPIC_COLORS[k % TOPIC_COLORS.length] }}
-                      title={`topic ${k}: ${(p * 100).toFixed(1)}%`}
-                    />
-                  );
-                })}
-                {acc < 99.9 ? <span style={{ width: `${100 - acc}%`, backgroundColor: "transparent" }} /> : null}
-              </div>
-              <span className="font-mono text-[10.5px] w-10 text-right shrink-0" style={{ color: "var(--color-fg-faint)" }}>
-                t{doc.topic_k_dominant}
-              </span>
-              <span className="font-mono text-[10.5px] truncate shrink-0 w-32" style={{ color: "var(--color-fg)" }} title={doc.label_name}>
-                {doc.label_name}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 
 
@@ -8196,239 +7970,6 @@ function OverviewFact({ label, value }: { label: string; value: string }) {
   );
 }
 
-const NEURAL_METHOD_COLOR: Record<string, string> = {
-  lda: "rgba(40, 160, 80, 1)",
-  prodlda: "rgba(34, 197, 94, 1)",
-  etm: "rgba(170, 60, 200, 1)",
-};
-
-function NeuralTopicComparisonTab({
-  isLoading,
-  error,
-  comparison,
-  seedStability,
-}: {
-  isLoading: boolean;
-  error: Error | null;
-  comparison: import("@/api/client").NeuralTopicComparison | null;
-  seedStability: import("@/api/client").NeuralTopicSeedStability | null;
-}) {
-  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>Loading neural topic comparison…</p>;
-  if (error) {
-    return (
-      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p style={{ color: "var(--color-warn)" }}>Could not load neural topic comparison.</p>
-        <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
-      </div>
-    );
-  }
-  if (!comparison) return null;
-
-  return (
-    <div className="space-y-6">
-      <NeuralHeaderCard comparison={comparison} />
-      <NeuralComparisonGrid comparison={comparison} />
-      <NeuralRankingBar comparison={comparison} />
-      {seedStability ? <NeuralSeedStabilityCard seedStability={seedStability} /> : null}
-    </div>
-  );
-}
-
-function NeuralHeaderCard({ comparison }: { comparison: import("@/api/client").NeuralTopicComparison }) {
-  return (
-    <div
-      className="rounded-xl border p-5 relative overflow-hidden"
-      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-    >
-      <div
-        aria-hidden
-        className="absolute top-0 left-0 right-0 h-1"
-        style={{ background: "linear-gradient(90deg, rgba(40,160,80,1) 0%, rgba(34,197,94,1) 50%, rgba(170,60,200,1) 100%)" }}
-      />
-      <h3 className="text-lg font-semibold tracking-tight mt-1 mb-1" style={{ color: "var(--color-fg)" }}>
-        Head-to-head · LDA vs ProdLDA vs ETM
-      </h3>
-      <p className="text-[12.5px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Three topic models on the same canonical band-frequency corpus
-        ({comparison.n_documents.toLocaleString()} documents · {comparison.n_classes} classes ·
-        K = {Object.values(comparison.methods)[0]?.K ?? "?"}). Compares clustering quality
-        (KMeans-vs-label ARI/NMI/silhouette), document θ entropy, and topic coherence
-        (c_v, c_npmi, u_mass).
-      </p>
-      {comparison.framework_axis ? (
-        <p className="text-[11.5px] italic" style={{ color: "var(--color-fg-faint)" }}>
-          {comparison.framework_axis}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-function NeuralComparisonGrid({ comparison }: { comparison: import("@/api/client").NeuralTopicComparison }) {
-  const methods = Object.entries(comparison.methods);
-  return (
-    <div className="grid lg:grid-cols-3 gap-4">
-      {methods.map(([name, m]) => {
-        const colour = NEURAL_METHOD_COLOR[name] ?? "var(--color-accent)";
-        return (
-          <div
-            key={name}
-            className="rounded-lg border p-4 relative overflow-hidden"
-            style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-          >
-            <div aria-hidden className="absolute top-0 left-0 right-0 h-0.5" style={{ backgroundColor: colour }} />
-            <div className="flex items-baseline gap-2 mt-1 mb-3">
-              <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: colour }} />
-              <h4 className="text-base font-semibold font-mono tracking-tight" style={{ color: "var(--color-fg)" }}>
-                {name}
-              </h4>
-              <span className="text-[11px] font-mono ml-auto" style={{ color: "var(--color-fg-faint)" }}>K={m.K}</span>
-            </div>
-            {m.error ? (
-              <p className="text-[12px]" style={{ color: "var(--color-warn)" }}>{m.error}</p>
-            ) : (
-              <div className="space-y-2.5">
-                <div>
-                  <div className="text-[10.5px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: "var(--color-fg-faint)" }}>
-                    KMeans vs label
-                  </div>
-                  <div className="flex items-baseline gap-3 text-[12.5px] font-mono" style={{ color: "var(--color-fg)" }}>
-                    <span>ARI <strong>{m.downstream_kmeans_vs_label.ari.toFixed(3)}</strong></span>
-                    <span style={{ color: "var(--color-fg-faint)" }}>·</span>
-                    <span>NMI {m.downstream_kmeans_vs_label.nmi.toFixed(3)}</span>
-                    <span style={{ color: "var(--color-fg-faint)" }}>·</span>
-                    <span>sil {m.downstream_kmeans_vs_label.silhouette.toFixed(3)}</span>
-                  </div>
-                </div>
-                {m.coherence ? (
-                  <div>
-                    <div className="text-[10.5px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: "var(--color-fg-faint)" }}>
-                      Topic coherence (top-{m.coherence.top_n})
-                    </div>
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-[12.5px] font-mono" style={{ color: "var(--color-fg)" }}>
-                      {m.coherence.c_v != null ? <span>c_v <strong>{m.coherence.c_v.toFixed(3)}</strong></span> : null}
-                      {m.coherence.c_npmi != null ? <span style={{ color: "var(--color-fg-faint)" }}>c_npmi {m.coherence.c_npmi.toFixed(3)}</span> : null}
-                      {m.coherence.u_mass != null ? <span style={{ color: "var(--color-fg-faint)" }}>u_mass {m.coherence.u_mass.toFixed(3)}</span> : null}
-                    </div>
-                  </div>
-                ) : null}
-                <div>
-                  <div className="text-[10.5px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: "var(--color-fg-faint)" }}>
-                    Document θ entropy
-                  </div>
-                  <div className="flex items-baseline gap-3 text-[12.5px] font-mono" style={{ color: "var(--color-fg)" }}>
-                    <span>mean {m.theta_entropy.doc_entropy_mean.toFixed(3)}</span>
-                    <span style={{ color: "var(--color-fg-faint)" }}>±{m.theta_entropy.doc_entropy_std.toFixed(3)}</span>
-                    <span style={{ color: "var(--color-fg-faint)" }} title={`relative to log(K)=${m.theta_entropy.max_entropy_uniform.toFixed(3)}`}>
-                      norm {(m.theta_entropy.doc_entropy_normalised_mean * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function NeuralRankingBar({ comparison }: { comparison: import("@/api/client").NeuralTopicComparison }) {
-  const ranking = comparison.ranking_by_ari ?? [];
-  const max = ranking[0]?.ari ?? 1;
-  return (
-    <div
-      className="rounded-lg border p-4"
-      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-    >
-      <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
-        ARI ranking on this scene
-      </h4>
-      <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
-        <thead>
-          <tr style={{ color: "var(--color-fg-faint)" }}>
-            <th className="text-left font-mono text-[11px] pb-1 pr-3">rank</th>
-            <th className="text-left font-mono text-[11px] pb-1 pr-3">method</th>
-            <th className="text-right font-mono text-[11px] pb-1 pr-3">ARI</th>
-            <th className="text-left font-mono text-[11px] pb-1">bar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ranking.map((r, i) => {
-            const colour = NEURAL_METHOD_COLOR[r.method] ?? "var(--color-accent)";
-            const norm = max > 0 ? r.ari / max : 0;
-            return (
-              <tr key={r.method} style={{ borderTop: "1px solid var(--color-border)" }}>
-                <td className="py-1 pr-3 font-mono">{i + 1}</td>
-                <td className="py-1 pr-3 font-mono">
-                  <span className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style={{ backgroundColor: colour }} />
-                  {r.method}
-                </td>
-                <td className="py-1 pr-3 text-right font-mono">{r.ari.toFixed(3)}</td>
-                <td className="py-1 w-[200px]">
-                  <div className="w-full h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>
-                    <div className="h-2 rounded" style={{ width: `${norm * 100}%`, backgroundColor: colour }} />
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function NeuralSeedStabilityCard({ seedStability }: { seedStability: import("@/api/client").NeuralTopicSeedStability }) {
-  const methods = Object.entries(seedStability.methods);
-  return (
-    <div
-      className="rounded-lg border p-4"
-      style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
-    >
-      <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-        Seed stability · {seedStability.n_seeds}-seed ARI mean ± std
-      </h4>
-      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Each method is re-fitted with {seedStability.n_seeds} different random seeds. The summary
-        reports the mean and std of KMeans-vs-label ARI across seeds. Lower std ⇒ more stable
-        method.
-      </p>
-      <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
-        <thead>
-          <tr style={{ color: "var(--color-fg-faint)" }}>
-            <th className="text-left font-mono text-[11px] pb-1 pr-3">method</th>
-            <th className="text-right font-mono text-[11px] pb-1 pr-3">ARI mean</th>
-            <th className="text-right font-mono text-[11px] pb-1 pr-3">ARI std</th>
-            <th className="text-right font-mono text-[11px] pb-1 pr-3">min</th>
-            <th className="text-right font-mono text-[11px] pb-1 pr-3">max</th>
-            <th className="text-right font-mono text-[11px] pb-1 pr-3">c_v mean</th>
-            <th className="text-right font-mono text-[11px] pb-1">c_v std</th>
-          </tr>
-        </thead>
-        <tbody>
-          {methods.map(([name, s]) => {
-            const colour = NEURAL_METHOD_COLOR[name] ?? "var(--color-accent)";
-            return (
-              <tr key={name} style={{ borderTop: "1px solid var(--color-border)" }}>
-                <td className="py-1 pr-3 font-mono">
-                  <span className="inline-block w-2 h-2 rounded-full mr-1.5 align-middle" style={{ backgroundColor: colour }} />
-                  {name}
-                </td>
-                <td className="py-1 pr-3 text-right font-mono">{s.ari_mean != null ? s.ari_mean.toFixed(3) : "—"}</td>
-                <td className="py-1 pr-3 text-right font-mono">{s.ari_std != null ? s.ari_std.toFixed(3) : "—"}</td>
-                <td className="py-1 pr-3 text-right font-mono">{s.ari_min != null ? s.ari_min.toFixed(3) : "—"}</td>
-                <td className="py-1 pr-3 text-right font-mono">{s.ari_max != null ? s.ari_max.toFixed(3) : "—"}</td>
-                <td className="py-1 pr-3 text-right font-mono">{s.c_v_mean != null ? s.c_v_mean.toFixed(3) : "—"}</td>
-                <td className="py-1 text-right font-mono">{s.c_v_std != null ? s.c_v_std.toFixed(3) : "—"}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 
 
