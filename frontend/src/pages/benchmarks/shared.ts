@@ -6,3 +6,11 @@ export const LABELLED_SCENES = [
   "kennedy-space-center",
   "botswana",
 ];
+
+export const HIDSAG_SUBSETS = [
+  "GEOMET",
+  "MINERAL1",
+  "MINERAL2",
+  "GEOCHEM",
+  "PORPHYRY",
+];
