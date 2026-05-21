@@ -138,7 +138,7 @@ export function SpectralBrowserTab({
 
         {buf.isLoading && (
           <p style={{ color: "var(--color-fg-faint)" }}>
-            Descargando {(meta.N * meta.B * 4).toLocaleString()} bytes binarios…
+            Downloading {(meta.N * meta.B * 4).toLocaleString()} binary bytes…
           </p>
         )}
         {buf.error && (

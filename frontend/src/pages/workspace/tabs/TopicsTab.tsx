@@ -255,7 +255,7 @@ export function TopicsTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Comparación multi-topic con features físicas
+          Multi-topic comparison with physical features
         </h4>
         <p
           className="text-sm mb-3"
