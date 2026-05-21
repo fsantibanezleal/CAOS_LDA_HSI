@@ -164,7 +164,7 @@ function SceneForest({ scene }: { scene: SceneMethodStats }) {
         >
           K={scene.scene_summary.topic_count} · D=
           {scene.scene_summary.sampled_documents} ·{" "}
-          {scene.scene_summary.class_count} clases
+          {scene.scene_summary.class_count} classes
         </span>
       </header>
       <svg

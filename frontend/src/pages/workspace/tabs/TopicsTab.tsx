@@ -86,14 +86,14 @@ export function TopicsTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Mapa intertopic (LDAvis · JS-MDS 2D)
+            Intertopic map (LDAvis · JS-MDS 2D)
           </h4>
           <p
             className="text-sm mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
             The bubble area is proportional to topic prevalence
-            (mean θ sobre el corpus). Click en un bubble para enfocar.
+            (mean θ across the corpus). Click a bubble to focus.
           </p>
           <IntertopicMap
             coords={data.topic_intertopic_2d_js}
@@ -116,7 +116,7 @@ export function TopicsTab({
               className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Top-30 palabras —{" "}
+              Top-30 words —{" "}
               {selectedTopic !== null
                 ? `topic ${selectedTopic + 1}`
                 : "select a topic"}
@@ -151,8 +151,8 @@ export function TopicsTab({
             style={{ color: "var(--color-fg-faint)" }}
           >
             relevance(w | k) = λ · log P(w | k) + (1 − λ) · log [ P(w | k) /
-            P(w) ]. λ=1 ordena por probabilidad sin penalizar palabras
-            comunes; λ=0 ordena por lift puro.
+            P(w) ]. λ=1 sorts by probability without penalising common
+            words; λ=0 sorts by pure lift.
           </p>
           {focused ? (
             <ol
@@ -185,7 +185,7 @@ export function TopicsTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Perfiles espectrales por topic (φ_k)
+          Per-topic spectral profiles (φ_k)
         </h4>
         <p
           className="text-sm mb-3"
@@ -202,7 +202,7 @@ export function TopicsTab({
         <div
           className="mt-3 flex flex-wrap gap-1.5"
           role="group"
-          aria-label="Selector de topics"
+          aria-label="Topic selector"
         >
           {data.topic_band_profiles.map((_, k) => {
             const isSel = selectedTopic === k;

@@ -351,11 +351,11 @@ function SceneStats({
       value: data.sensor,
     },
     {
-      label: "Forma",
+      label: "Shape",
       value: `${data.spatial_shape[0]} × ${data.spatial_shape[1]}`,
     },
     {
-      label: "Bandas",
+      label: "Bands",
       value: `${data.wavelengths_nm.length} (${Math.round(
         data.wavelengths_nm[0]!,
       )}–${Math.round(data.wavelengths_nm.at(-1)!)} nm)`,
@@ -365,11 +365,11 @@ function SceneStats({
       value: `${data.n_labelled_pixels.toLocaleString()} / ${data.n_pixels.toLocaleString()}`,
     },
     {
-      label: "Clases",
+      label: "Classes",
       value: String(data.n_classes),
     },
     {
-      label: "Gini desbalance",
+      label: "Gini imbalance",
       value: data.imbalance_gini.toFixed(3),
     },
   ];

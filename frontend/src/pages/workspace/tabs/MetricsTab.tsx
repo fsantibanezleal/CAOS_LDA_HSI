@@ -287,7 +287,7 @@ function MutualInfoTable({ data }: { data: MutualInformation }) {
       >
         Label entropy H(y) = {data.label_entropy_nats.toFixed(3)} nats (
         {data.label_entropy_bits.toFixed(3)} bits) ·{" "}
-        {data.n_documents.toLocaleString()} documentos.
+        {data.n_documents.toLocaleString()} documents.
       </p>
       <table
         className="w-full text-[13.5px]"
@@ -303,7 +303,7 @@ function MutualInfoTable({ data }: { data: MutualInformation }) {
             <th className="text-left py-2 pr-4 font-semibold">Method</th>
             <th className="text-right py-2 pr-4 font-semibold">Latent dim</th>
             <th className="text-right py-2 pr-4 font-semibold">Joint MI</th>
-            <th className="text-right py-2 font-semibold">% H(y) recuperada</th>
+            <th className="text-right py-2 font-semibold">% H(y) recovered</th>
           </tr>
         </thead>
         <tbody>

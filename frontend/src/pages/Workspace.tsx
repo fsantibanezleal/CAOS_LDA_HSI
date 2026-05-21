@@ -214,8 +214,8 @@ const FAMILY_DESCRIPTIONS: Record<string, string> = {
 };
 
 const STEPS: { id: string; key: keyof Steps; label: string }[] = [
-  { id: "family", key: "family", label: "Familia" },
-  { id: "subset", key: "subset", label: "Conjunto" },
+  { id: "family", key: "family", label: "Dataset family" },
+  { id: "subset", key: "subset", label: "Subset" },
   { id: "representation", key: "representation", label: "Representation" },
   { id: "explore", key: "explore", label: "Explore"},
 ];

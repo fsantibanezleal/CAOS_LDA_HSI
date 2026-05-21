@@ -35,7 +35,7 @@ function HidsagCrossPreprocessingStability() {
   return (
     <Section
       id="hidsag-cross-preproc-stability"
-      title="HIDSAG — estabilidad cross-preprocessing (B-6 follow-up)"
+      title="HIDSAG — cross-preprocessing stability (B-6 follow-up)"
       lead="How stable LDA topics are when the preprocessing recipe changes. Reported as Hungarian-matched top-15 token Jaccard across the 4 policies (raw / heuristic-band-mask / SNV / SavGol+SNV). Low = topics change substantially across recipes; high = topics survive."
     >
       <div className="space-y-4 mt-2">
@@ -194,12 +194,12 @@ function HidsagPreprocessing() {
   return (
     <Section
       id="hidsag-preprocessing"
-      title="HIDSAG — sensibilidad al pre-procesamiento espectral"
+      title="HIDSAG — spectral preprocessing sensitivity"
       lead="Four preprocessing policies (raw / heuristic-bad-band-mask / SNV / Savitzky-Golay+SNV) over the 5 HIDSAG scenes. Measures how downstream performance (classification + regression) changes when the spectral cleaning recipe varies."
     >
       {isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Cargando sensibilidad de pre-procesamiento…
+          Loading preprocessing sensitivity…
         </p>
       )}
       {error && (
@@ -211,7 +211,7 @@ function HidsagPreprocessing() {
           }}
         >
           <p style={{ color: "var(--color-warn)" }}>
-            No se pudo cargar /api/hidsag-preprocessing-sensitivity.
+            Could not load /api/hidsag-preprocessing-sensitivity.
           </p>
           <p
             className="mt-2 text-sm"
@@ -418,7 +418,7 @@ function HidsagBenchmarks() {
     >
       {loading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Cargando rankings HIDSAG…
+          Loading HIDSAG rankings…
         </p>
       )}
       <div className="space-y-6 mt-2">
