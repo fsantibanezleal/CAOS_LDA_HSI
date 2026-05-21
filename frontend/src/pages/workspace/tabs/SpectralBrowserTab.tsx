@@ -96,14 +96,14 @@ export function SpectralBrowserTab({
               className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Browser espectral · {meta.N.toLocaleString()} espectros muestreados
+              Spectral browser · {meta.N.toLocaleString()} sampled spectra
             </h4>
             <p
               className="text-sm mt-1"
               style={{ color: "var(--color-fg-faint)" }}
             >
               Each line is a real pixel (not an average); subsample{" "}
-              {meta.sampling_strategy}. {meta.B} bandas (
+              {meta.sampling_strategy}. {meta.B} bands (
               {Math.round(meta.wavelengths_nm[0]!)}–
               {Math.round(meta.wavelengths_nm[meta.wavelengths_nm.length - 1]!)}{" "}
               nm). Click a class to isolate it; reduce the rendered line count
@@ -175,7 +175,7 @@ export function SpectralBrowserTab({
                   : "var(--color-fg-subtle)",
             }}
           >
-            Todas
+            All
           </button>
           {labels.map((l) => {
             const isSel = isolatedLabel === l.label_id;
@@ -198,7 +198,7 @@ export function SpectralBrowserTab({
                     ? "var(--color-fg)"
                     : "var(--color-fg-subtle)",
                 }}
-                title={`${l.count} espectros`}
+                title={`${l.count} spectra`}
               >
                 <span
                   aria-hidden

@@ -607,7 +607,7 @@ function StabilityTabBody({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Estabilidad por topic · matched-cosine vs seed 0
+          Per-topic stability · matched-cosine vs seed 0
         </h4>
         <p
           className="text-sm mb-4"
