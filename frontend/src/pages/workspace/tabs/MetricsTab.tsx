@@ -47,7 +47,7 @@ export function MetricsTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Curva rate-distortion · LDA / NMF / PCA
+            Rate–distortion curve · LDA / NMF / PCA
           </h4>
           <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
             Held-out reconstruction RMSE on the doc-term matrix for K ∈{" "}

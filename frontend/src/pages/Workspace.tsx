@@ -1529,7 +1529,7 @@ function SubsetCard({
           className="mt-3 text-sm font-medium"
           style={{ color: "var(--color-accent)" }}
         >
-          Elegir este conjunto →
+          Pick this subset →
         </div>
       )}
     </button>
@@ -1712,7 +1712,7 @@ function FamilyPickerStep({
             className="mt-4 text-sm font-medium"
             style={{ color: "var(--color-accent)" }}
           >
-            Elegir esta familia →
+            Pick this family →
           </div>
         </button>
       ))}
