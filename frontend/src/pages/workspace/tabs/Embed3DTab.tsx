@@ -98,7 +98,7 @@ export function Embed3DTab({
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              colouredr por
+              coloured by
             </span>
             <select
               value={colorBy}

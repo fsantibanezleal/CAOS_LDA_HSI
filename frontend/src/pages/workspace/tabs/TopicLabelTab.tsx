@@ -265,7 +265,7 @@ export function TopicLabelTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Detalle del topic {selectedTopic + 1}
+            Topic {selectedTopic + 1} · detail
           </h4>
           <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[13px]">
             {[...matrix[selectedTopic]!]

@@ -103,7 +103,7 @@ export default function Benchmarks() {
           }}
         >
           <p style={{ color: "var(--color-warn)" }}>
-            No se pudo cargar /api/method-statistics.
+            Could not load /api/method-statistics.
           </p>
           <p
             className="mt-2 text-sm"

@@ -147,7 +147,7 @@ export function RasterTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Mapa espacial — topic dominante por pixel
+            Spatial map — dominant topic per pixel
           </h4>
           <p
             className="text-sm mt-1"

@@ -169,7 +169,7 @@ function FamilyTabs({
   return (
     <nav
       role="tablist"
-      aria-label="Familias de datasets"
+      aria-label="Dataset families"
       className="flex flex-wrap gap-2 mt-6 border-b pb-3"
       style={{ borderColor: "var(--color-border)" }}
     >

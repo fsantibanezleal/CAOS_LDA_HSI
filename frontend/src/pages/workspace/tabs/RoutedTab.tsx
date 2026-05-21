@@ -102,11 +102,10 @@ export function RoutedTab({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            K={data.K} topics · {data.n_classes} clases ·{" "}
+            K={data.K} topics · {data.n_classes} classes ·{" "}
             {data.n_documents.toLocaleString()} documents. Five methods
             compared; routed_soft is the one the methodology supports
-            (especialista por topic sobre el espectro crudo, mezclado por
-            theta).
+            (per-topic specialist over the raw spectrum, mixed by theta).
           </p>
         </header>
         <svg
