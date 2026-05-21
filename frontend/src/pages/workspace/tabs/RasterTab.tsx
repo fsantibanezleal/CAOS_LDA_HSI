@@ -153,17 +153,17 @@ export function RasterTab({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cada pixel labelled se coloured por su topic dominante
-            (arg-max θ_d). Mueve el cursor sobre el raster para inspeccionar
-            row/col + topic; click para fijar la lectura. Select un
-            topic abajo para aislar su huella espacial.
+            Each labelled pixel is coloured by its dominant topic
+            (arg-max θ_d). Hover the raster to inspect row/col + topic;
+            click to pin the reading. Select a topic below to isolate
+            its spatial footprint.
           </p>
         </header>
 
         <div className="grid lg:grid-cols-[auto_1fr] gap-6 items-start">
           {buf.isLoading && (
             <p style={{ color: "var(--color-fg-faint)" }}>
-              Descargando raster ({meta.spatial_shape[0]}×
+              Downloading raster ({meta.spatial_shape[0]}×
               {meta.spatial_shape[1]} pixels)…
             </p>
           )}
