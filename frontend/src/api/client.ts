@@ -46,6 +46,15 @@ export type {
   TopicRoutedDeepGate,
 } from "./routed";
 
+// c324 RateDistortion + MutualInformation slice — see api/rate-distortion.ts.
+import * as rateDistortion from "./rate-distortion";
+export type {
+  RateDistortionCurvePoint,
+  RateDistortionCurve,
+  MutualInformationMethod,
+  MutualInformation,
+} from "./rate-distortion";
+
 export type RawFile = {
   raw_dataset_id: string;
   source_group: string;
@@ -347,14 +356,8 @@ export const api = {
     request<TopicToUsgsV7>(
       `/api/topic-to-usgs-v7/${encodeURIComponent(sceneId)}`,
     ),
-  rateDistortionCurve: (sceneId: string) =>
-    request<RateDistortionCurve>(
-      `/api/rate-distortion-curve/${encodeURIComponent(sceneId)}`,
-    ),
-  mutualInformation: (sceneId: string) =>
-    request<MutualInformation>(
-      `/api/mutual-information/${encodeURIComponent(sceneId)}`,
-    ),
+  rateDistortionCurve: (sceneId: string) => rateDistortion.rateDistortionCurve(sceneId),
+  mutualInformation: (sceneId: string) => rateDistortion.mutualInformation(sceneId),
   llmTeaLeaves: (sceneId: string) =>
     request<LlmTeaLeaves>(
       `/api/llm-tea-leaves/${encodeURIComponent(sceneId)}`,
@@ -456,14 +459,6 @@ export const api = {
   buffer: (path: string) => requestBuffer(path),
 };
 
-export type RateDistortionCurvePoint = {
-  K: number;
-  rmse_train: number;
-  rmse_test: number;
-  rmse_test_normalised?: number;
-  perplexity_test?: number;
-};
-
 export type LdaSweepEntry = {
   K: number;
   n_seeds: number;
@@ -495,37 +490,6 @@ export type LdaSweep = {
   recommendation_method?: string;
   generated_at?: string;
   builder_version?: string;
-};
-
-export type RateDistortionCurve = {
-  scene_id: string;
-  K_grid: number[];
-  doc_term_shape: [number, number];
-  method_curves: Record<string, RateDistortionCurvePoint[]>;
-};
-
-export type MutualInformationMethod = {
-  label_entropy_nats: number;
-  per_feature_mi_sum_nats: number;
-  joint_mi_clipped_to_label_entropy: number;
-  conditional_entropy_proxy_H_y_given_x: number;
-  per_feature_mi: number[];
-  latent_dim: number;
-};
-
-export type MutualInformation = {
-  scene_id: string;
-  topic_count: number;
-  n_documents: number;
-  label_entropy_nats: number;
-  label_entropy_bits: number;
-  method_mi: Record<string, MutualInformationMethod>;
-  ranking_by_joint_mi: {
-    method: string;
-    latent_dim: number;
-    joint_mi_clipped: number;
-    fraction_of_label_entropy_recovered: number;
-  }[];
 };
 
 export type UsgsMatch = {
