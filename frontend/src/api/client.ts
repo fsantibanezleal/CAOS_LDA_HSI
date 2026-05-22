@@ -37,6 +37,28 @@ export type {
   HidsagCovariateProbability,
 } from "./bandmask";
 
+// c323 Routed family slice — see api/routed.ts.
+import * as routed from "./routed";
+export type {
+  RoutedFoldMetric,
+  RoutedMethodMetrics,
+  TopicRoutedClassifier,
+  TopicRoutedDeepGate,
+} from "./routed";
+
+// c324 RateDistortion + MutualInformation slice — see api/rate-distortion.ts.
+import * as rateDistortion from "./rate-distortion";
+export type {
+  RateDistortionCurvePoint,
+  RateDistortionCurve,
+  MutualInformationMethod,
+  MutualInformation,
+} from "./rate-distortion";
+
+// c325 LdaSweep slice — see api/lda-sweep.ts.
+import * as ldaSweepApi from "./lda-sweep";
+export type { LdaSweepEntry, LdaSweep } from "./lda-sweep";
+
 export type RawFile = {
   raw_dataset_id: string;
   source_group: string;
@@ -280,18 +302,12 @@ export const api = {
     request<TopicViews>(`/api/topic-views/${encodeURIComponent(sceneId)}`),
   topicToData: (sceneId: string) =>
     request<TopicToData>(`/api/topic-to-data/${encodeURIComponent(sceneId)}`),
-  topicRoutedClassifier: (sceneId: string) =>
-    request<TopicRoutedClassifier>(
-      `/api/topic-routed-classifier/${encodeURIComponent(sceneId)}`,
-    ),
+  topicRoutedClassifier: (sceneId: string) => routed.topicRoutedClassifier(sceneId),
   embeddedBaseline: (sceneId: string) =>
     request<EmbeddedBaseline>(
       `/api/embedded-baseline/${encodeURIComponent(sceneId)}`,
     ),
-  topicRoutedDeepGate: (sceneId: string) =>
-    request<TopicRoutedDeepGate>(
-      `/api/topic-routed-deep-gate/${encodeURIComponent(sceneId)}`,
-    ),
+  topicRoutedDeepGate: (sceneId: string) => routed.topicRoutedDeepGate(sceneId),
   neuralTopicComparison: (sceneId: string) =>
     request<NeuralTopicComparison>(
       `/api/neural-topic-comparison/${encodeURIComponent(sceneId)}`,
@@ -344,14 +360,8 @@ export const api = {
     request<TopicToUsgsV7>(
       `/api/topic-to-usgs-v7/${encodeURIComponent(sceneId)}`,
     ),
-  rateDistortionCurve: (sceneId: string) =>
-    request<RateDistortionCurve>(
-      `/api/rate-distortion-curve/${encodeURIComponent(sceneId)}`,
-    ),
-  mutualInformation: (sceneId: string) =>
-    request<MutualInformation>(
-      `/api/mutual-information/${encodeURIComponent(sceneId)}`,
-    ),
+  rateDistortionCurve: (sceneId: string) => rateDistortion.rateDistortionCurve(sceneId),
+  mutualInformation: (sceneId: string) => rateDistortion.mutualInformation(sceneId),
   llmTeaLeaves: (sceneId: string) =>
     request<LlmTeaLeaves>(
       `/api/llm-tea-leaves/${encodeURIComponent(sceneId)}`,
@@ -424,8 +434,7 @@ export const api = {
     request<QuantizationSensitivity>(
       `/generated/quantization_sensitivity/${encodeURIComponent(sceneId)}.json`,
     ),
-  ldaSweep: (sceneId: string) =>
-    request<LdaSweep>(`/api/lda-sweep/${encodeURIComponent(sceneId)}`),
+  ldaSweep: (sceneId: string) => ldaSweepApi.ldaSweep(sceneId),
   felzenszwalbGroupings: (sceneId: string) =>
     request<FelzenszwalbGroupings>(
       `/generated/groupings/felzenszwalb/${encodeURIComponent(sceneId)}.json`,
@@ -451,78 +460,6 @@ export const api = {
       `/api/deep-anomaly/${encodeURIComponent(sceneId)}`,
     ),
   buffer: (path: string) => requestBuffer(path),
-};
-
-export type RateDistortionCurvePoint = {
-  K: number;
-  rmse_train: number;
-  rmse_test: number;
-  rmse_test_normalised?: number;
-  perplexity_test?: number;
-};
-
-export type LdaSweepEntry = {
-  K: number;
-  n_seeds: number;
-  perplexity_test_mean: number;
-  perplexity_test_std: number;
-  npmi_mean?: number | null;
-  topic_diversity_mean: number;
-  matched_cosine_mean?: number;
-  matched_cosine_min?: number;
-  per_seed?: {
-    seed: number;
-    perplexity_train: number;
-    perplexity_test: number;
-    npmi: number | null;
-    topic_diversity: number;
-  }[];
-};
-
-export type LdaSweep = {
-  scene_id: string;
-  K_grid: number[];
-  seeds: number[];
-  samples_per_class: number;
-  wordification: string;
-  quantization_scale: number;
-  train_fraction: number;
-  grid: LdaSweepEntry[];
-  recommended_K?: number;
-  recommendation_method?: string;
-  generated_at?: string;
-  builder_version?: string;
-};
-
-export type RateDistortionCurve = {
-  scene_id: string;
-  K_grid: number[];
-  doc_term_shape: [number, number];
-  method_curves: Record<string, RateDistortionCurvePoint[]>;
-};
-
-export type MutualInformationMethod = {
-  label_entropy_nats: number;
-  per_feature_mi_sum_nats: number;
-  joint_mi_clipped_to_label_entropy: number;
-  conditional_entropy_proxy_H_y_given_x: number;
-  per_feature_mi: number[];
-  latent_dim: number;
-};
-
-export type MutualInformation = {
-  scene_id: string;
-  topic_count: number;
-  n_documents: number;
-  label_entropy_nats: number;
-  label_entropy_bits: number;
-  method_mi: Record<string, MutualInformationMethod>;
-  ranking_by_joint_mi: {
-    method: string;
-    latent_dim: number;
-    joint_mi_clipped: number;
-    fraction_of_label_entropy_recovered: number;
-  }[];
 };
 
 export type UsgsMatch = {
@@ -611,33 +548,6 @@ export type SpectralBrowserMeta = {
 };
 
 
-export type RoutedFoldMetric = {
-  per_fold: number[];
-  mean: number;
-  std: number;
-  ci95_lo: number;
-  ci95_hi: number;
-};
-
-export type RoutedMethodMetrics = {
-  macro_f1: RoutedFoldMetric;
-  accuracy: RoutedFoldMetric;
-  balanced_accuracy?: RoutedFoldMetric;
-};
-
-export type TopicRoutedClassifier = {
-  scene_id: string;
-  K: number;
-  n_classes: number;
-  n_documents: number;
-  method_metrics: Record<string, RoutedMethodMetrics>;
-  ranking_by_macro_f1_mean: {
-    method: string;
-    macro_f1_mean: number;
-    macro_f1_ci95: [number, number];
-  }[];
-};
-
 export type EmbeddedBaselineMetrics = {
   macro_f1: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
   accuracy: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
@@ -657,20 +567,6 @@ export type EmbeddedBaseline = {
   framework_axis?: string;
   generated_at?: string;
   builder_version?: string;
-};
-
-export type TopicRoutedDeepGate = {
-  scene_id: string;
-  n_documents: number;
-  n_classes: number;
-  gate_methods: string[];
-  method_metrics: Record<string, RoutedMethodMetrics>;
-  ranked_by_macro_f1_mean: {
-    method: string;
-    macro_f1_mean: number;
-    macro_f1_ci95: [number, number];
-  }[];
-  framework_axis?: string;
 };
 
 export type NeuralTopicComparisonMethod = {
