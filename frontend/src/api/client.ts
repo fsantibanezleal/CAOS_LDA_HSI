@@ -55,6 +55,10 @@ export type {
   MutualInformation,
 } from "./rate-distortion";
 
+// c325 LdaSweep slice — see api/lda-sweep.ts.
+import * as ldaSweepApi from "./lda-sweep";
+export type { LdaSweepEntry, LdaSweep } from "./lda-sweep";
+
 export type RawFile = {
   raw_dataset_id: string;
   source_group: string;
@@ -430,8 +434,7 @@ export const api = {
     request<QuantizationSensitivity>(
       `/generated/quantization_sensitivity/${encodeURIComponent(sceneId)}.json`,
     ),
-  ldaSweep: (sceneId: string) =>
-    request<LdaSweep>(`/api/lda-sweep/${encodeURIComponent(sceneId)}`),
+  ldaSweep: (sceneId: string) => ldaSweepApi.ldaSweep(sceneId),
   felzenszwalbGroupings: (sceneId: string) =>
     request<FelzenszwalbGroupings>(
       `/generated/groupings/felzenszwalb/${encodeURIComponent(sceneId)}.json`,
@@ -457,39 +460,6 @@ export const api = {
       `/api/deep-anomaly/${encodeURIComponent(sceneId)}`,
     ),
   buffer: (path: string) => requestBuffer(path),
-};
-
-export type LdaSweepEntry = {
-  K: number;
-  n_seeds: number;
-  perplexity_test_mean: number;
-  perplexity_test_std: number;
-  npmi_mean?: number | null;
-  topic_diversity_mean: number;
-  matched_cosine_mean?: number;
-  matched_cosine_min?: number;
-  per_seed?: {
-    seed: number;
-    perplexity_train: number;
-    perplexity_test: number;
-    npmi: number | null;
-    topic_diversity: number;
-  }[];
-};
-
-export type LdaSweep = {
-  scene_id: string;
-  K_grid: number[];
-  seeds: number[];
-  samples_per_class: number;
-  wordification: string;
-  quantization_scale: number;
-  train_fraction: number;
-  grid: LdaSweepEntry[];
-  recommended_K?: number;
-  recommendation_method?: string;
-  generated_at?: string;
-  builder_version?: string;
 };
 
 export type UsgsMatch = {
