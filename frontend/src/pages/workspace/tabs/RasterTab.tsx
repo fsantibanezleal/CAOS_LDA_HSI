@@ -250,7 +250,7 @@ export function RasterTab({
                         : "var(--color-fg-subtle)",
                   }}
                 >
-                  Todos
+                  All
                 </button>
                 {Array.from({ length: meta.topic_count }, (_, k) => {
                   const isSel = selectedTopic === k;

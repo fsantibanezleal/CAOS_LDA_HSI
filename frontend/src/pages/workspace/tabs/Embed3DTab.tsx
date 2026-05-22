@@ -81,8 +81,8 @@ export function Embed3DTab({
               className="text-sm mt-1"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Cada punto es un documento de la muestra (n={points.length}).
-              Coordenadas: PCA(θ) en 3D.{" "}
+              Each point is a document from the sample (n={points.length}).
+              Coordinates: PCA(θ) in 3D.{" "}
               {ev.length >= 3 && (
                 <>
                   EV<sub>1..3</sub> = {ev[0]!.toFixed(3)} /{" "}
@@ -90,7 +90,7 @@ export function Embed3DTab({
                   {(totalEv * 100).toFixed(1)}%).
                 </>
               )}{" "}
-              Click un punto para fijar su <code>doc_id</code>.
+              Click a point to pin its <code>doc_id</code>.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export function Embed3DTab({
                       : "var(--color-fg-subtle)",
                 }}
               >
-                Todos
+                All
               </button>
               {Array.from({ length: data.topic_count }, (_, k) => {
                 const isSel = selectedTopic === k;

@@ -82,7 +82,7 @@ export function UsgsTab({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            {data.library_subset} · {data.library_sample_count} espectros en 7
+            {data.library_subset} · {data.library_sample_count} spectra across 7
             chapters. Each topic is matched by cosine + SAM against the full
             library; click a topic below to see its top matches.
           </p>
