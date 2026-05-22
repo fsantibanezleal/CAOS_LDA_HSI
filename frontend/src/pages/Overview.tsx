@@ -12,6 +12,7 @@ import { HypercubeAnatomy } from "./overview/HypercubeAnatomy";
 import { ScenesShowcase } from "./overview/ScenesShowcase";
 import { PillarsTriptych } from "./overview/PillarsTriptych";
 import { MethodCoverage } from "./overview/MethodCoverage";
+import { Papers } from "./overview/Papers";
 import { ReadingPath } from "./overview/ReadingPath";
 
 export default function Overview() {
@@ -41,6 +42,7 @@ export default function Overview() {
       <ScenesShowcase scenes={heroScenes.data ?? null} />
       <PillarsTriptych />
       <MethodCoverage />
+      <Papers />
       <ReadingPath />
     </PageShell>
   );
