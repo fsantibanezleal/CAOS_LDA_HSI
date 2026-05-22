@@ -37,6 +37,15 @@ export type {
   HidsagCovariateProbability,
 } from "./bandmask";
 
+// c323 Routed family slice — see api/routed.ts.
+import * as routed from "./routed";
+export type {
+  RoutedFoldMetric,
+  RoutedMethodMetrics,
+  TopicRoutedClassifier,
+  TopicRoutedDeepGate,
+} from "./routed";
+
 export type RawFile = {
   raw_dataset_id: string;
   source_group: string;
@@ -280,18 +289,12 @@ export const api = {
     request<TopicViews>(`/api/topic-views/${encodeURIComponent(sceneId)}`),
   topicToData: (sceneId: string) =>
     request<TopicToData>(`/api/topic-to-data/${encodeURIComponent(sceneId)}`),
-  topicRoutedClassifier: (sceneId: string) =>
-    request<TopicRoutedClassifier>(
-      `/api/topic-routed-classifier/${encodeURIComponent(sceneId)}`,
-    ),
+  topicRoutedClassifier: (sceneId: string) => routed.topicRoutedClassifier(sceneId),
   embeddedBaseline: (sceneId: string) =>
     request<EmbeddedBaseline>(
       `/api/embedded-baseline/${encodeURIComponent(sceneId)}`,
     ),
-  topicRoutedDeepGate: (sceneId: string) =>
-    request<TopicRoutedDeepGate>(
-      `/api/topic-routed-deep-gate/${encodeURIComponent(sceneId)}`,
-    ),
+  topicRoutedDeepGate: (sceneId: string) => routed.topicRoutedDeepGate(sceneId),
   neuralTopicComparison: (sceneId: string) =>
     request<NeuralTopicComparison>(
       `/api/neural-topic-comparison/${encodeURIComponent(sceneId)}`,
@@ -611,33 +614,6 @@ export type SpectralBrowserMeta = {
 };
 
 
-export type RoutedFoldMetric = {
-  per_fold: number[];
-  mean: number;
-  std: number;
-  ci95_lo: number;
-  ci95_hi: number;
-};
-
-export type RoutedMethodMetrics = {
-  macro_f1: RoutedFoldMetric;
-  accuracy: RoutedFoldMetric;
-  balanced_accuracy?: RoutedFoldMetric;
-};
-
-export type TopicRoutedClassifier = {
-  scene_id: string;
-  K: number;
-  n_classes: number;
-  n_documents: number;
-  method_metrics: Record<string, RoutedMethodMetrics>;
-  ranking_by_macro_f1_mean: {
-    method: string;
-    macro_f1_mean: number;
-    macro_f1_ci95: [number, number];
-  }[];
-};
-
 export type EmbeddedBaselineMetrics = {
   macro_f1: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
   accuracy: { per_fold?: number[]; mean: number; std?: number; ci95_lo?: number; ci95_hi?: number };
@@ -657,20 +633,6 @@ export type EmbeddedBaseline = {
   framework_axis?: string;
   generated_at?: string;
   builder_version?: string;
-};
-
-export type TopicRoutedDeepGate = {
-  scene_id: string;
-  n_documents: number;
-  n_classes: number;
-  gate_methods: string[];
-  method_metrics: Record<string, RoutedMethodMetrics>;
-  ranked_by_macro_f1_mean: {
-    method: string;
-    macro_f1_mean: number;
-    macro_f1_ci95: [number, number];
-  }[];
-  framework_axis?: string;
 };
 
 export type NeuralTopicComparisonMethod = {
