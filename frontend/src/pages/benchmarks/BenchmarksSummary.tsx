@@ -25,7 +25,7 @@ export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
       <ProtocolBox stats={data} />
       <Section
         id="forest"
-        title="Forest plot — macro-F1 con CI95 por escena"
+        title="Forest plot — macro-F1 with CI95 per scene"
         lead="Each bar is a scene × method; the dot is the mean, the whiskers are the 2.5 and 97.5 percentiles of the bootstrap over the 25 evaluations."
       >
         <div className="space-y-8 mt-2">
@@ -36,7 +36,7 @@ export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
       </Section>
       <Section
         id="paired"
-        title="Comparaciones pareadas (Δ macro-F1)"
+        title="Paired comparisons (Δ macro-F1)"
         lead="Each pair shows the difference between methods per evaluation; summarised as mean ± std of Δ. Negative = the second method loses."
       >
         <div className="space-y-6 mt-2">
@@ -86,7 +86,7 @@ function ProtocolBox({ stats }: { stats: MethodStatistics }) {
       }}
     >
       <Stat
-        label="Escenas evaluadas"
+        label="Scenes evaluated"
         value={String(stats.labeled_scenes.length)}
       />
       <Stat
@@ -101,7 +101,7 @@ function ProtocolBox({ stats }: { stats: MethodStatistics }) {
         }
       />
       <Stat
-        label="α significancia"
+        label="α significance"
         value={stats.alpha_significance.toFixed(2)}
       />
     </div>
