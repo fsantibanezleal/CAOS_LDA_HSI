@@ -101,12 +101,19 @@ export default function MethodologyApplication() {
         <p className="mt-3">
           <strong>Builder:</strong>{" "}
           <code>build_topic_routed_classifier.py</code>.{" "}
-          <strong>Headline:</strong> topic_routed_soft ties or beats
-          raw_logistic on the 6 labelled scenes (Indian Pines 0.839 vs 0.833;
-          Salinas 0.954 vs 0.951; KSC 0.921 vs 0.914; Botswana 0.962 vs 0.962;
-          Pavia U 0.819 vs 0.805; Salinas-A 0.996 vs 0.997). The Bayesian
-          posterior (HDI94) shows μ_routed_soft − μ_raw = +0.737 — robust
-          support in favour of routed soft.
+          <strong>Honest headline:</strong> topic_routed_soft ties or
+          narrowly beats raw_logistic on 4 of 6 labelled scenes and
+          ties-or-loses on 2 (Indian Pines 0.839 vs 0.833 = +0.006;
+          Salinas 0.954 vs 0.951 = +0.003; KSC 0.921 vs 0.914 = +0.007;
+          Pavia U 0.819 vs 0.805 = +0.014; Salinas-A 0.996 vs 0.997 =
+          −0.001; Botswana 0.962 vs 0.962 = −0.001). The Bayesian
+          posterior of the per-method means gives
+          μ_routed_soft = 0.741 and μ_raw = 0.736 with overlapping
+          HDI94s, and the pairwise probability
+          P(μ_routed_soft &gt; μ_raw) = 0.641 — weak directional
+          evidence, not a strong effect. The mechanism (θ as a gate)
+          is supported more strongly by the comparison to
+          theta_logistic below than by the small raw_logistic delta.
         </p>
       </Section>
 
@@ -203,53 +210,73 @@ export default function MethodologyApplication() {
       <Section
         id="bayesian-spec"
         title="Hierarchical Bayesian benchmark — model spec"
-        lead="The 'P(μ_a > μ_b) ≥ 0.999' claims above come from a per-scene partial-pooling model fit with PyMC. The spec below makes the priors, likelihood, and convergence-diagnostic settings explicit so the numbers are reproducible from the same JSON inputs."
+        lead="The pairwise posterior probabilities P(μ_a > μ_b) above come from a flat one-way ANOVA-style model with additive scene and fold offsets, fit with PyMC NUTS. The spec below mirrors the actual code in build_bayesian_classification_labelled.py exactly — no hidden hyperpriors."
       >
         <p>
-          For each scene <Equation tex="s \in \{1, \dots, 6\}" /> and each
-          method <Equation tex="m \in \{\mathrm{raw}, \mathrm{theta},
-            \mathrm{routed\_hard}, \mathrm{routed\_soft}\}" />, the builder
-          collects <Equation tex="N_{s,m} = 5" /> seed-replicate F1 scores
-          and fits the partial-pooling Gaussian model:
+          For each method <Equation tex="m \in \{\mathrm{pca\_K}, \mathrm{raw}, \mathrm{theta}, \mathrm{routed\_hard}, \mathrm{routed\_soft}\}" />,
+          scene <Equation tex="s \in \{1, \dots, 6\}" /> and fold{" "}
+          <Equation tex="f \in \{1, \dots, 5\}" />, the builder reads
+          the per-fold macro-F1 score{" "}
+          <Equation tex="y_{m,s,f}" /> and fits the additive model:
         </p>
         <Equation
           block
-          tex="y_{s,m,r} \sim \mathcal{N}(\mu_{s,m}, \sigma^2), \quad \mu_{s,m} \sim \mathcal{N}(\bar{\mu}_m, \tau_m^2), \quad \bar{\mu}_m \sim \mathcal{N}(0.85, 0.15^2), \quad \tau_m \sim \mathrm{HalfNormal}(0.05), \quad \sigma \sim \mathrm{HalfNormal}(0.05)."
+          tex="y_{m,s,f} \sim \mathcal{N}\!\big(\mu_m + \delta_s + \rho_f, \, \sigma^2\big)"
         />
         <p className="mt-3">
-          The scene-level means <Equation tex="\mu_{s,m}" /> shrink toward
-          the method-level mean <Equation tex="\bar{\mu}_m" /> by an amount
-          set by the data and the prior precision{" "}
-          <Equation tex="\tau_m" />. The quantity reported in the
-          Benchmarks <em>Routed</em> tab is the posterior contrast{" "}
-          <Equation tex="\Delta_{m_a, m_b} = \bar{\mu}_{m_a} - \bar{\mu}_{m_b}" />,
-          summarised by its 94% Highest Density Interval (HDI94) and the
-          posterior tail probability{" "}
-          <Equation tex="P(\Delta_{m_a, m_b} > 0)" />. A claim of
-          "robust support in favour of routed soft" requires{" "}
-          <Equation tex="P(\Delta_{\mathrm{routed\_soft}, \mathrm{raw}} > 0) \ge 0.999" />.
+          with weakly informative independent priors
+        </p>
+        <Equation
+          block
+          tex="\mu_m \sim \mathcal{N}(0, 1), \quad \delta_s \sim \mathcal{N}(0, 0.5^2), \quad \rho_f \sim \mathcal{N}(0, 0.2^2), \quad \sigma \sim \mathrm{HalfNormal}(0.5)."
+        />
+        <p className="mt-3">
+          There is <em>no</em> hyperprior on <Equation tex="\mu_m" />,
+          so methods are not shrunk toward a global mean — each method
+          posterior is dominated by its data. The quantity exposed in
+          the Benchmarks <em>Routed</em> tab is the per-method
+          posterior mean of <Equation tex="\mu_m" /> with its 94% Highest
+          Density Interval (HDI94), and the pairwise probability{" "}
+          <Equation tex="P(\mu_{m_a} > \mu_{m_b})" /> derived from the
+          joint posterior draws.
         </p>
         <p className="mt-3">
-          <strong>Sampler.</strong> PyMC 5's NUTS sampler with{" "}
-          <code>chains=4</code>, <code>tune=2000</code>,{" "}
-          <code>draws=2000</code>,{" "}
-          <code>target_accept=0.95</code>. Convergence is declared only
-          when the improved rank-normalised{" "}
-          <Equation tex="\widehat{R} < 1.01" /> (Vehtari et al. 2021)
-          for every monitored parameter and the bulk + tail effective
-          sample size exceeds 1000. The 4-chain count is the minimum the
-          Vehtari et al. diagnostic supports — re-running with 8 or 16
-          chains never shifts an HDI94 by more than the second decimal on
-          this problem.
+          <strong>Current numbers.</strong> On the canonical 6-scene
+          × 5-fold corpus the per-method posterior means are
+          <Equation tex="\mu_{\mathrm{routed\_soft}} = 0.741" /> (HDI94
+          [0.418, 1.134]) and{" "}
+          <Equation tex="\mu_{\mathrm{raw}} = 0.736" /> (HDI94
+          [0.410, 1.122]), giving{" "}
+          <Equation tex="P(\mu_{\mathrm{routed\_soft}} > \mu_{\mathrm{raw}}) = 0.641" />.
+          The wide HDI94s reflect the high between-scene variance, and
+          the 0.641 tail probability is best read as <em>weak directional
+          evidence</em>, not "robust support". The per-scene F1 deltas
+          (Indian Pines +0.006, Salinas +0.003, Salinas-A −0.001,
+          Pavia U +0.014, KSC +0.008, Botswana −0.001) tell the same
+          story: small, mostly positive, scene-dependent direction.
+        </p>
+        <p className="mt-3">
+          <strong>Sampler.</strong> PyMC's NUTS with{" "}
+          <code>chains=2</code>, <code>tune=1000</code>,{" "}
+          <code>draws=1000</code>, <code>target_accept=0.9</code> (the
+          defaults pinned in <code>build_bayesian_classification_labelled.py</code>;
+          override via <code>CAOS_NUTS_CHAINS</code>,
+          <code>CAOS_NUTS_DRAWS</code>, <code>CAOS_NUTS_TUNE</code>).
+          The rank-normalised
+          <Equation tex="\widehat{R}" /> diagnostic of Vehtari et al.
+          2021 is checked at <Equation tex="< 1.01" /> on every
+          monitored parameter before the run is accepted.
         </p>
         <p className="mt-3">
           <strong>Builder + artefact.</strong>{" "}
-          <code>build_bayesian_classification_labelled.py</code> writes the
-          per-scene posterior + ranking JSONs consumed by the Benchmarks{" "}
-          <em>Routed</em> tab and the <em>Bayesian</em> sub-tab. The
-          regression analogue lives in{" "}
-          <code>build_bayesian_classification_deep.py</code> for the
-          HIDSAG continuous targets.
+          <code>build_bayesian_classification_labelled.py</code> writes
+          <code> method_statistics_labelled/cross_classification_bayesian.json</code>,
+          which the Benchmarks <em>Routed</em> tab and the{" "}
+          <em>Bayesian</em> sub-tab consume. The deep-gate variant
+          lives in <code>build_bayesian_classification_deep.py</code>;
+          for HIDSAG continuous targets the parallel model with
+          subsets-in-place-of-scenes is in{" "}
+          <code>build_bayesian_method_comparison.py</code>.
         </p>
       </Section>
 

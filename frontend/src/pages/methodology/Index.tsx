@@ -135,7 +135,7 @@ function SubpageIcon({ kind, color }: { kind: "theory" | "repr" | "pipe" | "app"
             <path d="M0 0 L10 5 L0 10 Z" fill={color}/>
           </marker>
         </defs>
-        <text x="160" y="68" fontSize="9.5" textAnchor="middle" fill="currentColor" opacity="0.55">57 builders · GPU when available</text>
+        <text x="160" y="68" fontSize="9.5" textAnchor="middle" fill="currentColor" opacity="0.55">69 builders · GPU when available</text>
       </svg>
     );
   }
