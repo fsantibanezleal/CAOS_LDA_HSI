@@ -27,8 +27,8 @@ const PAPERS: PaperCard[] = [
     blurb:
       "Long-form treatment: 12-axis Framework, hierarchical Bayesian benchmarks, deep-encoder ablations, HIDSAG cross-preprocessing stability.",
     pdfHref: "/papers/caos-lda-hsi-journal.pdf",
-    pdfSizeKb: 476,
-    buildStamp: "2026-05-22",
+    pdfSizeKb: 510,
+    buildStamp: "2026-05-24",
     note: "Preprint; target venue redacted while it circulates.",
   },
   {
@@ -38,8 +38,8 @@ const PAPERS: PaperCard[] = [
     blurb:
       "Short companion: theta-as-gate vs theta-as-feature, the B-3 result, and the multi-axis battery summary.",
     pdfHref: "/papers/caos-lda-hsi-conference.pdf",
-    pdfSizeKb: 332,
-    buildStamp: "2026-05-22",
+    pdfSizeKb: 333,
+    buildStamp: "2026-05-24",
     note: "Preprint; target venue redacted while it circulates.",
   },
 ];
