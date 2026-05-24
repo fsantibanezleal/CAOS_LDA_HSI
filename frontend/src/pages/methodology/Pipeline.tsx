@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 
+import { Equation } from "@/components/Equation";
 import { Figure } from "@/components/Figure";
 import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
@@ -188,6 +189,80 @@ export default function MethodologyPipeline() {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section
+        id="spatial-coherence"
+        title="Spatial coherence — what the groupings stage measures"
+        lead="The four document constructions (SLIC-500, SLIC-2000, patch-7/15, Felzenszwalb) carve the cube in geometrically different ways. The cross-method agreement panel summarises how often they place two pixels in the same document; the per-method spatial-coherence diagnostics summarise how compact each construction's regions are."
+      >
+        <p>
+          Three diagnostics are computed by the groupings + spatial-validation
+          builders and surfaced in the Workspace <em>Spatial structure</em>{" "}
+          tab. They are independent of LDA — they describe the document
+          construction itself.
+        </p>
+
+        <p className="mt-3">
+          <strong>1. SLIC compactness</strong> (Achanta et al. 2012). For
+          each SLIC superpixel <Equation tex="R_i" />, define the colour
+          distance from its centroid <Equation tex="\mu_i^{\mathrm{c}}" /> and
+          the spatial distance from its centroid{" "}
+          <Equation tex="\mu_i^{\mathrm{xy}}" />; the compactness parameter{" "}
+          <Equation tex="m" /> trades them off in the per-pixel cost
+        </p>
+        <Equation
+          block
+          tex="D_i(p) = d_{\mathrm{c}}(p, \mu_i^{\mathrm{c}}) + \frac{m}{S} \, d_{\mathrm{xy}}(p, \mu_i^{\mathrm{xy}}), \quad S = \sqrt{N / K}."
+        />
+        <p>
+          Smaller compactness gives spatially tight regions; larger
+          compactness lets colour drive the boundaries. This project ships
+          two SLIC budgets — 500 and 2000 regions — both with the
+          scikit-image default <Equation tex="m = 10" /> for visual
+          reproducibility against the published Achanta et al. examples.
+        </p>
+
+        <p className="mt-3">
+          <strong>2. Felzenszwalb internal-vs-external energy</strong>{" "}
+          (Felzenszwalb &amp; Huttenlocher 2004). The graph-segmentation
+          baseline merges two adjacent regions{" "}
+          <Equation tex="C_1, C_2" /> whenever the minimum edge weight
+          crossing them is small relative to their internal differences
+          plus a size-penalised threshold{" "}
+          <Equation tex="\tau(C) = k / |C|" />:
+        </p>
+        <Equation
+          block
+          tex="\mathrm{Diff}(C_1, C_2) < \min\{\mathrm{Int}(C_1) + \tau(C_1), \, \mathrm{Int}(C_2) + \tau(C_2)\}."
+        />
+        <p>
+          The parameter <Equation tex="k" /> controls average region size
+          (larger <Equation tex="k" /> → larger regions). The builder fixes
+          <Equation tex="k = 100" /> for the SLIC-comparable budget; the
+          resulting regions are reported alongside SLIC and patch in the
+          cross-method-agreement table.
+        </p>
+
+        <p className="mt-3">
+          <strong>3. Moran's I — spatial autocorrelation of θ</strong>{" "}
+          (Moran 1950). For each topic <Equation tex="k" /> and a row-standardised
+          spatial weight matrix <Equation tex="W" /> (4-connectivity on the
+          image grid), the topic's spatial concentration is
+        </p>
+        <Equation
+          block
+          tex="I_k = \frac{N}{S_0} \cdot \frac{\sum_{i} \sum_{j} W_{ij} (\theta_{i,k} - \bar{\theta}_k)(\theta_{j,k} - \bar{\theta}_k)}{\sum_{i} (\theta_{i,k} - \bar{\theta}_k)^2}, \quad S_0 = \sum_{i,j} W_{ij}."
+        />
+        <p>
+          <Equation tex="I_k \in [-1, 1]" /> measures how strongly the
+          per-pixel topic weight is spatially clustered. A topic that
+          captures a contiguous mineral assemblage shows{" "}
+          <Equation tex="I_k \approx 0.6\text{–}0.9" /> on HIDSAG MINERAL1;
+          a noisy / over-fragmented topic falls below 0.2. The Workspace{" "}
+          <em>Spatial structure</em> tab reports the per-topic Moran's I
+          alongside its significance under a permutation null.
+        </p>
       </Section>
 
       <Section id="reproduce" title="How to reproduce the full corpus">

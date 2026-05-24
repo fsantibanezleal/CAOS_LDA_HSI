@@ -69,6 +69,26 @@ export default function MethodologyTheory() {
           Steyvers 2004) or stochastic VI (Hoffman et al. 2013); all of them are
           approximations to the same posterior.
         </p>
+        <p className="mt-3">
+          Variational inference posits a tractable family{" "}
+          <Equation tex="q(\theta, \phi, z \mid \lambda, \gamma, \nu)" /> — typically
+          a fully-factored mean-field surrogate — and maximises the
+          Evidence Lower BOund (ELBO):
+        </p>
+        <Equation
+          block
+          tex="\mathcal{L}(\lambda, \gamma, \nu) = \mathbb{E}_q[\log p(w, \theta, \phi, z \mid \alpha, \eta)] - \mathbb{E}_q[\log q(\theta, \phi, z)] \le \log p(w \mid \alpha, \eta)"
+        />
+        <p className="mt-3">
+          The gap between the ELBO and the log-evidence is exactly the
+          KL divergence <Equation tex="\mathrm{KL}\big(q(\cdot \mid \lambda,\gamma,\nu) \,\|\, p(\cdot \mid w, \alpha, \eta)\big)" />,
+          so maximising the ELBO is equivalent to minimising the
+          discrepancy between the surrogate <Equation tex="q" /> and the true
+          posterior. Online stochastic VI (Hoffman, Blei, Bach 2010) replaces
+          the full-batch ELBO with a noisy mini-batch estimator, which is
+          what <code>gensim</code>'s <code>LdaModel</code> ships and what this
+          project uses for the LDA fits.
+        </p>
       </Section>
 
       <Section
@@ -136,27 +156,150 @@ export default function MethodologyTheory() {
         </Figure>
       </Section>
 
+      <Section
+        id="topics-vs-endmembers"
+        title="Topics vs endmembers — the φ ↔ E relationship"
+        lead="Linear spectral unmixing factorises a cube into endmember signatures × per-pixel abundances. LDA factorises a tokenised cube into topic distributions × per-document mixtures. The two factorisations are different objects, but on mineral scenes they end up describing the same underlying material families — which is why the per-topic cosine vs endmember runs 0.7–0.9 on the HIDSAG mineral subsets."
+      >
+        <p>
+          Linear unmixing assumes the pixel spectrum{" "}
+          <Equation tex="x_d \in \mathbb{R}^B" /> is a non-negative combination
+          of <em>M</em> endmember signatures{" "}
+          <Equation tex="E = [e_1, \dots, e_M] \in \mathbb{R}_{\ge 0}^{B \times M}" />{" "}
+          weighted by abundance fractions{" "}
+          <Equation tex="a_d \in \Delta^{M-1}" />:
+        </p>
+        <Equation
+          block
+          tex="x_d \approx E\, a_d, \quad \sum_{m=1}^{M} a_{d,m} = 1, \quad a_{d,m} \ge 0."
+        />
+        <p className="mt-3">
+          LDA's mixed factorisation, after wordification, expresses the
+          reconstructed token distribution of a document as{" "}
+          <Equation tex="\hat{w}_d = \Phi\, \theta_d" /> where{" "}
+          <Equation tex="\Phi = [\phi_1, \dots, \phi_K] \in \Delta^{V-1, K}" /> are
+          the topic-word distributions and{" "}
+          <Equation tex="\theta_d \in \Delta^{K-1}" /> the per-document mixture.
+        </p>
+        <Equation block tex="\hat{w}_d = \Phi\, \theta_d, \quad \sum_{k=1}^{K} \theta_{d,k} = 1." />
+        <p className="mt-3">
+          The two factorisations live in different spaces:{" "}
+          <Equation tex="E" /> in continuous reflectance{" "}
+          <Equation tex="(B \text{ bands})" /> and{" "}
+          <Equation tex="\Phi" /> in discrete tokens{" "}
+          <Equation tex="(V \text{ vocabulary})" />. They are linked by the
+          wordification map <Equation tex="w: \mathbb{R}^B \to \mathbb{N}^V" />:
+          if <Equation tex="w" /> is approximately linear over the
+          mineral-relevant regime, then{" "}
+          <Equation tex="w(E\, a_d) \approx w(E)\, a_d" />, so a column of{" "}
+          <Equation tex="w(E)" /> behaves like a topic{" "}
+          <Equation tex="\phi_k" />. Empirically, on the HIDSAG MINERAL
+          subsets, the maximum cosine similarity between any topic{" "}
+          <Equation tex="\phi_k" /> and any endmember{" "}
+          <Equation tex="w(e_m)" /> is in the 0.7–0.9 range, with the matched
+          topic dominating the abundance map of the same material. The
+          Workspace USGS tab shows the same pairing against the public USGS
+          splib07 spectral library.
+        </p>
+      </Section>
+
+      <Section
+        id="coherence-metrics"
+        title="Topic coherence — c_v, NPMI, and U-Mass"
+        lead="Coherence quantifies whether the top words of a topic 'go together' in the corpus. The three metrics this project tracks (c_v, NPMI, U-Mass) measure that signal at different scales and with different statistics. Higher is better for c_v and NPMI; less-negative is better for U-Mass."
+      >
+        <p>
+          Given a topic <Equation tex="\phi_k" /> and its top-N words{" "}
+          <Equation tex="W_k = \{w_1, \dots, w_N\}" />, all three metrics
+          aggregate over pairs <Equation tex="(w_i, w_j) \in W_k" /> a
+          point-wise statistic that depends on the joint and marginal
+          probabilities of the two words in some reference corpus.
+        </p>
+
+        <p className="mt-3">
+          <strong>U-Mass</strong> (Mimno et al. 2011) uses corpus
+          co-occurrence within the documents themselves:
+        </p>
+        <Equation
+          block
+          tex="C_{\mathrm{UMass}}(\phi_k) = \sum_{i=2}^{N} \sum_{j=1}^{i-1} \log \frac{D(w_i, w_j) + \varepsilon}{D(w_j)}"
+        />
+        <p>
+          where <Equation tex="D(w)" /> is the number of documents containing{" "}
+          <em>w</em> and <Equation tex="D(w_i, w_j)" /> the number containing
+          both. U-Mass is bounded above by 0; values close to zero are best.
+        </p>
+
+        <p className="mt-3">
+          <strong>NPMI</strong> (Bouma 2009; Aletras &amp; Stevenson 2013) is
+          the normalised point-wise mutual information of the two words in a
+          sliding context window of width <Equation tex="s" />:
+        </p>
+        <Equation
+          block
+          tex="\mathrm{NPMI}(w_i, w_j) = \frac{\log \big(P(w_i, w_j) / (P(w_i) P(w_j))\big)}{-\log P(w_i, w_j)} \in [-1, 1], \quad C_{\mathrm{NPMI}}(\phi_k) = \frac{1}{\binom{N}{2}} \sum_{i < j} \mathrm{NPMI}(w_i, w_j)."
+        />
+
+        <p className="mt-3">
+          <strong>c_v</strong> (Röder, Both, Hinneburg 2015) combines an NPMI
+          sliding-window estimator with a one-vs-rest cosine of the top-N
+          NPMI vectors:
+        </p>
+        <Equation
+          block
+          tex="C_v(\phi_k) = \frac{1}{N} \sum_{i=1}^{N} \cos\!\Big(\vec{v}_{w_i},\; \tfrac{1}{N}\textstyle\sum_{j=1}^{N} \vec{v}_{w_j}\Big), \quad \vec{v}_w = \big(\mathrm{NPMI}(w, w_1), \dots, \mathrm{NPMI}(w, w_N)\big)."
+        />
+        <p>
+          In the project's WSDM-2015 systematic study, <em>c_v</em> showed
+          the highest correlation with human word-intrusion judgements
+          across 8 datasets and 6 model families. The Benchmarks{" "}
+          <em>Topics</em> tab tracks <em>c_v</em>, NPMI, and U-Mass jointly
+          so a verdict is never resting on a single metric.
+        </p>
+      </Section>
+
       <Section id="readings" title="Minimal reading list">
         <ul
           className="mt-2 space-y-2 list-disc pl-5"
           style={{ color: "var(--color-fg-subtle)" }}
         >
           <li>
-            Blei, Ng &amp; Jordan (2003) — <em>Latent Dirichlet Allocation</em>.
-            JMLR. The canonical paper.
+            Blei, Ng &amp; Jordan (2003) —{" "}
+            <em>Latent Dirichlet Allocation</em>. JMLR 3, 993–1022. The
+            canonical paper. §3 of the journal manuscript reproduces the
+            joint factorisation; §4.2 motivates the wordification recipes.
+          </li>
+          <li>
+            Hoffman, Blei &amp; Bach (2010) —{" "}
+            <em>Online learning for Latent Dirichlet Allocation</em>. NIPS.
+            Source of the stochastic VI updates that <code>gensim</code>
+            ships and that this project uses for the LDA fits (§3.3 of the
+            journal manuscript).
           </li>
           <li>
             Griffiths &amp; Steyvers (2004) —{" "}
-            <em>Finding scientific topics</em>. PNAS. Collapsed Gibbs.
+            <em>Finding scientific topics</em>. PNAS 101 (Suppl 1),
+            5228–5235. Collapsed-Gibbs alternative; cited in the
+            inference-choice rationale (§3.4).
           </li>
           <li>
             Sievert &amp; Shirley (2014) —{" "}
             <em>LDAvis: A method for visualizing and interpreting topics</em>.
-            Defines the relevance formula λ used in the Workspace page.
+            Defines the relevance formula λ (Workspace <em>Topics</em> tab)
+            and is referenced in §6.1 of the journal manuscript.
           </li>
           <li>
-            Stammbach et al. (2024) — <em>Re-visiting word intrusion</em>. TACL.
-            Modern framework for validating topics with LLM oracles.
+            Röder, Both &amp; Hinneburg (2015) —{" "}
+            <em>Exploring the Space of Topic Coherence Measures</em>. WSDM.
+            Source of the c_v / NPMI / U-Mass definitions used above and in
+            the Benchmarks <em>Topics</em> tab (§6.2 of the journal
+            manuscript).
+          </li>
+          <li>
+            Stammbach et al. (2024) —{" "}
+            <em>Re-visiting word intrusion</em>. TACL. Modern framework for
+            validating topics with LLM oracles; underpins the Workspace{" "}
+            <em>LLM tea-leaves</em> tab (§7 of the journal manuscript).
           </li>
         </ul>
       </Section>
