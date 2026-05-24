@@ -37,6 +37,20 @@ into the existing API plumbing.
 Output:
   data/local/wordifications/<recipe>/<scheme>_Q<q>/<scene>/{doc_term.npz, vocab.json}
   data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json
+
+References
+----------
+- Clark, R. N., Roush, T. L. (1984). "Reflectance Spectroscopy:
+  Quantitative Analysis Techniques for Remote Sensing
+  Applications". *Journal of Geophysical Research: Solid Earth*
+  89(B7), 6329-6340. DOI:10.1029/JB089iB07p06329. Foundation of
+  the continuum-removed / convex-hull-quotient transform used in
+  V7 to isolate absorption features.
+- Jégou, H., Douze, M., Schmid, C. (2011). "Product Quantization
+  for Nearest Neighbor Search". *IEEE TPAMI* 33(1), 117-128.
+  DOI:10.1109/TPAMI.2010.57. The Product Quantisation method that
+  underlies V11; implemented here via the `nanopq.PQ` Python
+  wrapper.
 """
 from __future__ import annotations
 

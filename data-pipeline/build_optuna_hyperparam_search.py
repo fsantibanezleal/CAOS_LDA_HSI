@@ -15,6 +15,20 @@ is `c_v - 0.001 * perplexity_test`.
 
 Output: data/derived/lda_hyperparam_search/<scene>.json
         data/local/lda_hyperparam_search/<scene>/study.pkl
+
+References
+----------
+- Bergstra, J., Bardenet, R., Bengio, Y., Kégl, B. (2011).
+  "Algorithms for Hyper-Parameter Optimization". *NIPS*.
+  Source of the Tree-structured Parzen Estimator (TPE) sampler used
+  here via Optuna's default sampler.
+- Akiba, T., Sano, S., Yanase, T., Ohta, T., Koyama, M. (2019).
+  "Optuna: A Next-generation Hyperparameter Optimization Framework".
+  *KDD*. DOI:10.1145/3292500.3330701. The Optuna framework whose
+  `optuna.create_study(direction="maximize")` powers this builder.
+- Bergstra, J., Bengio, Y. (2012). "Random Search for Hyper-Parameter
+  Optimization". *JMLR* 13, 281-305. Reference for the random-search
+  baseline that TPE is expected to beat on a same-budget comparison.
 """
 from __future__ import annotations
 
