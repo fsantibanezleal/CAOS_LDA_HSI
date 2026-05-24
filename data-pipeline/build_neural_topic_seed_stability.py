@@ -13,6 +13,16 @@ Companion to build_deep_seed_stability (cycle 19+) for the neural
 topic family. Default N=5 (env CAOS_NEURAL_TOPIC_SEEDS).
 
 GPU-accelerated via cycle 59 refactor (~30s per fit).
+
+References
+----------
+- Srivastava, Sutton (2017). "Autoencoding Variational Inference For
+  Topic Models" (ProdLDA). ICLR 2017.
+- Dieng, Ruiz, Blei (2020). "Topic Modeling in Embedding Spaces" (ETM).
+  TACL 8:439-453.
+- Greene, O'Callaghan, Cunningham (2014). "How Many Topics? Stability
+  Analysis for Topic Models". ECML-PKDD 2014. The Hungarian-matched
+  stability protocol on which this builder mirrors the deep version.
 """
 from __future__ import annotations
 

@@ -29,6 +29,17 @@ The derived JSON contains:
 This replaces, for labelled scenes, the section of exploration_views.json
 that the audit found to be raw PCA on band profiles with a fudged
 relevance(lambda).
+
+References
+----------
+- Blei, Ng, Jordan (2003). "Latent Dirichlet Allocation". JMLR 3:993-1022.
+  The LDA model this builder fits.
+- Hoffman, Bach, Blei (2010). "Online Learning for Latent Dirichlet
+  Allocation". NeurIPS 23. The online variational inference algorithm.
+- Sievert, Shirley (2014). "LDAvis: A method for visualizing and
+  interpreting topics". ACL Workshop on Interactive Language Learning,
+  Visualization, and Interfaces. The relevance(lambda) formula and the
+  intertopic-distance MDS that this builder reproduces.
 """
 from __future__ import annotations
 

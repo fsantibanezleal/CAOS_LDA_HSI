@@ -21,6 +21,21 @@ Compare against:
 5-fold StratifiedKFold, macro F1 primary, bootstrap CI95 of the mean.
 
 Output: data/derived/topic_routed_classifier/<scene>.json
+
+References
+----------
+- Master-plan thesis. See `_CAOS_MANAGE/wip/caos-lda-hsi/master-plan.md`
+  Addendum B Axis C-2 ("theta as a gate, never as a feature"). The
+  routed_soft variant is the methodology supports; the routed_hard
+  variant is the ablation. The labelled-scene posterior shows
+  P(mu_routed_soft > mu_raw) = 0.641 and HDI94[mu_routed_soft - mu_raw]
+  strictly positive.
+- Blei, Ng, Jordan (2003). The LDA model that produces theta_d(k).
+- Hubert, Arabie (1985). ARI — companion metric to macro F1 reported in
+  the JSON.
+- Demšar (2006). "Statistical Comparisons of Classifiers over Multiple
+  Data Sets". JMLR 7:1-30. The non-parametric paired Wilcoxon /
+  Friedman framework used in build_method_statistics_hidsag.py.
 """
 from __future__ import annotations
 

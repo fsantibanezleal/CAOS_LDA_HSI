@@ -18,6 +18,20 @@ Posterior inference via NUTS. Reports per-method posterior mean +
 HDI94 + pairwise P(mu_a > mu_b).
 
 Output: data/derived/method_statistics_labelled/cross_classification_bayesian.json
+
+References
+----------
+- Gelman, Carlin, Stern, Dunson, Vehtari, Rubin (2013). "Bayesian Data
+  Analysis", 3rd ed. CRC Press. The hierarchical normal model and
+  HDI94 conventions used here.
+- Vehtari, Gelman, Simpson, Carpenter, Burkner (2021). "Rank-Normalization,
+  Folding, and Localization: An Improved R-hat for Assessing Convergence
+  of MCMC". Bayesian Analysis 16(2):667-718. The 4-chain minimum +
+  rank-normalised R-hat the builder enforces.
+- Hoffman, Gelman (2014). "The No-U-Turn Sampler: Adaptively Setting
+  Path Lengths in Hamiltonian Monte Carlo". JMLR 15(1):1593-1623. NUTS.
+- Salvatier, Wiecki, Fonnesbeck (2016). "Probabilistic programming in
+  Python using PyMC3". PeerJ Computer Science 2:e55. PyMC.
 """
 from __future__ import annotations
 

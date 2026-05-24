@@ -1,4 +1,22 @@
-"""Build patch-level HIDSAG region documents for local benchmarks and future UI subsets."""
+"""Build patch-level HIDSAG region documents for local benchmarks and future UI subsets.
+
+HIDSAG samples are continuous drill-core sections; this builder slices
+each sample into spatially contiguous regions (default ~50 pixels per
+region) and emits one document per region. Each document carries:
+
+- The bag-of-V1-tokens computed from the region's pixel spectra
+- A region-id and parent-sample-id for traceability
+- The measurement vector (XRD/AAS/ICP-MS assays) inherited from the
+  parent sample — used downstream by build_topic_measurements.py and
+  build_dmr_lda_hidsag.py.
+
+The region-as-document construction mirrors the SLIC/Felzenszwalb
+spatial-document recipes used on the labelled UPV/EHU scenes (see
+build_groupings.py) but adapted to HIDSAG's 1D-spatial geometry.
+
+Output: data/derived/hidsag_region_documents/<subset>.json
+(corpus of region-level documents with measurement metadata).
+"""
 from __future__ import annotations
 
 import json
