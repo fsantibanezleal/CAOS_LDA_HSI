@@ -15,6 +15,7 @@ type PaperCard = {
   blurb: string;
   pdfHref: string;
   pdfSizeKb: number;
+  buildStamp: string;
   note: string;
 };
 
@@ -27,6 +28,7 @@ const PAPERS: PaperCard[] = [
       "Long-form treatment: 12-axis Framework, hierarchical Bayesian benchmarks, deep-encoder ablations, HIDSAG cross-preprocessing stability.",
     pdfHref: "/papers/caos-lda-hsi-journal.pdf",
     pdfSizeKb: 476,
+    buildStamp: "2026-05-22",
     note: "Preprint; target venue redacted while it circulates.",
   },
   {
@@ -37,6 +39,7 @@ const PAPERS: PaperCard[] = [
       "Short companion: theta-as-gate vs theta-as-feature, the B-3 result, and the multi-axis battery summary.",
     pdfHref: "/papers/caos-lda-hsi-conference.pdf",
     pdfSizeKb: 332,
+    buildStamp: "2026-05-22",
     note: "Preprint; target venue redacted while it circulates.",
   },
 ];
@@ -117,6 +120,12 @@ export function Papers() {
             >
               <span>{p.pdfHref.split("/").pop()}</span>
               <span>{p.pdfSizeKb} KB · PDF</span>
+            </div>
+            <div
+              className="text-[11px] font-mono"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              build {p.buildStamp}
             </div>
           </a>
         ))}
