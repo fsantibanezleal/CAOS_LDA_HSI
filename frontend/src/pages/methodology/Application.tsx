@@ -111,6 +111,50 @@ export default function MethodologyApplication() {
       </Section>
 
       <Section
+        id="thesis-b3"
+        title="2b. Why routing wins and θ-as-feature loses"
+        lead="The B-3 thesis in one paragraph: gating preserves the simplex geometry that flat features destroy."
+      >
+        <p>
+          The direct model treats θ as a flat K-dimensional feature vector and
+          asks one global classifier to learn{" "}
+          <Equation tex="P(y \mid \theta)" /> across the whole probability
+          simplex. The routed model instead fits <em>K</em> per-topic
+          specialists{" "}
+          <Equation tex="g_k(x)" /> over the raw spectrum and combines them
+          as a θ-weighted mixture{" "}
+          <Equation tex="P(y \mid x, \theta) = \sum_{k} \theta_d(k)\, g_k(x)" />.
+          Mathematically the second is a <em>local</em> sample-weighted
+          logistic regression — equivalent to a non-parametric conditional
+          density estimator where θ acts as a soft cluster assignment. It
+          preserves the mixture geometry that direct collapses by averaging
+          first.
+        </p>
+        <p className="mt-3">
+          Two practical consequences. (i) The specialist{" "}
+          <Equation tex="g_k" /> sees only the spectra that genuinely
+          activate topic <em>k</em>, so each can be a small, well-conditioned
+          linear model — no class confounded with another via averaged θ.
+          (ii) The mixture probability inherits the full information of the
+          raw spectrum (via{" "}
+          <Equation tex="g_k(x)" />), with θ acting only as the gate that
+          chooses which expert to consult. The naïve θ-as-feature model
+          throws away the spectrum and asks K numbers to do all the
+          discrimination, which is why it loses by 30–50 pp.
+        </p>
+        <p className="mt-3">
+          The B-3 follow-up (Bayesian hierarchical, see <code>gating</code>{" "}
+          tab) shows the result is structural, not coincidental: substituting
+          softmaxed PCA-8, CAE-1D-8 or β-VAE-8 outputs as the gate{" "}
+          <em>fails</em> with P(μ_a &gt; μ_b) ≥ 0.999 in every comparison.
+          Deep latents satisfy the simplex constraint geometrically
+          (softmax outputs sum to 1) but their components have no
+          ‘meaning of cluster’ — they are arbitrary axes in a learned
+          latent space, not soft assignments to interpretable topics.
+        </p>
+      </Section>
+
+      <Section
         id="embedded"
         title="3. Embedded — theta concatenated with baseline"
         lead="Concat is the least elegant but sometimes the healthiest: let the classifier decide how much theta weighs."
@@ -206,6 +250,25 @@ export default function MethodologyApplication() {
         lead="The companion paper introduces a twelve-axis Framework (F-1..F-12). This site and the wiki use a different B-1..B-12 taxonomy that predates the paper. The two share three concepts under different ordinals; the crosswalk below makes the mapping explicit."
       >
         <p>
+          <strong>F-framework in one paragraph.</strong> Topic models are
+          rarely evaluated on a single axis, yet the literature defaults to
+          held-out perplexity or downstream classification accuracy and
+          stops there. The F-framework formalises{" "}
+          <em>twelve evaluation axes</em>, each scoring a different
+          dimension of topic-model quality and each backed by a derived
+          artefact: (F-1) classification under a hierarchical Bayesian
+          comparison; (F-2) coherence via c_v, NPMI and U-Mass; (F-3) seed
+          stability through Hungarian-matched cosine; (F-4) capacity
+          sensitivity over a K-sweep; (F-5) band-mask robustness; (F-6)
+          cross-method partition agreement; (F-7) topic-label coupling via
+          KL; (F-8) per-topic Hungarian identity preservation; (F-9) HIDSAG
+          preprocessing stability; (F-10) cross-scene topic transfer;
+          (F-11) interpretability via topic / band / document cards; (F-12)
+          external baselines (HybridSN, SpectralFormer). A model that wins
+          on one axis can lose on another — the framework forces the
+          conversation to be plural.
+        </p>
+        <p className="mt-3">
           Both taxonomies are kept on purpose: the wiki's B-axes are the
           empirical evaluation battery the project ran across ~150
           iterative cycles; the paper's F-axes are the formal twelve-axis
