@@ -30,6 +30,21 @@ It then:
 
 Output:
   data/derived/linear_probe_panel/<scene>.json
+
+References
+----------
+- Alain, G., Bengio, Y. (2017). "Understanding intermediate layers
+  using linear classifier probes". *ICLR Workshop*.
+  arXiv:1610.01644. The linear-probe protocol used here:
+  representation quality is diagnosed by the accuracy of a frozen
+  logistic regression on top of the candidate features, holding
+  the probe capacity fixed across methods.
+- Demšar, J. (2006). "Statistical Comparisons of Classifiers over
+  Multiple Data Sets". *JMLR* 7, 1-30. Source of the pairwise
+  Wilcoxon-Holm protocol applied across scenes here.
+- Cliff, N. (1993). "Dominance Statistics: Ordinal Analyses to
+  Answer Ordinal Questions". *Psychological Bulletin* 114(3),
+  494-509. Source of the Cliff δ effect-size measure.
 """
 from __future__ import annotations
 

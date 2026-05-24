@@ -24,6 +24,18 @@ proper BDE requires recomputing per-pixel theta over the full
 labelled mask via a fresh LDA transform, deferred to a follow-up.
 
 Output: data/derived/topic_spatial_continuous/<scene>.json
+
+References
+----------
+- Moran, P. A. P. (1950). "Notes on Continuous Stochastic Phenomena".
+  *Biometrika* 37(1/2), 17-23. Source of Moran's I for the continuous
+  theta_k abundance map under 4-neighbour row-standardised weights.
+- Geary, R. C. (1954). "The Contiguity Ratio and Statistical Mapping".
+  *The Incorporated Statistician* 5(3), 115-145. Source of Geary's C
+  as a complementary local-contiguity statistic.
+- Cliff, A. D., Ord, J. K. (1981). *Spatial Processes: Models &
+  Applications*. Pion. Reference for the permutation null used to
+  derive p-values for both I and C in the per-topic significance test.
 """
 from __future__ import annotations
 

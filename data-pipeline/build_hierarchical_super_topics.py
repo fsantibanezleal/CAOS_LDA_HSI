@@ -12,6 +12,19 @@ list (scene_id, topic_k pairs), within-cluster cohesion, and the
 dendrogram in linkage-matrix form so the public web app can render it.
 
 Output: `data/derived/super_topics/super_topics.json`
+
+References
+----------
+- Murtagh, F., Contreras, P. (2012). "Algorithms for hierarchical
+  clustering: an overview". *WIREs Data Mining and Knowledge
+  Discovery* 2(1), 86-97. DOI:10.1002/widm.53. Reference for the
+  average-linkage agglomerative clustering used here on cosine
+  distances over the per-topic spectral profiles.
+- Sokal, R. R., Michener, C. D. (1958). "A Statistical Method for
+  Evaluating Systematic Relationships". *University of Kansas
+  Science Bulletin* 38, 1409-1438. The UPGMA / average-linkage
+  scheme; `scipy.cluster.hierarchy.linkage(..., method='average')`
+  implements it.
 """
 from __future__ import annotations
 

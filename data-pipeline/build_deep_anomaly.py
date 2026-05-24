@@ -13,6 +13,24 @@ Output: data/derived/deep_anomaly/<scene>.json
 
 Higher Spearman => the deep representations reconstruction error
 flags hard / mis-classified documents better than chance.
+
+References
+----------
+- Masci, J., Meier, U., Cireşan, D., Schmidhuber, J. (2011). "Stacked
+  Convolutional Auto-Encoders for Hierarchical Feature Extraction".
+  *ICANN*. The canonical 1D-CAE design used here for the
+  reconstruction-loss anomaly indicator.
+- Kingma, D. P., Welling, M. (2014). "Auto-Encoding Variational
+  Bayes". *ICLR*. arXiv:1312.6114. Source of the VAE ELBO with the
+  recon-loss + KL decomposition this builder consumes.
+- Higgins, I., Matthey, L., Pal, A., et al. (2017). "β-VAE: Learning
+  Basic Visual Concepts with a Constrained Variational Framework".
+  *ICLR*. Introduces the β > 1 KL multiplier used to control the
+  disentanglement / reconstruction trade-off.
+- Hendrycks, D., Gimpel, K. (2017). "A Baseline for Detecting
+  Misclassified and Out-of-Distribution Examples in Neural
+  Networks". *ICLR*. arXiv:1610.02136. Justifies using the
+  reconstruction loss as a proxy for example-level uncertainty.
 """
 from __future__ import annotations
 

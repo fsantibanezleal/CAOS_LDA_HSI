@@ -13,6 +13,20 @@ Output:
   data/derived/mutual_information/<scene>.json
   data/derived/mutual_information/hidsag/<subset>.json (when DMR fit
                                                        available)
+
+References
+----------
+- Kraskov, A., Stögbauer, H., Grassberger, P. (2004). "Estimating
+  Mutual Information". *Physical Review E* 69(6), 066138.
+  DOI:10.1103/PhysRevE.69.066138. The KSG k-nearest-neighbour MI
+  estimator underlying `sklearn.feature_selection.mutual_info_*`.
+- Ross, B. C. (2014). "Mutual Information between Discrete and
+  Continuous Data Sets". *PLOS ONE* 9(2), e87357. The KSG extension
+  to the mixed discrete/continuous case used in
+  `mutual_info_classif`.
+- Cover, T. M., Thomas, J. A. (2006). *Elements of Information
+  Theory* (2nd ed.). Wiley. Reference for the conditional-entropy
+  decomposition H(label | theta) = H(label) - I(theta; label).
 """
 from __future__ import annotations
 

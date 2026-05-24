@@ -17,6 +17,25 @@ For every labelled scene with a topic-views fit, this builder:
    distance matrix per scene
 
 Output: `data/derived/topic_to_library/<scene>.json`
+
+References
+----------
+- Kruse, F. A., Lefkoff, A. B., Boardman, J. W., Heidebrecht, K. B.,
+  Shapiro, A. T., Barloon, P. J., Goetz, A. F. H. (1993). "The
+  Spectral Image Processing System (SIPS) — Interactive Visualization
+  and Analysis of Imaging Spectrometer Data". *Remote Sensing of
+  Environment* 44(2-3), 145-163.
+  DOI:10.1016/0034-4257(93)90013-N. Source of the Spectral Angle
+  Mapper (SAM) distance used here alongside cosine similarity.
+- Clark, R. N., Roush, T. L. (1984). "Reflectance Spectroscopy:
+  Quantitative Analysis Techniques for Remote Sensing
+  Applications". *Journal of Geophysical Research: Solid Earth*
+  89(B7), 6329-6340. Foundation of the reflectance-spectrum
+  matching approach.
+- Kokaly, R. F., Clark, R. N., Swayze, G. A., et al. (2017). "USGS
+  Spectral Library Version 7". *USGS Data Series* 1035.
+  DOI:10.3133/ds1035. Provides the splib07a reference spectra used
+  on the AVIRIS-Classic side of the matching.
 """
 from __future__ import annotations
 
