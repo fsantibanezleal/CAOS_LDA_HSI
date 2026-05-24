@@ -357,7 +357,7 @@
           "Comparado contra LDA vía topic_endmember_match: K-K cosine matrix."
         ],
         "hypothesis": "Si los píxeles HSI son combinaciones lineales de pocos materiales puros, los tópicos LDA deberían alinearse con endmembers.",
-        "findings": "Best per-topic cosine vs endmember típicamente 0.7–0.9 (alta alineación) en escenas mineralógicas. En escenas agrícolas (no minerales), el alineamiento baja a 0.4–0.6 — confirma que LDA recupera estructura no-lineal adicional."
+        "findings": "Mejor coseno por tópico vs endmembers NFINDR/ATGP en las seis escenas públicas etiquetadas se sitúa en el rango 0.94–1.00 en cinco de seis (Indian Pines, Salinas, Salinas-A, Pavia U, Botswana); KSC baja a un rango 0.58–1.00, sugiriendo un tópico sin contraparte lineal limpia. La comparación dedicada para subsets mineralógicos HIDSAG es parte de la profundización F-12 planificada y aún no se publica."
       }
     }
   },

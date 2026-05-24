@@ -10,8 +10,8 @@ import { useTranslation } from "react-i18next";
 const FINDINGS = [
   {
     badge: "B-3",
-    title: "θ as a gate beats raw on labelled scenes",
-    body: "topic_routed_soft matches or beats raw_logistic on all 6 labelled scenes; theta_logistic (θ as a flat feature) loses by 30–50 pp everywhere. The framing 'θ is a gate, not a feature' is empirically validated.",
+    title: "θ as a gate beats θ as a feature; small lift over raw",
+    body: "topic_routed_soft ties or narrowly beats raw_logistic on 4 of 6 labelled scenes (mean lift ≈ +0.5–1.5 pp; Pavia U is the largest at +1.4 pp). The bigger story is theta_logistic (θ as a flat feature), which loses to raw by 14 pp (Pavia U) up to 47 pp (Indian Pines). The 'θ is a gate, not a feature' framing is empirically validated.",
     accent: "rgba(40, 160, 80, 1)",
     href: "/benchmarks#gating",
     kind: "benchmark" as const,
@@ -27,7 +27,7 @@ const FINDINGS = [
   {
     badge: "Topic family",
     title: "LDA wins ARI · ProdLDA wins coherence · ETM is the safe middle",
-    body: "Head-to-head on 220-per-class stratified samples: LDA wins KMeans-vs-label ARI on 4/6 scenes; ProdLDA wins c_v topic coherence 6/6; ETM beats ProdLDA on ARI 6/6 (multi-seed N=5).",
+    body: "Head-to-head on 220-per-class stratified samples: LDA wins KMeans-vs-label ARI on 4/6 scenes (loses to ProdLDA/ETM on Pavia U and KSC); ProdLDA wins c_v topic coherence 6/6; ETM beats ProdLDA on ARI 5/6 (KSC is a tie at 0.222 vs 0.223; ETM wins the other five).",
     accent: "rgba(31, 119, 180, 1)",
     href: "/benchmarks#gating",
     kind: "benchmark" as const,

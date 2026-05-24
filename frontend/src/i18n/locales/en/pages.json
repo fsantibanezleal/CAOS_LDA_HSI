@@ -357,7 +357,7 @@
           "Compared against LDA via topic_endmember_match: K-K cosine matrix."
         ],
         "hypothesis": "If HSI pixels are linear combinations of few pure materials, LDA topics should align with endmembers.",
-        "findings": "Best per-topic cosine vs endmember typically 0.7–0.9 (high alignment) on mineral scenes. On agricultural (non-mineral) scenes the alignment drops to 0.4–0.6 — confirming that LDA recovers additional non-linear structure."
+        "findings": "Best per-topic cosine vs NFINDR/ATGP endmembers on the six public labelled scenes sits in the 0.94–1.00 range on five of six (Indian Pines, Salinas, Salinas-A, Pavia U, Botswana); KSC drops to a 0.58–1.00 spread, suggesting one topic without a clean linear endmember match. The HIDSAG-mineral endmember comparison is part of the planned F-12 deepening and is not yet shipped."
       }
     }
   },
