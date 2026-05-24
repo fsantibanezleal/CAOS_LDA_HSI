@@ -1,12 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+// Numbers verified against current ground truth on 2026-05-24:
+//   builders   = `ls data-pipeline/build_*.py | wc -l`     → 69
+//   artefacts  = `find data/derived -type f | wc -l`       → 1734
+//   endpoints  = `grep -cE '^@router\.(get|post)' app/routers/content.py` → 82
+// Datasets / recipes / variants do not drift across components — fixed grid.
+// If these counts change, update the audit anchor block in
+// `_CAOS_MANAGE/wip/caos-lda-hsi/audits/2026-05-23-audit-index.md` too.
 const HEADLINE_DEFS = [
   { keyLabel: "datasets_label", keySub: "datasets_sub", value: "21", href: "/databases" },
   { keyLabel: "recipes_label", keySub: "recipes_sub", value: "12", href: "/methodology/representations" },
-  { keyLabel: "builders_label", keySub: "builders_sub", value: "67", href: "/methodology/pipeline" },
-  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1706", href: "/workspace" },
-  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "86", href: "/benchmarks" },
+  { keyLabel: "builders_label", keySub: "builders_sub", value: "69", href: "/methodology/pipeline" },
+  { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1734", href: "/workspace" },
+  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "82", href: "/benchmarks" },
   { keyLabel: "variants_label", keySub: "variants_sub", value: "11", href: "/methodology/representations" },
 ] as const;
 

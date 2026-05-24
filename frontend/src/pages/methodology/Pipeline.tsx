@@ -103,7 +103,7 @@ const STAGES: Stage[] = [
     command: "scripts/local curate-for-web",
     produces: "data/derived/manifests/index.json",
     notes:
-      "Packs everything above into the contract the web app reads. 1118 artifacts, 35 builders, 60 claims_allowed, ~74 MB.",
+      "Packs everything above into the contract the web app reads. 1734 artifacts, 69 builders, 82 endpoints, ~449 MB. (Numbers verified 2026-05-24; the manifest is the contract — when these change, update the HeadlineNumbers card in Overview.)",
   },
   {
     id: "audit",
