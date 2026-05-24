@@ -16,6 +16,20 @@ Each derived JSON contains:
 - 2D and 3D scatter coords sampled to <=2k points
 - per-class silhouette in the latent space
 - ARI / NMI of K-means(latent) vs ground-truth label
+
+References
+----------
+- Pearson (1901) / Hotelling (1933). PCA — orthogonal projection onto
+  axes of maximum variance.
+- Hyvärinen (1999). "Fast and Robust Fixed-Point Algorithms for
+  Independent Component Analysis". IEEE TNN 10(3):626-634. FastICA.
+- Lee, Seung (1999). "Learning the parts of objects by non-negative
+  matrix factorization". Nature 401:788-791. NMF.
+- Hinton, Salakhutdinov (2006). "Reducing the Dimensionality of Data
+  with Neural Networks". Science 313:504-507. The deep autoencoder
+  framing this dense-AE follows.
+- Hubert, Arabie (1985). "Comparing partitions". J. of Classification
+  2(1):193-218. The ARI metric.
 """
 from __future__ import annotations
 

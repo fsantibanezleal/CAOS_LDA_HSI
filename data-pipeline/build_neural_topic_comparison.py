@@ -17,6 +17,14 @@ variant alongside ProdLDA, but the three topic models (LDA topic
 fits, ProdLDA, ETM) had no head-to-head comparison file. Now the
 Benchmarks UI can render a single table answering "which neural
 variant produces the most class-discriminative theta?"
+
+References
+----------
+- Blei, Ng, Jordan (2003). "Latent Dirichlet Allocation". JMLR.
+- Srivastava, Sutton (2017). "Autoencoding Variational Inference For
+  Topic Models" (ProdLDA). ICLR 2017.
+- Dieng, Ruiz, Blei (2020). "Topic Modeling in Embedding Spaces" (ETM).
+  TACL 8:439-453.
 """
 from __future__ import annotations
 

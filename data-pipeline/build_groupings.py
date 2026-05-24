@@ -20,6 +20,18 @@ The full assignment array stays under data/local/.
 
 Heavier groupings (semantic segmentation U-Net, CAE+kmeans) are
 deliberately deferred to a later wave that requires GPU training time.
+
+References
+----------
+- Felzenszwalb, Huttenlocher (2004). "Efficient Graph-Based Image
+  Segmentation". IJCV 59(2):167-181. The graph-based segmentation
+  variant.
+- Achanta, Shaji, Smith, Lucchi, Fua, Süsstrunk (2012). "SLIC
+  Superpixels Compared to State-of-the-Art Superpixel Methods". IEEE
+  TPAMI 34(11):2274-2282. The SLIC variants.
+- Moran (1950). "Notes on Continuous Stochastic Phenomena". Biometrika
+  37(1-2):17-23. Moran's I, used by build_spatial_validation.py to
+  score groupings.
 """
 from __future__ import annotations
 
