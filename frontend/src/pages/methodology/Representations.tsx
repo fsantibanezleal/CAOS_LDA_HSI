@@ -204,6 +204,209 @@ export default function MethodologyRepresentations() {
           and Q ∈ &#123;8,16,32&#125;.
         </p>
         <RecipeSchematicsGrid />
+
+        <h3
+          className="text-[13px] uppercase tracking-widest font-semibold mt-6 mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Token-construction formulas
+        </h3>
+        <p
+          className="mb-3 text-[13px] leading-relaxed"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          For a pixel spectrum{" "}
+          <Equation tex="x \in \mathbb{R}^B" />, each recipe defines a map
+          to a multiset of tokens drawn from a vocabulary{" "}
+          <Equation tex="\mathcal{V}" />. The LDA model treats those
+          multisets as documents. The 12 recipes differ in (a) which
+          feature of <em>x</em> becomes the token alphabet and (b) how
+          continuous values are quantised.
+        </p>
+        <div className="overflow-x-auto mt-3">
+          <table
+            className="w-full text-[13px] border-collapse"
+            style={{ borderColor: "var(--color-border)" }}
+          >
+            <thead style={{ backgroundColor: "var(--color-panel)" }}>
+              <tr>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>
+                  Recipe
+                </th>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>
+                  Token alphabet
+                </th>
+                <th className="text-left px-3 py-2 border" style={{ borderColor: "var(--color-border)" }}>
+                  Construction
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V1</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(band, q-bin)</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  For each band <Equation tex="b \in [1, B]" /> emit one token{" "}
+                  <Equation tex="(b, \mathrm{bin}_Q(x_b))" />. Canonical recipe; document length = <em>B</em>.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V2</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>q-bin (band-agnostic)</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Drop the band index: token = <Equation tex="\mathrm{bin}_Q(x_b)" /> only. Tests whether band identity matters.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V3</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>concat trigram</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Token = <Equation tex="(\mathrm{bin}(x_{b-1}), \mathrm{bin}(x_b), \mathrm{bin}(x_{b+1}))" /> — captures local spectral shape.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V4</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>derivative-bin</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Token = <Equation tex="(b, \mathrm{bin}_Q(x'_b))" /> with{" "}
+                  <Equation tex="x'_b = x_{b+1} - x_b" /> (first-order diff). Slope-encoded.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V5</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>2nd-derivative</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  V4 with <Equation tex="x''_b = x_{b-1} - 2 x_b + x_{b+1}" /> — curvature-encoded.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V6</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>wavelet</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Db4 DWT level-3 detail coefficients{" "}
+                  <Equation tex="\{d^{(j)}_k\}" />, each binned separately. Multi-scale spectral structure.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V7</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>absorption-triplet (Clark-Roush hull)</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Compute hull-corrected reflectance{" "}
+                  <Equation tex="\tilde{x}_b = x_b / h_b" /> where <em>h</em> is the convex upper hull. Token per absorption feature = (centre band, depth-bin, width-bin).
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V8</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>endmember-fraction</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Solve <Equation tex="x = E \alpha, \; \alpha \succeq 0" /> with NFINDR endmembers; emit one token per endmember = (endmember-id, bin(α_i)).
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V9</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>region-token (spatial)</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Aggregate pixels within a SLIC-500 superpixel; emit V1 tokens on the region-mean spectrum.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V10</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>band-group</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Pre-partition the B bands into G physical groups (VNIR/SWIR-1/SWIR-2/...); token = (group-id, bin(mean of group)).
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V11</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>codebook-VQ (PQ)</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Product quantisation: split <Equation tex="x \in \mathbb{R}^B" /> into M sub-vectors; each sub-vector mapped to nearest of K codewords. Token = (m, k_m). Yields vocabulary M·K.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V12</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>GMM-token</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Fit a GMM with G components on pixel spectra; soft-assign each pixel to a Gaussian; token = (g, bin(responsibility g)).
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3
+          className="text-[13px] uppercase tracking-widest font-semibold mt-6 mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Q-schemes (quantisation)
+        </h3>
+        <p
+          className="mb-3 text-[13px] leading-relaxed"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          Every recipe above invokes <Equation tex="\mathrm{bin}_Q(\cdot)" />,
+          a partition of the real line into Q cells. Three schemes:
+        </p>
+        <ul className="list-disc list-outside ml-5 space-y-1.5 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <li>
+            <strong>Uniform (U)</strong>: equal-width bins{" "}
+            <Equation tex="(\min(x), \max(x))" />. Cheap, but allocates mass uniformly across the value range — wastes bins on saturated regions.
+          </li>
+          <li>
+            <strong>Quantile (Q)</strong>: empirical-quantile bins so each cell receives 1/Q of the corpus mass. Equalises token frequencies; the variant the project defaults to for V1.
+          </li>
+          <li>
+            <strong>Lloyd-Max (L)</strong>: K-means in 1D over the corpus values — minimises mean-square quantisation error. Optimal under the 1/(12·Q²) bound (Gersho-Gray 1992) when values are approximately uniform inside each cell.
+          </li>
+        </ul>
+        <p
+          className="mt-3 text-[12.5px] italic"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          The {`{V1..V12}`} × {`{U,Q,L}`} × Q∈{`{8,16,32}`} cross-product
+          generates 108 candidate vocabularies per scene; the methodology
+          chooses one per scene by joint validation of perplexity, c_v
+          coherence and downstream ARI.
+        </p>
+
+        <h3
+          className="text-[13px] uppercase tracking-widest font-semibold mt-6 mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Document construction (pixel → corpus)
+        </h3>
+        <p
+          className="mb-3 text-[13px] leading-relaxed"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          A token alphabet defines what a single document's words look
+          like. A document still needs a definition. Five constructions
+          live in <code>build_groupings.py</code>:
+        </p>
+        <ul className="list-disc list-outside ml-5 space-y-1.5 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <li>
+            <strong>Pixel</strong>: one document per labelled pixel. Canonical for labelled-scene benchmarks; document length = B.
+          </li>
+          <li>
+            <strong>SLIC-500 / SLIC-2000</strong>: SLIC superpixels (Achanta et al. 2012) at two target compactness levels; one document per superpixel = bag of tokens over its constituent pixels.
+          </li>
+          <li>
+            <strong>Patch-7 / Patch-15</strong>: fixed-size 7×7 or 15×15 spatial windows; one document per non-overlapping patch.
+          </li>
+          <li>
+            <strong>Felzenszwalb</strong>: graph-based segmentation (Felzenszwalb-Huttenlocher 2004) with edge weights = spectral distance; one document per connected region.
+          </li>
+        </ul>
+        <p
+          className="mt-3 text-[12.5px] italic"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Construction × recipe × Q-scheme is the full configuration
+          space; the methodology page fixes pixel-V1-Q-Q8 as the canonical
+          combination and reports the others as sensitivity / robustness
+          analyses (axes F-5, F-7, F-10).
+        </p>
+
         <h3
           className="text-[13px] uppercase tracking-widest font-semibold mt-6 mb-3"
           style={{ color: "var(--color-fg-faint)" }}

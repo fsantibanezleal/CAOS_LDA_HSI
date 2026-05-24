@@ -125,7 +125,7 @@
       "repr_tag": "V1..V12 + Deep",
       "repr_title": "Representaciones",
       "repr_body": "Doce recetas de wordificación (V1 banda → V12 GMM-token), tres esquemas (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Más cinco encoders profundos: CAE-1D / CAE-2D / CAE-3D anchor & full-patch / β-VAE. PCA, NMF, ICA como baselines K-dim de comparación justa.",
-      "pipe_tag": "57 builders",
+      "pipe_tag": "69 builders",
       "pipe_title": "Pipeline",
       "pipe_body": "Diagrama de las 12 etapas del data-pipeline: fetch_* (acquire) → research_core (paths/loaders) → build_* (offline compute) → curate_for_web → manifest. Cinco builders torch detectan GPU automáticamente con fallback CPU.",
       "app_tag": "directo · routed · embedded",
