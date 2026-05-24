@@ -1,4 +1,21 @@
-"""Content API for the CAOS LDA HSI demo application."""
+"""Content API for the CAOS LDA HSI demo application.
+
+Routing convention:
+
+- Every route is a `GET` returning either a typed Pydantic model
+  (`response_model=...`) or a binary buffer for sidecar artefacts.
+- The handler body is a thin shim: it reads a derived JSON or a
+  precomputed source via the matching `get_*` helper in
+  `app.services.precompute`, then returns the typed payload. No
+  computation happens at request time.
+- For path-parametric routes (e.g. `/topic-views/{scene_id}`), the
+  handler delegates to `_typed_or_404(...)` / `_serve_or_404(...)`
+  which raise HTTP 404 if the underlying derived file is missing.
+- Reads only - there are no POST/PUT/DELETE endpoints on this router.
+
+The per-route docstring is the authoritative one-line description of
+what the route returns and which derived artefact it reads.
+"""
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
@@ -181,111 +198,133 @@ router = APIRouter(prefix="/api", tags=["content"])
 
 @router.get("/overview", response_model=ProjectOverview)
 def overview() -> ProjectOverview:
+    """Project overview payload (title, lead, tip-of-tree commit refs)."""
     return get_overview()
 
 
 @router.get("/datasets", response_model=DatasetCatalog)
 def datasets() -> DatasetCatalog:
+    """Full dataset catalog (21 datasets across 4 families)."""
     return get_datasets()
 
 
 @router.get("/data-families", response_model=DataFamiliesPayload)
 def data_families() -> DataFamiliesPayload:
+    """Per-family dataset taxonomy (labelled-spectral-image, individual-spectra, hidsag-mineral, unmixing-roi)."""
     return get_data_families()
 
 
 @router.get("/corpus-recipes", response_model=CorpusRecipesPayload)
 def corpus_recipes() -> CorpusRecipesPayload:
+    """V1..V12 token-construction recipes with availability per scene."""
     return get_corpus_recipes()
 
 
 @router.get("/interactive-subsets", response_model=InteractiveSubsetsPayload)
 def interactive_subsets() -> InteractiveSubsetsPayload:
+    """Manifest of subsets the Workspace exposes to the public surface."""
     return get_interactive_subsets()
 
 
 @router.get("/corpus-previews", response_model=CorpusPreviewsPayload)
 def corpus_previews() -> CorpusPreviewsPayload:
+    """Static corpus previews used by the reset / onboarding flows."""
     return get_corpus_previews()
 
 
 @router.get("/segmentation-baselines", response_model=SegmentationBaselinesPayload)
 def segmentation_baselines() -> SegmentationBaselinesPayload:
+    """SLIC spatial-baseline payloads (Achanta 2012). One document per superpixel."""
     return get_segmentation_baselines()
 
 
 @router.get("/local-validation-matrix", response_model=LocalValidationMatrixPayload)
 def local_validation_matrix() -> LocalValidationMatrixPayload:
+    """Per-scene matrix of validation-block presence/absence."""
     return get_local_validation_matrix()
 
 
 @router.get("/local-dataset-inventory", response_model=LocalDatasetInventoryPayload)
 def local_dataset_inventory() -> LocalDatasetInventoryPayload:
+    """Local raw / derived presence + size per dataset."""
     return get_local_dataset_inventory()
 
 
 @router.get("/local-core-benchmarks", response_model=LocalCoreBenchmarksPayload)
 def local_core_benchmarks() -> LocalCoreBenchmarksPayload:
+    """Per-scene core benchmarks index (joinable with method statistics)."""
     return get_local_core_benchmarks()
 
 
 @router.get("/hidsag-subset-inventory", response_model=HidsagSubsetInventoryPayload)
 def hidsag_subset_inventory() -> HidsagSubsetInventoryPayload:
+    """Inventory of HIDSAG subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY)."""
     return get_hidsag_subset_inventory()
 
 
 @router.get("/hidsag-curated-subset", response_model=HidsagCuratedSubsetPayload)
 def hidsag_curated_subset() -> HidsagCuratedSubsetPayload:
+    """Curated HIDSAG spectral matrix + assay vectors per subset."""
     return get_hidsag_curated_subset()
 
 
 @router.get("/hidsag-region-documents", response_model=HidsagRegionDocumentsPayload)
 def hidsag_region_documents() -> HidsagRegionDocumentsPayload:
+    """Region-level HIDSAG documents (region = ~50 pixels) with parent-sample lineage."""
     return get_hidsag_region_documents()
 
 
 @router.get("/hidsag-band-quality", response_model=HidsagBandQualityPayload)
 def hidsag_band_quality() -> HidsagBandQualityPayload:
+    """Wavelength-aware bad-band heuristic per HIDSAG subset (atmospheric + statistical flags)."""
     return get_hidsag_band_quality()
 
 
 @router.get("/hidsag-preprocessing-sensitivity", response_model=HidsagPreprocessingSensitivityPayload)
 def hidsag_preprocessing_sensitivity() -> HidsagPreprocessingSensitivityPayload:
+    """B-9 — how downstream metrics shift across 4 spectral preprocessing recipes."""
     return get_hidsag_preprocessing_sensitivity()
 
 
 @router.get("/methodology", response_model=Methodology)
 def methodology() -> Methodology:
+    """Methodology landing payload (theory / representations / pipeline / application)."""
     return get_methodology()
 
 
 @router.get("/real-scenes", response_model=RealScenesPayload)
 def real_scenes() -> RealScenesPayload:
+    """Compact derived assets for public HSI scenes (labelled UPV/EHU collection)."""
     return get_real_scenes()
 
 
 @router.get("/field-samples", response_model=FieldScenesPayload)
 def field_samples() -> FieldScenesPayload:
+    """MicaSense MSI field-scene assets (multispectral, 5-6 narrow bands)."""
     return get_field_samples()
 
 
 @router.get("/spectral-library", response_model=SpectralLibraryPayload)
 def spectral_library() -> SpectralLibraryPayload:
+    """Curated USGS splib07 spectral library sample (Kokaly 2017)."""
     return get_spectral_library()
 
 
 @router.get("/analysis", response_model=AnalysisPayload)
 def analysis() -> AnalysisPayload:
+    """Clustering diagnostics from compact per-scene summaries."""
     return get_analysis()
 
 
 @router.get("/demo", response_model=DemoPayload)
 def demo() -> DemoPayload:
+    """Returns the DemoPayload payload (reads the matching derived JSON or precomputed source)."""
     return get_demo()
 
 
 @router.get("/subset-cards", response_model=SubsetCardsIndex)
 def subset_cards_index() -> SubsetCardsIndex:
+    """Returns the SubsetCardsIndex payload (reads the matching derived JSON or precomputed source)."""
     try:
         return get_subset_cards_index()
     except FileNotFoundError as exc:
@@ -297,6 +336,7 @@ def subset_cards_index() -> SubsetCardsIndex:
 
 @router.get("/subset-cards/{subset_id}", response_model=SubsetCard)
 def subset_card(subset_id: str) -> SubsetCard:
+    """Returns the SubsetCard payload (reads the matching derived JSON or precomputed source)."""
     try:
         return get_subset_card(subset_id)
     except FileNotFoundError as exc:
@@ -308,6 +348,7 @@ def subset_card(subset_id: str) -> SubsetCard:
 
 @router.get("/exploration-views", response_model=ExplorationViewsPayload)
 def exploration_views() -> ExplorationViewsPayload:
+    """Returns the ExplorationViewsPayload payload (reads the matching derived JSON or precomputed source)."""
     try:
         return get_exploration_views()
     except FileNotFoundError as exc:
@@ -319,6 +360,7 @@ def exploration_views() -> ExplorationViewsPayload:
 
 @router.get("/method-statistics", response_model=MethodStatisticsPayload)
 def method_statistics() -> MethodStatisticsPayload:
+    """Per-fold + per-seed method statistics with paired Wilcoxon / Friedman tests (Demsar 2006)."""
     try:
         return get_method_statistics()
     except FileNotFoundError as exc:
@@ -330,6 +372,7 @@ def method_statistics() -> MethodStatisticsPayload:
 
 @router.get("/app-data", response_model=AppPayload)
 def app_data() -> AppPayload:
+    """Returns the AppPayload payload (reads the matching derived JSON or precomputed source)."""
     return get_app_payload()
 
 
@@ -369,6 +412,7 @@ def _typed_or_404(model, loader, *args, hint: str):
     response_model_exclude_none=True,
 )
 def derived_manifest() -> Manifest:
+    """Returns the Manifest payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         Manifest, get_derived_manifest,
         hint="manifest not generated yet; run scripts/local.* curate-for-web",
@@ -381,6 +425,7 @@ def derived_manifest() -> Manifest:
     response_model_exclude_none=True,
 )
 def eda_per_scene(scene_id: str) -> EdaPerScene:
+    """Per-scene EDA: class distribution, mean spectra, n_pixels, n_classes."""
     return _typed_or_404(
         EdaPerScene,
         get_eda_per_scene,
@@ -395,6 +440,7 @@ def eda_per_scene(scene_id: str) -> EdaPerScene:
     response_model_exclude_none=True,
 )
 def topic_views(scene_id: str) -> TopicViewsResponse:
+    """LDAvis-faithful topic views: intertopic 2D coords + top-30 words per topic at lambda in {0, 0.3, 0.5, 0.7, 1.0} (Sievert-Shirley 2014)."""
     return _typed_or_404(
         TopicViewsResponse,
         get_topic_views,
@@ -409,6 +455,7 @@ def topic_views(scene_id: str) -> TopicViewsResponse:
     response_model_exclude_none=True,
 )
 def topic_to_data(scene_id: str) -> TopicToDataResponse:
+    """Per-topic dominant-pixel map + P(label|topic) per scene."""
     return _typed_or_404(
         TopicToDataResponse,
         get_topic_to_data,
@@ -423,6 +470,7 @@ def topic_to_data(scene_id: str) -> TopicToDataResponse:
     response_model_exclude_none=True,
 )
 def spectral_browser(scene_id: str) -> SpectralBrowserMetadata:
+    """Spectra-browser metadata (per-scene index of available spectra)."""
     return _typed_or_404(
         SpectralBrowserMetadata,
         get_spectral_browser_metadata,
@@ -437,6 +485,7 @@ def spectral_browser(scene_id: str) -> SpectralBrowserMetadata:
     response_model_exclude_none=True,
 )
 def spectral_density(scene_id: str) -> SpectralDensityManifest:
+    """Per-band x reflectance density manifest."""
     return _typed_or_404(
         SpectralDensityManifest,
         get_spectral_density_manifest,
@@ -451,6 +500,7 @@ def spectral_density(scene_id: str) -> SpectralDensityManifest:
     response_model_exclude_none=True,
 )
 def validation_blocks(scene_id: str) -> ValidationBlocksResponse:
+    """Validation-block payload (9 blocks across the methodology)."""
     return _typed_or_404(
         ValidationBlocksResponse,
         get_validation_blocks,
@@ -465,6 +515,7 @@ def validation_blocks(scene_id: str) -> ValidationBlocksResponse:
     response_model_exclude_none=True,
 )
 def eda_hidsag(subset_code: str) -> EdaHidsag:
+    """Per-subset HIDSAG EDA: per-target distributions + measurement covariates."""
     return _typed_or_404(
         EdaHidsag,
         get_eda_hidsag,
@@ -479,6 +530,7 @@ def eda_hidsag(subset_code: str) -> EdaHidsag:
     response_model_exclude_none=True,
 )
 def topic_to_library(scene_id: str) -> TopicToLibrary:
+    """Topic-to-spectral-library cosine + SAM payload per scene."""
     return _typed_or_404(
         TopicToLibrary,
         get_topic_to_library,
@@ -493,6 +545,7 @@ def topic_to_library(scene_id: str) -> TopicToLibrary:
     response_model_exclude_none=True,
 )
 def spatial_validation(scene_id: str) -> SpatialValidationResponse:
+    """Moran's I + connected-component IoU per scene."""
     return _typed_or_404(
         SpatialValidationResponse,
         get_spatial_validation,
@@ -507,6 +560,7 @@ def spatial_validation(scene_id: str) -> SpatialValidationResponse:
     response_model_exclude_none=True,
 )
 def wordifications_index() -> WordificationsIndexResponse:
+    """Returns the WordificationsIndexResponse payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         WordificationsIndexResponse,
         get_wordifications_index,
@@ -522,6 +576,7 @@ def wordifications_index() -> WordificationsIndexResponse:
 def wordification(
     scene_id: str, recipe: str, scheme: str, q: int
 ) -> WordificationResponse:
+    """Wordification payload for a (scene, recipe, scheme, Q) tuple."""
     return _typed_or_404(
         WordificationResponse,
         get_wordification,
@@ -536,6 +591,7 @@ def wordification(
     response_model_exclude_none=True,
 )
 def band_masks_index() -> BandMasksIndexResponse:
+    """Returns the BandMasksIndexResponse payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         BandMasksIndexResponse,
         get_band_masks_index,
@@ -552,6 +608,7 @@ def band_masks_index() -> BandMasksIndexResponse:
     response_model_exclude_none=True,
 )
 def band_masks_canonical_comparison() -> BandMaskCanonicalComparisonResponse:
+    """F-5 — paired comparison of band-mask refits against the canonical fit."""
     return _typed_or_404(
         BandMaskCanonicalComparisonResponse,
         get_band_masks_canonical_comparison,
@@ -568,6 +625,7 @@ def band_masks_canonical_comparison() -> BandMaskCanonicalComparisonResponse:
     response_model_exclude_none=True,
 )
 def band_mask_summary(scene_id: str, mask_id: str) -> BandMaskSummaryResponse:
+    """Single band-mask summary for one (scene, mask_id) pair."""
     return _typed_or_404(
         BandMaskSummaryResponse,
         get_band_mask_summary,
@@ -582,6 +640,7 @@ def band_mask_summary(scene_id: str, mask_id: str) -> BandMaskSummaryResponse:
     response_model_exclude_none=True,
 )
 def band_masks_hidsag_index() -> BandMasksHidsagIndexResponse:
+    """Returns the BandMasksHidsagIndexResponse payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         BandMasksHidsagIndexResponse,
         get_band_masks_hidsag_index,
@@ -600,6 +659,7 @@ def band_masks_hidsag_index() -> BandMasksHidsagIndexResponse:
 def band_masks_hidsag_summary(
     subset_code: str, mask_id: str
 ) -> BandMaskHidsagSummaryResponse:
+    """Single HIDSAG band-mask summary for one (subset, mask_id) pair."""
     return _typed_or_404(
         BandMaskHidsagSummaryResponse,
         get_band_masks_hidsag_summary,
@@ -614,6 +674,7 @@ def band_masks_hidsag_summary(
     response_model_exclude_none=True,
 )
 def groupings_index() -> CountItemsIndex:
+    """Returns the CountItemsIndex payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         CountItemsIndex, get_groupings_index,
         hint="groupings not generated yet; run scripts/local.* build-groupings",
@@ -626,6 +687,7 @@ def groupings_index() -> CountItemsIndex:
     response_model_exclude_none=True,
 )
 def grouping(method: str, scene_id: str) -> GroupingDetail:
+    """Returns the GroupingDetail payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         GroupingDetail, get_grouping, method, scene_id,
         hint=f"grouping {method}/{scene_id} not generated yet",
@@ -638,6 +700,7 @@ def grouping(method: str, scene_id: str) -> GroupingDetail:
     response_model_exclude_none=True,
 )
 def cross_method_agreement(scene_id: str) -> CrossMethodAgreement:
+    """F-6 — pairwise ARI / NMI / V across partition methods on a labelled scene."""
     return _typed_or_404(
         CrossMethodAgreement, get_cross_method_agreement, scene_id,
         hint=f"cross-method agreement for '{scene_id}' not generated yet",
@@ -650,6 +713,7 @@ def cross_method_agreement(scene_id: str) -> CrossMethodAgreement:
     response_model_exclude_none=True,
 )
 def method_statistics_hidsag(subset_code: str) -> MethodStatisticsHidsag:
+    """HIDSAG-side method statistics with Friedman + Nemenyi post-hoc."""
     return _typed_or_404(
         MethodStatisticsHidsag, get_method_statistics_hidsag, subset_code,
         hint=f"method statistics for HIDSAG '{subset_code}' not generated yet",
@@ -662,6 +726,7 @@ def method_statistics_hidsag(subset_code: str) -> MethodStatisticsHidsag:
     response_model_exclude_none=True,
 )
 def external_validation_literature(scene_id: str) -> ExternalValidationLiterature:
+    """Per-scene topic anchors against published HSI literature."""
     return _typed_or_404(
         ExternalValidationLiterature, get_external_validation_literature, scene_id,
         hint=f"literature alignment for '{scene_id}' not generated yet",
@@ -674,6 +739,7 @@ def external_validation_literature(scene_id: str) -> ExternalValidationLiteratur
     response_model_exclude_none=True,
 )
 def external_validation_hidsag_methods(subset_code: str) -> ExternalValidationHidsagMethods:
+    """HIDSAG-side topic anchors against geochemistry methods."""
     return _typed_or_404(
         ExternalValidationHidsagMethods, get_external_validation_hidsag_methods, subset_code,
         hint=f"HIDSAG method summary for '{subset_code}' not generated yet",
@@ -686,6 +752,7 @@ def external_validation_hidsag_methods(subset_code: str) -> ExternalValidationHi
     response_model_exclude_none=True,
 )
 def narratives(scene_id: str) -> Narratives:
+    """Captures / separates / unites / enables roll-up per scene."""
     return _typed_or_404(
         Narratives, get_narratives, scene_id,
         hint=f"narrative for '{scene_id}' not generated yet",
@@ -698,6 +765,7 @@ def narratives(scene_id: str) -> Narratives:
     response_model_exclude_none=True,
 )
 def interpretability(scene_id: str, card_type: str) -> InterpretabilityCards:
+    """B-7 — topic / band / document cards (interpretability scaffold)."""
     if card_type not in ("topic_cards", "band_cards", "document_cards"):
         raise HTTPException(status_code=400, detail="card_type must be topic_cards | band_cards | document_cards")
     return _typed_or_404(
@@ -712,6 +780,7 @@ def interpretability(scene_id: str, card_type: str) -> InterpretabilityCards:
     response_model_exclude_none=True,
 )
 def quantization_sensitivity(scene_id: str) -> QuantizationSensitivity:
+    """Per-scene quantisation-sensitivity probes vs canonical Q."""
     return _typed_or_404(
         QuantizationSensitivity, get_quantization_sensitivity, scene_id,
         hint=f"quantization sensitivity for '{scene_id}' not generated yet",
@@ -724,6 +793,7 @@ def quantization_sensitivity(scene_id: str) -> QuantizationSensitivity:
     response_model_exclude_none=True,
 )
 def topic_variants_index() -> CountItemsIndex:
+    """Returns the CountItemsIndex payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         CountItemsIndex, get_topic_variants_index,
         hint="topic variants not generated yet",
@@ -736,6 +806,7 @@ def topic_variants_index() -> CountItemsIndex:
     response_model_exclude_none=True,
 )
 def topic_variant(variant: str, scene_id: str) -> TopicVariantDetail:
+    """Returns the TopicVariantDetail payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         TopicVariantDetail, get_topic_variant, variant, scene_id,
         hint=f"topic variant {variant}/{scene_id} not generated yet",
@@ -748,6 +819,7 @@ def topic_variant(variant: str, scene_id: str) -> TopicVariantDetail:
     response_model_exclude_none=True,
 )
 def lda_sweep(scene_id: str) -> LdaSweep:
+    """F-4 K-sweep: per-K perplexity + topic diversity + Hungarian-matched cosine across seeds."""
     return _typed_or_404(
         LdaSweep, get_lda_sweep, scene_id,
         hint=f"lda_sweep for '{scene_id}' not generated yet",
@@ -760,6 +832,7 @@ def lda_sweep(scene_id: str) -> LdaSweep:
     response_model_exclude_none=True,
 )
 def representations_index() -> CountItemsIndex:
+    """Returns the CountItemsIndex payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         CountItemsIndex, get_representations_index,
         hint="representations not generated yet",
@@ -772,6 +845,7 @@ def representations_index() -> CountItemsIndex:
     response_model_exclude_none=True,
 )
 def representation(method: str, scene_id: str) -> Representation:
+    """Representation payload per (method, scene): 2D/3D scatter + downstream cluster metrics + per-class silhouette."""
     return _typed_or_404(
         Representation, get_representation, method, scene_id,
         hint=f"representation {method}/{scene_id} not generated yet",
@@ -784,6 +858,7 @@ def representation(method: str, scene_id: str) -> Representation:
     response_model_exclude_none=True,
 )
 def dmr_lda_hidsag(subset_code: str) -> DmrLdaHidsag:
+    """DMR-LDA on HIDSAG with measurement covariates (Mimno-McCallum 2008)."""
     return _typed_or_404(
         DmrLdaHidsag, get_dmr_lda_hidsag, subset_code,
         hint=f"dmr_lda_hidsag for '{subset_code}' not generated yet",
@@ -796,6 +871,7 @@ def dmr_lda_hidsag(subset_code: str) -> DmrLdaHidsag:
     response_model_exclude_none=True,
 )
 def bayesian_comparison(task_type: str) -> BayesianComparison:
+    """Hierarchical Bayesian posterior for the given task_type. Reads the corresponding cross_classification_bayesian{,_deep,_regression}.json. task_type must be one of: regression, classification, classification-labelled, classification-labelled-deep."""
     if task_type == "classification-labelled":
         return _typed_or_404(
             BayesianComparison, get_bayesian_classification_labelled,
@@ -823,6 +899,7 @@ def bayesian_comparison(task_type: str) -> BayesianComparison:
     response_model_exclude_none=True,
 )
 def optuna_search(scene_id: str) -> OptunaSearch:
+    """Optuna TPE hyper-parameter search per scene."""
     return _typed_or_404(
         OptunaSearch, get_optuna_search, scene_id,
         hint=f"optuna_search for '{scene_id}' not generated yet",
@@ -835,6 +912,7 @@ def optuna_search(scene_id: str) -> OptunaSearch:
     response_model_exclude_none=True,
 )
 def linear_probe_panel(scene_id: str) -> LinearProbePanel:
+    """B-1 — theta-as-feature vs PCA-K, NMF-K, ICA-K, dense-AE-K linear probes."""
     return _typed_or_404(
         LinearProbePanel, get_linear_probe_panel, scene_id,
         hint=f"linear_probe_panel for '{scene_id}' not generated yet",
@@ -847,6 +925,7 @@ def linear_probe_panel(scene_id: str) -> LinearProbePanel:
     response_model_exclude_none=True,
 )
 def mutual_information(scene_id: str) -> MutualInformation:
+    """B-4 — MI(theta; label) for canonical and competing K-dim representations."""
     return _typed_or_404(
         MutualInformation, get_mutual_information, scene_id,
         hint=f"mutual_information for '{scene_id}' not generated yet",
@@ -859,6 +938,7 @@ def mutual_information(scene_id: str) -> MutualInformation:
     response_model_exclude_none=True,
 )
 def mutual_information_hidsag(subset_code: str) -> MutualInformationHidsag:
+    """Returns the MutualInformationHidsag payload (reads the matching derived JSON or precomputed source)."""
     return _typed_or_404(
         MutualInformationHidsag, get_mutual_information_hidsag, subset_code,
         hint=f"mutual_information for HIDSAG '{subset_code}' not generated yet",
@@ -871,6 +951,7 @@ def mutual_information_hidsag(subset_code: str) -> MutualInformationHidsag:
     response_model_exclude_none=True,
 )
 def rate_distortion_curve(scene_id: str) -> RateDistortionCurve:
+    """B-2 — held-out RMSE on doc-term matrix for K in {4, 6, 8, 10, 12, 16}, LDA vs NMF vs PCA."""
     return _typed_or_404(
         RateDistortionCurve, get_rate_distortion_curve, scene_id,
         hint=f"rate_distortion_curve for '{scene_id}' not generated yet",
@@ -883,6 +964,7 @@ def rate_distortion_curve(scene_id: str) -> RateDistortionCurve:
     response_model_exclude_none=True,
 )
 def topic_routed_classifier(scene_id: str) -> TopicRoutedClassifier:
+    """B-3 — soft theta-gated specialists (master-plan Addendum B Axis C-2)."""
     return _typed_or_404(
         TopicRoutedClassifier, get_topic_routed_classifier, scene_id,
         hint=f"topic_routed_classifier for '{scene_id}' not generated yet",
@@ -895,6 +977,7 @@ def topic_routed_classifier(scene_id: str) -> TopicRoutedClassifier:
     response_model_exclude_none=True,
 )
 def topic_routed_deep_gate(scene_id: str) -> TopicRoutedDeepGate:
+    """B-3 follow-up — theta gate vs PCA-8 / CAE-1D-8 / beta-VAE-8 deep gates."""
     return _typed_or_404(
         TopicRoutedDeepGate, get_topic_routed_deep_gate, scene_id,
         hint=f"topic_routed_deep_gate for '{scene_id}' not generated yet",
@@ -907,6 +990,7 @@ def topic_routed_deep_gate(scene_id: str) -> TopicRoutedDeepGate:
     response_model_exclude_none=True,
 )
 def neural_topic_comparison(scene_id: str) -> NeuralTopicComparison:
+    """Cross-method LDA / ProdLDA / ETM head-to-head (Srivastava 2017, Dieng 2020)."""
     return _typed_or_404(
         NeuralTopicComparison, get_neural_topic_comparison, scene_id,
         hint=f"neural_topic_comparison for '{scene_id}' not generated yet",
@@ -919,6 +1003,7 @@ def neural_topic_comparison(scene_id: str) -> NeuralTopicComparison:
     response_model_exclude_none=True,
 )
 def neural_topic_seed_stability(scene_id: str) -> NeuralTopicSeedStability:
+    """Multi-seed ProdLDA / ETM stability companion."""
     return _typed_or_404(
         NeuralTopicSeedStability, get_neural_topic_seed_stability, scene_id,
         hint=f"neural_topic_seed_stability for '{scene_id}' not generated yet",
@@ -931,6 +1016,7 @@ def neural_topic_seed_stability(scene_id: str) -> NeuralTopicSeedStability:
     response_model_exclude_none=True,
 )
 def embedded_baseline(scene_id: str) -> EmbeddedBaseline:
+    """B-5 — [theta || PCA-K] concat readout with sample-weighted logistic regression."""
     return _typed_or_404(
         EmbeddedBaseline, get_embedded_baseline, scene_id,
         hint=f"embedded_baseline for '{scene_id}' not generated yet",
@@ -943,6 +1029,7 @@ def embedded_baseline(scene_id: str) -> EmbeddedBaseline:
     response_model_exclude_none=True,
 )
 def topic_stability(scene_id: str, k_offset: int = 0) -> TopicStability:
+    """B-6 — Hungarian-matched cosine seed stability for LDA (Greene 2014)."""
     try:
         return TopicStability.model_validate(
             get_topic_stability(scene_id, k_offset=k_offset)
@@ -962,6 +1049,7 @@ def topic_stability(scene_id: str, k_offset: int = 0) -> TopicStability:
 def deep_seed_stability(
     scene_id: str, method: str = "cae_1d_8", n_seeds: int = 7
 ) -> SeedStability:
+    """Multi-seed neural-topic stability for CAE / beta-VAE family."""
     try:
         return SeedStability.model_validate(
             get_deep_seed_stability(scene_id, method=method, n_seeds=n_seeds)
@@ -979,6 +1067,7 @@ def deep_seed_stability(
     response_model_exclude_none=True,
 )
 def deep_anomaly(scene_id: str) -> DeepAnomaly:
+    """B-9 deep-anomaly payload (reconstruction NLL from CAE-1D K=8) per scene."""
     return _typed_or_404(
         DeepAnomaly, get_deep_anomaly, scene_id,
         hint=f"deep_anomaly for '{scene_id}' not generated yet",
@@ -991,6 +1080,7 @@ def deep_anomaly(scene_id: str) -> DeepAnomaly:
     response_model_exclude_none=True,
 )
 def classical_seed_stability(scene_id: str, method: str = "pca_8") -> SeedStability:
+    """Multi-seed classical-baseline stability for PCA / NMF / ICA / dense-AE."""
     try:
         return SeedStability.model_validate(
             get_classical_seed_stability(scene_id, method=method)
@@ -1008,6 +1098,7 @@ def classical_seed_stability(scene_id: str, method: str = "pca_8") -> SeedStabil
     response_model_exclude_none=True,
 )
 def topic_to_usgs_v7(scene_id: str) -> TopicToUsgsV7:
+    """B-7 — topic-to-USGS splib07 alignment via cosine + SAM (Kruse 1993)."""
     return _typed_or_404(
         TopicToUsgsV7, get_topic_to_usgs_v7, scene_id,
         hint=f"topic_to_usgs_v7 for '{scene_id}' not generated yet",
@@ -1020,6 +1111,7 @@ def topic_to_usgs_v7(scene_id: str) -> TopicToUsgsV7:
     response_model_exclude_none=True,
 )
 def hidsag_cross_preprocessing_stability(subset_code: str) -> HidsagCrossPreprocessingStability:
+    """HIDSAG cross-preprocessing stability (Hungarian-matched top-15 token Jaccard across 4 policies)."""
     return _typed_or_404(
         HidsagCrossPreprocessingStability, get_hidsag_cross_preprocessing_stability, subset_code,
         hint=f"hidsag_cross_preprocessing_stability for '{subset_code}' not generated yet",
@@ -1032,6 +1124,7 @@ def hidsag_cross_preprocessing_stability(subset_code: str) -> HidsagCrossPreproc
     response_model_exclude_none=True,
 )
 def topic_anomaly(scene_id: str) -> TopicAnomaly:
+    """B-9 topic-anomaly payload (1 - max theta) per scene."""
     return _typed_or_404(
         TopicAnomaly, get_topic_anomaly, scene_id,
         hint=f"topic_anomaly for '{scene_id}' not generated yet",
@@ -1044,6 +1137,7 @@ def topic_anomaly(scene_id: str) -> TopicAnomaly:
     response_model_exclude_none=True,
 )
 def topic_spatial_continuous(scene_id: str) -> TopicSpatialContinuous:
+    """B-10 — Moran's I (1950) over theta_k abundance per scene."""
     return _typed_or_404(
         TopicSpatialContinuous, get_topic_spatial_continuous, scene_id,
         hint=f"topic_spatial_continuous for '{scene_id}' not generated yet",
@@ -1056,6 +1150,7 @@ def topic_spatial_continuous(scene_id: str) -> TopicSpatialContinuous:
     response_model_exclude_none=True,
 )
 def topic_spatial_full(scene_id: str) -> TopicSpatialFull:
+    """B-10 full-pixel mask + boundary-displacement error per scene."""
     return _typed_or_404(
         TopicSpatialFull, get_topic_spatial_full, scene_id,
         hint=f"topic_spatial_full for '{scene_id}' not generated yet",
@@ -1068,6 +1163,7 @@ def topic_spatial_full(scene_id: str) -> TopicSpatialFull:
     response_model_exclude_none=True,
 )
 def endmember_baseline(scene_id: str) -> EndmemberBaseline:
+    """B-11 — NFINDR / ATGP / NNLS unmixing comparison."""
     return _typed_or_404(
         EndmemberBaseline, get_endmember_baseline, scene_id,
         hint=f"endmember_baseline for '{scene_id}' not generated yet",
@@ -1080,6 +1176,7 @@ def endmember_baseline(scene_id: str) -> EndmemberBaseline:
     response_model_exclude_none=True,
 )
 def llm_tea_leaves(scene_id: str) -> LlmTeaLeaves:
+    """B-12 — Stammbach 2024 LLM tea-leaves word/topic intrusion per scene."""
     return _typed_or_404(
         LlmTeaLeaves, get_llm_tea_leaves, scene_id,
         hint=(
@@ -1095,6 +1192,7 @@ def llm_tea_leaves(scene_id: str) -> LlmTeaLeaves:
     response_model_exclude_none=True,
 )
 def super_topics() -> SuperTopics:
+    """Hierarchical super-topics across scenes (agglomerative)."""
     return _typed_or_404(
         SuperTopics, get_super_topics,
         hint="super_topics not generated yet",
@@ -1107,6 +1205,7 @@ def super_topics() -> SuperTopics:
     response_model_exclude_none=True,
 )
 def cross_scene_transfer() -> CrossSceneTransfer:
+    """B-8 — Hungarian-matched topic transfer across labelled scenes."""
     return _typed_or_404(
         CrossSceneTransfer, get_cross_scene_transfer,
         hint="cross_scene_transfer not generated yet",
