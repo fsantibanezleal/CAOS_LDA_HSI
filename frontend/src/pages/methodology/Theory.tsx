@@ -193,13 +193,17 @@ export default function MethodologyTheory() {
           mineral-relevant regime, then{" "}
           <Equation tex="w(E\, a_d) \approx w(E)\, a_d" />, so a column of{" "}
           <Equation tex="w(E)" /> behaves like a topic{" "}
-          <Equation tex="\phi_k" />. Empirically, on the HIDSAG MINERAL
-          subsets, the maximum cosine similarity between any topic{" "}
-          <Equation tex="\phi_k" /> and any endmember{" "}
-          <Equation tex="w(e_m)" /> is in the 0.7–0.9 range, with the matched
-          topic dominating the abundance map of the same material. The
-          Workspace USGS tab shows the same pairing against the public USGS
-          splib07 spectral library.
+          <Equation tex="\phi_k" />. Empirically, on the six public
+          labelled scenes (Indian Pines, Salinas, Salinas-A, Pavia U, KSC,
+          Botswana), the best per-topic cosine against the NFINDR /
+          ATGP endmembers reported by{" "}
+          <code>build_endmember_baseline.py</code> sits in the{" "}
+          0.94–1.00 range on every scene except KSC (where one topic
+          drops to 0.58). The dedicated HIDSAG MINERAL-subset
+          endmember comparison is part of the planned F-12 deepening
+          and is not yet shipped. Cross-checks against the public USGS
+          splib07 library are exposed in the Workspace{" "}
+          <em>USGS</em> tab.
         </p>
       </Section>
 
