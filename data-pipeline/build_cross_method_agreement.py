@@ -9,6 +9,26 @@ eventual web app can render as a heatmap to answer the methodological
 question: which grouping methods agree and which disagree?
 
 Output: data/derived/cross_method_agreement/<scene>.json
+
+References
+----------
+- Hubert, L., Arabie, P. (1985). "Comparing Partitions". *Journal
+  of Classification* 2(1), 193-218. DOI:10.1007/BF01908075. Source
+  of the Adjusted Rand Index (ARI) used here as the
+  chance-corrected partition-agreement statistic.
+- Strehl, A., Ghosh, J. (2002). "Cluster Ensembles — A Knowledge
+  Reuse Framework for Combining Multiple Partitions". *JMLR* 3,
+  583-617. Reference for Normalised Mutual Information (NMI) as
+  the symmetric information-theoretic agreement statistic.
+- Rosenberg, A., Hirschberg, J. (2007). "V-Measure: A Conditional
+  Entropy-Based External Cluster Evaluation Measure". *EMNLP-CoNLL*,
+  410-420. Source of the V-measure (homogeneity / completeness
+  harmonic mean) that complements ARI and NMI here.
+- Vinh, N. X., Epps, J., Bailey, J. (2010). "Information Theoretic
+  Measures for Clusterings Comparison: Variants, Properties,
+  Normalization and Correction for Chance". *JMLR* 11, 2837-2854.
+  Reference for the chance-correction protocol applied to NMI in
+  scikit-learn's implementation.
 """
 from __future__ import annotations
 

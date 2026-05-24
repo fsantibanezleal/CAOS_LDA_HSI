@@ -10,6 +10,16 @@ short natural-language verdict.
 This is the payload the interactive Workspace consumes to render
 confidence intervals, paired diff plots, and method ranking with
 statistical significance — instead of point estimates.
+
+References
+----------
+- Demšar, J. (2006). "Statistical Comparisons of Classifiers over
+  Multiple Data Sets". *Journal of Machine Learning Research* 7,
+  1-30. The canonical reference for the Friedman + Nemenyi /
+  Wilcoxon-signed-rank-with-Holm protocol applied here on paired
+  fold-seed scores across methods.
+- Wilcoxon, F. (1945). "Individual Comparisons by Ranking Methods".
+  *Biometrics* 1(6), 80-83. Underlies the paired signed-rank test.
 """
 from __future__ import annotations
 

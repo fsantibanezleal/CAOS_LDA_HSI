@@ -10,6 +10,19 @@ requires:
   ground-truth class regions
 
 Output: data/derived/spatial/<scene>.json
+
+References
+----------
+- Moran, P. A. P. (1950). "Notes on Continuous Stochastic Phenomena".
+  *Biometrika* 37(1/2), 17-23. Canonical definition of Moran's I for
+  continuous spatial fields; applied here on θ_dominant under
+  4-connectivity row-standardised weights.
+- Geary, R. C. (1954). "The Contiguity Ratio and Statistical Mapping".
+  *The Incorporated Statistician* 5(3), 115-145. Provides Geary's C
+  as a complementary local-contiguity statistic used alongside Moran's I.
+- Anselin, L. (1995). "Local Indicators of Spatial Association — LISA".
+  *Geographical Analysis* 27(2), 93-115. Foundation for the optional
+  LISA decomposition that breaks Moran's I into per-pixel contributions.
 """
 from __future__ import annotations
 

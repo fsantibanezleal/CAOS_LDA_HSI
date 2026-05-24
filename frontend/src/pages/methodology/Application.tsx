@@ -201,6 +201,99 @@ export default function MethodologyApplication() {
       </Section>
 
       <Section
+        id="bayesian-spec"
+        title="Hierarchical Bayesian benchmark — model spec"
+        lead="The 'P(μ_a > μ_b) ≥ 0.999' claims above come from a per-scene partial-pooling model fit with PyMC. The spec below makes the priors, likelihood, and convergence-diagnostic settings explicit so the numbers are reproducible from the same JSON inputs."
+      >
+        <p>
+          For each scene <Equation tex="s \in \{1, \dots, 6\}" /> and each
+          method <Equation tex="m \in \{\mathrm{raw}, \mathrm{theta},
+            \mathrm{routed\_hard}, \mathrm{routed\_soft}\}" />, the builder
+          collects <Equation tex="N_{s,m} = 5" /> seed-replicate F1 scores
+          and fits the partial-pooling Gaussian model:
+        </p>
+        <Equation
+          block
+          tex="y_{s,m,r} \sim \mathcal{N}(\mu_{s,m}, \sigma^2), \quad \mu_{s,m} \sim \mathcal{N}(\bar{\mu}_m, \tau_m^2), \quad \bar{\mu}_m \sim \mathcal{N}(0.85, 0.15^2), \quad \tau_m \sim \mathrm{HalfNormal}(0.05), \quad \sigma \sim \mathrm{HalfNormal}(0.05)."
+        />
+        <p className="mt-3">
+          The scene-level means <Equation tex="\mu_{s,m}" /> shrink toward
+          the method-level mean <Equation tex="\bar{\mu}_m" /> by an amount
+          set by the data and the prior precision{" "}
+          <Equation tex="\tau_m" />. The quantity reported in the
+          Benchmarks <em>Routed</em> tab is the posterior contrast{" "}
+          <Equation tex="\Delta_{m_a, m_b} = \bar{\mu}_{m_a} - \bar{\mu}_{m_b}" />,
+          summarised by its 94% Highest Density Interval (HDI94) and the
+          posterior tail probability{" "}
+          <Equation tex="P(\Delta_{m_a, m_b} > 0)" />. A claim of
+          "robust support in favour of routed soft" requires{" "}
+          <Equation tex="P(\Delta_{\mathrm{routed\_soft}, \mathrm{raw}} > 0) \ge 0.999" />.
+        </p>
+        <p className="mt-3">
+          <strong>Sampler.</strong> PyMC 5's NUTS sampler with{" "}
+          <code>chains=4</code>, <code>tune=2000</code>,{" "}
+          <code>draws=2000</code>,{" "}
+          <code>target_accept=0.95</code>. Convergence is declared only
+          when the improved rank-normalised{" "}
+          <Equation tex="\widehat{R} < 1.01" /> (Vehtari et al. 2021)
+          for every monitored parameter and the bulk + tail effective
+          sample size exceeds 1000. The 4-chain count is the minimum the
+          Vehtari et al. diagnostic supports — re-running with 8 or 16
+          chains never shifts an HDI94 by more than the second decimal on
+          this problem.
+        </p>
+        <p className="mt-3">
+          <strong>Builder + artefact.</strong>{" "}
+          <code>build_bayesian_classification_labelled.py</code> writes the
+          per-scene posterior + ranking JSONs consumed by the Benchmarks{" "}
+          <em>Routed</em> tab and the <em>Bayesian</em> sub-tab. The
+          regression analogue lives in{" "}
+          <code>build_bayesian_classification_deep.py</code> for the
+          HIDSAG continuous targets.
+        </p>
+      </Section>
+
+      <Section
+        id="hungarian-stability"
+        title="Hungarian topic-matching — stability and cross-mask identity"
+        lead="Topic indices are not stable across re-fits — both LDA seeds and water-mask choices can permute the K topics. The seed-stability and cross-mask validation blocks pair topics by the assignment that maximises the average matched cosine. That is the Hungarian (linear-assignment) algorithm applied to a topic-cosine cost matrix."
+      >
+        <p>
+          Given two fits with topic-word matrices{" "}
+          <Equation tex="\Phi^{(a)} = [\phi_1^{(a)}, \dots, \phi_K^{(a)}]" />{" "}
+          and <Equation tex="\Phi^{(b)} = [\phi_1^{(b)}, \dots, \phi_K^{(b)}]" />,
+          define the cost matrix
+        </p>
+        <Equation
+          block
+          tex="C_{ij} = 1 - \cos\!\big(\phi_i^{(a)}, \phi_j^{(b)}\big) \in [0, 2]."
+        />
+        <p className="mt-3">
+          The Hungarian (Kuhn–Munkres) algorithm finds the permutation{" "}
+          <Equation tex="\pi^\star \in S_K" /> that minimises the total
+          assignment cost{" "}
+          <Equation tex="\textstyle\sum_{k=1}^{K} C_{k, \pi(k)}" /> in
+          <Equation tex="O(K^3)" /> time. The matched-cosine summary used
+          on the F-8 stability row is
+        </p>
+        <Equation
+          block
+          tex="\bar{c}_{ab} = \frac{1}{K} \sum_{k=1}^{K} \cos\!\big(\phi_k^{(a)}, \phi_{\pi^\star(k)}^{(b)}\big) \in [0, 1]."
+        />
+        <p className="mt-3">
+          Implementation: <code>scipy.optimize.linear_sum_assignment</code>{" "}
+          on the cost matrix above. The same routine is used for two
+          related comparisons: (i) seed-pair stability (Greene,
+          O'Callaghan &amp; Cunningham 2014's protocol, with{" "}
+          <Equation tex="\bar{c}_{ab}" /> averaged over all{" "}
+          <Equation tex="\binom{S}{2}" /> seed pairs) and (ii) cross-mask
+          identity (canonical-fit vs no-water-mask fit on the same scene).
+          Both quantities are reported in the Workspace{" "}
+          <em>Stability</em> and <em>Cross-method agreement</em> tabs.
+        </p>
+      </Section>
+
+      <Section
         id="what-topics-capture"
         title='What does a topic "capture", in task terms?'
         lead="It is not text: the question is answered visually with distributions."

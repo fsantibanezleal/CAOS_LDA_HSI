@@ -26,6 +26,22 @@ lacks:
 - ranking summary (mean rank, win rate)
 
 Output: data/derived/method_statistics_hidsag/<subset>.json
+
+References
+----------
+- Demšar, J. (2006). "Statistical Comparisons of Classifiers over
+  Multiple Data Sets". *Journal of Machine Learning Research* 7,
+  1-30. Canonical protocol for the Friedman χ² + Nemenyi post-hoc
+  and the Wilcoxon-signed-rank-with-Holm-Bonferroni correction
+  used here.
+- Cliff, N. (1993). "Dominance Statistics: Ordinal Analyses to
+  Answer Ordinal Questions". *Psychological Bulletin* 114(3),
+  494-509. Source of the Cliff's δ effect-size measure.
+- Wilcoxon, F. (1945). "Individual Comparisons by Ranking Methods".
+  *Biometrics* 1(6), 80-83.
+- Holm, S. (1979). "A Simple Sequentially Rejective Multiple Test
+  Procedure". *Scandinavian Journal of Statistics* 6(2), 65-70.
+  Source of the Holm step-down family-wise-error control.
 """
 from __future__ import annotations
 
