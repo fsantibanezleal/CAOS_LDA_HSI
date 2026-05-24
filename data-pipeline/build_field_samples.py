@@ -1,4 +1,27 @@
-"""Create compact MSI field-scene assets from downloaded MicaSense samples."""
+"""Create compact MSI field-scene assets from downloaded MicaSense samples.
+
+Reads the 5-band MicaSense RedEdge-M / RedEdge-MX example imagery from
+the local `data/raw/micasense/` mirror, stitches per-band TIFF stacks
+into a single cube, computes per-channel statistics + a false-colour
+preview, and writes a compact JSON descriptor the Databases page can
+consume without serving the raw multi-MB GeoTIFFs.
+
+Output: data/derived/field_samples/<dataset>.json + a side-car preview
+PNG in data/derived/field_samples/previews/.
+
+Notes
+-----
+- MicaSense RedEdge-M has 5 narrow bands (blue 475, green 560, red 668,
+  NIR 840, red-edge 717 nm); the RedEdge-MX adds a sixth panchromatic
+  band. This builder handles either configuration.
+- TIFF stacks are not loaded into memory at app time; the builder
+  pre-computes the descriptor and preview during the local pipeline.
+
+References
+----------
+- MicaSense (2018). "RedEdge-M User Manual". MicaSense Inc. Sensor and
+  band-centre specifications.
+"""
 from __future__ import annotations
 
 import json

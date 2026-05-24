@@ -1,4 +1,23 @@
-"""Build a wavelength-aware bad-band heuristic summary for local HIDSAG subsets."""
+"""Build a wavelength-aware bad-band heuristic summary for local HIDSAG subsets.
+
+For each HIDSAG subset (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY)
+the builder identifies bands whose corpus-wide statistics flag them as
+noisy or saturated, using a wavelength-aware heuristic:
+
+1. Mark all bands inside the two atmospheric water-vapour windows
+   (~1330-1480 nm and ~1750-2010 nm) as candidate bad bands.
+2. For the remaining bands, compute the across-sample variance ratio of
+   each band against its 5-band local median; bands with anomalously
+   low or high ratio are flagged as candidate bad.
+3. Output: per-subset JSON listing flagged bands + per-band statistics
+   (mean, variance, snr_proxy, group flag).
+
+This heuristic produces the `no_water` and `heuristic-bad-band-mask`
+spectral preprocessing policies used downstream by the band-mask sweep
+and the HIDSAG cross-preprocessing-stability builder.
+
+Output: data/derived/hidsag_band_quality/<subset>.json
+"""
 from __future__ import annotations
 
 import json

@@ -20,6 +20,21 @@ For each labelled scene:
   - chapter histogram (where do topics tend to land?)
 
 Output: data/derived/topic_to_usgs_v7/<scene>.json
+
+References
+----------
+- Kokaly, R. F., et al. (2017). "USGS Spectral Library Version 7".
+  USGS Data Series 1035. DOI: 10.3133/ds1035. The full splib07
+  reference distribution (artificial / coatings / liquids / minerals /
+  organics / soils / vegetation chapters).
+- Kruse, F. A., et al. (1993). "The Spectral Image Processing System
+  (SIPS): Interactive Visualization and Analysis of Imaging
+  Spectrometer Data". Remote Sensing of Environment 44:145-163. The
+  spectral-angle-mapper (SAM) similarity used alongside cosine.
+- Clark, R. N., Roush, T. L. (1984). "Reflectance Spectroscopy:
+  Quantitative Analysis Techniques for Remote Sensing Applications".
+  J. Geophys. Res. 89(B7):6329-6340. The continuum-removal framework
+  for absorption-feature matching.
 """
 from __future__ import annotations
 

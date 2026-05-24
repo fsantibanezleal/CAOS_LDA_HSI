@@ -1,4 +1,28 @@
-"""Build a compact, versioned spectral subset from downloaded HIDSAG ZIP files."""
+"""Build a compact, versioned spectral subset from downloaded HIDSAG ZIP files.
+
+Extracts the HIDSAG (Hyperspectral Indoor Drilling Sample Analysis,
+Geomineralogy) ZIP distribution into a structured, app-consumable
+form. HIDSAG ships 5 subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM,
+PORPHYRY), each containing per-sample reflectance spectra +
+companion measurement files (XRD, AAS, ICP-MS assays). This builder:
+
+1. Extracts the ZIP into data/raw/hidsag/.
+2. For each subset, stitches the modality-specific files into a
+   single dense matrix (n_samples x n_bands) + measurement vectors.
+3. Writes a compact versioned JSON descriptor with the subset's
+   wavelength axis, sample count, and per-measurement label inventory.
+4. The downstream builders (band_quality, region_documents,
+   topic_measurements) consume this curated form rather than the raw ZIP.
+
+Output: data/derived/hidsag_curated_subset/<subset>.json (~50-150 KB).
+
+References
+----------
+- Ehrenfeld, N., Santibáñez-Leal, F. A., et al. (2023). "HIDSAG: a
+  hyperspectral mineralogical dataset". Scientific Data 10:164.
+  DOI: 10.1038/s41597-023-02115-0. The data release this builder
+  consumes.
+"""
 from __future__ import annotations
 
 import json

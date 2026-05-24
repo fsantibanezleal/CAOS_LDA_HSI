@@ -3,6 +3,12 @@
 SLIC is used here as a spatial document-boundary experiment and baseline. The
 output is static JSON plus small preview images; the web app should consume
 these artifacts rather than running segmentation at request time.
+
+References
+----------
+- Achanta, Shaji, Smith, Lucchi, Fua, Süsstrunk (2012). "SLIC Superpixels
+  Compared to State-of-the-Art Superpixel Methods". IEEE TPAMI
+  34(11):2274-2282. The SLIC algorithm via scikit-image's skimage.segmentation.slic.
 """
 from __future__ import annotations
 

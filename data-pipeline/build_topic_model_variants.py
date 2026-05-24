@@ -35,6 +35,25 @@ For each fit we save:
     NPMI coherence on top-15 words, topic prevalence, JS-MDS coords
 
 Output: per-scene + per-variant JSON.
+
+References
+----------
+- Blei, Ng, Jordan (2003). "Latent Dirichlet Allocation". JMLR 3:993-1022.
+  The canonical LDA model that sklearn / gensim / tomotopy all fit.
+- Hoffman, Bach, Blei (2010). "Online Learning for Latent Dirichlet
+  Allocation". NeurIPS 23. The online variational inference used by
+  sklearn LatentDirichletAllocation and gensim LdaModel.
+- Teh, Jordan, Beal, Blei (2006). "Hierarchical Dirichlet Processes".
+  JASA 101(476):1566-1581. The HDP variant (tomotopy HDPModel).
+- Lafferty, Blei (2006). "Correlated Topic Models". NeurIPS 18. The CTM
+  variant (tomotopy CTModel).
+- Mimno, McCallum (2008). "Topic Models Conditioned on Arbitrary
+  Features with Dirichlet-Multinomial Regression". UAI 2008. The DMR
+  variant (tomotopy DMRModel; used in build_dmr_lda_hidsag.py).
+- Lee, Seung (1999). "Learning the parts of objects by non-negative
+  matrix factorization". Nature 401:788-791. The NMF baseline.
+- Sievert, Shirley (2014). "LDAvis". The relevance(lambda) formula
+  used by the downstream build_topic_views.py.
 """
 from __future__ import annotations
 

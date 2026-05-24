@@ -8,6 +8,19 @@ deep gate dominate raw, or does theta uniquely benefit from its
 natural simplex constraint?
 
 Output: data/derived/method_statistics_labelled/cross_classification_bayesian_deep.json
+
+References
+----------
+- Gelman et al. (2013). "Bayesian Data Analysis", 3rd ed. CRC Press.
+- Vehtari et al. (2021). "Rank-Normalization, Folding, and Localization:
+  An Improved R-hat for Assessing Convergence of MCMC". Bayesian
+  Analysis 16(2):667-718.
+- Higgins et al. (2017). "beta-VAE: Learning Basic Visual Concepts
+  with a Constrained Variational Framework". ICLR 2017. The beta-VAE
+  encoder whose softmaxed output is one of the deep-gate candidates.
+- Kingma, Welling (2014). "Auto-Encoding Variational Bayes". ICLR 2014.
+  The VAE framing.
+- Master-plan thesis: see build_topic_routed_classifier.py docstring.
 """
 from __future__ import annotations
 

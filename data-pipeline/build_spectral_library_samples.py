@@ -1,4 +1,28 @@
-"""Build compact spectral-library samples from downloaded USGS archives."""
+"""Build compact spectral-library samples from downloaded USGS archives.
+
+Curates a compact, app-consumable subset of the USGS Spectral Library
+Version 7 (Kokaly et al. 2017) by:
+
+1. Reading the splib07 archive from `data/raw/usgs_splib07/`.
+2. Per-chapter (artificial / coatings / liquids / minerals / organics /
+   soils / vegetation): pick a representative sample (~50 per chapter),
+   resample its reflectance to the project's AVIRIS-1997 wavelength
+   axis, normalise to [0, 1].
+3. Pack per-sample {name, chapter, wavelengths_nm, reflectance} into a
+   single JSON the Workspace USGS tab can query.
+
+The curated form (~2 MB) replaces the multi-GB raw splib07 distribution
+for app-side queries. The full distribution is still consumed by
+build_topic_to_usgs_v7.py for the cosine + SAM matching against project
+topics.
+
+Output: data/derived/spectral_library_samples.json.
+
+References
+----------
+- Kokaly, R. F., et al. (2017). "USGS Spectral Library Version 7".
+  USGS Data Series 1035. DOI: 10.3133/ds1035.
+"""
 from __future__ import annotations
 
 import json
