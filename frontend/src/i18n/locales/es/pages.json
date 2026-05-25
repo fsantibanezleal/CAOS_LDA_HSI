@@ -2,8 +2,12 @@
   "overview": {
     "title": "Visión general",
     "lead": "CAOS LDA HSI explora qué pueden capturar los modelos probabilísticos de tópicos cuando los documentos son píxeles, regiones o mediciones extraídas de imágenes hiperespectrales.",
-    "cta_workspace": "Abrir el Laboratorio",
-    "cta_methodology": "Leer la metodología",
+    "landing_cta": {
+      "lead": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales — un framework de evaluación multi-eje que pregunta si los espectros base de LDA añaden valor interpretable sobre los codificadores profundos en la clasificación de escenas HSI.",
+      "open_workspace": "Abrir el Laboratorio →",
+      "read_methodology": "Leer la metodología",
+      "primary_actions": "acciones principales"
+    },
     "hero": {
       "spectral_signature": "Firma espectral en vivo",
       "indian_pines_caption": "Indian Pines · 16 clases · {{bands}} bandas · 400–2500 nm",
@@ -27,8 +31,74 @@
       "variants_label": "Variantes de tópicos",
       "variants_sub": "LDA · ProdLDA · ETM · …"
     },
+    "papers": {
+      "section_kicker": "Papers",
+      "section_title": "Manuscritos en preparación",
+      "section_lead": "Ambos PDFs a continuación son <strong>preprints</strong> — la compilación actual de los manuscritos al último deploy. Aún no se han enviado a una revista revisada por pares; tratar como work-in-progress.",
+      "build_prefix": "build",
+      "size_suffix": "KB · PDF",
+      "cards": {
+        "journal": {
+          "badge": "Preprint para revista",
+          "title": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales",
+          "blurb": "Tratamiento extenso: Framework de 12 ejes, benchmarks bayesianos jerárquicos, ablaciones de codificadores profundos, estabilidad cross-preprocessing en HIDSAG.",
+          "note": "Preprint; revista de destino redactada mientras circula."
+        },
+        "conference": {
+          "badge": "Preprint para conferencia",
+          "title": "Clasificadores topic-routed para etiquetado de escenas hiperespectrales",
+          "blurb": "Compañero corto: θ-como-compuerta vs θ-como-feature, el resultado B-3, y el resumen de la batería multi-eje.",
+          "note": "Preprint; conferencia de destino redactada mientras circula."
+        }
+      },
+      "links": {
+        "app_source": "Código de la app (GitHub)",
+        "paper_source": "Código del paper (GitHub)",
+        "wiki": "Wiki del proyecto"
+      }
+    },
     "findings": {
-      "section_badge": "Hallazgo destacado · {{idx}} / {{total}}"
+      "section_badge": "Hallazgo destacado · {{idx}} / {{total}}",
+      "see_pipeline": "Ver la página de pipeline →",
+      "see_benchmark": "Ver el panel de Benchmarks que lo respalda →",
+      "show_finding_aria": "Mostrar hallazgo {{n}}",
+      "cards": {
+        "b3": {
+          "badge": "B-3",
+          "title": "θ como compuerta supera a θ como feature; ganancia pequeña sobre raw",
+          "body": "topic_routed_soft iguala o supera marginalmente a raw_logistic en 4 de 6 escenas etiquetadas (ganancia media ≈ +0.5–1.5 pp; Pavia U es la mayor con +1.4 pp). La historia mayor es theta_logistic (θ como feature plano), que pierde frente a raw entre 14 pp (Pavia U) y 47 pp (Indian Pines). La idea 'θ es una compuerta, no un feature' queda empíricamente validada."
+        },
+        "b3_followup": {
+          "badge": "B-3 follow-up",
+          "title": "Ningún codificador profundo puede reemplazar a θ como compuerta",
+          "body": "Bayesiano jerárquico: raw > θ > {pca_8, cae_1d_8, beta_vae_8} con P(μ_a > μ_b) ≥ 0.999. Los latentes profundos softmaxeados satisfacen la restricción del símplex geométricamente pero no estructuralmente — el mecanismo de gating no se transfiere."
+        },
+        "topic_family": {
+          "badge": "Familia de tópicos",
+          "title": "LDA gana ARI · ProdLDA gana coherencia · ETM es el punto medio seguro",
+          "body": "Comparación cabeza-a-cabeza sobre muestras estratificadas de 220 por clase: LDA gana KMeans-vs-label ARI en 4/6 escenas (pierde frente a ProdLDA/ETM en Pavia U y KSC); ProdLDA gana coherencia c_v 6/6; ETM supera a ProdLDA en ARI 5/6 (KSC es un empate 0.222 vs 0.223; ETM gana las otras cinco)."
+        },
+        "decoder_design": {
+          "badge": "Diseño del decodificador",
+          "title": "El objetivo de reconstrucción es en sí mismo un hiperparámetro",
+          "body": "CAE-3D anchor-only vs full-patch da una ΔARI media neta ≈ +0.003 (K=8) y +0.011 (K=4) — neutra en promedio, con dirección dependiente de la escena. Pavia U se invierte con la capacidad."
+        },
+        "gpu_stack": {
+          "badge": "Stack GPU · operacional",
+          "title": "Aceleración 50–120× en la familia deep / neuronal",
+          "body": "RTX 4070 Laptop CUDA 12.6: cae_3d_full K=32 escena individual baja de ~60 min CPU a ~30 s GPU. Curva K completa {4, 8, 16, 32} × 6 escenas de 9–12 h CPU a ~10 min GPU. Deriva de determinismo ±0.010 ARI por debajo del σ por-seed ≈ 0.05. Afirmación de ingeniería — sólo runtime/determinismo, no resultado metodológico."
+        },
+        "stability": {
+          "badge": "Estabilidad",
+          "title": "Escalera de estabilidad por semillas — 9 métodos × 6 escenas",
+          "body": "PCA = ICA (1.000 determinista) > LDA > NMF > CAE-2D > CAE-1D > CAE-3D > dense-AE > β-VAE. β-VAE en KSC con off-diag ≈ 0.18 — la estocasticidad del KL ahoga la señal entre semillas."
+        },
+        "posterior_collapse": {
+          "badge": "Colapso de posterior",
+          "title": "β-VAE Salinas con β ≥ 8 — caso de manual",
+          "body": "β-VAE en Salinas con β=8 y β=16 colapsa a ARI = 0.000: el codificador converge a q(z|x) ≈ p(z) independientemente del input; el latente no aporta información. La estructura compacta de 6 clases de Salinas-A resiste el mismo regularizador."
+        }
+      }
     },
     "pipeline_anatomy": {
       "tag": "Pipeline anatómico",
@@ -381,6 +451,17 @@
   "workspace": {
     "title": "Laboratorio",
     "lead": "Flujo guiado en cuatro pasos: familia → conjunto → representación → explorar. Cada paso depende de los anteriores; puedes retroceder en cualquier momento.",
+    "explore_phases": {
+      "tab_count_aria": "{{label}} ({{count}} pestañas)",
+      "contains_active_suffix": " — contiene la pestaña activa",
+      "panels_aria": "Paneles de {{label}}",
+      "data": { "label": "Datos", "description": "¿Cómo se ven los espectros?" },
+      "topics": { "label": "Tópicos", "description": "¿Qué dice el modelo de tópicos?" },
+      "geometry": { "label": "Geometría", "description": "¿Dónde viven los tópicos? Vistas 3D + espaciales." },
+      "drilldown": { "label": "Detalle", "description": "Inspeccionar documentos, píxeles y regiones específicas." },
+      "manipulate": { "label": "Manipular", "description": "Paso 8: ajustar Q, K, band-mask." },
+      "stability": { "label": "Estabilidad", "description": "¿Qué tan confiable es el ajuste?" }
+    },
     "spectral_envelopes_help": "La banda sombreada es el rango p25–p75; la línea es la mediana. Haz click sobre una clase para aislarla; click nuevamente para ver todas.",
     "raster_isolate_topic": "Aislar un tópico",
     "embed3d_color_by_topic": "Tópico dominante",

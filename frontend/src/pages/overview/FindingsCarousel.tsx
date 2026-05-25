@@ -7,63 +7,23 @@ import { useTranslation } from "react-i18next";
 //   `kind`     "benchmark" → has a tab anchor, click reveals the supporting plot.
 //              "operational" → engineering / runtime claim with no benchmark
 //              tab. Marked exploratory on-card.
-const FINDINGS = [
-  {
-    badge: "B-3",
-    title: "θ as a gate beats θ as a feature; small lift over raw",
-    body: "topic_routed_soft ties or narrowly beats raw_logistic on 4 of 6 labelled scenes (mean lift ≈ +0.5–1.5 pp; Pavia U is the largest at +1.4 pp). The bigger story is theta_logistic (θ as a flat feature), which loses to raw by 14 pp (Pavia U) up to 47 pp (Indian Pines). The 'θ is a gate, not a feature' framing is empirically validated.",
-    accent: "rgba(40, 160, 80, 1)",
-    href: "/benchmarks#gating",
-    kind: "benchmark" as const,
-  },
-  {
-    badge: "B-3 follow-up",
-    title: "No deep encoder can replace θ as the gate",
-    body: "Hierarchical Bayesian: raw > θ > {pca_8, cae_1d_8, beta_vae_8} at P(μ_a > μ_b) ≥ 0.999. Softmaxed deep latents satisfy the simplex constraint geometrically but not structurally — the gating mechanism does not transfer.",
-    accent: "rgba(214, 39, 40, 1)",
-    href: "/benchmarks#gating",
-    kind: "benchmark" as const,
-  },
-  {
-    badge: "Topic family",
-    title: "LDA wins ARI · ProdLDA wins coherence · ETM is the safe middle",
-    body: "Head-to-head on 220-per-class stratified samples: LDA wins KMeans-vs-label ARI on 4/6 scenes (loses to ProdLDA/ETM on Pavia U and KSC); ProdLDA wins c_v topic coherence 6/6; ETM beats ProdLDA on ARI 5/6 (KSC is a tie at 0.222 vs 0.223; ETM wins the other five).",
-    accent: "rgba(31, 119, 180, 1)",
-    href: "/benchmarks#gating",
-    kind: "benchmark" as const,
-  },
-  {
-    badge: "Decoder design",
-    title: "Decoder reconstruction target is itself a hyperparameter",
-    body: "CAE-3D anchor-only vs full-patch gives net mean ΔARI ≈ +0.003 (K=8) and +0.011 (K=4) — neutral on average, scene-dependent direction. Pavia U inverts with capacity.",
-    accent: "rgba(170, 60, 200, 1)",
-    href: "/benchmarks#deep",
-    kind: "benchmark" as const,
-  },
-  {
-    badge: "GPU stack · operational",
-    title: "50–120× speedup on the deep / neural family",
-    body: "RTX 4070 Laptop CUDA 12.6: cae_3d_full K=32 single scene goes from ~60 min CPU to ~30 s GPU. Full K-curve {4, 8, 16, 32} × 6 scenes from 9–12 h CPU to ~10 min GPU. Determinism drift ±0.010 ARI is below per-seed σ ≈ 0.05. Engineering claim — runtime / determinism only, not a methodological result.",
-    accent: "rgba(214, 140, 40, 1)",
-    href: "/methodology/pipeline",
-    kind: "operational" as const,
-  },
-  {
-    badge: "Stability",
-    title: "9-method × 6-scene seed stability ladder",
-    body: "PCA = ICA (1.000 deterministic) > LDA > NMF > CAE-2D > CAE-1D > CAE-3D > dense-AE > β-VAE. KSC β-VAE off-diag ≈ 0.18 — KL stochasticity overwhelms the inter-seed signal.",
-    accent: "rgba(140, 86, 75, 1)",
-    href: "/benchmarks#axes",
-    kind: "benchmark" as const,
-  },
-  {
-    badge: "Posterior collapse",
-    title: "β-VAE Salinas at β ≥ 8 — textbook failure mode",
-    body: "Salinas β-VAE at β=8 and β=16 collapses to ARI = 0.000: the encoder converges to q(z|x) ≈ p(z) regardless of input; the latent is uninformative. Salinas-A's compact 6-class structure resists the same regulariser.",
-    accent: "rgba(120, 50, 50, 1)",
-    href: "/benchmarks#deep",
-    kind: "benchmark" as const,
-  },
+// Card copy (badge/title/body) lives in i18n under
+// `pages:overview.findings.cards.<key>` so both locales stay in sync.
+type FindingMeta = {
+  key: string;
+  accent: string;
+  href: string;
+  kind: "benchmark" | "operational";
+};
+
+const FINDINGS: FindingMeta[] = [
+  { key: "b3", accent: "rgba(40, 160, 80, 1)", href: "/benchmarks#gating", kind: "benchmark" },
+  { key: "b3_followup", accent: "rgba(214, 39, 40, 1)", href: "/benchmarks#gating", kind: "benchmark" },
+  { key: "topic_family", accent: "rgba(31, 119, 180, 1)", href: "/benchmarks#gating", kind: "benchmark" },
+  { key: "decoder_design", accent: "rgba(170, 60, 200, 1)", href: "/benchmarks#deep", kind: "benchmark" },
+  { key: "gpu_stack", accent: "rgba(214, 140, 40, 1)", href: "/methodology/pipeline", kind: "operational" },
+  { key: "stability", accent: "rgba(140, 86, 75, 1)", href: "/benchmarks#axes", kind: "benchmark" },
+  { key: "posterior_collapse", accent: "rgba(120, 50, 50, 1)", href: "/benchmarks#deep", kind: "benchmark" },
 ];
 
 export function FindingsCarousel() {
@@ -76,6 +36,7 @@ export function FindingsCarousel() {
     return () => clearInterval(timer);
   }, [paused]);
   const cur = FINDINGS[idx]!;
+  const k = (suffix: string) => `pages:overview.findings.cards.${cur.key}.${suffix}`;
 
   return (
     <section className="mt-10">
@@ -101,9 +62,9 @@ export function FindingsCarousel() {
         <div className="flex flex-wrap items-center gap-3 mb-3 pl-3">
           <span
             className="rounded-md px-2 py-0.5 text-[10.5px] font-semibold tracking-widest uppercase"
-            style={{ backgroundColor: cur.accent, color: "white" }}
+            style={{ backgroundColor: cur.accent, color: "var(--color-on-accent, white)" }}
           >
-            {cur.badge}
+            {t(k("badge"))}
           </span>
           <span
             className="text-[11px] uppercase tracking-widest"
@@ -116,13 +77,13 @@ export function FindingsCarousel() {
           className="text-lg md:text-xl font-semibold tracking-tight mb-2 pl-3"
           style={{ color: "var(--color-fg)" }}
         >
-          {cur.title}
+          {t(k("title"))}
         </h2>
         <p
           className="text-[14px] leading-relaxed max-w-4xl pl-3"
           style={{ color: "var(--color-fg-subtle)" }}
         >
-          {cur.body}
+          {t(k("body"))}
         </p>
         <div className="mt-4 pl-3">
           <Link
@@ -130,17 +91,19 @@ export function FindingsCarousel() {
             className="inline-flex items-center gap-1.5 text-[13px] font-medium underline-offset-4 hover:underline"
             style={{ color: cur.accent }}
           >
-            {cur.kind === "operational"
-              ? "See the pipeline page →"
-              : "See the supporting Benchmarks panel →"}
+            {t(
+              cur.kind === "operational"
+                ? "pages:overview.findings.see_pipeline"
+                : "pages:overview.findings.see_benchmark",
+            )}
           </Link>
         </div>
         <div className="mt-4 flex gap-1.5 pl-3">
           {FINDINGS.map((f, i) => (
             <button
-              key={f.title}
+              key={f.key}
               onClick={() => setIdx(i)}
-              aria-label={`Show finding ${i + 1}`}
+              aria-label={t("pages:overview.findings.show_finding_aria", { n: i + 1 })}
               className="h-1.5 rounded-full transition-all"
               style={{
                 width: i === idx ? 32 : 10,

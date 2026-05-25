@@ -6,45 +6,40 @@
  * Both manuscripts are **preprints** — not yet submitted to a
  * peer-reviewed venue. Don't add venue/journal claims here until
  * acceptance.
+ *
+ * All card copy + section headings + link labels live under
+ * `pages:overview.papers.*`. Only file paths and numeric facts
+ * (size, build stamp) stay here.
  */
 
+import { Trans, useTranslation } from "react-i18next";
+
+type PaperVariant = "journal" | "conference";
+
 type PaperCard = {
-  variant: "journal" | "conference";
-  badge: string;
-  title: string;
-  blurb: string;
+  variant: PaperVariant;
   pdfHref: string;
   pdfSizeKb: number;
   buildStamp: string;
-  note: string;
 };
 
 const PAPERS: PaperCard[] = [
   {
     variant: "journal",
-    badge: "Journal preprint",
-    title: "Probabilistic topic models on hyperspectral imagery",
-    blurb:
-      "Long-form treatment: 12-axis Framework, hierarchical Bayesian benchmarks, deep-encoder ablations, HIDSAG cross-preprocessing stability.",
     pdfHref: "/papers/caos-lda-hsi-journal.pdf",
     pdfSizeKb: 510,
     buildStamp: "2026-05-24",
-    note: "Preprint; target venue redacted while it circulates.",
   },
   {
     variant: "conference",
-    badge: "Conference preprint",
-    title: "Topic-routed classifiers for hyperspectral scene labelling",
-    blurb:
-      "Short companion: theta-as-gate vs theta-as-feature, the B-3 result, and the multi-axis battery summary.",
     pdfHref: "/papers/caos-lda-hsi-conference.pdf",
     pdfSizeKb: 333,
     buildStamp: "2026-05-24",
-    note: "Preprint; target venue redacted while it circulates.",
   },
 ];
 
 export function Papers() {
+  const { t } = useTranslation(["pages"]);
   return (
     <section
       className="rounded-xl border p-6 mt-6"
@@ -59,21 +54,22 @@ export function Papers() {
           className="text-[10.5px] uppercase tracking-widest font-semibold mb-1"
           style={{ color: "var(--color-accent)" }}
         >
-          Papers
+          {t("pages:overview.papers.section_kicker")}
         </div>
         <h3
           className="text-lg font-semibold tracking-tight"
           style={{ color: "var(--color-fg)" }}
         >
-          Manuscripts in preparation
+          {t("pages:overview.papers.section_title")}
         </h3>
         <p
           className="text-sm mt-1"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Both PDFs below are <strong>preprints</strong> — current build of the
-          manuscripts as of the most recent deploy. They have not been submitted
-          to a peer-reviewed venue yet; treat them as work-in-progress.
+          <Trans
+            i18nKey="pages:overview.papers.section_lead"
+            components={{ strong: <strong /> }}
+          />
         </p>
       </header>
 
@@ -94,38 +90,40 @@ export function Papers() {
               className="text-[10.5px] uppercase tracking-widest font-semibold"
               style={{ color: "var(--color-accent)" }}
             >
-              {p.badge}
+              {t(`pages:overview.papers.cards.${p.variant}.badge`)}
             </div>
             <div
               className="text-base font-semibold leading-snug"
               style={{ color: "var(--color-fg)" }}
             >
-              {p.title}
+              {t(`pages:overview.papers.cards.${p.variant}.title`)}
             </div>
             <div
               className="text-[13px] leading-relaxed"
               style={{ color: "var(--color-fg-subtle)" }}
             >
-              {p.blurb}
+              {t(`pages:overview.papers.cards.${p.variant}.blurb`)}
             </div>
             <div
               className="text-[11.5px] italic"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              {p.note}
+              {t(`pages:overview.papers.cards.${p.variant}.note`)}
             </div>
             <div
               className="mt-2 flex items-baseline justify-between text-[12px] font-mono"
               style={{ color: "var(--color-fg-faint)" }}
             >
               <span>{p.pdfHref.split("/").pop()}</span>
-              <span>{p.pdfSizeKb} KB · PDF</span>
+              <span>
+                {p.pdfSizeKb} {t("pages:overview.papers.size_suffix")}
+              </span>
             </div>
             <div
               className="text-[11px] font-mono"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              build {p.buildStamp}
+              {t("pages:overview.papers.build_prefix")} {p.buildStamp}
             </div>
           </a>
         ))}
@@ -141,7 +139,7 @@ export function Papers() {
           rel="noreferrer"
           className="underline hover:no-underline"
         >
-          App source (GitHub)
+          {t("pages:overview.papers.links.app_source")}
         </a>
         <a
           href="https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper"
@@ -149,7 +147,7 @@ export function Papers() {
           rel="noreferrer"
           className="underline hover:no-underline"
         >
-          Paper source (GitHub)
+          {t("pages:overview.papers.links.paper_source")}
         </a>
         <a
           href="https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki"
@@ -157,7 +155,7 @@ export function Papers() {
           rel="noreferrer"
           className="underline hover:no-underline"
         >
-          Project wiki
+          {t("pages:overview.papers.links.wiki")}
         </a>
       </div>
     </section>
