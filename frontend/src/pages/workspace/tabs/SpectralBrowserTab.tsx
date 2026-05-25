@@ -111,13 +111,15 @@ export function SpectralBrowserTab({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span
+            <label
+              htmlFor="spectral-browser-max-lines"
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
               lines
-            </span>
+            </label>
             <select
+              id="spectral-browser-max-lines"
               value={maxLines}
               onChange={(e) => setMaxLines(parseInt(e.target.value, 10))}
               className="rounded-md border px-2 py-1 text-sm"

@@ -142,13 +142,15 @@ function SegmentationOverlayPanel({ sceneId }: { sceneId: string }) {
           Spatial segmentation overlay
         </h4>
         <div className="flex items-center gap-2">
-          <span
+          <label
+            htmlFor="raw-segmentation-method"
             className="text-[11px] uppercase tracking-wider"
             style={{ color: "var(--color-fg-faint)" }}
           >
             method
-          </span>
+          </label>
           <select
+            id="raw-segmentation-method"
             value={method ?? ""}
             onChange={(e) => setMethod(e.target.value === "" ? null : e.target.value)}
             className="rounded-md border px-2 py-1 text-sm"
