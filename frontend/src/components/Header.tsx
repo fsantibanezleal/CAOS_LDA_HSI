@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileText, Github, Globe, Sparkles } from "lucide-react";
+import { FileText, Github, Globe, Menu, Sparkles, X } from "lucide-react";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -23,6 +24,12 @@ const EXTERNAL = {
 
 export function Header() {
   const { t } = useTranslation(["common", "nav"]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  useEffect(() => {
+    // Close the mobile drawer whenever the route changes.
+    setMobileOpen(false);
+  }, [location.pathname, location.search, location.hash]);
   return (
     <header
       className="sticky top-0 z-50 backdrop-blur-md border-b"
@@ -32,6 +39,17 @@ export function Header() {
       }}
     >
       <div className="mx-auto max-w-screen-2xl flex items-center gap-4 px-6 h-14">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-label={t("nav:menu_toggle")}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav"
+          className="md:hidden p-2 rounded-md transition-opacity hover:opacity-100 opacity-80"
+          style={{ color: "var(--color-fg)" }}
+        >
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
         <NavLink
           to="/"
           className="flex items-center gap-2 font-semibold tracking-tight"
@@ -115,6 +133,43 @@ export function Header() {
           <ThemeToggle />
         </div>
       </div>
+
+      {mobileOpen && (
+        <nav
+          id="mobile-nav"
+          aria-label={t("nav:menu_toggle")}
+          className="md:hidden border-t"
+          style={{
+            borderColor: "var(--color-border)",
+            backgroundColor: "var(--color-panel)",
+          }}
+        >
+          <ul className="flex flex-col py-2">
+            {NAV_ITEMS.map(({ to, key, end }) => (
+              <li key={key}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    cn(
+                      "block px-6 py-2.5 text-sm transition-colors",
+                      isActive ? "font-medium" : "opacity-80",
+                    )
+                  }
+                  style={({ isActive }) => ({
+                    backgroundColor: isActive
+                      ? "var(--color-accent-soft)"
+                      : "transparent",
+                    color: isActive ? "var(--color-accent)" : "var(--color-fg)",
+                  })}
+                >
+                  {t(`nav:${key}`)}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }
