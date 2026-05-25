@@ -1,4 +1,6 @@
-import { create } from "zustand";
+// Type exports retained for Workspace.tsx. The runtime zustand store was
+// removed in c343 (the hook was never imported; selection state lives in
+// the XState workspace machine + URL params).
 
 export type DatasetFamily =
   | "hsi-labelled"
@@ -15,24 +17,3 @@ export type RepresentationKind =
   | "pca"
   | "nmf"
   | "ae";
-
-type SelectionState = {
-  family: DatasetFamily | null;
-  subset: string | null;
-  representation: RepresentationKind | null;
-  setFamily: (family: DatasetFamily | null) => void;
-  setSubset: (subset: string | null) => void;
-  setRepresentation: (rep: RepresentationKind | null) => void;
-  reset: () => void;
-};
-
-export const useSelectionStore = create<SelectionState>((set) => ({
-  family: null,
-  subset: null,
-  representation: null,
-  setFamily: (family) =>
-    set({ family, subset: null, representation: null }),
-  setSubset: (subset) => set({ subset, representation: null }),
-  setRepresentation: (representation) => set({ representation }),
-  reset: () => set({ family: null, subset: null, representation: null }),
-}));

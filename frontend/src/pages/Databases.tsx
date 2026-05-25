@@ -304,26 +304,26 @@ function DatasetCard({ dataset }: { dataset: DatasetEntry }) {
         className="text-[13px] leading-relaxed space-y-1.5"
         style={{ color: "var(--color-fg-subtle)" }}
       >
-        <KvRow label="Modalidad" value={dataset.modality} />
+        <KvRow label="Modality" value={dataset.modality} />
         <KvRow
-          label="Dominios"
+          label="Domains"
           value={dataset.domains.join(", ") || "—"}
         />
         <KvRow
           label="Supervision"
-          value={dataset.supervision_states.join(" · ") || "ninguna"}
+          value={dataset.supervision_states.join(" · ") || "none"}
         />
-        <KvRow label="Acceso" value={dataset.access} />
+        <KvRow label="Access" value={dataset.access} />
         {dataset.local_raw_available ? (
           <KvRow
-            label="Crudo local"
-            value={`${dataset.raw_file_count} archivos · ${formatBytes(
+            label="Local raw"
+            value={`${dataset.raw_file_count} files · ${formatBytes(
               dataset.raw_total_size_bytes,
             )}`}
           />
         ) : (
           <KvRow
-            label="Crudo local"
+            label="Local raw"
             value="not downloaded on this machine"
           />
         )}
@@ -347,7 +347,7 @@ function DatasetCard({ dataset }: { dataset: DatasetEntry }) {
             className="cursor-pointer text-[12.5px] font-medium"
             style={{ color: "var(--color-accent)" }}
           >
-            Archivos fuente ({dataset.raw_files.length})
+            Source files ({dataset.raw_files.length})
           </summary>
           <ul
             className="mt-2 space-y-1 text-[12px]"

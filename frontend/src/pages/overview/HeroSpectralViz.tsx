@@ -213,9 +213,9 @@ function HypercubeMini() {
       </defs>
 
       {/* axes labels */}
-      <text x="20" y="32" fontSize="10.5" fill="currentColor" opacity="0.65">B = bandas</text>
-      <text x="155" y="232" fontSize="10.5" fill="currentColor" opacity="0.65" textAnchor="middle">W = ancho (px)</text>
-      <text x="285" y="100" fontSize="10.5" fill="currentColor" opacity="0.65" transform="rotate(90 285 100)">H = alto</text>
+      <text x="20" y="32" fontSize="10.5" fill="currentColor" opacity="0.65">B = bands</text>
+      <text x="155" y="232" fontSize="10.5" fill="currentColor" opacity="0.65" textAnchor="middle">W = width (px)</text>
+      <text x="285" y="100" fontSize="10.5" fill="currentColor" opacity="0.65" transform="rotate(90 285 100)">H = height</text>
 
       {/* cube — 3D-ish */}
       {/* top face */}

@@ -480,7 +480,7 @@ function ThreeFamiliesSVG() {
             fontWeight="600"
             fontSize="13.5"
           >
-            Directo
+            Direct
           </text>
           <rect
             x="0"

@@ -161,22 +161,3 @@ export type BandMaskSummary = {
   builder_version: string;
 };
 
-// ---- runtime calls --------------------------------------------------
-
-import { request } from "./_http";
-
-export const bandMaskApi = {
-  index: () => request<BandMaskIndex>(`/api/band-masks`),
-  canonicalComparison: () =>
-    request<BandMaskCanonicalComparison>(`/api/band-masks/canonical-comparison`),
-  summary: (sceneId: string, maskId: string) =>
-    request<BandMaskSummary>(
-      `/api/band-masks/${encodeURIComponent(sceneId)}/${encodeURIComponent(maskId)}`,
-    ),
-  hidsagIndex: () =>
-    request<BandMaskHidsagIndex>(`/api/band-masks-hidsag`),
-  hidsagSummary: (subsetCode: string, maskId: string) =>
-    request<BandMaskHidsagSummary>(
-      `/api/band-masks-hidsag/${encodeURIComponent(subsetCode)}/${encodeURIComponent(maskId)}`,
-    ),
-};
