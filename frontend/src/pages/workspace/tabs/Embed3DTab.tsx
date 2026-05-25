@@ -94,13 +94,15 @@ export function Embed3DTab({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span
+            <label
+              htmlFor="embed3d-color-by"
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
               coloured by
-            </span>
+            </label>
             <select
+              id="embed3d-color-by"
               value={colorBy}
               onChange={(e) =>
                 setColorBy(e.target.value as "topic" | "label")

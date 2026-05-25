@@ -1,5 +1,6 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -23,6 +24,15 @@ const Workspace = lazy(() => import("@/pages/Workspace"));
 const Benchmarks = lazy(() => import("@/pages/Benchmarks"));
 
 export function App() {
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    // Keep `<html lang>` in sync with the active i18n locale so screen
+    // readers + browsers announce content in the correct language.
+    // Fixes the audit-flagged a11y gap (`<html lang="en">` was stuck
+    // regardless of the LanguageToggle state).
+    const lang = i18n.resolvedLanguage ?? i18n.language;
+    if (lang) document.documentElement.setAttribute("lang", lang);
+  }, [i18n, i18n.resolvedLanguage, i18n.language]);
   return (
     <div
       className="min-h-screen flex flex-col"
