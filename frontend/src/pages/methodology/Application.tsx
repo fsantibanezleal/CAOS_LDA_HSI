@@ -321,6 +321,63 @@ export default function MethodologyApplication() {
       </Section>
 
       <Section
+        id="paired-statistics"
+        title="Paired statistics — Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi"
+        lead="The Benchmarks page reports method-vs-method comparisons that use three non-parametric tools. Each is one paragraph here so the headline numbers (Cliff δ = +0.28 on the embedded baseline, P(routed_soft > raw) = 0.641, Wilcoxon-Holm < 0.05) are self-contained."
+      >
+        <p>
+          <strong>Cliff δ</strong> (Cliff 1993) is a non-parametric
+          effect-size measure on two samples
+          <Equation tex="A = \{a_i\}_{i=1}^{n_A}" /> and{" "}
+          <Equation tex="B = \{b_j\}_{j=1}^{n_B}" />:
+        </p>
+        <Equation
+          block
+          tex="\delta = \frac{\#\{(i, j) : a_i > b_j\} - \#\{(i, j) : a_i < b_j\}}{n_A \cdot n_B} \in [-1, 1]."
+        />
+        <p>
+          δ = +1 means every <Equation tex="a_i" /> exceeds every
+          <Equation tex="b_j" />; δ = 0 means perfect overlap. Cohen's
+          rule of thumb for the social-science adaptation:
+          |δ| ≥ 0.474 large, 0.33 medium, 0.147 small. The embedded
+          baseline's +0.280 (Indian Pines) is a small-to-medium effect.
+
+        </p>
+
+        <p className="mt-4">
+          <strong>Wilcoxon signed-rank with Holm step-down</strong>{" "}
+          combines (i) Wilcoxon's paired non-parametric test
+          (Wilcoxon 1945) and (ii) Holm's family-wise-error correction
+          (Holm 1979). For methods{" "}
+          <Equation tex="\{m_1, \dots, m_K\}" /> tested pairwise over
+          shared folds, the per-pair Wilcoxon p-values are sorted
+          ascending and the smallest is compared against{" "}
+          <Equation tex="\alpha / K" />, the next against{" "}
+          <Equation tex="\alpha / (K-1)" />, and so on until the chain
+          stops rejecting. Strictly more powerful than Bonferroni for
+          a fixed family-wise error rate{" "}
+          <Equation tex="\alpha = 0.05" />. The HIDSAG{" "}
+          <code>build_method_statistics_hidsag.py</code> uses this
+          chain on the per-target-mean rank vectors.
+        </p>
+
+        <p className="mt-4">
+          <strong>Friedman χ² + Nemenyi post-hoc</strong>{" "}
+          (Demšar 2006) is the omnibus alternative when comparing
+          more than two methods across many datasets simultaneously.
+          Friedman tests the global null{" "}
+          <Equation tex="H_0: \mathbb{E}[\text{rank}(m_i)] = \mathbb{E}[\text{rank}(m_j)] \,\, \forall i, j" />;
+          if rejected, Nemenyi pairs methods whose mean-rank
+          difference exceeds the critical distance{" "}
+          <Equation tex="\mathrm{CD} = q_{\alpha} \sqrt{K(K+1)/(6N)}" />.
+          The Benchmarks <em>HIDSAG</em> tab shows the Nemenyi
+          critical-difference plots; methods connected by a horizontal
+          bar are <em>not</em> statistically distinguishable at{" "}
+          <Equation tex="\alpha = 0.05" />.
+        </p>
+      </Section>
+
+      <Section
         id="what-topics-capture"
         title='What does a topic "capture", in task terms?'
         lead="It is not text: the question is answered visually with distributions."

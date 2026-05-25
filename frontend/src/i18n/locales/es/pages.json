@@ -27,7 +27,7 @@
       "artifacts_label": "Artefactos derivados",
       "artifacts_sub": "vivos en producción",
       "endpoints_label": "Endpoints API",
-      "endpoints_sub": "smoke 87/87 verde",
+      "endpoints_sub": "cubiertos por smoke harness",
       "variants_label": "Variantes de tópicos",
       "variants_sub": "LDA · ProdLDA · ETM · …"
     },

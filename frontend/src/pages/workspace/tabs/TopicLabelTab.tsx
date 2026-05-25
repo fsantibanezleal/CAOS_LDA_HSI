@@ -152,6 +152,17 @@ export function TopicLabelTab({
           </div>
         </div>
         <p
+          className="text-sm mb-2"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          <em>Dominant topic</em> for a pixel d means
+          <code> arg max<sub>k</sub> θ<sub>d,k</sub></code> — the
+          single topic with the largest posterior weight on that
+          pixel. Both heatmaps below are computed on the per-pixel
+          dominant-topic assignment (not on the full continuous θ
+          mixture).
+        </p>
+        <p
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
