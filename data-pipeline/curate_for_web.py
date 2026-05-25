@@ -110,6 +110,16 @@ BUILDER_DIRS = [
     ("build_hidsag_band_quality", "core/hidsag_band_quality.json"),
     ("run_hidsag_preprocessing_sensitivity", "core/hidsag_preprocessing_sensitivity.json"),
     ("build_hidsag_region_documents", "core/hidsag_region_documents.json"),
+    # build_hidsag_region_documents writes a .json + a .npz sidecar
+    # (the float64 region-spectra payload). The two are produced by the
+    # same builder; tracking the npz here lets the manifest cover both
+    # files without recomputing scene ids. Closes #563 Tier-1 sidecar gap.
+    ("build_hidsag_region_documents", "core/hidsag_region_documents.npz"),
+    # build_hidsag_topic_measurements writes per-subset joins of topic
+    # mixtures with continuous HIDSAG assays. Added 2026-05-25 (c347)
+    # after the 2026-05-24 audit flagged 5 untracked GEOCHEM / GEOMET /
+    # MINERAL1 / MINERAL2 / PORPHYRY artefacts on disk. Closes #563.
+    ("build_hidsag_topic_measurements", "hidsag_topic_measurements"),
     ("fetch_hidsag", "core/hidsag_subset_inventory.json"),
     ("build_subset_cards", "subsets"),
 ]
