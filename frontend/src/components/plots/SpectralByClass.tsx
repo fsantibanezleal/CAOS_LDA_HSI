@@ -220,7 +220,7 @@ export function SpectralByClass({
       <div
         className="mt-3 flex flex-wrap gap-1.5"
         role="group"
-        aria-label="Filtro de clases"
+        aria-label="Class filter"
       >
         <button
           type="button"
@@ -241,7 +241,7 @@ export function SpectralByClass({
                 : "var(--color-fg-subtle)",
           }}
         >
-          Todas
+          All
         </button>
         {classDistribution.map((c) => {
           const isIso = isolated === c.label_id;

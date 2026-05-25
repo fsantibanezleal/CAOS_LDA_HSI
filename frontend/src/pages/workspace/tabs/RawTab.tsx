@@ -77,7 +77,7 @@ export function RawTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Envolventes espectrales por clase
+          Per-class spectral envelopes
         </h4>
         <p
           className="text-sm mb-3"

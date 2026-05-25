@@ -38,8 +38,6 @@
       "stage1_sub": "build_groupings",
       "stage1_note": "x ∈ ℝᴮ per pixel · region · sample",
       "stage1_pixel": "pixel",
-      "stage1_pixel_label": "x[i,j] ∈ ℝᴮ",
-      "stage1_pixel_caption": "one pixel = one document",
       "stage2_title": "2 · Discretisation",
       "stage2_sub": "build_wordifications · V1..V12",
       "stage2_note1": "band-frequency · band-magnitude · …",
@@ -110,9 +108,7 @@
       "step7_tag": "Eval",
       "step7_title": "Benchmarks",
       "step7_body": "16 cards: multi-axis battery, Bayesian HDI, K-curve, β-collapse, neural-topic head-to-head, …"
-    },
-    "manifest_loaded": "Live data layer — manifest loaded correctly.",
-    "manifest_static": "Numbers are from the repo manifest — the app serves pre-computed material, no in-browser fitting."
+    }
   },
   "methodology": {
     "title": "Methodology",

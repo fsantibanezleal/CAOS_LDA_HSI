@@ -9,10 +9,9 @@
  */
 
 // Shared HTTP primitives moved to `_http.ts` as part of the c261
-// api-client split (#441 P1 2.4). Re-exported for back-compat with
-// existing consumers that import `ApiError` from `@/api/client`.
-import { ApiError, request, requestBuffer } from "./_http";
-export { ApiError };
+// api-client split (#441 P1 2.4). The ApiError re-export was dropped
+// in c343 — no external consumers.
+import { request, requestBuffer } from "./_http";
 
 // Pull the BandMask family from its own module so we can both consume
 // the types here (the existing `api.bandMasks*` runtime methods stay
