@@ -71,10 +71,11 @@ export const EXPLORE_TAB_ORDER: ExploreTab[] = [
   "metrics",
 ];
 
+// Phase label + description are read from i18n by ExploreNav at
+// `pages:workspace.explore_phases.<phase.id>.{label,description}` so
+// only id + color + tabs live here.
 export type ExplorePhase = {
   id: "data" | "topics" | "geometry" | "drilldown" | "manipulate" | "stability";
-  label: string;
-  description: string;
   color: string;
   tabs: { id: ExploreTab; labelKey: string }[];
 };
@@ -89,8 +90,6 @@ export type ExplorePhase = {
 export const EXPLORE_PHASES: ExplorePhase[] = [
   {
     id: "data",
-    label: "Data",
-    description: "What does the spectra look like?",
     color: "rgba(56, 189, 248, 1)",
     tabs: [
       { id: "raw", labelKey: "raw" },
@@ -99,8 +98,6 @@ export const EXPLORE_PHASES: ExplorePhase[] = [
   },
   {
     id: "topics",
-    label: "Topics",
-    description: "What does the topic model say?",
     color: "rgba(40, 160, 80, 1)",
     tabs: [
       { id: "topics", labelKey: "topics" },
@@ -112,8 +109,6 @@ export const EXPLORE_PHASES: ExplorePhase[] = [
   },
   {
     id: "geometry",
-    label: "Geometry",
-    description: "Where do topics live? 3D + spatial views.",
     color: "rgba(170, 60, 200, 1)",
     tabs: [
       { id: "raster", labelKey: "raster" },
@@ -126,8 +121,6 @@ export const EXPLORE_PHASES: ExplorePhase[] = [
   },
   {
     id: "drilldown",
-    label: "Drilldown",
-    description: "Inspect specific docs, pixels, regions.",
     color: "rgba(214, 100, 60, 1)",
     tabs: [
       { id: "applydoc", labelKey: "applydoc" },
@@ -138,8 +131,6 @@ export const EXPLORE_PHASES: ExplorePhase[] = [
   },
   {
     id: "manipulate",
-    label: "Manipulate",
-    description: "Step 8: tweak Q, K, band-mask.",
     color: "rgba(234, 179, 8, 1)",
     tabs: [
       { id: "recipes", labelKey: "recipes" },
@@ -149,8 +140,6 @@ export const EXPLORE_PHASES: ExplorePhase[] = [
   },
   {
     id: "stability",
-    label: "Stability",
-    description: "How trustworthy is the fit?",
     color: "rgba(244, 63, 94, 1)",
     tabs: [
       { id: "stability", labelKey: "stability" },

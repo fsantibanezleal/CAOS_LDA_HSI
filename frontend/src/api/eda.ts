@@ -12,8 +12,6 @@
  * consumers (`import { ScenePerScene } from '@/api/client'`) keep
  * working without per-file churn.
  */
-import { request } from "./_http";
-
 export type ClassEntry = {
   label_id: number;
   name: string;
@@ -47,11 +45,3 @@ export type ScenePerScene = {
   class_mean_spectra: Record<string, ClassMeanSpectrum>;
 };
 
-export const edaApi = {
-  perScene: (sceneId: string) =>
-    request<ScenePerScene>(
-      `/api/eda/per-scene/${encodeURIComponent(sceneId)}`,
-    ),
-  // HidsagEda lives in client.ts (it depends on a long chain of HIDSAG
-  // types) — the per-scene EDA call is the one we move now.
-};

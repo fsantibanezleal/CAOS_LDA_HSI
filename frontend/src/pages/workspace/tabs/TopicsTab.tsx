@@ -122,13 +122,15 @@ export function TopicsTab({
                 : "select a topic"}
             </h4>
             <div className="flex items-center gap-2">
-              <span
+              <label
+                htmlFor="topics-lambda"
                 className="text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--color-fg-faint)" }}
               >
                 relevance λ
-              </span>
+              </label>
               <select
+                id="topics-lambda"
                 value={lambda}
                 onChange={(e) => setLambda(parseFloat(e.target.value))}
                 className="rounded-md border px-2 py-1 text-sm"
@@ -428,13 +430,15 @@ export function TopicsTab({
               Distinguishing words — topic {selectedTopic + 1} vs ___
             </h4>
             <div className="flex items-center gap-2">
-              <span
+              <label
+                htmlFor="topics-pair-with"
                 className="text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--color-fg-faint)" }}
               >
                 pair with
-              </span>
+              </label>
               <select
+                id="topics-pair-with"
                 value={pairTopic ?? ""}
                 onChange={(e) =>
                   setPairTopic(e.target.value === "" ? null : Number(e.target.value))

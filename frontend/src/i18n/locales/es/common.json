@@ -3,12 +3,13 @@
   "site_tagline": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales",
   "actions": {
     "toggle_theme": "Alternar tema",
-    "toggle_language": "Cambiar idioma",
-    "open_external": "Abrir enlace externo"
+    "toggle_language": "Cambiar idioma"
   },
   "states": {
     "loading": "Cargando…",
-    "rebuilding": "Esta sección se está reconstruyendo. Vuelve pronto.",
+    "empty": "Sin datos disponibles para esta escena / representación.",
+    "error_generic": "No se pudieron cargar los datos de esta pestaña.",
+    "retry": "Reintentar",
     "endpoint_unavailable": "Endpoint no disponible todavía"
   },
   "external": {

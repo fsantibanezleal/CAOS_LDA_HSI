@@ -1496,7 +1496,7 @@ function SubsetCard({
             color: isReady ? "var(--color-success)" : "var(--color-fg-faint)",
           }}
         >
-          {isReady ? "local" : "sin descargar"}
+          {isReady ? "local" : "not downloaded"}
         </span>
       </header>
       <dl
@@ -1508,7 +1508,7 @@ function SubsetCard({
             className="shrink-0 w-24 text-[11px] uppercase tracking-wider pt-0.5"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Modalidad
+            Modality
           </dt>
           <dd className="flex-1">{dataset.modality}</dd>
         </div>
@@ -1520,7 +1520,7 @@ function SubsetCard({
             Supervision
           </dt>
           <dd className="flex-1">
-            {dataset.supervision_states.join(" · ") || "ninguna"}
+            {dataset.supervision_states.join(" · ") || "none"}
           </dd>
         </div>
       </dl>

@@ -458,7 +458,7 @@ function WordificationFlowSVG() {
           strokeWidth="1.3"
         />
         <text x="80" y="80" textAnchor="middle" fontWeight="600">
-          Espectro
+          Spectrum
         </text>
         <path
           d="M 30 130 C 50 100, 70 160, 90 110 S 130 90, 130 130"
@@ -597,7 +597,7 @@ function MixedMembershipSVG() {
         </text>
 
         <text x="160" y="62" fontWeight="600">
-          θ_d (mezcla)
+          θ_d (mixture)
         </text>
         <g>
           <rect x="160" y="80" width="200" height="20" fill="#0ea5e9" />

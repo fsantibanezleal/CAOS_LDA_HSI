@@ -276,8 +276,8 @@ export default function MethodologyPipeline() {
             border: "1px solid var(--color-border)",
             color: "var(--color-fg)",
           }}
-        >{`$ scripts/local setup-all          # crea .venv + .venv-pipeline + frontend deps
-$ scripts/local fetch-all          # ~30 min de descargas
+        >{`$ scripts/local setup-all          # create .venv + .venv-pipeline + frontend deps
+$ scripts/local fetch-all          # ~30 min of downloads
 $ scripts/local build-precompute-all
 $ scripts/local run-core
 $ scripts/local build-validation-blocks

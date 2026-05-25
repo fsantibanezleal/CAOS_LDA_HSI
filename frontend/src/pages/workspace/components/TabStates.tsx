@@ -12,6 +12,7 @@
  */
 
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 const CARD_STYLE = {
   borderColor: "var(--color-border)",
@@ -28,7 +29,8 @@ type CommonProps = {
   children?: ReactNode;
 };
 
-export function TabLoading({ message = "Loading…" }: { message?: string }) {
+export function TabLoading({ message }: { message?: string }) {
+  const { t } = useTranslation(["common"]);
   return (
     <div
       className="rounded-lg border p-8 flex items-center justify-center"
@@ -40,23 +42,21 @@ export function TabLoading({ message = "Loading…" }: { message?: string }) {
         className="text-sm"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        {message}
+        {message ?? t("common:states.loading")}
       </p>
     </div>
   );
 }
 
-export function TabEmpty({
-  message = "No data available for this scene / representation.",
-  detail,
-}: CommonProps) {
+export function TabEmpty({ message, detail }: CommonProps) {
+  const { t } = useTranslation(["common"]);
   return (
     <div
       className="rounded-lg border p-8 flex flex-col items-center justify-center gap-2"
       style={CARD_STYLE}
     >
       <p className="text-sm" style={{ color: "var(--color-fg-subtle)" }}>
-        {message}
+        {message ?? t("common:states.empty")}
       </p>
       {detail && (
         <p
@@ -71,11 +71,12 @@ export function TabEmpty({
 }
 
 export function TabError({
-  message = "Could not load this tab's data.",
+  message,
   detail,
   onRetry,
   children,
 }: CommonProps & { onRetry?: () => void }) {
+  const { t } = useTranslation(["common"]);
   return (
     <div
       className="rounded-lg border p-6 flex flex-col items-start gap-3"
@@ -86,7 +87,7 @@ export function TabError({
       role="alert"
     >
       <p className="text-sm" style={{ color: "var(--color-fg)" }}>
-        {message}
+        {message ?? t("common:states.error_generic")}
       </p>
       {detail && (
         <p
@@ -107,7 +108,7 @@ export function TabError({
             color: "var(--color-fg)",
           }}
         >
-          Retry
+          {t("common:states.retry")}
         </button>
       )}
       {children}

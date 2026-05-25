@@ -3,12 +3,13 @@
   "site_tagline": "Probabilistic topic models on hyperspectral imagery",
   "actions": {
     "toggle_theme": "Toggle theme",
-    "toggle_language": "Switch language",
-    "open_external": "Open external link"
+    "toggle_language": "Switch language"
   },
   "states": {
     "loading": "Loading…",
-    "rebuilding": "This section is being rebuilt. Check back soon.",
+    "empty": "No data available for this scene / representation.",
+    "error_generic": "Could not load this tab's data.",
+    "retry": "Retry",
     "endpoint_unavailable": "Endpoint not available yet"
   },
   "external": {
