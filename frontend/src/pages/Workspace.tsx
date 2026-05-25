@@ -1882,27 +1882,35 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
           </div>
         </div>
 
-        {/* RIGHT: links */}
-        <div className="flex flex-col gap-1.5 text-[12px]" style={{ color: "var(--color-fg-subtle)" }}>
-          <a
-            href={`/api/eda/per-scene/${encodeURIComponent(subsetId)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="font-mono"
-            style={{ color: "var(--color-accent)" }}
-          >
-            /api/eda/per-scene
-          </a>
-          <a
-            href={`/api/topic-views/${encodeURIComponent(subsetId)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="font-mono"
-            style={{ color: "var(--color-accent)" }}
-          >
-            /api/topic-views
-          </a>
-        </div>
+        {/* RIGHT: developer disclosure (folded by default — raw API
+            URLs were on-screen in the prior layout, which the
+            2026-05-24 user-flow audit flagged as developer noise on
+            a user-facing surface). */}
+        <details className="text-[12px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <summary className="cursor-pointer" style={{ color: "var(--color-fg-faint)" }}>
+            developer · raw endpoints
+          </summary>
+          <div className="flex flex-col gap-1.5 mt-1.5">
+            <a
+              href={`/api/eda/per-scene/${encodeURIComponent(subsetId)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono"
+              style={{ color: "var(--color-accent)" }}
+            >
+              /api/eda/per-scene
+            </a>
+            <a
+              href={`/api/topic-views/${encodeURIComponent(subsetId)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono"
+              style={{ color: "var(--color-accent)" }}
+            >
+              /api/topic-views
+            </a>
+          </div>
+        </details>
       </div>
     </div>
   );

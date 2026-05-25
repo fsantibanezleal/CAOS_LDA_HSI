@@ -1,9 +1,51 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { Equation } from "@/components/Equation";
 import { Figure } from "@/components/Figure";
 import { PageShell } from "@/components/PageShell";
 import { Section } from "@/components/Section";
+
+// F↔B crosswalk: each Workspace surface cell is now a Link to the
+// canonical \`/workspace?scene=indian-pines-corrected&rep=lda&tab=<id>\`
+// or \`/benchmarks#<hash>\` so the reader can jump from the table row
+// to the live panel.
+// Closes #571: the prior implementation rendered Workspace cells as
+// plain text, which the 2026-05-24 user-flow audit flagged as the
+// largest discoverability gap on the methodology surface.
+type CrosswalkLink = { kind: "tab"; tabId: string } | { kind: "benchmarks"; hash: string };
+
+const CROSSWALK_DEFAULT_SCENE = "indian-pines-corrected";
+const CROSSWALK_DEFAULT_REP = "lda";
+
+function crosswalkHref(link: CrosswalkLink): string {
+  if (link.kind === "benchmarks") {
+    return `/benchmarks#${link.hash}`;
+  }
+  return `/workspace?scene=${CROSSWALK_DEFAULT_SCENE}&rep=${CROSSWALK_DEFAULT_REP}&tab=${link.tabId}`;
+}
+
+const CROSSWALK_ROWS: {
+  fId: string;
+  paperName: string;
+  bId: string;
+  wikiName: string;
+  workspaceLabel: string;
+  link: CrosswalkLink;
+}[] = [
+  { fId: "F-1", paperName: "Classification (hierarchical Bayesian)", bId: "B-1", wikiName: "Linear probe panel", workspaceLabel: "Workspace › probe", link: { kind: "tab", tabId: "probe" } },
+  { fId: "F-2", paperName: "Coherence (c_v, NPMI, U-Mass)", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › topics", link: { kind: "tab", tabId: "topics" } },
+  { fId: "F-3", paperName: "Seed stability", bId: "B-6", wikiName: "Seed stability", workspaceLabel: "Workspace › stability", link: { kind: "tab", tabId: "stability" } },
+  { fId: "F-4", paperName: "Capacity sensitivity (K-sweep)", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › qkexplore", link: { kind: "tab", tabId: "qkexplore" } },
+  { fId: "F-5", paperName: "Band-mask robustness", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › bandmask", link: { kind: "tab", tabId: "bandmask" } },
+  { fId: "F-6", paperName: "Cross-method agreement", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › agreement", link: { kind: "tab", tabId: "agreement" } },
+  { fId: "F-7", paperName: "Topic–label coupling", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › topiclabel", link: { kind: "tab", tabId: "topiclabel" } },
+  { fId: "F-8", paperName: "Per-topic Hungarian identity", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › bandmask", link: { kind: "tab", tabId: "bandmask" } },
+  { fId: "F-9", paperName: "HIDSAG preprocessing stability", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Benchmarks › HIDSAG", link: { kind: "benchmarks", hash: "hidsag" } },
+  { fId: "F-10", paperName: "Cross-scene topic transfer", bId: "B-8", wikiName: "Cross-scene transfer", workspaceLabel: "Workspace › robust", link: { kind: "tab", tabId: "robust" } },
+  { fId: "F-11", paperName: "Rate–distortion of θ", bId: "B-2", wikiName: "Rate-distortion curve", workspaceLabel: "Workspace › metrics", link: { kind: "tab", tabId: "metrics" } },
+  { fId: "F-12", paperName: "External baseline (literature OA)", bId: "—", wikiName: "(deferred in paper Suppl F)", workspaceLabel: "Benchmarks › external", link: { kind: "benchmarks", hash: "external" } },
+];
 
 export default function MethodologyApplication() {
   const { t } = useTranslation(["pages"]);
@@ -321,6 +363,63 @@ export default function MethodologyApplication() {
       </Section>
 
       <Section
+        id="paired-statistics"
+        title="Paired statistics — Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi"
+        lead="The Benchmarks page reports method-vs-method comparisons that use three non-parametric tools. Each is one paragraph here so the headline numbers (Cliff δ = +0.28 on the embedded baseline, P(routed_soft > raw) = 0.641, Wilcoxon-Holm < 0.05) are self-contained."
+      >
+        <p>
+          <strong>Cliff δ</strong> (Cliff 1993) is a non-parametric
+          effect-size measure on two samples
+          <Equation tex="A = \{a_i\}_{i=1}^{n_A}" /> and{" "}
+          <Equation tex="B = \{b_j\}_{j=1}^{n_B}" />:
+        </p>
+        <Equation
+          block
+          tex="\delta = \frac{\#\{(i, j) : a_i > b_j\} - \#\{(i, j) : a_i < b_j\}}{n_A \cdot n_B} \in [-1, 1]."
+        />
+        <p>
+          δ = +1 means every <Equation tex="a_i" /> exceeds every
+          <Equation tex="b_j" />; δ = 0 means perfect overlap. Cohen's
+          rule of thumb for the social-science adaptation:
+          |δ| ≥ 0.474 large, 0.33 medium, 0.147 small. The embedded
+          baseline's +0.280 (Indian Pines) is a small-to-medium effect.
+
+        </p>
+
+        <p className="mt-4">
+          <strong>Wilcoxon signed-rank with Holm step-down</strong>{" "}
+          combines (i) Wilcoxon's paired non-parametric test
+          (Wilcoxon 1945) and (ii) Holm's family-wise-error correction
+          (Holm 1979). For methods{" "}
+          <Equation tex="\{m_1, \dots, m_K\}" /> tested pairwise over
+          shared folds, the per-pair Wilcoxon p-values are sorted
+          ascending and the smallest is compared against{" "}
+          <Equation tex="\alpha / K" />, the next against{" "}
+          <Equation tex="\alpha / (K-1)" />, and so on until the chain
+          stops rejecting. Strictly more powerful than Bonferroni for
+          a fixed family-wise error rate{" "}
+          <Equation tex="\alpha = 0.05" />. The HIDSAG{" "}
+          <code>build_method_statistics_hidsag.py</code> uses this
+          chain on the per-target-mean rank vectors.
+        </p>
+
+        <p className="mt-4">
+          <strong>Friedman χ² + Nemenyi post-hoc</strong>{" "}
+          (Demšar 2006) is the omnibus alternative when comparing
+          more than two methods across many datasets simultaneously.
+          Friedman tests the global null{" "}
+          <Equation tex="H_0: \mathbb{E}[\text{rank}(m_i)] = \mathbb{E}[\text{rank}(m_j)] \,\, \forall i, j" />;
+          if rejected, Nemenyi pairs methods whose mean-rank
+          difference exceeds the critical distance{" "}
+          <Equation tex="\mathrm{CD} = q_{\alpha} \sqrt{K(K+1)/(6N)}" />.
+          The Benchmarks <em>HIDSAG</em> tab shows the Nemenyi
+          critical-difference plots; methods connected by a horizontal
+          bar are <em>not</em> statistically distinguishable at{" "}
+          <Equation tex="\alpha = 0.05" />.
+        </p>
+      </Section>
+
+      <Section
         id="what-topics-capture"
         title='What does a topic "capture", in task terms?'
         lead="It is not text: the question is answered visually with distributions."
@@ -410,18 +509,23 @@ export default function MethodologyApplication() {
               </tr>
             </thead>
             <tbody>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-1</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Classification (hierarchical Bayesian)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-1</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Linear probe panel</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › probe / Benchmarks</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-2</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Coherence (c_v, NPMI, U-Mass)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › topics (top-words panel)</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-3</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Seed stability</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-6</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Seed stability</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › stability / deep</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-4</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Capacity sensitivity (K-sweep)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › qkexplore</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-5</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Band-mask robustness</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › bandmask</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-6</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Cross-method agreement</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › agreement</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-7</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Topic–label coupling</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › topiclabel / interpret</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-8</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Per-topic Hungarian identity</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › bandmask (Hungarian panel)</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-9</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>HIDSAG preprocessing stability</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(not a B-axis)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Benchmarks (HIDSAG cross-prep)</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-10</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Cross-scene topic transfer</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-8</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Cross-scene transfer</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › robust</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-11</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Rate–distortion of θ</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>B-2</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Rate-distortion curve</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Workspace › metrics</td></tr>
-              <tr><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-12</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>External baseline (literature OA)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>—</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>(deferred in paper Suppl F)</td><td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>Benchmarks (literature panel)</td></tr>
+              {CROSSWALK_ROWS.map((row) => (
+                <tr key={row.fId}>
+                  <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>{row.fId}</td>
+                  <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>{row.paperName}</td>
+                  <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>{row.bId}</td>
+                  <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>{row.wikiName}</td>
+                  <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                    <Link
+                      to={crosswalkHref(row.link)}
+                      className="underline-offset-4 hover:underline"
+                      style={{ color: "var(--color-accent)" }}
+                    >
+                      {row.workspaceLabel} →
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
