@@ -7,6 +7,9 @@
   },
   "states": {
     "loading": "Cargando…",
+    "empty": "Sin datos disponibles para esta escena / representación.",
+    "error_generic": "No se pudieron cargar los datos de esta pestaña.",
+    "retry": "Reintentar",
     "endpoint_unavailable": "Endpoint no disponible todavía"
   },
   "external": {

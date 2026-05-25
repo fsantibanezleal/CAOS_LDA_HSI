@@ -48,7 +48,16 @@ export function ExploreNav({
         {EXPLORE_PHASES.map((phase) => {
           const isActive = phase.id === activePhaseId;
           const isContainingCurrent = phase.id === currentPhase.id;
-          const containsActiveSuffix = isContainingCurrent && !isActive ? " — contains active tab" : "";
+          const phaseLabel = t(
+            `pages:workspace.explore_phases.${phase.id}.label` as never,
+          ) as string;
+          const phaseDescription = t(
+            `pages:workspace.explore_phases.${phase.id}.description` as never,
+          ) as string;
+          const containsActiveSuffix =
+            isContainingCurrent && !isActive
+              ? (t("pages:workspace.explore_phases.contains_active_suffix") as string)
+              : "";
           return (
             <button
               key={phase.id}
@@ -57,9 +66,14 @@ export function ExploreNav({
               id={`phase-tab-${phase.id}`}
               aria-controls={`phase-panel-${phase.id}`}
               aria-selected={isActive}
-              aria-label={`${phase.label} (${phase.tabs.length} tabs)${containsActiveSuffix}`}
+              aria-label={
+                (t("pages:workspace.explore_phases.tab_count_aria", {
+                  label: phaseLabel,
+                  count: phase.tabs.length,
+                }) as string) + containsActiveSuffix
+              }
               onClick={() => setActivePhaseId(phase.id)}
-              title={phase.description + (isContainingCurrent && !isActive ? " (contains the active tab)" : "")}
+              title={phaseDescription + containsActiveSuffix}
               className={cn(
                 "rounded-md border-l-4 border-y border-r px-3.5 py-2 text-[13px] font-semibold transition-all inline-flex items-center gap-2",
                 isActive ? "shadow-sm" : "opacity-70 hover:opacity-100",
@@ -81,7 +95,7 @@ export function ExploreNav({
                 color: isActive ? phase.color : "var(--color-fg)",
               }}
             >
-              <span>{phase.label}</span>
+              <span>{phaseLabel}</span>
               <span
                 className="font-mono text-[10.5px] rounded-full px-1.5 py-0.5"
                 style={{
@@ -115,11 +129,19 @@ export function ExploreNav({
           className="text-[11.5px] italic mb-2.5"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          {activePhase.description}
+          {t(
+            `pages:workspace.explore_phases.${activePhase.id}.description` as never,
+          ) as string}
         </p>
         <div
           role="tablist"
-          aria-label={`${activePhase.label} panels`}
+          aria-label={
+            t("pages:workspace.explore_phases.panels_aria", {
+              label: t(
+                `pages:workspace.explore_phases.${activePhase.id}.label` as never,
+              ) as string,
+            }) as string
+          }
           className="flex flex-wrap gap-1.5"
         >
           {activePhase.tabs.map((opt) => {

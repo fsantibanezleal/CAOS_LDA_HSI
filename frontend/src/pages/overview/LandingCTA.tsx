@@ -16,12 +16,13 @@ export function LandingCTA() {
         className="text-base lg:text-lg leading-snug max-w-3xl"
         style={{ color: "var(--color-fg)" }}
       >
-        {t("pages:overview.landing_cta.lead", {
-          defaultValue:
-            "Probabilistic topic models on hyperspectral imagery — a multi-axis evaluation framework that asks whether LDA basis spectra add interpretable value over deep encoders for HSI scene classification.",
-        })}
+        {t("pages:overview.landing_cta.lead")}
       </p>
-      <div className="flex gap-2 flex-wrap" role="group" aria-label="primary actions">
+      <div
+        className="flex gap-2 flex-wrap"
+        role="group"
+        aria-label={t("pages:overview.landing_cta.primary_actions")}
+      >
         <Link
           to="/workspace"
           className="rounded-md px-4 py-2 text-sm font-semibold transition-opacity"
@@ -30,9 +31,7 @@ export function LandingCTA() {
             color: "var(--color-on-accent, white)",
           }}
         >
-          {t("pages:overview.landing_cta.open_workspace", {
-            defaultValue: "Open the Workspace →",
-          })}
+          {t("pages:overview.landing_cta.open_workspace")}
         </Link>
         <Link
           to="/methodology"
@@ -43,9 +42,7 @@ export function LandingCTA() {
             backgroundColor: "transparent",
           }}
         >
-          {t("pages:overview.landing_cta.read_methodology", {
-            defaultValue: "Read the methodology",
-          })}
+          {t("pages:overview.landing_cta.read_methodology")}
         </Link>
       </div>
     </div>
