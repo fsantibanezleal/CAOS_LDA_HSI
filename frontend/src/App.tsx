@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -7,6 +7,7 @@ import { PageFallback } from "@/components/PageFallback";
 import { CommandPalette } from "@/components/CommandPalette";
 
 const Overview = lazy(() => import("@/pages/Overview"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 const Methodology = lazy(() => import("@/pages/Methodology"));
 const MethodologyIndex = lazy(() => import("@/pages/methodology/Index"));
 const MethodologyTheory = lazy(() => import("@/pages/methodology/Theory"));
@@ -46,7 +47,7 @@ export function App() {
             <Route path="/databases" element={<Databases />} />
             <Route path="/workspace" element={<Workspace />} />
             <Route path="/benchmarks" element={<Benchmarks />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </main>

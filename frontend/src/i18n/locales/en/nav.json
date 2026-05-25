@@ -4,6 +4,7 @@
   "databases": "Databases",
   "workspace": "Workspace",
   "benchmarks": "Benchmarks",
+  "menu_toggle": "Toggle navigation menu",
   "methodology_sub": {
     "theory": "Theory",
     "representations": "Representations",

@@ -31,6 +31,43 @@
       "variants_label": "Variantes de tópicos",
       "variants_sub": "LDA · ProdLDA · ETM · …"
     },
+    "command_palette": {
+      "title": "Paleta de comandos",
+      "search_aria": "Buscar comandos",
+      "results_aria": "Resultados de comandos",
+      "placeholder": "Saltar a página, pestaña o escena…  (Ctrl+K para alternar)",
+      "no_matches": "Sin coincidencias.",
+      "hint_navigate": "↑ ↓ navegar",
+      "hint_open": "↵ abrir",
+      "hint_close": "Esc cerrar",
+      "items_one": "1 ítem",
+      "items_other": "{{count}} ítems",
+      "groups": {
+        "page": "Página",
+        "methodology": "Metodología",
+        "scene": "Escena",
+        "workspace_phase": "Laboratorio › {{phase}}"
+      },
+      "pages": {
+        "overview": "Visión general",
+        "methodology": "Metodología",
+        "databases": "Bases de datos",
+        "workspace": "Laboratorio",
+        "benchmarks": "Benchmarks",
+        "theory": "Teoría",
+        "representations": "Representaciones",
+        "pipeline": "Pipeline",
+        "application": "Aplicación"
+      },
+      "scenes": {
+        "indian-pines-corrected": "Abrir Indian Pines",
+        "salinas-corrected": "Abrir Salinas",
+        "salinas-a-corrected": "Abrir Salinas-A",
+        "pavia-university": "Abrir Pavia U",
+        "kennedy-space-center": "Abrir Kennedy Space Center",
+        "botswana": "Abrir Botswana"
+      }
+    },
     "papers": {
       "section_kicker": "Papers",
       "section_title": "Manuscritos en preparación",
@@ -455,12 +492,30 @@
       "tab_count_aria": "{{label}} ({{count}} pestañas)",
       "contains_active_suffix": " — contiene la pestaña activa",
       "panels_aria": "Paneles de {{label}}",
-      "data": { "label": "Datos", "description": "¿Cómo se ven los espectros?" },
-      "topics": { "label": "Tópicos", "description": "¿Qué dice el modelo de tópicos?" },
-      "geometry": { "label": "Geometría", "description": "¿Dónde viven los tópicos? Vistas 3D + espaciales." },
-      "drilldown": { "label": "Detalle", "description": "Inspeccionar documentos, píxeles y regiones específicas." },
-      "manipulate": { "label": "Manipular", "description": "Paso 8: ajustar Q, K, band-mask." },
-      "stability": { "label": "Estabilidad", "description": "¿Qué tan confiable es el ajuste?" }
+      "data": {
+        "label": "Datos",
+        "description": "¿Cómo se ven los espectros?"
+      },
+      "topics": {
+        "label": "Tópicos",
+        "description": "¿Qué dice el modelo de tópicos?"
+      },
+      "geometry": {
+        "label": "Geometría",
+        "description": "¿Dónde viven los tópicos? Vistas 3D + espaciales."
+      },
+      "drilldown": {
+        "label": "Detalle",
+        "description": "Inspeccionar documentos, píxeles y regiones específicas."
+      },
+      "manipulate": {
+        "label": "Manipular",
+        "description": "Paso 8: ajustar Q, K, band-mask."
+      },
+      "stability": {
+        "label": "Estabilidad",
+        "description": "¿Qué tan confiable es el ajuste?"
+      }
     },
     "spectral_envelopes_help": "La banda sombreada es el rango p25–p75; la línea es la mediana. Haz click sobre una clase para aislarla; click nuevamente para ver todas.",
     "raster_isolate_topic": "Aislar un tópico",
@@ -566,5 +621,14 @@
       "llm": "B-12 LLM",
       "llm_tag": "Tea-leaves word intrusion (gated)"
     }
+  },
+  "not_found": {
+    "title": "Página no encontrada",
+    "lead": "No encontramos nada en esta dirección.",
+    "requested_label": "Pediste",
+    "suggestions_lead": "Prueba con una de éstas:",
+    "suggest_overview": "Visión general — introducción de alto nivel",
+    "suggest_methodology": "Metodología — Teoría · Representaciones · Pipeline · Aplicación",
+    "suggest_workspace": "Laboratorio — elige una escena y explora"
   }
 }

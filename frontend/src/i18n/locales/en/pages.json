@@ -31,6 +31,43 @@
       "variants_label": "Topic-model variants",
       "variants_sub": "LDA · ProdLDA · ETM · …"
     },
+    "command_palette": {
+      "title": "Command palette",
+      "search_aria": "Search commands",
+      "results_aria": "Command results",
+      "placeholder": "Jump to page, tab, or scene…  (Ctrl+K to toggle)",
+      "no_matches": "No matches.",
+      "hint_navigate": "↑ ↓ navigate",
+      "hint_open": "↵ open",
+      "hint_close": "Esc close",
+      "items_one": "1 item",
+      "items_other": "{{count}} items",
+      "groups": {
+        "page": "Page",
+        "methodology": "Methodology",
+        "scene": "Scene",
+        "workspace_phase": "Workspace › {{phase}}"
+      },
+      "pages": {
+        "overview": "Overview",
+        "methodology": "Methodology",
+        "databases": "Databases",
+        "workspace": "Workspace",
+        "benchmarks": "Benchmarks",
+        "theory": "Theory",
+        "representations": "Representations",
+        "pipeline": "Pipeline",
+        "application": "Application"
+      },
+      "scenes": {
+        "indian-pines-corrected": "Open Indian Pines",
+        "salinas-corrected": "Open Salinas",
+        "salinas-a-corrected": "Open Salinas-A",
+        "pavia-university": "Open Pavia U",
+        "kennedy-space-center": "Open Kennedy Space Center",
+        "botswana": "Open Botswana"
+      }
+    },
     "papers": {
       "section_kicker": "Papers",
       "section_title": "Manuscripts in preparation",
@@ -455,12 +492,30 @@
       "tab_count_aria": "{{label}} ({{count}} tabs)",
       "contains_active_suffix": " — contains the active tab",
       "panels_aria": "{{label}} panels",
-      "data": { "label": "Data", "description": "What does the spectra look like?" },
-      "topics": { "label": "Topics", "description": "What does the topic model say?" },
-      "geometry": { "label": "Geometry", "description": "Where do topics live? 3D + spatial views." },
-      "drilldown": { "label": "Drilldown", "description": "Inspect specific docs, pixels, regions." },
-      "manipulate": { "label": "Manipulate", "description": "Step 8: tweak Q, K, band-mask." },
-      "stability": { "label": "Stability", "description": "How trustworthy is the fit?" }
+      "data": {
+        "label": "Data",
+        "description": "What does the spectra look like?"
+      },
+      "topics": {
+        "label": "Topics",
+        "description": "What does the topic model say?"
+      },
+      "geometry": {
+        "label": "Geometry",
+        "description": "Where do topics live? 3D + spatial views."
+      },
+      "drilldown": {
+        "label": "Drilldown",
+        "description": "Inspect specific docs, pixels, regions."
+      },
+      "manipulate": {
+        "label": "Manipulate",
+        "description": "Step 8: tweak Q, K, band-mask."
+      },
+      "stability": {
+        "label": "Stability",
+        "description": "How trustworthy is the fit?"
+      }
     },
     "spectral_envelopes_help": "The shaded band is the p25–p75 range; the line is the median. Click on a class to isolate it; click again to bring all classes back.",
     "raster_isolate_topic": "Isolate a topic",
@@ -566,5 +621,14 @@
       "llm": "B-12 LLM",
       "llm_tag": "Tea-leaves word intrusion (gated)"
     }
+  },
+  "not_found": {
+    "title": "Page not found",
+    "lead": "We could not find anything at this address.",
+    "requested_label": "You asked for",
+    "suggestions_lead": "Try one of these instead:",
+    "suggest_overview": "Overview — top-level introduction",
+    "suggest_methodology": "Methodology — Theory · Representations · Pipeline · Application",
+    "suggest_workspace": "Workspace — pick a scene and explore"
   }
 }

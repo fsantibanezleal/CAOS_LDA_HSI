@@ -15,7 +15,15 @@
  * aria-labelledby; the input is autofocused.
  *
  * Source of truth for the tab list is `pages/workspace/state/tabs.ts`
- * so the palette stays in sync with the navigation source.
+ * so the palette stays in sync with the navigation source. All
+ * visible strings are wired through i18n at
+ * `pages:overview.command_palette.*`.
+ *
+ * Workspace deep-links emitted from the palette pre-fill a default
+ * scene (Indian Pines) + representation (LDA) so the URL restores a
+ * populated state instead of dropping the user on the FamilyPicker —
+ * fixes the audit-flagged dead-end behaviour of `/workspace?tab=<id>`
+ * with no `scene` parameter.
  */
 import {
   useCallback,
@@ -25,8 +33,12 @@ import {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { EXPLORE_PHASES } from "@/pages/workspace/state/tabs";
+
+const DEFAULT_PALETTE_SCENE = "indian-pines-corrected";
+const DEFAULT_PALETTE_REP = "lda";
 
 type CommandItem = {
   /** Stable id, used as React key. */
@@ -39,60 +51,37 @@ type CommandItem = {
   href: string;
 };
 
-const LABELLED_SCENES: { id: string; label: string }[] = [
-  { id: "indian-pines-corrected", label: "Indian Pines" },
-  { id: "salinas-corrected", label: "Salinas" },
-  { id: "salinas-a-corrected", label: "Salinas-A" },
-  { id: "pavia-university", label: "Pavia U" },
-  { id: "kennedy-space-center", label: "Kennedy Space Center" },
-  { id: "botswana", label: "Botswana" },
-];
+const LABELLED_SCENE_IDS = [
+  "indian-pines-corrected",
+  "salinas-corrected",
+  "salinas-a-corrected",
+  "pavia-university",
+  "kennedy-space-center",
+  "botswana",
+] as const;
 
-const STATIC_ITEMS: CommandItem[] = [
-  { id: "page-overview", label: "Overview", group: "Page", href: "/" },
-  { id: "page-methodology", label: "Methodology", group: "Page",
-    href: "/methodology" },
-  { id: "page-databases", label: "Databases", group: "Page",
-    href: "/databases" },
-  { id: "page-workspace", label: "Workspace", group: "Page",
-    href: "/workspace" },
-  { id: "page-benchmarks", label: "Benchmarks", group: "Page",
-    href: "/benchmarks" },
-  // Methodology sub-pages (paths inferred from the route tree)
-  { id: "method-theory", label: "Theory", group: "Methodology",
-    href: "/methodology/theory" },
-  { id: "method-representations", label: "Representations",
-    group: "Methodology", href: "/methodology/representations" },
-  { id: "method-pipeline", label: "Pipeline", group: "Methodology",
-    href: "/methodology/pipeline" },
-  { id: "method-application", label: "Application", group: "Methodology",
-    href: "/methodology/application" },
-];
+const STATIC_PAGES = [
+  { id: "page-overview", key: "overview", href: "/" },
+  { id: "page-methodology", key: "methodology", href: "/methodology" },
+  { id: "page-databases", key: "databases", href: "/databases" },
+  { id: "page-workspace", key: "workspace", href: "/workspace" },
+  { id: "page-benchmarks", key: "benchmarks", href: "/benchmarks" },
+] as const;
 
-function buildIndex(): CommandItem[] {
-  const items: CommandItem[] = [...STATIC_ITEMS];
-  // Workspace tabs
-  for (const phase of EXPLORE_PHASES) {
-    for (const tab of phase.tabs) {
-      items.push({
-        id: `tab-${tab.id}`,
-        label: tab.labelKey,
-        group: `Workspace › ${phase.label}`,
-        href: `/workspace?tab=${tab.id}`,
-      });
-    }
-  }
-  // Direct scene shortcuts
-  for (const scene of LABELLED_SCENES) {
-    items.push({
-      id: `scene-${scene.id}`,
-      label: `Open ${scene.label}`,
-      group: "Scene",
-      href: `/workspace?scene=${scene.id}`,
-    });
-  }
-  return items;
-}
+const METHODOLOGY_SUBPAGES = [
+  { id: "method-theory", key: "theory", href: "/methodology/theory" },
+  {
+    id: "method-representations",
+    key: "representations",
+    href: "/methodology/representations",
+  },
+  { id: "method-pipeline", key: "pipeline", href: "/methodology/pipeline" },
+  {
+    id: "method-application",
+    key: "application",
+    href: "/methodology/application",
+  },
+] as const;
 
 function fuzzyMatch(item: CommandItem, query: string): boolean {
   if (!query) return true;
@@ -110,8 +99,62 @@ export function CommandPalette() {
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation(["pages"]);
 
-  const index = useMemo(() => buildIndex(), []);
+  const k = (suffix: string) =>
+    t(`pages:overview.command_palette.${suffix}` as never) as string;
+
+  const index = useMemo<CommandItem[]>(() => {
+    const items: CommandItem[] = [];
+    for (const p of STATIC_PAGES) {
+      items.push({
+        id: p.id,
+        label: k(`pages.${p.key}`),
+        group: k("groups.page"),
+        href: p.href,
+      });
+    }
+    for (const p of METHODOLOGY_SUBPAGES) {
+      items.push({
+        id: p.id,
+        label: k(`pages.${p.key}`),
+        group: k("groups.methodology"),
+        href: p.href,
+      });
+    }
+    for (const phase of EXPLORE_PHASES) {
+      const phaseLabel = t(
+        `pages:workspace.explore_phases.${phase.id}.label` as never,
+      ) as string;
+      const groupLabel = t(
+        "pages:overview.command_palette.groups.workspace_phase",
+        { phase: phaseLabel },
+      ) as string;
+      for (const tab of phase.tabs) {
+        items.push({
+          id: `tab-${tab.id}`,
+          label: t(
+            `pages:workspace.tabs.${tab.labelKey}` as never,
+          ) as string,
+          group: groupLabel,
+          href: `/workspace?scene=${DEFAULT_PALETTE_SCENE}&rep=${DEFAULT_PALETTE_REP}&tab=${tab.id}`,
+        });
+      }
+    }
+    for (const sceneId of LABELLED_SCENE_IDS) {
+      items.push({
+        id: `scene-${sceneId}`,
+        label: k(`scenes.${sceneId}`),
+        group: k("groups.scene"),
+        href: `/workspace?scene=${sceneId}`,
+      });
+    }
+    return items;
+    // i18n.language is the reactive trigger; t is stable across renders
+    // but its return values vary by language.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
+
   const results = useMemo(
     () => index.filter((i) => fuzzyMatch(i, query)),
     [index, query],
@@ -194,6 +237,13 @@ export function CommandPalette() {
   }, [open]);
 
   if (!open) return null;
+  const itemsCount = t(
+    "pages:overview.command_palette.items_other",
+    {
+      count: results.length,
+      defaultValue: `${results.length} items`,
+    },
+  ) as string;
   return (
     <div
       role="dialog"
@@ -219,7 +269,7 @@ export function CommandPalette() {
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="cmdk-title" className="sr-only">
-          Command palette
+          {k("title")}
         </h2>
         <div
           className="px-4 py-3 border-b"
@@ -228,17 +278,17 @@ export function CommandPalette() {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Jump to page, tab, or scene…  (Ctrl+K to toggle)"
+            placeholder={k("placeholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full bg-transparent outline-none text-sm"
             style={{ color: "var(--color-fg)" }}
-            aria-label="Search commands"
+            aria-label={k("search_aria")}
           />
         </div>
         <ul
           role="listbox"
-          aria-label="Command results"
+          aria-label={k("results_aria")}
           className="max-h-[360px] overflow-y-auto"
         >
           {results.length === 0 && (
@@ -246,7 +296,7 @@ export function CommandPalette() {
               className="px-4 py-3 text-sm"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              No matches.
+              {k("no_matches")}
             </li>
           )}
           {results.map((item, idx) => (
@@ -290,10 +340,10 @@ export function CommandPalette() {
             color: "var(--color-fg-faint)",
           }}
         >
-          <span>↑ ↓ navigate</span>
-          <span>↵ open</span>
-          <span>Esc close</span>
-          <span className="ml-auto">{results.length} item{results.length === 1 ? "" : "s"}</span>
+          <span>{k("hint_navigate")}</span>
+          <span>{k("hint_open")}</span>
+          <span>{k("hint_close")}</span>
+          <span className="ml-auto">{itemsCount}</span>
         </div>
       </div>
     </div>
