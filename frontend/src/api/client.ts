@@ -926,6 +926,12 @@ export type TopicAnomaly = {
     spearman_p_nll: number;
     comment?: string;
   };
+  // c347 schema-drift fix (#563): the builder ships a free-form
+  // `indicators` dict keyed by indicator name (softmax_margin,
+  // recon_nll, …). Pydantic side has `Dict[str, Any]`; the TS side
+  // had no field at all. Caller code already opens an `as any` cast
+  // when it reads it — narrow that to a typed record here.
+  indicators?: Record<string, unknown>;
 };
 
 export type DeepAnomaly = {
