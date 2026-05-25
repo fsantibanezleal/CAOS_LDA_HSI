@@ -262,6 +262,73 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
+      <Section
+        id="metric-glossary"
+        title="Metric glossary — partition agreement, spectral angle, β"
+        lead="Three definitions referenced throughout the site that the prior surfaces named but never gave on-page. Each is a one-line formula plus the role it plays in the framework."
+      >
+        <p className="mt-2">
+          <strong>Adjusted Rand Index (ARI)</strong>{" "}
+          (Hubert &amp; Arabie 1985) is the chance-corrected pairwise
+          agreement between two clusterings <Equation tex="(c_1, c_2)" />:
+        </p>
+        <Equation
+          block
+          tex="\mathrm{ARI}(c_1, c_2) = \frac{\mathrm{RI} - \mathbb{E}[\mathrm{RI}]}{\max(\mathrm{RI}) - \mathbb{E}[\mathrm{RI}]} \in [-1, 1]."
+        />
+        <p>
+          1 = perfect agreement, 0 = chance-level, negative = systematic
+          disagreement. The project's F-3 axis reports ARI(KMeans on θ,
+          ground-truth label). Companion measures:{" "}
+          <strong>Normalised Mutual Information (NMI)</strong>{" "}
+          <Equation tex="\mathrm{NMI}(U, V) = \mathrm{I}(U; V) / \mathrm{mean}(\mathrm{H}(U), \mathrm{H}(V))" />
+          {" "}(Strehl &amp; Ghosh 2002), and{" "}
+          <strong>V-measure</strong>{" "}
+          <Equation tex="\mathrm{V} = \frac{2 \cdot h \cdot c}{h + c}" />,
+          the harmonic mean of homogeneity{" "}
+          <Equation tex="h" /> and completeness{" "}
+          <Equation tex="c" /> (Rosenberg &amp; Hirschberg 2007). The
+          Workspace <em>Cross-method agreement</em> tab reports all
+          three.
+        </p>
+
+        <p className="mt-4">
+          <strong>Spectral Angle Mapper (SAM)</strong>{" "}
+          (Kruse et al. 1993) measures distance between two reflectance
+          vectors by the angle between them, ignoring magnitude:
+        </p>
+        <Equation
+          block
+          tex="\mathrm{SAM}(x, y) = \arccos\!\left(\frac{\langle x, y \rangle}{\|x\| \, \|y\|}\right) \in [0, \pi]."
+        />
+        <p>
+          Used alongside cosine similarity in the Workspace{" "}
+          <em>USGS</em> tab to pair each topic to the closest splib07
+          library spectrum.
+        </p>
+
+        <p className="mt-4">
+          <strong>β-VAE coefficient</strong>{" "}
+          (Higgins et al. 2017) re-weights the variational lower bound
+          of a VAE by a single positive constant <Equation tex="\beta" />:
+        </p>
+        <Equation
+          block
+          tex="\mathcal{L}_{\beta}(x) = \mathbb{E}_{q_\phi(z \mid x)}[\log p_\theta(x \mid z)] - \beta \cdot \mathrm{KL}\!\big(q_\phi(z \mid x) \,\|\, p(z)\big)."
+        />
+        <p>
+          <Equation tex="\beta > 1" /> tightens the latent's match to
+          the prior at the cost of reconstruction (drives
+          disentangled / sparse latents);{" "}
+          <Equation tex="\beta < 1" /> the reverse. The Workspace{" "}
+          <em>Deep latents</em> tab reports the canonical{" "}
+          <Equation tex="\beta \in \{0.5, 1, 2, 4, 8, 16\}" /> sweep;
+          posterior collapse at <Equation tex="\beta \geq 8" /> on
+          Salinas is the textbook failure mode the FindingsCarousel
+          card B7 highlights.
+        </p>
+      </Section>
+
       <Section id="readings" title="Minimal reading list">
         <ul
           className="mt-2 space-y-2 list-disc pl-5"

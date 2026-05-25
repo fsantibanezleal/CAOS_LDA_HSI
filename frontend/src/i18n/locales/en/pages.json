@@ -27,7 +27,7 @@
       "artifacts_label": "Derived artifacts",
       "artifacts_sub": "live in production",
       "endpoints_label": "API endpoints",
-      "endpoints_sub": "smoke 87/87 green",
+      "endpoints_sub": "covered by smoke harness",
       "variants_label": "Topic-model variants",
       "variants_sub": "LDA · ProdLDA · ETM · …"
     },
