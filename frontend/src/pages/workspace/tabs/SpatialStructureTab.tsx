@@ -456,6 +456,8 @@ function FelzenszwalbCard({
           viewBox={`0 0 ${W} ${H}`}
           className="max-w-full h-auto"
           style={{ maxWidth: 900 }}
+          role="img"
+          aria-label="Spatial structure per-method comparison plot"
         >
           <line
             x1={pad.l}
