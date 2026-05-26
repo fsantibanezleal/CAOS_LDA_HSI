@@ -409,7 +409,11 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section id="what-topics-capture" title='What does a topic "capture", in task terms?' title={t("pages:methodology_application.sections.what-topics-capture.title")}>
+      <Section
+        id="what-topics-capture"
+        title={t("pages:methodology_application.sections.what-topics-capture.title")}
+        lead={t("pages:methodology_application.sections.what-topics-capture.lead")}
+      >
         <p>
           For each topic <Equation tex="k" />, the Workspace shows:
         </p>
