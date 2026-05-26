@@ -515,7 +515,7 @@ function MethodDetail({ entry, t }: { entry: MethodEntry; t: TFunction<["pages"]
         </p>
       </header>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-6">
         <MethodSubsection title={t("pages:methodology_representations.section_theory")} accent={FAMILY_COLOR[entry.family]}>
           {entry.equations.map((eq, i) => (
             <Equation key={i} tex={eq} block />

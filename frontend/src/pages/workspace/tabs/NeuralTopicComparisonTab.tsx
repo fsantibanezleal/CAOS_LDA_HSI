@@ -133,7 +133,7 @@ function NeuralComparisonGrid({
 }) {
   const methods = Object.entries(comparison.methods);
   return (
-    <div className="grid lg:grid-cols-3 gap-4">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
       {methods.map(([name, m]) => {
         const colour = NEURAL_METHOD_COLOR[name] ?? "var(--color-accent)";
         return (
