@@ -724,6 +724,122 @@
       "llm_tag": "Tea-leaves word intrusion (gated)"
     }
   },
+  "workspace_methods": {
+    "index": {
+      "title": "Workspace por métodos",
+      "lead": "Explora cada método de topic modelling en su propia página: cómo se construyen los tokens, la hipótesis teórica, el sweep F-eje, y comparadores lado a lado. Doce recetas de wordification (V1..V12) más cuatro baselines neuronales.",
+      "wordifications_heading": "Recetas de wordification",
+      "neural_heading": "Baselines neuronales"
+    },
+    "deep": {
+      "not_found": "No existe un método con id {{id}}.",
+      "back_to_index": "Volver al índice de métodos",
+      "theory_heading": "Tarjeta de hipótesis",
+      "sweep_heading": "Resultados sweep F-eje",
+      "compare_heading": "Comparar con",
+      "compare_lead": "Salta a cualquier otro método para ver sus resultados lado a lado.",
+      "no_sweep_yet": "Este método es baseline; el V-sweep no lo re-corre por receta. Los resultados existentes sobre V1 se muestran en otra parte.",
+      "sweep_pending": "Los resultados del sweep aparecerán a medida que F-1, F-2, F-5 y los F-ejes restantes terminen. El pipeline está corriendo."
+    },
+    "catalog": {
+      "V1": {
+        "tag": "band-frequency · canónica",
+        "title": "Tokens band-frequency (V1)",
+        "summary": "Cada banda aporta un token (banda, intensidad cuantizada). La receta canónica; longitud doc = B; sustrato sobre el que corren los 12 F-ejes del paper.",
+        "theory": "La codificación más simple y fiel: preserva identidad de banda e intensidad. Documentos densos (un token por banda) permiten que LDA redescubra espectros por clase como distribuciones tópico-palabra. Esperado ganar en F-1 (clasificación) y F-12 (líneas base) en escenas etiquetadas; esperado perder en F-9 HIDSAG donde la magnitud es artefacto y en F-5 cuando los bordes de etiqueta vienen de artefactos de adquisición."
+      },
+      "V2": {
+        "tag": "q-bin · band-agnostic",
+        "title": "Tokens sólo magnitud (V2)",
+        "summary": "Descarta identidad de banda; el documento es el histograma de bins de intensidad. Pone a prueba si importa la forma espectral o sólo la distribución de intensidades.",
+        "theory": "El control con bandas barajadas: elimina toda identidad espectral y deja sólo el histograma de intensidad. Donde V2 gane, el espectro es esencialmente ciego a forma y la ventaja de V1 es ilusoria. Se espera que V2 sea piso; si flota en alguna escena, es la evidencia más fuerte de que la identidad de banda no es informativa ahí."
+      },
+      "V3": {
+        "tag": "joint (banda, bin)",
+        "title": "Vocabulario conjunto (banda, bin) (V3)",
+        "summary": "Vocab más grande B × Q codificando firmas banda-intensidad específicas. Más espacio de diseño que V1 a costo de vocabulario.",
+        "theory": "El esquema declaraba trigrama de bandas; la implementación es producto cartesiano (banda, bin). El vocabulario más grande permite que el basis codifique firmas específicas, a costa de sensibilidad a semilla (F-3) y penalización rate-distortion (F-11). Se espera buen desempeño en F-2."
+      },
+      "V4": {
+        "tag": "1ª derivada",
+        "title": "Tokens de pendiente (V4)",
+        "summary": "Tokens codifican dλ local. Robusto a brillo global y normalización.",
+        "theory": "Las pendientes son invariantes a escalamiento y desplazamientos aditivos, así que V4 debería ser robusto donde V1 es frágil bajo enmascarado de bandas (F-5). Se espera bajar respecto a V1 donde la reflectancia absoluta diagnostica (Pavia U). Útil como baseline tipo SAM."
+      },
+      "V5": {
+        "tag": "2ª derivada · curvatura",
+        "title": "Tokens de curvatura (V5)",
+        "summary": "Tokens codifican d²/dλ². Captura puntos de inflexión de absorciones.",
+        "theory": "Los picos de curvatura corresponden a inflexiones de absorciones y son habituales en preprocesado mineralógico. Esperado ganar en HIDSAG (F-1, F-9). Caveat: el ruido de alta frecuencia amplifica las segundas diferencias y puede comprometer la estabilidad F-3."
+      },
+      "V6": {
+        "tag": "wavelet · multi-escala",
+        "title": "Coeficientes wavelet (V6)",
+        "summary": "Descomposición Daubechies-4; todos los coeficientes binizados. Estructura espectral multi-escala.",
+        "theory": "Captura continuum amplio y absorciones estrechas a la vez. Esperado ganar en F-2 (las bandas wavelet alinean con escalas físicas) y F-12 (los rasgos wavelet son baseline clásico de HSI). Riesgo: tópicos alineados a base, no a clase, así que F-7 puede degradarse."
+      },
+      "V7": {
+        "tag": "absorción · envolvente",
+        "title": "Tripletas de absorción (V7)",
+        "summary": "Espectro continuum-removed por envolvente convexa; hasta 6 rasgos por píxel como (centro, profundidad, área). El recipe más físico para mineralogía.",
+        "theory": "Cada token es una absorción medida con centro, profundidad y área — la representación más fiel a cómo un espectroscopista lee espectros minerales. Esperado ganar en HIDSAG F-1, F-2 (alineación con USGS) y F-7. Los documentos tienen ≤6 tokens, así que K debe acotarse."
+      },
+      "V8": {
+        "tag": "endmember · NFINDR",
+        "title": "Fracciones de endmember (V8)",
+        "summary": "Endmembers pre-calculados con NFINDR; un token por endmember pesado por abundancia (NNLS).",
+        "theory": "Mete el modelo lineal de mezcla en los tokens. Esperado ganar en Salinas (píxeles mezclados en bordes) y F-12 frente a literatura de unmixing. Límite: la estabilidad F-3 depende de qué endmembers eligió NFINDR, que es a su vez sensible a semilla."
+      },
+      "V9": {
+        "tag": "región · SAM",
+        "title": "Tokens región-SAM (V9)",
+        "summary": "Pre-segmentación espacial Felzenszwalb; cada píxel emite un token (region_id, distancia SAM al medio de la región).",
+        "theory": "La agregación espacial amortigua ruido por banda y mete vecindad en el corpus. Esperado ganar en F-5 y F-3 (menos tokens, menos varianza). Paga el precio en F-1 (clasificación pixel) y F-11 (rate-distortion)."
+      },
+      "V10": {
+        "tag": "grupo banda · VNIR/SWIR",
+        "title": "Tokens por grupos físicos (V10)",
+        "summary": "Partición dura en VNIR / SWIR-1 / SWIR-2. Tres tokens por píxel con medias por grupo.",
+        "theory": "La representación espectral más gruesa. Útil como baseline ¿y si usáramos sólo 3 bandas?; esperado perder en casi todos los F-ejes pero da un piso tight de comparación."
+      },
+      "V11": {
+        "tag": "cuantización producto",
+        "title": "Tokens codebook-VQ (V11)",
+        "summary": "Parte el vector B en 4 sub-vectores; cada sub-vector codificado a una de Q codewords aprendidas con k-means.",
+        "theory": "Cuantización producto estándar de búsqueda aproximada de vecinos, aquí como wordification. Esperado ganar en F-11 rate-distortion (PQ es literalmente para esto) y F-12 frente a literatura VQ. Caveat de reproducibilidad: la semilla de nanopq no está pinneada y los resultados pueden moverse entre corridas hasta que se arregle."
+      },
+      "V12": {
+        "tag": "GMM soft",
+        "title": "Tokens GMM (V12)",
+        "summary": "Mezcla gaussiana global sobre intensidades por banda; cada banda emite el id de su componente dominante.",
+        "theory": "Más suave que binizado uniforme: las fronteras GMM se acomodan a la distribución. Esperado mejorar F-3 y F-2 sobre V1 a costo pequeño en F-1. El ruido de cuantización que daña F-3 baja."
+      },
+      "ProdLDA": {
+        "tag": "neuronal · product LDA",
+        "title": "ProdLDA",
+        "summary": "Modelo logístico-normal producto-de-expertos. Ya evaluado como baseline sobre V1; aparece junto a los V-recipes.",
+        "theory": "ProdLDA reemplaza el Dirichlet sobre tópicos de LDA por una logística-normal, permitiendo inferencia amortizada por gradiente. Punto de comparación deep; el V-sweep no la re-corre por recipe, sólo la muestra al lado."
+      },
+      "ETM": {
+        "tag": "neuronal · embedded topic model",
+        "title": "Embedded Topic Model (ETM)",
+        "summary": "Tópicos y palabras viven en un mismo espacio de embedding. Ya evaluado; se muestra para comparación.",
+        "theory": "ETM aprende embeddings de palabras y de tópicos en conjunto; la distribución tópico-palabra es softmax del producto punto. Baseline topology-aware; no se re-corre por V-recipe en el sweep actual."
+      },
+      "CAE": {
+        "tag": "neuronal · autoencoder convolucional",
+        "title": "Autoencoder convolucional (CAE)",
+        "summary": "Baseline no-tópico. Ya evaluado como comparador de representación.",
+        "theory": "Autoencoder convolucional sobre espectros; dimensiones latentes usadas como features del clasificador. Referencia de espacio latente."
+      },
+      "BetaVAE": {
+        "tag": "neuronal · desentangled",
+        "title": "Beta-VAE",
+        "summary": "Autoencoder variacional desentangled. Ya evaluado.",
+        "theory": "Beta-VAE favorece dimensiones factorizadas vía un término KL re-ponderado. Como el CAE, sólo aquí para comparación; no se re-corre por receta."
+      }
+    }
+  },
   "not_found": {
     "title": "Página no encontrada",
     "lead": "No encontramos nada en esta dirección.",
