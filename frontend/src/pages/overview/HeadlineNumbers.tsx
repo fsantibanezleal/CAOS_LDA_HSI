@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 //                                                                   1734 on disk
 //                                                                   minus README.md
 //                                                                   + manifests/index.json)
-//   endpoints  = `grep -cE '^@router\.(get|post)' app/routers/content.py` → 82
+//   endpoints  = `grep -cE '^@router\.(get|post)' app/routers/content.py` → 59 (post c351 cleanup; was 82 before)
 // Datasets / recipes / variants are surfaced one place each — fixed grid.
 // Single source of truth for "artefacts": the manifest. If a manifest
 // rebuild changes the count, this card must match — followed up by
@@ -18,7 +18,7 @@ const HEADLINE_DEFS = [
   { keyLabel: "recipes_label", keySub: "recipes_sub", value: "12", href: "/methodology/representations" },
   { keyLabel: "builders_label", keySub: "builders_sub", value: "69", href: "/methodology/pipeline" },
   { keyLabel: "artifacts_label", keySub: "artifacts_sub", value: "1732", href: "/workspace" },
-  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "82", href: "/benchmarks" },
+  { keyLabel: "endpoints_label", keySub: "endpoints_sub", value: "59", href: "/benchmarks" },
   { keyLabel: "variants_label", keySub: "variants_sub", value: "11", href: "/methodology/representations" },
 ] as const;
 
