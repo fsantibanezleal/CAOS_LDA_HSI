@@ -8,32 +8,23 @@ BASE_URL="${BASE_URL%/}"
 
 paths=(
   "/healthz"
-  "/api/app-data"
-  "/api/data-families"
-  "/api/corpus-recipes"
-  "/api/interactive-subsets"
-  "/api/corpus-previews"
-  "/api/segmentation-baselines"
-  "/api/local-validation-matrix"
+  # ---- live consumed routes (post c351 static-content cleanup) ----
+  # The 17 prior probes pointing at /api/{app-data, data-families,
+  # corpus-recipes, interactive-subsets, corpus-previews,
+  # segmentation-baselines, local-validation-matrix, local-core-benchmarks,
+  # exploration-views, subset-cards*, spectral-library, analysis,
+  # hidsag-subset-inventory, hidsag-curated-subset} were dropped on
+  # 2026-05-26 (c355) after the c351 cleanup removed those backend
+  # handlers. SPA fallback at app/main.py:70-83 would have made the
+  # smoke probes 200 + HTML (passing green) while consumers exploded
+  # at JSON-parse time. The /generated/* mirrors for the deleted
+  # static-content cluster are also gone since the curator no longer
+  # tracks them.
   "/api/local-dataset-inventory"
-  "/api/local-core-benchmarks"
-  "/api/exploration-views"
   "/api/method-statistics"
-  "/api/subset-cards"
-  "/api/subset-cards/salinas-labeled-scene-pack"
-  "/api/subset-cards/cuprite-exploratory-mineral-pack"
-  "/api/subset-cards/usgs-material-reference-slice"
-  "/api/spectral-library"
-  "/api/analysis"
   "/generated/real/previews/cuprite-aviris-reflectance-rgb.png"
   "/generated/spectral/library_samples.json"
-  "/generated/analysis/analysis.json"
-  "/generated/corpus/corpus_previews.json"
-  "/generated/baselines/segmentation_baselines.json"
   "/generated/core/local_dataset_inventory.json"
-  "/generated/core/local_core_benchmarks.json"
-  "/generated/subsets/index.json"
-  "/generated/subsets/salinas-labeled-scene-pack.json"
   "/generated/baselines/previews/cuprite-aviris-reflectance-slic.png"
   # ---- precompute layer (master-plan section 18) ----
   "/api/manifest"
@@ -90,8 +81,6 @@ paths=(
   "/api/topic-routed-classifier/indian-pines-corrected"
   "/api/topic-routed-deep-gate/indian-pines-corrected"
   "/api/optuna-search/indian-pines-corrected"
-  "/api/hidsag-subset-inventory"
-  "/api/hidsag-curated-subset"
   "/api/hidsag-cross-preprocessing-stability/MINERAL1"
   "/api/groupings/slic_2000/indian-pines-corrected"
   "/api/groupings/patch_15/indian-pines-corrected"
