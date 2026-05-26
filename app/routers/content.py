@@ -196,53 +196,14 @@ from app.services.content import (
 router = APIRouter(prefix="/api", tags=["content"])
 
 
-@router.get("/overview", response_model=ProjectOverview)
-def overview() -> ProjectOverview:
-    """Project overview payload (title, lead, tip-of-tree commit refs)."""
-    return get_overview()
-
-
-@router.get("/datasets", response_model=DatasetCatalog)
-def datasets() -> DatasetCatalog:
-    """Full dataset catalog (21 datasets across 4 families)."""
-    return get_datasets()
-
-
-@router.get("/data-families", response_model=DataFamiliesPayload)
-def data_families() -> DataFamiliesPayload:
-    """Per-family dataset taxonomy (labelled-spectral-image, individual-spectra, hidsag-mineral, unmixing-roi)."""
-    return get_data_families()
-
-
-@router.get("/corpus-recipes", response_model=CorpusRecipesPayload)
-def corpus_recipes() -> CorpusRecipesPayload:
-    """V1..V12 token-construction recipes with availability per scene."""
-    return get_corpus_recipes()
-
-
-@router.get("/interactive-subsets", response_model=InteractiveSubsetsPayload)
-def interactive_subsets() -> InteractiveSubsetsPayload:
-    """Manifest of subsets the Workspace exposes to the public surface."""
-    return get_interactive_subsets()
-
-
-@router.get("/corpus-previews", response_model=CorpusPreviewsPayload)
-def corpus_previews() -> CorpusPreviewsPayload:
-    """Static corpus previews used by the reset / onboarding flows."""
-    return get_corpus_previews()
-
-
-@router.get("/segmentation-baselines", response_model=SegmentationBaselinesPayload)
-def segmentation_baselines() -> SegmentationBaselinesPayload:
-    """SLIC spatial-baseline payloads (Achanta 2012). One document per superpixel."""
-    return get_segmentation_baselines()
-
-
-@router.get("/local-validation-matrix", response_model=LocalValidationMatrixPayload)
-def local_validation_matrix() -> LocalValidationMatrixPayload:
-    """Per-scene matrix of validation-block presence/absence."""
-    return get_local_validation_matrix()
-
+# Routes the frontend actively consumes — kept and audited 2026-05-26 (c351):
+#   /local-dataset-inventory     → api.inventory() in client.ts
+#   /hidsag-preprocessing-sensitivity → BenchmarksHidsag
+#   /method-statistics           → Benchmarks
+# Everything else from the prior 23-route static-content cluster was
+# deleted; the audit dated 2026-05-24 found zero frontend consumers.
+# See _CAOS_MANAGE/wip/caos-lda-hsi/audits/2026-05-24-source-pipeline-audit.md
+# (Tier-1 #2) for the route-by-route inventory.
 
 @router.get("/local-dataset-inventory", response_model=LocalDatasetInventoryPayload)
 def local_dataset_inventory() -> LocalDatasetInventoryPayload:
@@ -250,112 +211,10 @@ def local_dataset_inventory() -> LocalDatasetInventoryPayload:
     return get_local_dataset_inventory()
 
 
-@router.get("/local-core-benchmarks", response_model=LocalCoreBenchmarksPayload)
-def local_core_benchmarks() -> LocalCoreBenchmarksPayload:
-    """Per-scene core benchmarks index (joinable with method statistics)."""
-    return get_local_core_benchmarks()
-
-
-@router.get("/hidsag-subset-inventory", response_model=HidsagSubsetInventoryPayload)
-def hidsag_subset_inventory() -> HidsagSubsetInventoryPayload:
-    """Inventory of HIDSAG subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY)."""
-    return get_hidsag_subset_inventory()
-
-
-@router.get("/hidsag-curated-subset", response_model=HidsagCuratedSubsetPayload)
-def hidsag_curated_subset() -> HidsagCuratedSubsetPayload:
-    """Curated HIDSAG spectral matrix + assay vectors per subset."""
-    return get_hidsag_curated_subset()
-
-
-@router.get("/hidsag-region-documents", response_model=HidsagRegionDocumentsPayload)
-def hidsag_region_documents() -> HidsagRegionDocumentsPayload:
-    """Region-level HIDSAG documents (region = ~50 pixels) with parent-sample lineage."""
-    return get_hidsag_region_documents()
-
-
-@router.get("/hidsag-band-quality", response_model=HidsagBandQualityPayload)
-def hidsag_band_quality() -> HidsagBandQualityPayload:
-    """Wavelength-aware bad-band heuristic per HIDSAG subset (atmospheric + statistical flags)."""
-    return get_hidsag_band_quality()
-
-
 @router.get("/hidsag-preprocessing-sensitivity", response_model=HidsagPreprocessingSensitivityPayload)
 def hidsag_preprocessing_sensitivity() -> HidsagPreprocessingSensitivityPayload:
     """B-9 — how downstream metrics shift across 4 spectral preprocessing recipes."""
     return get_hidsag_preprocessing_sensitivity()
-
-
-@router.get("/methodology", response_model=Methodology)
-def methodology() -> Methodology:
-    """Methodology landing payload (theory / representations / pipeline / application)."""
-    return get_methodology()
-
-
-@router.get("/real-scenes", response_model=RealScenesPayload)
-def real_scenes() -> RealScenesPayload:
-    """Compact derived assets for public HSI scenes (labelled UPV/EHU collection)."""
-    return get_real_scenes()
-
-
-@router.get("/field-samples", response_model=FieldScenesPayload)
-def field_samples() -> FieldScenesPayload:
-    """MicaSense MSI field-scene assets (multispectral, 5-6 narrow bands)."""
-    return get_field_samples()
-
-
-@router.get("/spectral-library", response_model=SpectralLibraryPayload)
-def spectral_library() -> SpectralLibraryPayload:
-    """Curated USGS splib07 spectral library sample (Kokaly 2017)."""
-    return get_spectral_library()
-
-
-@router.get("/analysis", response_model=AnalysisPayload)
-def analysis() -> AnalysisPayload:
-    """Clustering diagnostics from compact per-scene summaries."""
-    return get_analysis()
-
-
-@router.get("/demo", response_model=DemoPayload)
-def demo() -> DemoPayload:
-    """Returns the DemoPayload payload (reads the matching derived JSON or precomputed source)."""
-    return get_demo()
-
-
-@router.get("/subset-cards", response_model=SubsetCardsIndex)
-def subset_cards_index() -> SubsetCardsIndex:
-    """Returns the SubsetCardsIndex payload (reads the matching derived JSON or precomputed source)."""
-    try:
-        return get_subset_cards_index()
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="subset cards index not generated yet; run scripts/local.* build-subset-cards",
-        ) from exc
-
-
-@router.get("/subset-cards/{subset_id}", response_model=SubsetCard)
-def subset_card(subset_id: str) -> SubsetCard:
-    """Returns the SubsetCard payload (reads the matching derived JSON or precomputed source)."""
-    try:
-        return get_subset_card(subset_id)
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"subset card '{subset_id}' not generated yet; run scripts/local.* build-subset-cards",
-        ) from exc
-
-
-@router.get("/exploration-views", response_model=ExplorationViewsPayload)
-def exploration_views() -> ExplorationViewsPayload:
-    """Returns the ExplorationViewsPayload payload (reads the matching derived JSON or precomputed source)."""
-    try:
-        return get_exploration_views()
-    except FileNotFoundError as exc:
-        raise HTTPException(
-            status_code=404,
-            detail="exploration views not generated yet; run scripts/local.* build-exploration-views",
-        ) from exc
 
 
 @router.get("/method-statistics", response_model=MethodStatisticsPayload)
@@ -368,12 +227,6 @@ def method_statistics() -> MethodStatisticsPayload:
             status_code=404,
             detail="method statistics not generated yet; run scripts/local.* build-method-stats",
         ) from exc
-
-
-@router.get("/app-data", response_model=AppPayload)
-def app_data() -> AppPayload:
-    """Returns the AppPayload payload (reads the matching derived JSON or precomputed source)."""
-    return get_app_payload()
 
 
 # ============================================================================
