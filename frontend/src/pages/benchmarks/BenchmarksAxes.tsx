@@ -585,7 +585,7 @@ function CrossSceneTransferSection() {
                     y={headerH + i * cell + (cell - 2) / 2 + 4}
                     fontSize="13"
                     textAnchor="middle"
-                    fill="white"
+                    fill="var(--color-on-accent, #ffffff)"
                     fontWeight={isDiag ? "700" : "500"}
                     fontFamily="ui-monospace, monospace"
                   >

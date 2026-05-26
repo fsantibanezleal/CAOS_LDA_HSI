@@ -642,13 +642,13 @@ function MixedMembershipSVG() {
           <rect x="160" y="80" width="200" height="20" fill="#0ea5e9" />
           <rect x="360" y="80" width="120" height="20" fill="#f97316" />
           <rect x="480" y="80" width="50" height="20" fill="#22c55e" />
-          <text x="260" y="95" textAnchor="middle" fill="#fff" fontSize="11">
+          <text x="260" y="95" textAnchor="middle" fill="var(--color-on-accent, #ffffff)" fontSize="11">
             topic 1 — 0.59
           </text>
-          <text x="420" y="95" textAnchor="middle" fill="#fff" fontSize="11">
+          <text x="420" y="95" textAnchor="middle" fill="var(--color-on-accent, #ffffff)" fontSize="11">
             topic 2 — 0.27
           </text>
-          <text x="505" y="95" textAnchor="middle" fill="#fff" fontSize="11">
+          <text x="505" y="95" textAnchor="middle" fill="var(--color-on-accent, #ffffff)" fontSize="11">
             t3
           </text>
         </g>

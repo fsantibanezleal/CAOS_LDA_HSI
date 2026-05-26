@@ -44,7 +44,7 @@ export function ClassDistributionBar({ classes }: Props) {
                   x={x + segW / 2}
                   y={h - 16}
                   textAnchor="middle"
-                  fill="#fff"
+                  fill="var(--color-on-accent, #ffffff)"
                   fontSize="10.5"
                   fontFamily="ui-sans-serif, system-ui, sans-serif"
                   style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}

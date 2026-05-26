@@ -239,6 +239,8 @@ function CrossSceneTransferCard({
           viewBox={`0 0 ${W} ${H}`}
           className="max-w-full h-auto"
           style={{ maxWidth: 1080 }}
+          role="img"
+          aria-label="Cross-scene transfer ARI matrix"
         >
           {transfer.scene_order.map((sc, j) => (
             <text

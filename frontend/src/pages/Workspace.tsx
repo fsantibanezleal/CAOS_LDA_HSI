@@ -2148,7 +2148,12 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
         Average spectral signature per HIDSAG measurement modality (typical VNIR low/high, SWIR low). Used to validate stratification + bad-band heuristics.
       </p>
       {entries.length ? (
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full h-auto"
+          role="img"
+          aria-label="Mean spectra per HIDSAG measurement type (modality)"
+        >
           {[0, 0.25, 0.5, 0.75, 1].map((g) => (
             <line key={g} x1={padL} y1={padT + g * innerH} x2={padL + innerW} y2={padT + g * innerH} stroke="currentColor" strokeOpacity={g === 0 || g === 1 ? 0.25 : 0.07} strokeWidth="0.6" />
           ))}
@@ -2294,7 +2299,13 @@ function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").HidsagEda 
         Blue = positive correlation, red = negative. First {N} targets shown. Strong off-diagonal pairs (|ρ| ≥ 0.5) indicate redundancy / co-located mineralisation.
       </p>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 720 }}>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="max-w-full h-auto"
+          style={{ maxWidth: 720 }}
+          role="img"
+          aria-label="Pearson correlation matrix of HIDSAG geochemistry targets"
+        >
           {names.map((n, j) => (
             <text key={`col-${n}`} x={labelW + j * cell + cell / 2} y={labelW - 4} fontSize="9.5" textAnchor="end" transform={`rotate(-50 ${labelW + j * cell + cell / 2} ${labelW - 4})`} fill="currentColor" opacity={0.7} fontFamily="ui-monospace, monospace">
               {n}

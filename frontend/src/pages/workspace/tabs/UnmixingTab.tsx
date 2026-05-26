@@ -186,7 +186,7 @@ function UnmixingSpectraCard({
       </div>
       <p className="text-[12px] mb-2" style={{ color: "var(--color-fg-faint)" }}>{subtitle}</p>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 900 }}>
+        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 900 }} role="img" aria-label="Per-topic endmember-cosine matrix">
           {/* axes */}
           <line x1={pad.l} y1={pad.t + innerH} x2={pad.l + innerW} y2={pad.t + innerH} stroke="currentColor" opacity={0.3} />
           <line x1={pad.l} y1={pad.t} x2={pad.l} y2={pad.t + innerH} stroke="currentColor" opacity={0.3} />
@@ -288,7 +288,7 @@ function UnmixingTopicHeatmap({
         Rows = LDA topic profiles φ<sub>k</sub>; columns = NFINDR endmember spectra. Cell ≈ cosine. Best matches are starred.
       </p>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 720 }}>
+        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 720 }} role="img" aria-label="Per-topic abundance map heatmap">
           {Array.from({ length: N }).map((_, j) => (
             <text key={`c-${j}`} x={labelW + j * cell + cell / 2} y={labelW - 6} fontSize="9.5" textAnchor="middle" fill="currentColor" opacity={0.65} fontFamily="ui-monospace, monospace">
               em{j}

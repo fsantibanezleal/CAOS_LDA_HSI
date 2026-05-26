@@ -154,6 +154,8 @@ function AgreementMatrixCard({
           viewBox={`0 0 ${W} ${H}`}
           className="max-w-full h-auto"
           style={{ maxWidth: 1080 }}
+          role="img"
+          aria-label="Cross-method agreement matrix (ARI between each pair of partition methods)"
         >
           {agreement.method_names.map((m, j) => (
             <text
