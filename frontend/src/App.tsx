@@ -21,6 +21,12 @@ const MethodologyApplication = lazy(
 );
 const Databases = lazy(() => import("@/pages/Databases"));
 const Workspace = lazy(() => import("@/pages/Workspace"));
+const WorkspaceMethodsIndex = lazy(
+  () => import("@/pages/workspace/MethodsIndex"),
+);
+const WorkspaceMethodDeep = lazy(
+  () => import("@/pages/workspace/MethodDeep"),
+);
 const Benchmarks = lazy(() => import("@/pages/Benchmarks"));
 
 export function App() {
@@ -56,6 +62,8 @@ export function App() {
             </Route>
             <Route path="/databases" element={<Databases />} />
             <Route path="/workspace" element={<Workspace />} />
+            <Route path="/workspace/methods" element={<WorkspaceMethodsIndex />} />
+            <Route path="/workspace/methods/:methodId" element={<WorkspaceMethodDeep />} />
             <Route path="/benchmarks" element={<Benchmarks />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
