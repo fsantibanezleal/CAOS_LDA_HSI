@@ -54,11 +54,7 @@ export default function MethodologyApplication() {
       title={t("pages:methodology_application.title")}
       lead="How topics are applied to classification and regression problems on HSI. Three families of models: direct (theta as feature), routed (one specialist per topic) and embedded (theta concatenated with baselines)."
     >
-      <Section
-        id="why"
-        title="Why not classify directly?"
-        lead="Reducing an HSI cube to hard classes throws away all the mixture information. If a pixel is 60% soil and 40% scrub, a hard label picks one and lies. Topics preserve the mixture."
-      >
+      <Section id="why" title={t("pages:methodology_application.sections.why.title")} lead={t("pages:methodology_application.sections.why.lead")}>
         <p>
           The classical HSI strategy — fit a random forest or an SVM on the raw
           spectrum — works on balanced, well-labelled scenes. It fails where it
@@ -80,21 +76,13 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="three-families"
-        title="Three families of topic-based models"
-        lead="Each family uses theta in a different way. The difference is methodological, not cosmetic."
-      >
+      <Section id="three-families" title={t("pages:methodology_application.sections.three-families.title")} lead={t("pages:methodology_application.sections.three-families.lead")}>
         <Figure caption="Left to right: direct (theta as feature vector), routed (one specialist per topic, mixed by theta), embedded (theta concatenated with a linear baseline). All three are implemented as separate builders in data-pipeline/ and compared head-to-head on the Benchmarks page.">
           <ThreeFamiliesSVG />
         </Figure>
       </Section>
 
-      <Section
-        id="direct"
-        title="1. Direct — theta as feature"
-        lead="The simplest, also the least informative."
-      >
+      <Section id="direct" title={t("pages:methodology_application.sections.direct.title")} lead={t("pages:methodology_application.sections.direct.lead")}>
         <p>The predictor takes theta and produces the label:</p>
         <Equation block tex="\hat{y}_d = \arg\max_y \, p_\beta(y \mid \theta_d) = \arg\max_y \, \beta_y^\top \theta_d" />
         <p>
@@ -112,11 +100,7 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="routed"
-        title="2. Routed — one specialist per topic"
-        lead="Each topic trains its own classifier on the raw spectrum, weighted by membership."
-      >
+      <Section id="routed" title={t("pages:methodology_application.sections.routed.title")} lead={t("pages:methodology_application.sections.routed.lead")}>
         <p>
           The idea: for each topic <Equation tex="k" />, train a classifier{" "}
           <Equation tex="P_k(y \mid x)" /> on the raw spectrum{" "}
@@ -203,11 +187,7 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="embedded"
-        title="3. Embedded — theta concatenated with baseline"
-        lead="Concat is the least elegant but sometimes the healthiest: let the classifier decide how much theta weighs."
-      >
+      <Section id="embedded" title={t("pages:methodology_application.sections.embedded.title")} lead={t("pages:methodology_application.sections.embedded.lead")}>
         <p>
           The input feature is the concatenation{" "}
           <Equation tex="[\theta_d \; \| \; z_d]" /> where{" "}
@@ -229,17 +209,31 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="regression"
-        title="Regression over measurements (HIDSAG)"
-        lead="When the target is not a class but a continuous measurement (Cu %, Au g/t, mineral grade), the logic is the same with linear regressors."
-      >
+      <Section id="regression" title={t("pages:methodology_application.sections.regression.title")} lead={t("pages:methodology_application.sections.regression.lead")}>
         <p>
           For the HIDSAG subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY)
           the Benchmarks page reports R² and bootstrap CI95 over each numeric
           target. The DMR-LDA family (Dirichlet-Multinomial Regression)
           integrates measurements as document meta-data, not as target — that
           is a distinct way of using the same apparatus.
+        </p>
+        <p className="mt-3">
+          <strong>What DMR-LDA is.</strong> Mimno &amp; McCallum (2008)
+          extended LDA so that the per-document topic prior is a function
+          of observed metadata <Equation tex="x_d" />:
+        </p>
+        <Equation
+          block
+          tex="\theta_d \sim \mathrm{Dirichlet}\big(\exp(W x_d)\big), \quad W \in \mathbb{R}^{K \times F},"
+        />
+        <p>
+          where <Equation tex="x_d" /> is the per-document covariate vector
+          (HIDSAG continuous assay readings) and <Equation tex="W" /> is a
+          learned weight matrix. Standard LDA recovers as the special case
+          <Equation tex="W x_d \equiv \alpha" /> for every document. DMR-LDA
+          lets topics depend on a sample's Cu / Au / mineral grade without
+          turning those numbers into the prediction target — they enter as
+          context, not as supervision.
         </p>
         <p className="mt-3">
           <strong>Builders:</strong>{" "}
@@ -251,8 +245,8 @@ export default function MethodologyApplication() {
 
       <Section
         id="bayesian-spec"
-        title="Hierarchical Bayesian benchmark — model spec"
-        lead="The pairwise posterior probabilities P(μ_a > μ_b) above come from a flat one-way ANOVA-style model with additive scene and fold offsets, fit with PyMC NUTS. The spec below mirrors the actual code in build_bayesian_classification_labelled.py exactly — no hidden hyperpriors."
+        title={t("pages:methodology_application.sections.bayesian-spec.title")}
+        lead={t("pages:methodology_application.sections.bayesian-spec.lead")}
       >
         <p>
           For each method <Equation tex="m \in \{\mathrm{pca\_K}, \mathrm{raw}, \mathrm{theta}, \mathrm{routed\_hard}, \mathrm{routed\_soft}\}" />,
@@ -322,11 +316,7 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="hungarian-stability"
-        title="Hungarian topic-matching — stability and cross-mask identity"
-        lead="Topic indices are not stable across re-fits — both LDA seeds and water-mask choices can permute the K topics. The seed-stability and cross-mask validation blocks pair topics by the assignment that maximises the average matched cosine. That is the Hungarian (linear-assignment) algorithm applied to a topic-cosine cost matrix."
-      >
+      <Section id="hungarian-stability" title={t("pages:methodology_application.sections.hungarian-stability.title")} lead={t("pages:methodology_application.sections.hungarian-stability.lead")}>
         <p>
           Given two fits with topic-word matrices{" "}
           <Equation tex="\Phi^{(a)} = [\phi_1^{(a)}, \dots, \phi_K^{(a)}]" />{" "}
@@ -364,8 +354,8 @@ export default function MethodologyApplication() {
 
       <Section
         id="paired-statistics"
-        title="Paired statistics — Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi"
-        lead="The Benchmarks page reports method-vs-method comparisons that use three non-parametric tools. Each is one paragraph here so the headline numbers (Cliff δ = +0.28 on the embedded baseline, P(routed_soft > raw) = 0.641, Wilcoxon-Holm < 0.05) are self-contained."
+        title={t("pages:methodology_application.sections.paired-statistics.title")}
+        lead={t("pages:methodology_application.sections.paired-statistics.lead")}
       >
         <p>
           <strong>Cliff δ</strong> (Cliff 1993) is a non-parametric
@@ -419,11 +409,7 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="what-topics-capture"
-        title='What does a topic "capture", in task terms?'
-        lead="It is not text: the question is answered visually with distributions."
-      >
+      <Section id="what-topics-capture" title='What does a topic "capture", in task terms?' title={t("pages:methodology_application.sections.what-topics-capture.title")}>
         <p>
           For each topic <Equation tex="k" />, the Workspace shows:
         </p>
@@ -463,11 +449,7 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section
-        id="axis-crosswalk"
-        title="F-axes (paper) ↔ B-axes (wiki / web app)"
-        lead="The companion paper introduces a twelve-axis Framework (F-1..F-12). This site and the wiki use a different B-1..B-12 taxonomy that predates the paper. The two share three concepts under different ordinals; the crosswalk below makes the mapping explicit."
-      >
+      <Section id="axis-crosswalk" title={t("pages:methodology_application.sections.axis-crosswalk.title")} lead={t("pages:methodology_application.sections.axis-crosswalk.lead")}>
         <p>
           <strong>F-framework in one paragraph.</strong> Topic models are
           rarely evaluated on a single axis, yet the literature defaults to
@@ -534,7 +516,7 @@ export default function MethodologyApplication() {
         </p>
       </Section>
 
-      <Section id="see-also" title="How to continue">
+      <Section id="see-also" title={t("pages:methodology_application.sections.see-also.title")}>
         <p>
           The Workspace lets you <em>apply</em> a model to a specific document
           and see the five panels live (all precomputed, no re-fitting). The

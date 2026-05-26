@@ -115,7 +115,7 @@ export function BandMaskTab({
           the band-selection axis differs. The summary below ships
           precomputed; click any mask to drill into the per-topic detail.
         </p>
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <ul className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {Object.entries(maskDefs).map(([id, def]) => {
             const entry = sceneEntries.find((e) => e.mask_id === id);
             const skipped = entry?.skipped ?? false;
@@ -330,7 +330,7 @@ function BandMaskDetailCard({
         </span>
         {summary.kept_band_indices.length > 10 ? ", …" : ""}
       </div>
-      <div className="grid lg:grid-cols-2 gap-5">
+      <div className="grid md:grid-cols-2 gap-5">
         <div>
           <h5
             className="text-[12px] uppercase tracking-widest font-semibold mb-2"

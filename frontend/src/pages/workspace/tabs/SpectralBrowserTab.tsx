@@ -416,6 +416,8 @@ function FalseColorBandPicker({
             className="block"
             style={{ width: Math.min(420, W * cellSize), height: Math.min(480, H * cellSize), backgroundColor: "var(--color-bg)" }}
             shapeRendering="crispEdges"
+            role="img"
+            aria-label="Spectral browser pixel-grid (click to pin a pixel and inspect its spectrum)"
           >
             {samples.map((s, i) => (
               <rect

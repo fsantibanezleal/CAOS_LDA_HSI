@@ -122,7 +122,7 @@ export function UsgsTab({
         </div>
 
         {top && (
-          <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-5">
             <div>
               <h5
                 className="text-sm font-semibold mb-2"
