@@ -724,6 +724,122 @@
       "llm_tag": "Tea-leaves word intrusion (gated)"
     }
   },
+  "workspace_methods": {
+    "index": {
+      "title": "Methods workspace",
+      "lead": "Explore each topic-modelling method on its own page: how the tokens are built, the theory hypothesis, the F-axis sweep, and side-by-side comparators. Twelve wordification recipes (V1..V12) plus four neural baselines.",
+      "wordifications_heading": "Wordification recipes",
+      "neural_heading": "Neural baselines"
+    },
+    "deep": {
+      "not_found": "No method exists with id {{id}}.",
+      "back_to_index": "Back to methods index",
+      "theory_heading": "Hypothesis card",
+      "sweep_heading": "F-axis sweep results",
+      "compare_heading": "Compare against",
+      "compare_lead": "Jump to any other method to see its results side by side.",
+      "no_sweep_yet": "This method is a baseline; the V-sweep does not re-run it per recipe. Existing results from the V1 evaluation are surfaced elsewhere.",
+      "sweep_pending": "Sweep results appear here as the F-1, F-2, F-5 and remaining F-axes complete. The pipeline is running."
+    },
+    "catalog": {
+      "V1": {
+        "tag": "band-frequency · canonical",
+        "title": "Band-frequency tokens (V1)",
+        "summary": "Each band contributes one token (band, quantised intensity). The canonical recipe; doc length = B; the substrate used for every F-axis in the current paper.",
+        "theory": "The simplest faithful encoding: preserves both band identity and quantised intensity. Documents are dense (one token per band), so LDA can rediscover labelled-class spectra as topic-word distributions. Expected wins on F-1 classification and F-12 baselines on labelled landcover scenes; expected losses on F-9 HIDSAG preprocessing where the magnitude is the artefact, and on F-5 band-mask robustness when label boundaries are spatial-acquisition artefacts."
+      },
+      "V2": {
+        "tag": "q-bin · band-agnostic",
+        "title": "Magnitude-only tokens (V2)",
+        "summary": "Drops band identity entirely; the document is the histogram of intensity bins. Tests whether band shape matters or only the intensity distribution.",
+        "theory": "The band-shuffled control: removes all spectral identity and keeps only the intensity histogram. Anywhere V2 wins, the spectrum is essentially shape-blind and V1's edge is illusory. Expect V2 to be a floor across F-axes; if it floats up on some scene, that is the strongest evidence that band identity is not informative there."
+      },
+      "V3": {
+        "tag": "band-bin joint",
+        "title": "Joint (band, bin) vocabulary (V3)",
+        "summary": "Larger vocab B × Q encoding intensity-specific band signatures. Wider design space than V1 at the cost of vocabulary size.",
+        "theory": "The source schematic called this a concat trigram (3-band context); the implementation is actually a joint (band, bin) Cartesian product. This larger vocabulary lets the topic basis encode intensity-specific band signatures at the cost of seed sensitivity (F-3) and a rate-distortion penalty (F-11). Expected to do well on F-2 where finer vocabulary aligns to topic-specific signatures."
+      },
+      "V4": {
+        "tag": "1st derivative",
+        "title": "Slope-encoded tokens (V4)",
+        "summary": "Tokens encode local dλ. Robust to overall brightness or normalisation drift.",
+        "theory": "Slope features are invariant to multiplicative scaling and additive shifts of the spectrum, so V4 should be robust where V1 is fragile under band masking (F-5). Expected to underperform V1 on scenes where absolute reflectance is the diagnostic (Pavia U). Useful as a baseline against SAM-style literature."
+      },
+      "V5": {
+        "tag": "2nd derivative · curvature",
+        "title": "Curvature-encoded tokens (V5)",
+        "summary": "Tokens encode d²/dλ². Captures absorption-feature inflection points.",
+        "theory": "Curvature peaks correspond to inflection points of absorption features and are common in mineralogical preprocessing. Expected wins on HIDSAG (F-1, F-9). Caveat: high-frequency noise amplifies second differences, so F-3 seed stability may suffer."
+      },
+      "V6": {
+        "tag": "wavelet · multi-scale",
+        "title": "Wavelet coefficient tokens (V6)",
+        "summary": "Daubechies-4 wavelet decomposition; all coefficients binned. Multi-scale spectral structure.",
+        "theory": "Multi-scale captures both broad continuum and narrow absorption simultaneously. Expected wins on F-2 coherence (wavelet bands align to physical scales) and F-12 baselines (wavelet features are a classical HSI baseline). Risk: topics are basis-aligned rather than label-aligned, so F-7 topic-label coupling may degrade."
+      },
+      "V7": {
+        "tag": "absorption · convex hull",
+        "title": "Absorption-feature triplets (V7)",
+        "summary": "Continuum-removed spectrum via convex hull; up to 6 features per pixel as (centroid, depth, area). The most physically motivated recipe for mineralogy.",
+        "theory": "Each token is an actual absorption feature with measured centroid, depth and area. The most chemistry-faithful representation: it directly mirrors how spectroscopists read mineral spectra. Expected wins on HIDSAG F-1 (mineralogical separation), F-2 (topics aligned to USGS spectra) and F-7. Documents have at most six tokens, so K must be tightly bounded."
+      },
+      "V8": {
+        "tag": "endmember · NFINDR",
+        "title": "Endmember-fraction tokens (V8)",
+        "summary": "NFINDR-precomputed endmembers; NNLS unmixing produces one token per endmember weighted by abundance.",
+        "theory": "Bakes the linear-mixing-model assumption into the tokens. Expected wins on Salinas where field-edge mixed pixels dominate, and F-12 against unmixing literature. Limit: seed stability (F-3) depends on which NFINDR endmembers were chosen, and NFINDR itself is seed-dependent."
+      },
+      "V9": {
+        "tag": "region · SAM",
+        "title": "Region-SAM tokens (V9)",
+        "summary": "Felzenszwalb spatial pre-segmentation; each pixel emits one token (region_id, SAM-distance-to-region-mean).",
+        "theory": "Spatial aggregation damps band-level noise and bakes neighbourhood information into the corpus. Expected wins on F-5 band-mask robustness and F-3 seed stability (fewer tokens means less variance). Pays the price on F-1 pixel-resolution classification and F-11 rate-distortion."
+      },
+      "V10": {
+        "tag": "band group · VNIR/SWIR",
+        "title": "Physical band-group tokens (V10)",
+        "summary": "Hard partition into VNIR / SWIR-1 / SWIR-2. Three tokens per pixel encoding group means.",
+        "theory": "The coarsest spectral representation. Useful as a what-if-we-used-only-3-bands baseline; expected to lose most F-axes but provides a tight floor for comparison."
+      },
+      "V11": {
+        "tag": "product quantisation",
+        "title": "Codebook-VQ tokens (V11)",
+        "summary": "Splits the B-vector into 4 sub-vectors; each sub-vector encoded as one of Q codewords learnt by k-means.",
+        "theory": "Standard product quantisation used in approximate-nearest-neighbour search, repurposed as a wordification. Expected wins on F-11 rate-distortion and F-12 against vector-quantisation literature. Reproducibility caveat: the current implementation does not pin a seed for the codebook fit; results may shift across runs until that is fixed."
+      },
+      "V12": {
+        "tag": "GMM soft tokens",
+        "title": "GMM-component tokens (V12)",
+        "summary": "Global Gaussian Mixture over band intensities; each band emits a token labelled by its dominant component.",
+        "theory": "Smoother than uniform binning: GMM boundaries flex with the data distribution. Expected to improve F-3 seed stability and F-2 coherence over V1 at a small F-1 classification cost. The smooth boundaries reduce quantisation noise that hurts F-3."
+      },
+      "ProdLDA": {
+        "tag": "neural · product LDA",
+        "title": "ProdLDA",
+        "summary": "Logistic-normal product-of-experts topic model. Already evaluated as a baseline on V1; surfaced here alongside the V-recipes.",
+        "theory": "ProdLDA replaces LDA's Dirichlet over topics with a logistic-normal, allowing gradient-based amortised inference. Acts as a deep-learning point of comparison; the V-sweep keeps the existing ProdLDA results untouched and shows them next to the new wordification sweep."
+      },
+      "ETM": {
+        "tag": "neural · embedded topic model",
+        "title": "Embedded Topic Model (ETM)",
+        "summary": "Topics and words live in a shared embedding space. Already evaluated; surfaced for comparison only.",
+        "theory": "ETM jointly learns word embeddings and topic embeddings; the topic-word distribution is the softmax of their dot product. A topology-aware baseline; not re-run per V-recipe in the current sweep."
+      },
+      "CAE": {
+        "tag": "neural · conv autoencoder",
+        "title": "Convolutional Autoencoder (CAE)",
+        "summary": "Non-topic deep baseline. Already evaluated as a representation-learning comparator.",
+        "theory": "A convolutional autoencoder over spectra; latent dimensions used as features for the downstream classifier. Surfaced here only as a reference latent-space method."
+      },
+      "BetaVAE": {
+        "tag": "neural · disentangled",
+        "title": "Beta-VAE",
+        "summary": "Disentangled variational autoencoder. Already evaluated.",
+        "theory": "Beta-VAE encourages factorised latent dimensions via a re-weighted KL term. Like the CAE, this is here for comparison against deep latent-space alternatives, not re-run per recipe."
+      }
+    }
+  },
   "not_found": {
     "title": "Page not found",
     "lead": "We could not find anything at this address.",

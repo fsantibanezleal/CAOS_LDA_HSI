@@ -1,0 +1,86 @@
+/**
+ * V-sweep API surface (issue #606). One-shot per-method report or sweep
+ * status snapshot. The shards are written by the data pipeline as the
+ * 12 V × 12 F-axis sweep progresses; while the pipeline is mid-run the
+ * /status endpoint reports current coverage and /methods/:recipe returns
+ * whatever shards exist with the rest as null fields.
+ */
+import { request } from "./_http";
+
+export type VSweepTopicViewSummary = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  status: string;
+  K?: number | null;
+  D?: number | null;
+  V?: number | null;
+  mean_doc_length?: number | null;
+  perplexity?: number | null;
+  fit_seconds?: number | null;
+};
+
+export type VSweepF1Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  D: number;
+  V: number;
+  mean_doc_length: number;
+  raw_logistic_per_fold: number[];
+  topic_routed_soft_per_fold: number[];
+  raw_logistic_mean: number;
+  topic_routed_soft_mean: number;
+  gain_routed_over_raw: number;
+};
+
+export type VSweepF2Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  V: number;
+  top_n: number;
+  u_mass?: number | null;
+  c_npmi?: number | null;
+  c_v?: number | null;
+};
+
+export type VSweepRecipeScene = {
+  scene_id: string;
+  topic_view?: VSweepTopicViewSummary | null;
+  f1?: VSweepF1Record | null;
+  f2?: VSweepF2Record | null;
+};
+
+export type VSweepRecipeReport = {
+  recipe: string;
+  scheme: string;
+  Q: number;
+  scenes: VSweepRecipeScene[];
+};
+
+export type VSweepStatus = {
+  recipes: string[];
+  scenes: string[];
+  topic_view_count: number;
+  f1_count: number;
+  f2_count: number;
+  total_expected: number;
+};
+
+export function vSweepStatus(scheme = "uniform", q = 8) {
+  const params = new URLSearchParams({ scheme, q: String(q) });
+  return request<VSweepStatus>(`/api/v-sweep/status?${params.toString()}`);
+}
+
+export function vSweepMethodReport(recipe: string, scheme = "uniform", q = 8) {
+  const params = new URLSearchParams({ scheme, q: String(q) });
+  return request<VSweepRecipeReport>(
+    `/api/v-sweep/methods/${encodeURIComponent(recipe)}?${params.toString()}`,
+  );
+}

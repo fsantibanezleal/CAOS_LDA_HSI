@@ -1063,3 +1063,107 @@ def cross_scene_transfer() -> CrossSceneTransfer:
         CrossSceneTransfer, get_cross_scene_transfer,
         hint="cross_scene_transfer not generated yet",
     )
+
+
+# ---------------------------------------------------------------------------
+# V-sweep (issue #606) — V1..V12 wordification recipes evaluated across the
+# 12-axis framework. Reads small per-(scene, recipe, scheme, Q) JSON shards.
+# ---------------------------------------------------------------------------
+import json as _json  # noqa: E402
+
+from app.config import get_settings  # noqa: E402
+from app.models.v_sweep import (  # noqa: E402
+    VSweepRecipeReport,
+    VSweepRecipeScene,
+    VSweepStatus,
+    VSweepWinMatrix,
+)
+
+
+def _read_json_or_none(path):
+    try:
+        with path.open("r", encoding="utf-8") as h:
+            return _json.load(h)
+    except FileNotFoundError:
+        return None
+
+
+_V_SWEEP_RECIPES = [f"V{i}" for i in range(1, 13)]
+_V_SWEEP_SCENES = [
+    "indian-pines-corrected",
+    "salinas-corrected",
+    "salinas-a-corrected",
+    "pavia-university",
+    "kennedy-space-center",
+    "botswana",
+]
+
+
+@router.get("/v-sweep/status", response_model=VSweepStatus, response_model_exclude_none=True)
+def v_sweep_status(scheme: str = "uniform", q: int = 8) -> VSweepStatus:
+    """Sweep coverage — how many (V, scene) shards exist for the given grid."""
+    s = get_settings()
+    tv_count = f1_count = f2_count = 0
+    for scene in _V_SWEEP_SCENES:
+        for recipe in _V_SWEEP_RECIPES:
+            if s.v_sweep_topic_view_path(scene, recipe, scheme, q).exists():
+                tv_count += 1
+            if s.v_sweep_f1_path(scene, recipe, scheme, q).exists():
+                f1_count += 1
+            if s.v_sweep_f2_path(scene, recipe, scheme, q).exists():
+                f2_count += 1
+    total = len(_V_SWEEP_RECIPES) * len(_V_SWEEP_SCENES)
+    return VSweepStatus(
+        recipes=_V_SWEEP_RECIPES,
+        scenes=_V_SWEEP_SCENES,
+        topic_view_count=tv_count,
+        f1_count=f1_count,
+        f2_count=f2_count,
+        total_expected=total,
+    )
+
+
+@router.get(
+    "/v-sweep/methods/{recipe}",
+    response_model=VSweepRecipeReport,
+    response_model_exclude_none=True,
+)
+def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> VSweepRecipeReport:
+    """All available sweep results for one V-recipe across the six labelled scenes."""
+    if recipe not in _V_SWEEP_RECIPES:
+        raise HTTPException(status_code=404, detail=f"unknown recipe '{recipe}'")
+    s = get_settings()
+    scenes_payload: list[VSweepRecipeScene] = []
+    for scene in _V_SWEEP_SCENES:
+        tv = _read_json_or_none(s.v_sweep_topic_view_path(scene, recipe, scheme, q))
+        f1 = _read_json_or_none(s.v_sweep_f1_path(scene, recipe, scheme, q))
+        f2 = _read_json_or_none(s.v_sweep_f2_path(scene, recipe, scheme, q))
+        scenes_payload.append(VSweepRecipeScene(
+            scene_id=scene,
+            topic_view=tv,
+            f1=f1,
+            f2=f2,
+        ))
+    return VSweepRecipeReport(
+        recipe=recipe,
+        scheme=scheme,
+        Q=q,
+        scenes=scenes_payload,
+    )
+
+
+@router.get(
+    "/v-sweep/f1-win-matrix",
+    response_model=VSweepWinMatrix,
+    response_model_exclude_none=True,
+)
+def v_sweep_f1_win_matrix() -> VSweepWinMatrix:
+    """The aggregate F-1 win-matrix (12 V x 6 scenes)."""
+    s = get_settings()
+    data = _read_json_or_none(s.v_sweep_f1_win_matrix_path)
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail="f1_win_matrix.json not generated yet (sweep in progress)",
+        )
+    return VSweepWinMatrix(**data)

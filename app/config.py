@@ -366,6 +366,24 @@ class Settings(BaseSettings):
     def neural_topic_seed_stability_path(self, scene_id: str) -> Path:
         return self.data_path / "derived" / "neural_topic_seed_stability" / f"{scene_id}.json"
 
+    # ------- V-sweep (issue #606) -------
+    @property
+    def v_sweep_dir(self) -> Path:
+        return self.data_path / "derived" / "v_sweep"
+
+    def v_sweep_topic_view_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "topic_views" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    def v_sweep_f1_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f1_per_fold" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    def v_sweep_f2_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f2_coherence" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    @property
+    def v_sweep_f1_win_matrix_path(self) -> Path:
+        return self.v_sweep_dir / "f1_win_matrix.json"
+
 
 @lru_cache
 def get_settings() -> Settings:

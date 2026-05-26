@@ -1,0 +1,42 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V3",
+  "scheme": "uniform",
+  "Q": 8,
+  "status": "ok",
+  "K": 12,
+  "D": 2686,
+  "V": 1408,
+  "mean_doc_length": 176.0,
+  "doc_length_quantiles": {
+    "p05": 176.0,
+    "p50": 176.0,
+    "p95": 176.0
+  },
+  "topic_prevalence": [
+    0.200477,
+    0.11212,
+    0.045048,
+    0.017152,
+    0.081642,
+    0.074889,
+    0.021587,
+    0.06245,
+    0.138469,
+    0.070834,
+    0.085568,
+    0.089763
+  ],
+  "perplexity": 311.5714,
+  "fit_seconds": 93.088,
+  "lda_config": {
+    "method": "sklearn.LatentDirichletAllocation online",
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "local_artefacts_dir": "local\\v_sweep\\lda_fits\\kennedy-space-center_V3_uniform_Q8",
+  "generated_at": "2026-05-26T17:43:32Z",
+  "builder": "build_v_sweep_canonical_fit v0.1"
+}

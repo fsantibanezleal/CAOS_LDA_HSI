@@ -1,0 +1,98 @@
+{
+  "K": 3,
+  "n_classes": 14,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "H_label_marginal_bits": 3.768685,
+  "H_label_given_topic_bits": 3.145821,
+  "mutual_information_bits": 0.622864,
+  "normalised_mi": 0.165274,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 260,
+      "p_topic": 0.093694,
+      "label_distribution": [
+        0.276923,
+        0.0,
+        0.0,
+        0.0,
+        0.111538,
+        0.096154,
+        0.0,
+        0.0,
+        0.119231,
+        0.0,
+        0.0,
+        0.311538,
+        0.084615,
+        0.0
+      ],
+      "kl_vs_marginal": 1.362354
+    },
+    {
+      "topic": 1,
+      "n_docs": 388,
+      "p_topic": 0.13982,
+      "label_distribution": [
+        0.381443,
+        0.072165,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.518041,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.028351
+      ],
+      "kl_vs_marginal": 2.330955
+    },
+    {
+      "topic": 2,
+      "n_docs": 2127,
+      "p_topic": 0.766486,
+      "label_distribution": [
+        0.0,
+        0.034321,
+        0.103432,
+        0.101081,
+        0.089798,
+        0.091678,
+        0.008933,
+        0.09544,
+        0.088858,
+        0.103432,
+        0.103432,
+        0.047015,
+        0.093089,
+        0.039492
+      ],
+      "kl_vs_marginal": 0.220886
+    }
+  ],
+  "scene_id": "botswana",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-26T18:35:46Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}
