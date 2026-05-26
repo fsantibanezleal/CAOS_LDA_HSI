@@ -104,7 +104,7 @@ const STAGES: Stage[] = [
     command: "scripts/local curate-for-web",
     produces: "data/derived/manifests/index.json",
     notes:
-      "Packs everything above into the contract the web app reads. 1732 manifest-tracked artefacts (1734 on disk minus README.md and the manifest itself), 69 builder source files, 82 routes, 444 MB. Numbers verified 2026-05-25 — the manifest IS the contract, so when these counts change, rebuild it via `python data-pipeline/curate_for_web.py` and update the HeadlineNumbers card.",
+      "Packs everything above into the contract the web app reads. 1732 manifest-tracked artefacts (1734 on disk minus README.md and the manifest itself), 69 builder source files, 59 routes (post c351 dead-cluster cleanup), 444 MB. Numbers verified 2026-05-26 — the manifest IS the contract, so when these counts change, rebuild it via `python data-pipeline/curate_for_web.py` and update the HeadlineNumbers card.",
   },
   {
     id: "audit",
