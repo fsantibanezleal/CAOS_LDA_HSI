@@ -237,7 +237,40 @@
     }
   },
   "methodology_theory": {
-    "title": "Theory — PTM, LDA, HSI"
+    "title": "Theory — PTM, LDA, HSI",
+    "sections": {
+      "why-ptm": {
+        "title": "What is a probabilistic topic model?",
+        "lead": "A probabilistic topic model (PTM) describes every document as a latent mixture over a handful of word distributions called topics. The key point is that this latent structure is learned without supervision from word co-occurrences alone."
+      },
+      "lda-plate": {
+        "title": "LDA — plate notation and generative process",
+        "lead": "The outer plates repeat over documents and words; the latent distributions (theta and phi) are the objects the model learns."
+      },
+      "hsi-as-document": {
+        "title": "HSI as a corpus — why a pixel can be a document",
+        "lead": "Each pixel of a hyperspectral image is a reflectance vector. For LDA to consume it, the spectrum must be quantised and turned into a discrete sequence of tokens."
+      },
+      "why-mixed-membership": {
+        "title": "Mixed membership — why not hard classification?",
+        "lead": "The spectrum of a mineral pixel does not come from a single species. Mixtures, intermixed vegetation, shadow and atmospheric scattering yield measurements that reflect several signatures at once."
+      },
+      "topics-vs-endmembers": {
+        "title": "Topics vs endmembers — the φ ↔ E relationship",
+        "lead": "Linear spectral unmixing factorises a cube into endmember signatures × per-pixel abundances. LDA factorises a tokenised cube into topic distributions × per-document mixtures. The two factorisations are different objects, but on mineral scenes they end up describing the same underlying material families — which is why the per-topic cosine vs endmember runs 0.7–0.9 on the HIDSAG mineral subsets."
+      },
+      "coherence-metrics": {
+        "title": "Topic coherence — c_v, NPMI, and U-Mass",
+        "lead": "Coherence quantifies whether the top words of a topic 'go together' in the corpus. The three metrics this project tracks (c_v, NPMI, U-Mass) measure that signal at different scales and with different statistics. Higher is better for c_v and NPMI; less-negative is better for U-Mass."
+      },
+      "metric-glossary": {
+        "title": "Metric glossary — partition agreement, spectral angle, β",
+        "lead": "Three definitions referenced throughout the site that the prior surfaces named but never gave on-page. Each is a one-line formula plus the role it plays in the framework."
+      },
+      "readings": {
+        "title": "Minimal reading list"
+      }
+    }
   },
   "methodology_representations": {
     "title": "Representations · method-by-method",
@@ -465,10 +498,75 @@
     }
   },
   "methodology_pipeline": {
-    "title": "Local data-creation pipeline"
+    "title": "Local data-creation pipeline",
+    "sections": {
+      "overview": {
+        "title": "Overview",
+        "lead": "Twelve chained stages. Each is a single-command script. Each stage's output is the input for the next."
+      },
+      "stages": {
+        "title": "The stages, command by command",
+        "lead": "The commands assume you are at the repo root and have the two venvs created (scripts/local setup-all)."
+      },
+      "spatial-coherence": {
+        "title": "Spatial coherence — what the groupings stage measures",
+        "lead": "The four document constructions (SLIC-500, SLIC-2000, patch-7/15, Felzenszwalb) carve the cube in geometrically different ways. The cross-method agreement panel summarises how often they place two pixels in the same document; the per-method spatial-coherence diagnostics summarise how compact each construction's regions are."
+      },
+      "reproduce": {
+        "title": "How to reproduce the full corpus"
+      },
+      "boundary": {
+        "title": "What the web app does NOT do"
+      }
+    }
   },
   "methodology_application": {
-    "title": "Application to classification and regression via topics"
+    "title": "Application to classification and regression via topics",
+    "sections": {
+      "why": {
+        "title": "Why not classify directly?",
+        "lead": "Reducing an HSI cube to hard classes throws away all the mixture information. If a pixel is 60% soil and 40% scrub, a hard label picks one and lies. Topics preserve the mixture."
+      },
+      "three-families": {
+        "title": "Three families of topic-based models",
+        "lead": "Each family uses theta in a different way. The difference is methodological, not cosmetic."
+      },
+      "direct": {
+        "title": "1. Direct — theta as feature",
+        "lead": "The simplest, also the least informative."
+      },
+      "routed": {
+        "title": "2. Routed — one specialist per topic",
+        "lead": "Each topic trains its own classifier on the raw spectrum, weighted by membership."
+      },
+      "embedded": {
+        "title": "3. Embedded — theta concatenated with baseline",
+        "lead": "Concat is the least elegant but sometimes the healthiest: let the classifier decide how much theta weighs."
+      },
+      "regression": {
+        "title": "Regression over measurements (HIDSAG)",
+        "lead": "When the target is not a class but a continuous measurement (Cu %, Au g/t, mineral grade), the logic is the same with linear regressors."
+      },
+      "bayesian-spec": {
+        "title": "Hierarchical Bayesian benchmark — model spec",
+        "lead": "The pairwise posterior probabilities P(μ_a > μ_b) above come from a flat one-way ANOVA-style model with additive scene and fold offsets, fit with PyMC NUTS. The spec below mirrors the actual code in build_bayesian_classification_labelled.py exactly — no hidden hyperpriors."
+      },
+      "hungarian-stability": {
+        "title": "Hungarian topic-matching — stability and cross-mask identity",
+        "lead": "Topic indices are not stable across re-fits — both LDA seeds and water-mask choices can permute the K topics. The seed-stability and cross-mask validation blocks pair topics by the assignment that maximises the average matched cosine. That is the Hungarian (linear-assignment) algorithm applied to a topic-cosine cost matrix."
+      },
+      "paired-statistics": {
+        "title": "Paired statistics — Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi",
+        "lead": "The Benchmarks page reports method-vs-method comparisons that use three non-parametric tools. Each is one paragraph here so the headline numbers (Cliff δ = +0.28 on the embedded baseline, P(routed_soft > raw) = 0.641, Wilcoxon-Holm < 0.05) are self-contained."
+      },
+      "axis-crosswalk": {
+        "title": "F-axes (paper) ↔ B-axes (wiki / web app)",
+        "lead": "The companion paper introduces a twelve-axis Framework (F-1..F-12). This site and the wiki use a different B-1..B-12 taxonomy that predates the paper. The two share three concepts under different ordinals; the crosswalk below makes the mapping explicit."
+      },
+      "see-also": {
+        "title": "How to continue"
+      }
+    }
   },
   "databases": {
     "title": "Databases",

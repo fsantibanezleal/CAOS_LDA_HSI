@@ -123,21 +123,13 @@ export default function MethodologyPipeline() {
       title={t("pages:methodology_pipeline.title")}
       lead="The web app serves pre-computed material. Generation runs locally — fetches, preprocesses, fits LDA, computes downstream readouts, packs the manifest. Source code lives in the project repo; here we show only how to run it and what it produces."
     >
-      <Section
-        id="overview"
-        title="Overview"
-        lead="Twelve chained stages. Each is a single-command script. Each stage's output is the input for the next."
-      >
+      <Section id="overview" title={t("pages:methodology_pipeline.sections.overview.title")} lead={t("pages:methodology_pipeline.sections.overview.lead")}>
         <Figure caption="The twelve stages of the local pipeline. Arrows indicate data dependencies between stages. Acquisition is one-time; wordifications, validation-blocks and super-topics are re-run when an upstream parameter changes.">
           <PipelineDagSVG />
         </Figure>
       </Section>
 
-      <Section
-        id="stages"
-        title="The stages, command by command"
-        lead="The commands assume you are at the repo root and have the two venvs created (scripts/local setup-all)."
-      >
+      <Section id="stages" title={t("pages:methodology_pipeline.sections.stages.title")} lead={t("pages:methodology_pipeline.sections.stages.lead")}>
         <div className="space-y-4 mt-2">
           {STAGES.map((s, idx) => (
             <div
@@ -191,11 +183,7 @@ export default function MethodologyPipeline() {
         </div>
       </Section>
 
-      <Section
-        id="spatial-coherence"
-        title="Spatial coherence — what the groupings stage measures"
-        lead="The four document constructions (SLIC-500, SLIC-2000, patch-7/15, Felzenszwalb) carve the cube in geometrically different ways. The cross-method agreement panel summarises how often they place two pixels in the same document; the per-method spatial-coherence diagnostics summarise how compact each construction's regions are."
-      >
+      <Section id="spatial-coherence" title={t("pages:methodology_pipeline.sections.spatial-coherence.title")} lead={t("pages:methodology_pipeline.sections.spatial-coherence.lead")}>
         <p>
           Three diagnostics are computed by the groupings + spatial-validation
           builders and surfaced in the Workspace <em>Spatial structure</em>{" "}
@@ -265,7 +253,7 @@ export default function MethodologyPipeline() {
         </p>
       </Section>
 
-      <Section id="reproduce" title="How to reproduce the full corpus">
+      <Section id="reproduce" title={t("pages:methodology_pipeline.sections.reproduce.title")}>
         <p>
           The short form — run everything in order, single session:
         </p>
@@ -309,7 +297,7 @@ $ scripts/local audit-manifest     # must end with 0; legacy orphans are reporte
         </p>
       </Section>
 
-      <Section id="boundary" title="What the web app does NOT do">
+      <Section id="boundary" title={t("pages:methodology_pipeline.sections.boundary.title")}>
         <ul
           className="mt-2 space-y-2 list-disc pl-5"
           style={{ color: "var(--color-fg-subtle)" }}
