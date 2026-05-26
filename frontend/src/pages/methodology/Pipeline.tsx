@@ -251,6 +251,25 @@ export default function MethodologyPipeline() {
           <em>Spatial structure</em> tab reports the per-topic Moran's I
           alongside its significance under a permutation null.
         </p>
+
+        <p className="mt-3">
+          <strong>4. Geary's C — local contiguity ratio</strong>{" "}
+          (Geary 1954). Complementary to Moran's I but built from
+          pairwise squared differences rather than centered products:
+        </p>
+        <Equation
+          block
+          tex="C_k = \frac{(N - 1) \sum_{i} \sum_{j} W_{ij} (\theta_{i,k} - \theta_{j,k})^2}{2 \, S_0 \sum_{i} (\theta_{i,k} - \bar{\theta}_k)^2}."
+        />
+        <p>
+          <Equation tex="C_k \in [0, 2]" />: values below 1 indicate
+          positive spatial autocorrelation (smoother than random), values
+          above 1 indicate negative autocorrelation. Geary's C is more
+          sensitive than Moran's I to <em>local</em> differences (it
+          downweights long-range pairs more aggressively), so the two are
+          usually reported jointly. The <code>build_topic_spatial_continuous.py</code>
+          builder ships both per topic.
+        </p>
       </Section>
 
       <Section id="reproduce" title={t("pages:methodology_pipeline.sections.reproduce.title")}>

@@ -218,6 +218,24 @@ export default function MethodologyApplication() {
           is a distinct way of using the same apparatus.
         </p>
         <p className="mt-3">
+          <strong>What DMR-LDA is.</strong> Mimno &amp; McCallum (2008)
+          extended LDA so that the per-document topic prior is a function
+          of observed metadata <Equation tex="x_d" />:
+        </p>
+        <Equation
+          block
+          tex="\theta_d \sim \mathrm{Dirichlet}\big(\exp(W x_d)\big), \quad W \in \mathbb{R}^{K \times F},"
+        />
+        <p>
+          where <Equation tex="x_d" /> is the per-document covariate vector
+          (HIDSAG continuous assay readings) and <Equation tex="W" /> is a
+          learned weight matrix. Standard LDA recovers as the special case
+          <Equation tex="W x_d \equiv \alpha" /> for every document. DMR-LDA
+          lets topics depend on a sample's Cu / Au / mineral grade without
+          turning those numbers into the prediction target — they enter as
+          context, not as supervision.
+        </p>
+        <p className="mt-3">
           <strong>Builders:</strong>{" "}
           <code>build_dmr_lda_hidsag.py</code> +{" "}
           <code>build_method_statistics_hidsag.py</code>. The Benchmarks page

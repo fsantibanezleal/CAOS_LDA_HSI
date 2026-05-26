@@ -87,7 +87,16 @@ export function MetricsTab({
             How much information about the label each K-dim representation
             retains (theta vs PCA-K vs NMF-K vs ICA-K vs dense-AE-K). Reported
             as joint MI clipped to label entropy and as the fraction of entropy
-            recovered.
+            recovered.{" "}
+            <em>
+              MI is estimated with the Kraskov–Stögbauer–Grassberger
+              k-NN estimator (k = 3) for continuous–discrete pairs
+              (Ross 2014 extension of Kraskov et al. 2004), the same
+              estimator scikit-learn ships behind{" "}
+              <code>mutual_info_classif</code>. Values are bias-corrected
+              and shown alongside the label-entropy upper bound so the
+              ratio MI / H(L) reflects the actual recoverable fraction.
+            </em>
           </p>
         </header>
         {miLoading && (
