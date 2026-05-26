@@ -237,7 +237,40 @@
     }
   },
   "methodology_theory": {
-    "title": "Teoría — PTM, LDA, HSI"
+    "title": "Teoría — PTM, LDA, HSI",
+    "sections": {
+      "why-ptm": {
+        "title": "¿Qué es un modelo probabilístico de tópicos?",
+        "lead": "Un modelo probabilístico de tópicos (PTM) describe cada documento como una mezcla latente sobre un puñado de distribuciones de palabras llamadas tópicos. La idea clave es que esa estructura latente se aprende sin supervisión, sólo a partir de las co-ocurrencias de palabras."
+      },
+      "lda-plate": {
+        "title": "LDA — notación plate y proceso generativo",
+        "lead": "Las plates externas se repiten sobre documentos y palabras; las distribuciones latentes (theta y phi) son los objetos que aprende el modelo."
+      },
+      "hsi-as-document": {
+        "title": "HSI como corpus — por qué un píxel puede ser un documento",
+        "lead": "Cada píxel de una imagen hiperespectral es un vector de reflectancia. Para que LDA lo consuma, el espectro debe cuantizarse y convertirse en una secuencia discreta de tokens."
+      },
+      "why-mixed-membership": {
+        "title": "Pertenencia mezclada — ¿por qué no clasificación dura?",
+        "lead": "El espectro de un píxel mineral no proviene de una sola especie. Mezclas, vegetación entrelazada, sombras y dispersión atmosférica producen medidas que reflejan varias firmas a la vez."
+      },
+      "topics-vs-endmembers": {
+        "title": "Tópicos vs endmembers — la relación φ ↔ E",
+        "lead": "El unmixing espectral lineal factoriza un cubo en firmas endmember × abundancias por píxel. LDA factoriza un cubo tokenizado en distribuciones de tópicos × mezclas por documento. Las dos factorizaciones son objetos distintos, pero en escenas minerales acaban describiendo las mismas familias de material — por eso el mejor coseno por tópico vs endmember se sitúa en 0.94–1.00 en las escenas etiquetadas."
+      },
+      "coherence-metrics": {
+        "title": "Coherencia de tópicos — c_v, NPMI y U-Mass",
+        "lead": "La coherencia cuantifica si las palabras superiores de un tópico 'van juntas' en el corpus. Las tres métricas que sigue este proyecto (c_v, NPMI, U-Mass) miden esa señal a distintas escalas y con distintas estadísticas. Más alto es mejor para c_v y NPMI; menos negativo es mejor para U-Mass."
+      },
+      "metric-glossary": {
+        "title": "Glosario de métricas — concordancia de particiones, ángulo espectral, β",
+        "lead": "Tres definiciones referenciadas a lo largo del sitio que las superficies previas nombraban sin definir on-page. Cada una es una fórmula de una línea más el rol que juega en el framework."
+      },
+      "readings": {
+        "title": "Lista mínima de lectura"
+      }
+    }
   },
   "methodology_representations": {
     "title": "Representaciones · método por método",
@@ -465,10 +498,75 @@
     }
   },
   "methodology_pipeline": {
-    "title": "Pipeline local de creación de datos"
+    "title": "Pipeline local de creación de datos",
+    "sections": {
+      "overview": {
+        "title": "Visión general",
+        "lead": "Doce etapas encadenadas. Cada una es un script de un solo comando. La salida de una etapa es la entrada de la siguiente."
+      },
+      "stages": {
+        "title": "Las etapas, comando por comando",
+        "lead": "Los comandos asumen que estás en la raíz del repo y tienes los dos venvs creados (scripts/local setup-all)."
+      },
+      "spatial-coherence": {
+        "title": "Coherencia espacial — qué mide la etapa de groupings",
+        "lead": "Las cuatro construcciones de documento (SLIC-500, SLIC-2000, patch-7/15, Felzenszwalb) recortan el cubo de maneras geométricamente distintas. El panel de cross-method agreement resume con qué frecuencia colocan dos píxeles en el mismo documento; los diagnósticos por método de coherencia espacial resumen qué tan compactas son las regiones de cada construcción."
+      },
+      "reproduce": {
+        "title": "Cómo reproducir el corpus completo"
+      },
+      "boundary": {
+        "title": "Lo que la web app NO hace"
+      }
+    }
   },
   "methodology_application": {
-    "title": "Aplicación a clasificación y regresión vía tópicos"
+    "title": "Aplicación a clasificación y regresión vía tópicos",
+    "sections": {
+      "why": {
+        "title": "¿Por qué no clasificar directamente?",
+        "lead": "Reducir un cubo HSI a clases duras descarta toda la información de mezcla. Si un píxel es 60% suelo y 40% matorral, una etiqueta dura elige uno y miente. Los tópicos preservan la mezcla."
+      },
+      "three-families": {
+        "title": "Tres familias de modelos basados en tópicos",
+        "lead": "Cada familia usa theta de manera distinta. La diferencia es metodológica, no cosmética."
+      },
+      "direct": {
+        "title": "1. Directo — theta como feature",
+        "lead": "El más simple, también el menos informativo."
+      },
+      "routed": {
+        "title": "2. Routed — un especialista por tópico",
+        "lead": "Cada tópico entrena su propio clasificador sobre el espectro crudo, ponderado por la pertenencia."
+      },
+      "embedded": {
+        "title": "3. Embedded — theta concatenado con baseline",
+        "lead": "Concat es el menos elegante pero a veces el más sano: dejar que el clasificador decida cuánto pesa theta."
+      },
+      "regression": {
+        "title": "Regresión sobre mediciones (HIDSAG)",
+        "lead": "Cuando el objetivo no es una clase sino una medición continua (Cu %, Au g/t, ley mineral), la lógica es la misma con regresores lineales."
+      },
+      "bayesian-spec": {
+        "title": "Benchmark bayesiano jerárquico — spec del modelo",
+        "lead": "Las probabilidades posteriores pareadas P(μ_a > μ_b) provienen de un modelo aditivo estilo ANOVA con offsets de escena y fold, ajustado con NUTS de PyMC. El spec abajo replica el código de build_bayesian_classification_labelled.py exactamente — sin hyperpriors ocultos."
+      },
+      "hungarian-stability": {
+        "title": "Topic-matching húngaro — estabilidad e identidad cross-mask",
+        "lead": "Los índices de tópicos no son estables entre re-ajustes — tanto las semillas LDA como las máscaras de agua pueden permutar los K tópicos. Los bloques de seed-stability y cross-mask emparejan tópicos con la asignación que maximiza el coseno emparejado medio. Eso es el algoritmo Húngaro (asignación lineal) aplicado a una matriz de costo coseno-tópico."
+      },
+      "paired-statistics": {
+        "title": "Estadísticas pareadas — Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi",
+        "lead": "La página Benchmarks reporta comparaciones método-vs-método que usan tres herramientas no paramétricas. Cada una es un párrafo aquí para que los números headline (Cliff δ = +0.28 en el embedded baseline, P(routed_soft > raw) = 0.641, Wilcoxon-Holm < 0.05) sean autocontenidos."
+      },
+      "axis-crosswalk": {
+        "title": "Ejes F (paper) ↔ ejes B (wiki / web app)",
+        "lead": "El paper compañero introduce un framework de doce ejes (F-1..F-12). Este sitio y la wiki usan una taxonomía B-1..B-12 distinta que precede al paper. Las dos comparten tres conceptos bajo distintos ordinales; el crosswalk abajo hace explícito el mapeo."
+      },
+      "see-also": {
+        "title": "Cómo continuar"
+      }
+    }
   },
   "databases": {
     "title": "Bases de datos",

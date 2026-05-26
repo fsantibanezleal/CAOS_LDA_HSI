@@ -12,11 +12,7 @@ export default function MethodologyTheory() {
       title={t("pages:methodology_theory.title")}
       lead="Probabilistic topic models over hyperspectral imagery — what they are, how they work, and why a pixel can be treated as a document."
     >
-      <Section
-        id="why-ptm"
-        title="What is a probabilistic topic model?"
-        lead="A probabilistic topic model (PTM) describes every document as a latent mixture over a handful of word distributions called topics. The key point is that this latent structure is learned without supervision from word co-occurrences alone."
-      >
+      <Section id="why-ptm" title={t("pages:methodology_theory.sections.why-ptm.title")} lead={t("pages:methodology_theory.sections.why-ptm.lead")}>
         <p>
           Under the most popular model — Latent Dirichlet Allocation (Blei, Ng &amp;
           Jordan, 2003) — a corpus of <em>D</em> documents over a vocabulary of
@@ -36,11 +32,7 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
-      <Section
-        id="lda-plate"
-        title="LDA — plate notation and generative process"
-        lead="The outer plates repeat over documents and words; the latent distributions (theta and phi) are the objects the model learns."
-      >
+      <Section id="lda-plate" title={t("pages:methodology_theory.sections.lda-plate.title")} lead={t("pages:methodology_theory.sections.lda-plate.lead")}>
         <Figure caption="LDA in plate notation. The outer plate iterates over the D documents; the inner plate, over the N_d words of each document. Theta_d is the per-document mixture over K topics; phi_k is the distribution of topic k over the V vocabulary words.">
           <PlateNotationSVG />
         </Figure>
@@ -91,11 +83,7 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
-      <Section
-        id="hsi-as-document"
-        title="HSI as a corpus — why a pixel can be a document"
-        lead="Each pixel of a hyperspectral image is a reflectance vector. For LDA to consume it, the spectrum must be quantised and turned into a discrete sequence of tokens."
-      >
+      <Section id="hsi-as-document" title={t("pages:methodology_theory.sections.hsi-as-document.title")} lead={t("pages:methodology_theory.sections.hsi-as-document.lead")}>
         <p>
           A hyperspectral image (HSI) is a cube{" "}
           <Equation tex="X \in \mathbb{R}^{H \times W \times B}" />, where each
@@ -129,11 +117,7 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
-      <Section
-        id="why-mixed-membership"
-        title="Mixed membership — why not hard classification?"
-        lead="The spectrum of a mineral pixel does not come from a single species. Mixtures, intermixed vegetation, shadow and atmospheric scattering yield measurements that reflect several signatures at once."
-      >
+      <Section id="why-mixed-membership" title={t("pages:methodology_theory.sections.why-mixed-membership.title")} lead={t("pages:methodology_theory.sections.why-mixed-membership.lead")}>
         <p>
           The hard-membership assumption — a pixel belongs to exactly one
           class — fails in HSI because every spectrum is by construction a
@@ -156,11 +140,7 @@ export default function MethodologyTheory() {
         </Figure>
       </Section>
 
-      <Section
-        id="topics-vs-endmembers"
-        title="Topics vs endmembers — the φ ↔ E relationship"
-        lead="Linear spectral unmixing factorises a cube into endmember signatures × per-pixel abundances. LDA factorises a tokenised cube into topic distributions × per-document mixtures. The two factorisations are different objects, but on mineral scenes they end up describing the same underlying material families — which is why the per-topic cosine vs endmember runs 0.7–0.9 on the HIDSAG mineral subsets."
-      >
+      <Section id="topics-vs-endmembers" title={t("pages:methodology_theory.sections.topics-vs-endmembers.title")} lead={t("pages:methodology_theory.sections.topics-vs-endmembers.lead")}>
         <p>
           Linear unmixing assumes the pixel spectrum{" "}
           <Equation tex="x_d \in \mathbb{R}^B" /> is a non-negative combination
@@ -207,11 +187,7 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
-      <Section
-        id="coherence-metrics"
-        title="Topic coherence — c_v, NPMI, and U-Mass"
-        lead="Coherence quantifies whether the top words of a topic 'go together' in the corpus. The three metrics this project tracks (c_v, NPMI, U-Mass) measure that signal at different scales and with different statistics. Higher is better for c_v and NPMI; less-negative is better for U-Mass."
-      >
+      <Section id="coherence-metrics" title={t("pages:methodology_theory.sections.coherence-metrics.title")} lead={t("pages:methodology_theory.sections.coherence-metrics.lead")}>
         <p>
           Given a topic <Equation tex="\phi_k" /> and its top-N words{" "}
           <Equation tex="W_k = \{w_1, \dots, w_N\}" />, all three metrics
@@ -262,11 +238,7 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
-      <Section
-        id="metric-glossary"
-        title="Metric glossary — partition agreement, spectral angle, β"
-        lead="Three definitions referenced throughout the site that the prior surfaces named but never gave on-page. Each is a one-line formula plus the role it plays in the framework."
-      >
+      <Section id="metric-glossary" title={t("pages:methodology_theory.sections.metric-glossary.title")} lead={t("pages:methodology_theory.sections.metric-glossary.lead")}>
         <p className="mt-2">
           <strong>Adjusted Rand Index (ARI)</strong>{" "}
           (Hubert &amp; Arabie 1985) is the chance-corrected pairwise
@@ -329,7 +301,7 @@ export default function MethodologyTheory() {
         </p>
       </Section>
 
-      <Section id="readings" title="Minimal reading list">
+      <Section id="readings" title={t("pages:methodology_theory.sections.readings.title")}>
         <ul
           className="mt-2 space-y-2 list-disc pl-5"
           style={{ color: "var(--color-fg-subtle)" }}
