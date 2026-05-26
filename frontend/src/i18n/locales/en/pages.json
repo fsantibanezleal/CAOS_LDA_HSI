@@ -565,6 +565,10 @@
       },
       "see-also": {
         "title": "How to continue"
+      },
+      "what-topics-capture": {
+        "title": "What does a topic \"capture\", in task terms?",
+        "lead": "It is not text: the question is answered visually with distributions."
       }
     }
   },

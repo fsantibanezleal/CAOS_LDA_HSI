@@ -565,6 +565,10 @@
       },
       "see-also": {
         "title": "Cómo continuar"
+      },
+      "what-topics-capture": {
+        "title": "¿Qué \"captura\" un tópico, en términos de tarea?",
+        "lead": "No es texto: la pregunta se responde visualmente con distribuciones."
       }
     }
   },
