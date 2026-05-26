@@ -16,7 +16,7 @@ const NAV_ITEMS = [
 ];
 
 const EXTERNAL = {
-  orcid: "https://orcid.org/0000-0002-3614-2087",
+  orcid: "https://orcid.org/0000-0002-0150-3246",
   github: "https://github.com/fsantibanezleal/CAOS_LDA_HSI",
   paper: "https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper",
   site: "https://fasl-work.com",
