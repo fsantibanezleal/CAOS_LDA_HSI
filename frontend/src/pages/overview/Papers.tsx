@@ -28,13 +28,13 @@ const PAPERS: PaperCard[] = [
     variant: "journal",
     pdfHref: "/papers/caos-lda-hsi-journal.pdf",
     pdfSizeKb: 510,
-    buildStamp: "2026-05-24",
+    buildStamp: "2026-05-26",
   },
   {
     variant: "conference",
     pdfHref: "/papers/caos-lda-hsi-conference.pdf",
     pdfSizeKb: 333,
-    buildStamp: "2026-05-24",
+    buildStamp: "2026-05-26",
   },
 ];
 
