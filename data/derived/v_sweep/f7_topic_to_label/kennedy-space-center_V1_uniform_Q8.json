@@ -278,6 +278,6 @@
   "recipe": "V1",
   "scheme": "uniform",
   "Q": 8,
-  "generated_at": "2026-05-26T18:02:42Z",
+  "generated_at": "2026-05-26T18:35:47Z",
   "builder": "build_v_sweep_f7_topic_to_label v0.1"
 }
