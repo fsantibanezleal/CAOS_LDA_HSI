@@ -81,10 +81,15 @@ export function LlmTeaLeavesTab({
           className="text-[12px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          For each topic, top-N words by relevance λ get one intruder word
-          inserted. An LLM ({data.model}) is asked to pick the odd word out.
-          Correct picks ⇒ topic is coherent enough to make the intruder
-          obvious. Higher accuracy ⇒ more interpretable topics.
+          The <em>word-intrusion test</em> (Chang et al. 2009,
+          ‘Reading Tea Leaves’) is the gold-standard human-judgement
+          coherence probe: given a topic's top-N words, one is replaced
+          by a random word drawn from another topic; the rater (here
+          an LLM, model = {data.model}) must identify the intruder.
+          Stammbach et al. (2024, TACL) showed that capable LLMs match
+          human accuracy on this task. Correct picks ⇒ topic is
+          coherent enough to make the intruder obvious. Higher accuracy
+          ⇒ more interpretable topics; chance baseline is 1 / (top-N + 1).
         </p>
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
           <UnmixingStat label="model" value={data.model} />

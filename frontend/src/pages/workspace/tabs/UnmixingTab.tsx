@@ -85,7 +85,7 @@ export function UnmixingTab({
 
       <UnmixingSpectraCard
         title="NFINDR endmember spectra"
-        subtitle="K vertices of the data simplex (Winter 1999). Each curve is one pure-pixel candidate."
+        subtitle="N-FINDR (Winter 1999) seeds K random pixels, then iteratively swaps each in turn for any pixel that increases the volume of the K-simplex they span; convergence picks K pure-pixel candidates that maximise simplex volume. Each curve below is one of those K vertices."
         spectra={data.nfindr_endmembers ?? []}
         wavelengths={wavelengths}
         accent="rgba(56,189,248,1)"
@@ -94,7 +94,7 @@ export function UnmixingTab({
       {data.atgp_endmembers && data.atgp_endmembers.length > 0 ? (
         <UnmixingSpectraCard
           title="ATGP endmember spectra"
-          subtitle="Automatic Target Generation Process (Ren & Chang 2003). Alternative extractor — pixel-wise orthogonal subspace projection."
+          subtitle="Automatic Target Generation Process (Ren & Chang 2003): pick the pixel with maximum L2 norm as endmember 1; iteratively project the residual orthogonal to the current set and pick the pixel with the largest projection norm as the next endmember. Greedy alternative to N-FINDR; usually produces a similar set."
           spectra={data.atgp_endmembers}
           wavelengths={wavelengths}
           accent="rgba(170,60,200,1)"
