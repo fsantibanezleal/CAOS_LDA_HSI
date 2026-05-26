@@ -222,23 +222,27 @@ function FamilyTabs({
 }
 
 function SummaryRow({ inventory }: { inventory: DatasetInventory }) {
+  const { t } = useTranslation(["pages"]);
   const summary = inventory.summary;
   return (
     <div
       className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"
       style={{ color: "var(--color-fg-subtle)" }}
     >
-      <SummaryStat label="Datasets catalogados" value={String(summary.cataloged_dataset_count)} />
       <SummaryStat
-        label="Con descarga local"
+        label={t("pages:databases.summary.cataloged")}
+        value={String(summary.cataloged_dataset_count)}
+      />
+      <SummaryStat
+        label={t("pages:databases.summary.local_avail")}
         value={`${summary.datasets_with_local_raw} / ${summary.cataloged_dataset_count}`}
       />
       <SummaryStat
-        label="Volumen crudo"
+        label={t("pages:databases.summary.raw_volume")}
         value={`${summary.raw_total_size_gb.toFixed(1)} GB`}
       />
       <SummaryStat
-        label="Fuentes"
+        label={t("pages:databases.summary.sources")}
         value={String(Object.keys(summary.source_group_counts).length)}
       />
     </div>
