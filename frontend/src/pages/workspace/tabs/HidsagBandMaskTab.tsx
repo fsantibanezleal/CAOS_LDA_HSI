@@ -116,7 +116,7 @@ export function HidsagBandMaskTab({
           discriminant on labels (HIDSAG has no per-pixel label —{" "}
           covariates are sample-level tags like lithology / mineralogy).
         </p>
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <ul className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {Object.entries(maskDefs).map(([id, def]) => {
             const entry = subsetEntries.find((e) => e.mask_id === id);
             const skipped = entry?.skipped ?? false;
@@ -308,7 +308,7 @@ function HidsagBandMaskDetailCard({
         {summary.kept_band_indices.length > 10 ? ", …" : ""}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-5 mb-5">
+      <div className="grid md:grid-cols-2 gap-5 mb-5">
         <div>
           <h5
             className="text-[12px] uppercase tracking-widest font-semibold mb-2"
