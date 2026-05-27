@@ -1,0 +1,17 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V9",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ETM",
+  "K": 4,
+  "D": 2686,
+  "V": 528,
+  "mean_doc_length": 1.0,
+  "f2_c_v": 0.736863,
+  "f14_mean_pairwise_jaccard": 0.772727,
+  "fit_seconds": 6.502,
+  "status": "ok",
+  "generated_at": "2026-05-27T13:07:18Z",
+  "builder": "build_v_sweep_etm_backbone v0.1"
+}
