@@ -90,6 +90,22 @@ class VSweepF18Record(BaseModel):
     frac_above_0_7: float = Field(alias="frac_above_0.7")
 
 
+class VSweepHdpRecord(BaseModel):
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    backbone: str
+    T_truncation: int
+    K_inferred_total: int
+    K_effective: int
+    K_ground_truth_classes: int
+    f16_model_selection_adequacy: Optional[int] = None
+    f2_c_v: float
+    f14_mean_pairwise_jaccard: float
+    fit_seconds: float
+
+
 class VSweepRecipeScene(BaseModel):
     scene_id: str
     topic_view: Optional[VSweepTopicViewSummary] = None
@@ -98,6 +114,7 @@ class VSweepRecipeScene(BaseModel):
     f7: Optional[VSweepF7Record] = None
     f14: Optional[VSweepF14Record] = None
     f18: Optional[VSweepF18Record] = None
+    hdp: Optional[VSweepHdpRecord] = None
 
 
 class VSweepRecipeReport(BaseModel):

@@ -89,6 +89,22 @@ export type VSweepF18Record = {
   frac_above_0_7: number;
 };
 
+export type VSweepHdpRecord = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  backbone: string;
+  T_truncation: number;
+  K_inferred_total: number;
+  K_effective: number;
+  K_ground_truth_classes: number;
+  f16_model_selection_adequacy: number | null;
+  f2_c_v: number;
+  f14_mean_pairwise_jaccard: number;
+  fit_seconds: number;
+};
+
 export type VSweepRecipeScene = {
   scene_id: string;
   topic_view?: VSweepTopicViewSummary | null;
@@ -97,6 +113,7 @@ export type VSweepRecipeScene = {
   f7?: VSweepF7Record | null;
   f14?: VSweepF14Record | null;
   f18?: VSweepF18Record | null;
+  hdp?: VSweepHdpRecord | null;
 };
 
 export type VSweepRecipeReport = {
