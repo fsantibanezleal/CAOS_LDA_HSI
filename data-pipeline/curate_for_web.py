@@ -91,6 +91,16 @@ BUILDER_DIRS = [
     ("build_hierarchical_super_topics", "super_topics"),
     ("build_hidsag_cross_preprocessing_stability", "hidsag_cross_preprocessing_stability"),
     ("build_b12_llm_tea_leaves", "llm_tea_leaves"),
+    # ---- V-sweep layer (issue #606) -----------------------------------
+    # The V-sweep canonical-fit + per-axis builders write per-recipe
+    # per-scene shards under data/derived/v_sweep/. Each subdirectory
+    # is its own builder; the recipes V1..V12 are surfaced via
+    # claims_allowed below.
+    ("build_v_sweep_canonical_fit", "v_sweep/topic_views"),
+    ("build_v_sweep_f1_classification", "v_sweep/f1_per_fold"),
+    ("build_v_sweep_f2_coherence", "v_sweep/f2_coherence"),
+    ("build_v_sweep_f7_topic_to_label", "v_sweep/f7_topic_to_label"),
+    ("build_v_sweep_f1_bayesian", "v_sweep/f1_bayesian_posterior.json"),
     # ---- pre-precompute ("foundational") layer ------------------------
     # These directories pre-date the precompute waves but their outputs
     # are still served by the public API (subset cards, dataset
