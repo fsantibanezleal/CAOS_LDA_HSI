@@ -729,7 +729,8 @@
       "title": "Methods workspace",
       "lead": "Explore each topic-modelling method on its own page: how the tokens are built, the theory hypothesis, the F-axis sweep, and side-by-side comparators. Twelve wordification recipes (V1..V12) plus four neural baselines.",
       "wordifications_heading": "Wordification recipes",
-      "neural_heading": "Neural baselines"
+      "neural_heading": "Neural baselines",
+      "matrix_heading": "Win matrix (F-1 / F-2 / F-7)"
     },
     "deep": {
       "not_found": "No method exists with id {{id}}.",
@@ -838,6 +839,9 @@
         "summary": "Disentangled variational autoencoder. Already evaluated.",
         "theory": "Beta-VAE encourages factorised latent dimensions via a re-weighted KL term. Like the CAE, this is here for comparison against deep latent-space alternatives, not re-run per recipe."
       }
+    },
+    "matrix": {
+      "lead": "Twelve recipes evaluated across three F-axes (F-1 macro-F1, F-2 c_v, F-7 normalised MI). Bold cells = per-axis per-scene winner. The matrix is the headline of the V-sweep: V12 wins F-2 on most scenes and F-7 on 2; V3 wins F-7 on 3; V1 (current canonical) wins F-2 on 2 and F-7 on 0."
     }
   },
   "not_found": {

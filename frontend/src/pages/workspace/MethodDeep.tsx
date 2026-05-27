@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { METHOD_CATALOG, findMethod, type MethodEntry } from "./methodCatalog";
 import { vSweepMethodReport, type VSweepRecipeReport } from "@/api/v-sweep";
+import { MethodTopicLabelHeatmap } from "./MethodTopicLabelHeatmap";
 
 export default function MethodDeep() {
   const { methodId = "" } = useParams();
@@ -97,6 +98,18 @@ export default function MethodDeep() {
         </h2>
         <SweepPanelPlaceholder method={method} />
       </section>
+
+      {method.hasSweepArtefacts && (
+        <section className="mb-8">
+          <h2
+            className="mb-2 text-[13px] uppercase tracking-widest font-semibold"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            Topic-label heatmaps
+          </h2>
+          <MethodTopicLabelHeatmap recipe={method.id} />
+        </section>
+      )}
 
       <section className="mb-8">
         <h2
@@ -272,6 +285,12 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
             >
               F-2 c_npmi
             </th>
+            <th
+              className="text-right px-3 py-1.5 border"
+              style={{ borderColor: "var(--color-border)" }}
+            >
+              F-7 NMI
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -325,6 +344,14 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
               >
                 {s.f2?.c_npmi !== null && s.f2?.c_npmi !== undefined
                   ? s.f2.c_npmi.toFixed(3)
+                  : "-"}
+              </td>
+              <td
+                className="px-3 py-1 border text-right"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {s.f7?.normalised_mi !== null && s.f7?.normalised_mi !== undefined
+                  ? s.f7.normalised_mi.toFixed(3)
                   : "-"}
               </td>
             </tr>
