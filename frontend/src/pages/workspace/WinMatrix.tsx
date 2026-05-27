@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { vSweepMethodReport, type VSweepRecipeReport } from "@/api/v-sweep";
 import { METHOD_CATALOG } from "./methodCatalog";
 
-type AxisKey = "f1" | "f2_cv" | "f7_nmi";
+type AxisKey = "f1" | "f2_cv" | "f7_nmi" | "f14_jacc" | "f18_07";
 
 type MatrixCell = {
   recipe: string;
@@ -13,10 +13,26 @@ type MatrixCell = {
   value: number | null;
 };
 
-const AXES: { key: AxisKey; label: string; tooltip: string }[] = [
+const AXES: {
+  key: AxisKey;
+  label: string;
+  tooltip: string;
+  lowerIsBetter?: boolean;
+}[] = [
   { key: "f1", label: "F-1 routed", tooltip: "topic_routed_soft mean macro-F1 across 5 folds" },
   { key: "f2_cv", label: "F-2 c_v", tooltip: "top-10 c_v coherence" },
   { key: "f7_nmi", label: "F-7 NMI", tooltip: "normalised MI(topic_argmax, label)" },
+  {
+    key: "f14_jacc",
+    label: "F-14 jacc",
+    tooltip: "mean top-10 jaccard between topics (LOWER = more diverse)",
+    lowerIsBetter: true,
+  },
+  {
+    key: "f18_07",
+    label: "F-18 ≥0.7",
+    tooltip: "fraction of seed-pair topic alignments with top-10 cosine ≥ 0.7 (HIGHER = more reliable)",
+  },
 ];
 
 function colorFor(value: number | null, axis: AxisKey): string {
@@ -67,9 +83,9 @@ export function WinMatrix() {
           let value: number | null = null;
           if (key === "f1" && s.f1) value = s.f1.topic_routed_soft_mean;
           if (key === "f2_cv" && s.f2) value = s.f2.c_v ?? null;
-          if (key === "f7_nmi" && s.f7 !== undefined) {
-            value = (s as any).f7?.normalised_mi ?? null;
-          }
+          if (key === "f7_nmi" && s.f7) value = s.f7.normalised_mi ?? null;
+          if (key === "f14_jacc" && s.f14) value = s.f14.mean_pairwise_jaccard ?? null;
+          if (key === "f18_07" && s.f18) value = s.f18.frac_above_0_7 ?? null;
           out.push({ recipe: report.recipe, scene: s.scene_id, axis: key, value });
         });
       });
@@ -77,17 +93,19 @@ export function WinMatrix() {
     return out;
   }, [reports]);
 
-  // Per-axis per-scene winner (max value)
+  // Per-axis per-scene winner (max value, or min for lower-is-better axes)
   const winners = useMemo(() => {
     const map = new Map<string, string>();
-    AXES.forEach(({ key }) => {
+    AXES.forEach(({ key, lowerIsBetter }) => {
       scenes.forEach((scene) => {
         let best: string | null = null;
-        let bestVal = -Infinity;
+        let bestVal = lowerIsBetter ? Infinity : -Infinity;
         cells.forEach((c) => {
-          if (c.axis === key && c.scene === scene && c.value !== null && c.value > bestVal) {
-            bestVal = c.value;
-            best = c.recipe;
+          if (c.axis === key && c.scene === scene && c.value !== null) {
+            if (lowerIsBetter ? c.value < bestVal : c.value > bestVal) {
+              bestVal = c.value;
+              best = c.recipe;
+            }
           }
         });
         if (best) map.set(`${key}|${scene}`, best);
