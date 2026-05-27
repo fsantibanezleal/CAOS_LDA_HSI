@@ -8,7 +8,7 @@
   "V": 2152,
   "mean_doc_length": 13381.8159,
   "perplexity": 2116.0981,
-  "fit_seconds": 76.084,
+  "fit_seconds": 90.393,
   "f2_c_v": 0.316228,
   "f2_c_npmi": 0.0,
   "f2_u_mass": 0.001122,
@@ -20,7 +20,7 @@
     "topic_word_prior": 0.2,
     "random_state": 42
   },
-  "generated_at": "2026-05-27T03:00:44Z",
+  "generated_at": "2026-05-27T03:23:31Z",
   "builder": "build_v_sweep_hidsag v0.1",
   "vocab_size": 2152
 }
