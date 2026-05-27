@@ -1,0 +1,152 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V7",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 132,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 25,
+          "token": "abs_c5_d4_a0",
+          "mean_abs_shap": 0.020001
+        },
+        {
+          "vocab_index": 4,
+          "token": "abs_c4_d6_a7",
+          "mean_abs_shap": 0.013605
+        },
+        {
+          "vocab_index": 29,
+          "token": "abs_c7_d0_a0",
+          "mean_abs_shap": 0.013604
+        },
+        {
+          "vocab_index": 64,
+          "token": "abs_c4_d6_a3",
+          "mean_abs_shap": 0.013219
+        },
+        {
+          "vocab_index": 120,
+          "token": "abs_c3_d0_a2",
+          "mean_abs_shap": 0.013087
+        },
+        {
+          "vocab_index": 48,
+          "token": "abs_c7_d1_a0",
+          "mean_abs_shap": 0.012939
+        },
+        {
+          "vocab_index": 39,
+          "token": "abs_c3_d1_a2",
+          "mean_abs_shap": 0.01145
+        },
+        {
+          "vocab_index": 88,
+          "token": "abs_c4_d6_a5",
+          "mean_abs_shap": 0.010408
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 64,
+          "token": "abs_c4_d6_a3",
+          "mean_abs_shap": 0.020779
+        },
+        {
+          "vocab_index": 25,
+          "token": "abs_c5_d4_a0",
+          "mean_abs_shap": 0.020491
+        },
+        {
+          "vocab_index": 43,
+          "token": "abs_c2_d0_a1",
+          "mean_abs_shap": 0.020346
+        },
+        {
+          "vocab_index": 33,
+          "token": "abs_c4_d1_a1",
+          "mean_abs_shap": 0.019781
+        },
+        {
+          "vocab_index": 48,
+          "token": "abs_c7_d1_a0",
+          "mean_abs_shap": 0.018389
+        },
+        {
+          "vocab_index": 2,
+          "token": "abs_c5_d7_a7",
+          "mean_abs_shap": 0.01645
+        },
+        {
+          "vocab_index": 91,
+          "token": "abs_c4_d3_a5",
+          "mean_abs_shap": 0.015653
+        },
+        {
+          "vocab_index": 4,
+          "token": "abs_c4_d6_a7",
+          "mean_abs_shap": 0.014997
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 43,
+          "token": "abs_c2_d0_a1",
+          "mean_abs_shap": 0.018499
+        },
+        {
+          "vocab_index": 64,
+          "token": "abs_c4_d6_a3",
+          "mean_abs_shap": 0.017329
+        },
+        {
+          "vocab_index": 31,
+          "token": "abs_c5_d4_a1",
+          "mean_abs_shap": 0.017027
+        },
+        {
+          "vocab_index": 33,
+          "token": "abs_c4_d1_a1",
+          "mean_abs_shap": 0.016419
+        },
+        {
+          "vocab_index": 2,
+          "token": "abs_c5_d7_a7",
+          "mean_abs_shap": 0.016019
+        },
+        {
+          "vocab_index": 25,
+          "token": "abs_c5_d4_a0",
+          "mean_abs_shap": 0.014311
+        },
+        {
+          "vocab_index": 27,
+          "token": "abs_c4_d1_a0",
+          "mean_abs_shap": 0.014145
+        },
+        {
+          "vocab_index": 24,
+          "token": "abs_c4_d5_a0",
+          "mean_abs_shap": 0.01173
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-27T03:22:27Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.47
+}
