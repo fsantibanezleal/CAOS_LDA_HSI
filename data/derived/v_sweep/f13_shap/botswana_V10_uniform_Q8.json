@@ -1,0 +1,152 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 24,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 12,
+          "token": "SWIR1_q04",
+          "mean_abs_shap": 0.10039
+        },
+        {
+          "vocab_index": 11,
+          "token": "SWIR1_q03",
+          "mean_abs_shap": 0.096685
+        },
+        {
+          "vocab_index": 10,
+          "token": "SWIR1_q02",
+          "mean_abs_shap": 0.065556
+        },
+        {
+          "vocab_index": 9,
+          "token": "SWIR1_q01",
+          "mean_abs_shap": 0.024033
+        },
+        {
+          "vocab_index": 23,
+          "token": "SWIR2_q07",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "SWIR2_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "SWIR2_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "SWIR2_q04",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 10,
+          "token": "SWIR1_q02",
+          "mean_abs_shap": 0.193351
+        },
+        {
+          "vocab_index": 11,
+          "token": "SWIR1_q03",
+          "mean_abs_shap": 0.125423
+        },
+        {
+          "vocab_index": 9,
+          "token": "SWIR1_q01",
+          "mean_abs_shap": 0.063066
+        },
+        {
+          "vocab_index": 12,
+          "token": "SWIR1_q04",
+          "mean_abs_shap": 0.037085
+        },
+        {
+          "vocab_index": 23,
+          "token": "SWIR2_q07",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "SWIR2_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "SWIR2_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "SWIR2_q04",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 11,
+          "token": "SWIR1_q03",
+          "mean_abs_shap": 0.222108
+        },
+        {
+          "vocab_index": 10,
+          "token": "SWIR1_q02",
+          "mean_abs_shap": 0.127795
+        },
+        {
+          "vocab_index": 12,
+          "token": "SWIR1_q04",
+          "mean_abs_shap": 0.063305
+        },
+        {
+          "vocab_index": 9,
+          "token": "SWIR1_q01",
+          "mean_abs_shap": 0.039032
+        },
+        {
+          "vocab_index": 23,
+          "token": "SWIR2_q07",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "SWIR2_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "SWIR2_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "SWIR2_q04",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-27T03:23:26Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.19
+}
