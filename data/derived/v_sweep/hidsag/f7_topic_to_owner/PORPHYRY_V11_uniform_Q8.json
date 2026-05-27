@@ -1,0 +1,14 @@
+{
+  "n_owners": 28,
+  "K": 3,
+  "H_owner_bits": 4.807355,
+  "H_owner_given_topic_bits": 3.619281,
+  "mutual_information_bits": 1.188074,
+  "normalised_mi": 0.247137,
+  "subset": "PORPHYRY",
+  "recipe": "V11",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-27T03:40:00Z",
+  "builder": "build_v_sweep_hidsag_f7 v0.1"
+}

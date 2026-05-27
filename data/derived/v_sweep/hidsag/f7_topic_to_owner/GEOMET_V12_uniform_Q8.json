@@ -1,0 +1,14 @@
+{
+  "n_owners": 146,
+  "K": 8,
+  "H_owner_bits": 7.189825,
+  "H_owner_given_topic_bits": 5.473472,
+  "mutual_information_bits": 1.716353,
+  "normalised_mi": 0.23872,
+  "subset": "GEOMET",
+  "recipe": "V12",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-27T03:40:00Z",
+  "builder": "build_v_sweep_hidsag_f7 v0.1"
+}
