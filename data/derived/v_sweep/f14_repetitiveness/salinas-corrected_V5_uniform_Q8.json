@@ -8,6 +8,6 @@
   "mean_pairwise_jaccard": 0.251374,
   "max_pairwise_jaccard": 0.538462,
   "n_redundant_pairs_above_0.5": 4,
-  "generated_at": "2026-05-27T02:46:35Z",
+  "generated_at": "2026-05-27T12:17:10Z",
   "builder": "build_v_sweep_f14_repetitiveness v0.1"
 }
