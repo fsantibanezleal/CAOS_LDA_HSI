@@ -257,6 +257,11 @@ def wordify_v11(
         # Degenerate fallback
         return sparse.csr_matrix(np.zeros((D, 1), dtype=np.int32)), ["pq_none"]
     X = spectra[:, :B_use].astype(np.float32)
+    # nanopq.PQ doesn't expose a random_state argument; its codebook fit
+    # uses scikit-learn KMeans internally which honours numpy's global
+    # RNG state when no seed is passed. Pin it explicitly before fit()
+    # so V11 results are bit-deterministic across runs and versions.
+    np.random.seed(RANDOM_STATE)
     pq = nanopq.PQ(M=M, Ks=Q, verbose=False)
     pq.fit(X)
     codes = pq.encode(X)  # (D, M)

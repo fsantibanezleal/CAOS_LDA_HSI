@@ -1,0 +1,15 @@
+{
+  "source_scene": "salinas-a-corrected",
+  "target_scene": "salinas-corrected",
+  "recipe": "V11",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "source_vocab_size": 32,
+  "H_label_bits": 4.0,
+  "H_label_given_topic_bits": 2.977682,
+  "mutual_information_bits": 1.022318,
+  "normalised_mi": 0.255579,
+  "generated_at": "2026-05-27T02:38:08Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

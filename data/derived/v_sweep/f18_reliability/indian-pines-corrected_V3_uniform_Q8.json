@@ -1,0 +1,35 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V3",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "n_seeds": 5,
+  "top_n": 10,
+  "seeds_used": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mean_matched_cosine": 0.370833,
+  "frac_above_0.5": 0.308333,
+  "frac_above_0.7": 0.141667,
+  "per_pair_cosine_mean_per_topic": [
+    0.33,
+    0.21,
+    0.23,
+    0.53,
+    0.44,
+    0.2,
+    0.2,
+    0.59,
+    0.75,
+    0.31,
+    0.2,
+    0.46
+  ],
+  "generated_at": "2026-05-27T02:35:25Z",
+  "builder": "build_v_sweep_f18_reliability v0.1"
+}

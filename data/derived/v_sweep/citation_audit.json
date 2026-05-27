@@ -1,0 +1,136 @@
+{
+  "generated_at": "2026-05-27T02:44:33Z",
+  "builder_version": "audit_citation_openalex v0.1",
+  "year_window": [
+    2024,
+    2026
+  ],
+  "targets": [
+    {
+      "label": "Egaña et al. 2020 Minerals",
+      "found": true,
+      "openalex_id": "W3111850087",
+      "doi": "https://doi.org/10.3390/min10121139",
+      "openalex_cited_by_count_total": 9,
+      "publication_year": 2020,
+      "venue": "Minerals",
+      "citations_2024_2026_count": 4,
+      "citations_per_year": {
+        "2024": 3,
+        "2025": 1
+      },
+      "citations": [
+        {
+          "id": "https://openalex.org/W4403109497",
+          "doi": "https://doi.org/10.1080/17480930.2024.2410041",
+          "title": "APiS (AI powered intelligence spectrum analyser): hyperspectral imaging machine learning analyser app for mineral processing",
+          "year": 2024,
+          "venue": "International Journal of Mining Reclamation and Environment",
+          "type": "article",
+          "cited_by_count": 2
+        },
+        {
+          "id": "https://openalex.org/W4401797727",
+          "doi": "https://doi.org/10.1007/s12665-024-11800-1",
+          "title": "Geoenvironmental characterization of orebody variability for application of environmental desulfurization for acid mine drainage risk prevention",
+          "year": 2024,
+          "venue": "Environmental Earth Sciences",
+          "type": "article",
+          "cited_by_count": 1
+        },
+        {
+          "id": "https://openalex.org/W4399449820",
+          "doi": "https://doi.org/10.1063/5.0208704",
+          "title": "Mineral identification on hyperspectral imagery of rock samples using machine learning",
+          "year": 2024,
+          "venue": "AIP conference proceedings",
+          "type": "article",
+          "cited_by_count": 0
+        },
+        {
+          "id": "https://openalex.org/W4408304581",
+          "doi": "https://doi.org/10.5772/intechopen.1009606",
+          "title": "Recent Advances in Spectroscopic Techniques for Mineral Characterization",
+          "year": 2025,
+          "venue": "Earth Sciences",
+          "type": "book-chapter",
+          "cited_by_count": 0
+        }
+      ]
+    },
+    {
+      "label": "Ehrenfeld et al. 2023 Sci Data (HIDSAG)",
+      "found": true,
+      "openalex_id": "W4360611735",
+      "doi": "https://doi.org/10.1038/s41597-023-02061-x",
+      "openalex_cited_by_count_total": 7,
+      "publication_year": 2023,
+      "venue": "Scientific Data",
+      "citations_2024_2026_count": 6,
+      "citations_per_year": {
+        "2024": 4,
+        "2025": 2
+      },
+      "citations": [
+        {
+          "id": "https://openalex.org/W4403109497",
+          "doi": "https://doi.org/10.1080/17480930.2024.2410041",
+          "title": "APiS (AI powered intelligence spectrum analyser): hyperspectral imaging machine learning analyser app for mineral processing",
+          "year": 2024,
+          "venue": "International Journal of Mining Reclamation and Environment",
+          "type": "article",
+          "cited_by_count": 2
+        },
+        {
+          "id": "https://openalex.org/W4411639979",
+          "doi": "https://doi.org/10.1109/tip.2025.3581464",
+          "title": "Prior Image Guided Snapshot High-Resolution Spectral Imaging in Near Infrared",
+          "year": 2025,
+          "venue": "IEEE Transactions on Image Processing",
+          "type": "article",
+          "cited_by_count": 1
+        },
+        {
+          "id": "https://openalex.org/W4403534715",
+          "doi": "https://doi.org/10.1109/codit62066.2024.10708316",
+          "title": "Hyperspectral Data Volume Restoration using Nonlinear Vector-valued Reaction-diffusion based Filtering Scheme",
+          "year": 2024,
+          "venue": null,
+          "type": "article",
+          "cited_by_count": 1
+        },
+        {
+          "id": "https://openalex.org/W4401728350",
+          "doi": "https://doi.org/10.1038/s41598-024-69732-6",
+          "title": "Stochastic image spectroscopy: a discriminative generative approach to hyperspectral image modelling and classification",
+          "year": 2024,
+          "venue": "Scientific Reports",
+          "type": "article",
+          "cited_by_count": 0
+        },
+        {
+          "id": "https://openalex.org/W4405913777",
+          "doi": "https://doi.org/10.61706/sccee1201123",
+          "title": "Hyperspectral Images Technique in Mapping and Quantifying Gypsum Case Study: Jayroud District",
+          "year": 2024,
+          "venue": "Steps for civil, constructions and environmental engineering.",
+          "type": "article",
+          "cited_by_count": 0
+        },
+        {
+          "id": "https://openalex.org/W4417486203",
+          "doi": "https://doi.org/10.1016/j.ifacol.2025.12.408",
+          "title": "Estimation of Mineralogical and Elemental Composition in Copper Concentrates Using Hyperspectral Imaging and Support Vector Machines",
+          "year": 2025,
+          "venue": "IFAC-PapersOnLine",
+          "type": "article",
+          "cited_by_count": 0
+        }
+      ]
+    },
+    {
+      "label": "Santibáñez-Leal Procemin 2022",
+      "found": false
+    }
+  ]
+}

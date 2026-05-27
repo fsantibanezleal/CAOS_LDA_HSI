@@ -19,7 +19,7 @@
     0.342436
   ],
   "perplexity": 21.2448,
-  "fit_seconds": 10.94,
+  "fit_seconds": 4.756,
   "lda_config": {
     "method": "sklearn.LatentDirichletAllocation online",
     "max_iter": 60,
@@ -28,6 +28,6 @@
     "random_state": 42
   },
   "local_artefacts_dir": "local\\v_sweep\\lda_fits\\botswana_V11_uniform_Q8",
-  "generated_at": "2026-05-26T18:29:23Z",
+  "generated_at": "2026-05-27T02:09:26Z",
   "builder": "build_v_sweep_canonical_fit v0.1"
 }

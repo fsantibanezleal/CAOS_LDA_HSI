@@ -1139,12 +1139,16 @@ def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> V
         f1 = _read_json_or_none(s.v_sweep_f1_path(scene, recipe, scheme, q))
         f2 = _read_json_or_none(s.v_sweep_f2_path(scene, recipe, scheme, q))
         f7 = _read_json_or_none(s.v_sweep_f7_path(scene, recipe, scheme, q))
+        f14 = _read_json_or_none(s.v_sweep_f14_path(scene, recipe, scheme, q))
+        f18 = _read_json_or_none(s.v_sweep_f18_path(scene, recipe, scheme, q))
         scenes_payload.append(VSweepRecipeScene(
             scene_id=scene,
             topic_view=tv,
             f1=f1,
             f2=f2,
             f7=f7,
+            f14=f14,
+            f18=f18,
         ))
     return VSweepRecipeReport(
         recipe=recipe,

@@ -1,0 +1,15 @@
+{
+  "source_scene": "botswana",
+  "target_scene": "kennedy-space-center",
+  "recipe": "V2",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "source_vocab_size": 8,
+  "H_label_bits": 3.678599,
+  "H_label_given_topic_bits": 2.544433,
+  "mutual_information_bits": 1.134166,
+  "normalised_mi": 0.308315,
+  "generated_at": "2026-05-27T02:35:58Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

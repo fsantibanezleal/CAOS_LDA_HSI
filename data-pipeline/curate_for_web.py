@@ -101,6 +101,13 @@ BUILDER_DIRS = [
     ("build_v_sweep_f2_coherence", "v_sweep/f2_coherence"),
     ("build_v_sweep_f7_topic_to_label", "v_sweep/f7_topic_to_label"),
     ("build_v_sweep_f1_bayesian", "v_sweep/f1_bayesian_posterior.json"),
+    ("build_v_sweep_f1_bootstrap", "v_sweep/f1_bootstrap_posterior.json"),
+    ("build_v_sweep_f13_shap", "v_sweep/f13_shap"),
+    ("build_v_sweep_f14_repetitiveness", "v_sweep/f14_repetitiveness"),
+    ("build_v_sweep_f17_cross_scene", "v_sweep/f17_cross_scene"),
+    ("build_v_sweep_f18_reliability", "v_sweep/f18_reliability"),
+    ("build_v_sweep_hidsag", "v_sweep/hidsag/topic_views"),
+    ("audit_citation_openalex", "v_sweep/citation_audit.json"),
     # ---- pre-precompute ("foundational") layer ------------------------
     # These directories pre-date the precompute waves but their outputs
     # are still served by the public API (subset cards, dataset

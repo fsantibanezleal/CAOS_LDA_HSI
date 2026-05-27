@@ -63,12 +63,40 @@ export type VSweepF7Record = {
   normalised_mi: number;
 };
 
+export type VSweepF14Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  top_n: number;
+  mean_pairwise_jaccard: number;
+  max_pairwise_jaccard: number;
+  n_redundant_pairs_above_0_5: number;
+};
+
+export type VSweepF18Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  n_seeds: number;
+  top_n: number;
+  seeds_used: number[];
+  mean_matched_cosine: number;
+  frac_above_0_5: number;
+  frac_above_0_7: number;
+};
+
 export type VSweepRecipeScene = {
   scene_id: string;
   topic_view?: VSweepTopicViewSummary | null;
   f1?: VSweepF1Record | null;
   f2?: VSweepF2Record | null;
   f7?: VSweepF7Record | null;
+  f14?: VSweepF14Record | null;
+  f18?: VSweepF18Record | null;
 };
 
 export type VSweepRecipeReport = {

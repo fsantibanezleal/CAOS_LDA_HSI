@@ -1,0 +1,15 @@
+{
+  "source_scene": "kennedy-space-center",
+  "target_scene": "salinas-corrected",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "source_vocab_size": 24,
+  "H_label_bits": 4.0,
+  "H_label_given_topic_bits": 4.0,
+  "mutual_information_bits": 0.0,
+  "normalised_mi": 0.0,
+  "generated_at": "2026-05-27T02:37:25Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

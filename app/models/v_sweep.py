@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class VSweepTopicViewSummary(BaseModel):
@@ -62,12 +62,42 @@ class VSweepF7Record(BaseModel):
     normalised_mi: float
 
 
+class VSweepF14Record(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    K: int
+    top_n: int
+    mean_pairwise_jaccard: float
+    max_pairwise_jaccard: float
+    n_redundant_pairs_above_0_5: int = Field(alias="n_redundant_pairs_above_0.5")
+
+
+class VSweepF18Record(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    K: int
+    n_seeds: int
+    top_n: int
+    seeds_used: list[int]
+    mean_matched_cosine: float
+    frac_above_0_5: float = Field(alias="frac_above_0.5")
+    frac_above_0_7: float = Field(alias="frac_above_0.7")
+
+
 class VSweepRecipeScene(BaseModel):
     scene_id: str
     topic_view: Optional[VSweepTopicViewSummary] = None
     f1: Optional[VSweepF1Record] = None
     f2: Optional[VSweepF2Record] = None
     f7: Optional[VSweepF7Record] = None
+    f14: Optional[VSweepF14Record] = None
+    f18: Optional[VSweepF18Record] = None
 
 
 class VSweepRecipeReport(BaseModel):
