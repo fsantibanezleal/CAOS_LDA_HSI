@@ -1,0 +1,17 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V2",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ETM",
+  "K": 12,
+  "D": 2775,
+  "V": 8,
+  "mean_doc_length": 145.0,
+  "f2_c_v": 0.353553,
+  "f14_mean_pairwise_jaccard": 1.0,
+  "fit_seconds": 5.615,
+  "status": "ok",
+  "generated_at": "2026-05-27T13:07:53Z",
+  "builder": "build_v_sweep_etm_backbone v0.1"
+}

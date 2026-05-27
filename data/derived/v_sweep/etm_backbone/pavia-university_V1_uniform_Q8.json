@@ -1,0 +1,17 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V1",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ETM",
+  "K": 9,
+  "D": 1980,
+  "V": 103,
+  "mean_doc_length": 377.5838,
+  "f2_c_v": 0.909481,
+  "f14_mean_pairwise_jaccard": 0.125559,
+  "fit_seconds": 4.883,
+  "status": "ok",
+  "generated_at": "2026-05-27T13:05:22Z",
+  "builder": "build_v_sweep_etm_backbone v0.1"
+}
