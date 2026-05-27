@@ -1,0 +1,17 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V6",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ProdLDA",
+  "K": 9,
+  "D": 1980,
+  "V": 131,
+  "mean_doc_length": 62.1106,
+  "f2_c_v": 0.579171,
+  "f14_mean_pairwise_jaccard": 0.667638,
+  "fit_seconds": 14.992,
+  "status": "ok",
+  "generated_at": "2026-05-27T12:47:00Z",
+  "builder": "build_v_sweep_prodlda_backbone v0.1"
+}

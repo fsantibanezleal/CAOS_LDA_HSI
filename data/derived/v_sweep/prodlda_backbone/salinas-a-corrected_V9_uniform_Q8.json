@@ -1,0 +1,17 @@
+{
+  "scene_id": "salinas-a-corrected",
+  "recipe": "V9",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ProdLDA",
+  "K": 4,
+  "D": 1320,
+  "V": 112,
+  "mean_doc_length": 1.0,
+  "f2_c_v": 0.751413,
+  "f14_mean_pairwise_jaccard": 0.792929,
+  "fit_seconds": 11.112,
+  "status": "ok",
+  "generated_at": "2026-05-27T12:44:33Z",
+  "builder": "build_v_sweep_prodlda_backbone v0.1"
+}
