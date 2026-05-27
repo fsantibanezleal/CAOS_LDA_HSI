@@ -1,17 +1,17 @@
 {
-  "subset": "PORPHYRY",
+  "subset": "MINERAL2",
   "recipe": "V3",
   "scheme": "uniform",
   "Q": 8,
   "K": 8,
-  "D": 504,
+  "D": 180,
   "V": 17216,
   "mean_doc_length": 2152.0,
-  "perplexity": 3259.4924,
-  "fit_seconds": 13.546,
-  "f2_c_v": 0.989397,
-  "f2_c_npmi": 0.796954,
-  "f2_u_mass": -0.009001,
+  "perplexity": 3119.5508,
+  "fit_seconds": 7.391,
+  "f2_c_v": 0.515105,
+  "f2_c_npmi": 0.246519,
+  "f2_u_mass": -0.000979,
   "f14_mean_pairwise_jaccard": 0.00188,
   "f14_max_pairwise_jaccard": 0.052632,
   "lda_config": {
@@ -20,7 +20,7 @@
     "topic_word_prior": 0.2,
     "random_state": 42
   },
-  "generated_at": "2026-05-27T03:32:29Z",
+  "generated_at": "2026-05-27T03:30:24Z",
   "builder": "build_v_sweep_hidsag v0.1",
   "vocab_size": 17216
 }

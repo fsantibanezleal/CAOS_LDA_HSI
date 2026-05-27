@@ -1,0 +1,26 @@
+{
+  "scene_id": "salinas-a-corrected",
+  "recipe": "V4",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "HDP",
+  "T_truncation": 20,
+  "K_inferred_total": 20,
+  "K_effective": 20,
+  "K_ground_truth_classes": 6,
+  "f16_model_selection_adequacy": 14,
+  "f2_c_v": 0.316228,
+  "f14_mean_pairwise_jaccard": 0.028851,
+  "fit_seconds": 0.558,
+  "D": 1320,
+  "V": 204,
+  "topic_mass_top5": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "generated_at": "2026-05-27T03:34:29Z",
+  "builder": "build_v_sweep_hdp v0.1"
+}

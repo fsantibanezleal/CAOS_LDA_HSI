@@ -1,26 +1,26 @@
 {
   "subset": "PORPHYRY",
-  "recipe": "V1",
+  "recipe": "V5",
   "scheme": "uniform",
   "Q": 8,
   "K": 8,
   "D": 504,
   "V": 2152,
-  "mean_doc_length": 13763.7262,
-  "perplexity": 2132.2919,
-  "fit_seconds": 48.018,
+  "mean_doc_length": 6504.0079,
+  "perplexity": 2199.6486,
+  "fit_seconds": 46.072,
   "f2_c_v": 0.316228,
   "f2_c_npmi": 0.0,
   "f2_u_mass": 0.001982,
-  "f14_mean_pairwise_jaccard": 0.00188,
-  "f14_max_pairwise_jaccard": 0.052632,
+  "f14_mean_pairwise_jaccard": 0.213119,
+  "f14_max_pairwise_jaccard": 0.333333,
   "lda_config": {
     "max_iter": 60,
     "doc_topic_prior": 0.45,
     "topic_word_prior": 0.2,
     "random_state": 42
   },
-  "generated_at": "2026-05-27T03:32:02Z",
+  "generated_at": "2026-05-27T03:33:59Z",
   "builder": "build_v_sweep_hidsag v0.1",
   "vocab_size": 2152
 }
