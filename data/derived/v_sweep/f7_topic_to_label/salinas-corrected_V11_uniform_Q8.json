@@ -101,6 +101,6 @@
   "recipe": "V11",
   "scheme": "uniform",
   "Q": 8,
-  "generated_at": "2026-05-26T18:35:49Z",
+  "generated_at": "2026-05-27T02:09:37Z",
   "builder": "build_v_sweep_f7_topic_to_label v0.1"
 }

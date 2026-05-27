@@ -1,0 +1,15 @@
+{
+  "source_scene": "pavia-university",
+  "target_scene": "botswana",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 4,
+  "source_vocab_size": 24,
+  "H_label_bits": 3.768685,
+  "H_label_given_topic_bits": 3.22501,
+  "mutual_information_bits": 0.543675,
+  "normalised_mi": 0.144261,
+  "generated_at": "2026-05-27T02:37:24Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

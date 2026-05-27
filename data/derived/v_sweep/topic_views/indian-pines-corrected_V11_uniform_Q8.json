@@ -19,7 +19,7 @@
     0.34084
   ],
   "perplexity": 21.8955,
-  "fit_seconds": 3.93,
+  "fit_seconds": 4.552,
   "lda_config": {
     "method": "sklearn.LatentDirichletAllocation online",
     "max_iter": 60,
@@ -28,6 +28,6 @@
     "random_state": 42
   },
   "local_artefacts_dir": "local\\v_sweep\\lda_fits\\indian-pines-corrected_V11_uniform_Q8",
-  "generated_at": "2026-05-26T17:20:13Z",
+  "generated_at": "2026-05-27T02:09:03Z",
   "builder": "build_v_sweep_canonical_fit v0.1"
 }

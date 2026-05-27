@@ -1,0 +1,15 @@
+{
+  "source_scene": "kennedy-space-center",
+  "target_scene": "indian-pines-corrected",
+  "recipe": "V11",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "source_vocab_size": 32,
+  "H_label_bits": 3.815683,
+  "H_label_given_topic_bits": 3.662534,
+  "mutual_information_bits": 0.153149,
+  "normalised_mi": 0.040137,
+  "generated_at": "2026-05-27T02:38:15Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

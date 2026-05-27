@@ -339,10 +339,15 @@ export default function MethodologyTheory() {
             manuscript).
           </li>
           <li>
-            Stammbach et al. (2024) —{" "}
-            <em>Re-visiting word intrusion</em>. TACL. Modern framework for
-            validating topics with LLM oracles; underpins the Workspace{" "}
-            <em>LLM tea-leaves</em> tab (§7 of the journal manuscript).
+            Stammbach et al. (2023) —{" "}
+            <em>
+              Revisiting Automated Topic Model Evaluation with Large Language
+              Models
+            </em>
+            . Proceedings of EMNLP 2023, pp. 9348–9357 (arXiv:2305.12152).
+            Modern framework for validating topics with LLM oracles; underpins
+            the Workspace <em>LLM tea-leaves</em> tab (§7 of the journal
+            manuscript).
           </li>
         </ul>
       </Section>
