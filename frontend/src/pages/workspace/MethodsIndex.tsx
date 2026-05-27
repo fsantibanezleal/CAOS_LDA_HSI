@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { METHOD_CATALOG, type MethodEntry } from "./methodCatalog";
+import { WinMatrix } from "./WinMatrix";
 
 export default function MethodsIndex() {
   const { t } = useTranslation(["pages"]);
@@ -47,6 +48,14 @@ export default function MethodsIndex() {
           <MethodTile key={method.id} method={method} />
         ))}
       </div>
+
+      <section
+        className="mt-10 mb-4 text-[13px] uppercase tracking-widest font-semibold"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        {t("pages:workspace_methods.index.matrix_heading")}
+      </section>
+      <WinMatrix />
     </div>
   );
 }

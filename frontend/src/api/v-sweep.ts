@@ -50,11 +50,25 @@ export type VSweepF2Record = {
   c_v?: number | null;
 };
 
+export type VSweepF7Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  n_classes: number;
+  H_label_marginal_bits: number;
+  H_label_given_topic_bits: number;
+  mutual_information_bits: number;
+  normalised_mi: number;
+};
+
 export type VSweepRecipeScene = {
   scene_id: string;
   topic_view?: VSweepTopicViewSummary | null;
   f1?: VSweepF1Record | null;
   f2?: VSweepF2Record | null;
+  f7?: VSweepF7Record | null;
 };
 
 export type VSweepRecipeReport = {

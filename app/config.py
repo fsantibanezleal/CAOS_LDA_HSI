@@ -380,9 +380,16 @@ class Settings(BaseSettings):
     def v_sweep_f2_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
         return self.v_sweep_dir / "f2_coherence" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
 
+    def v_sweep_f7_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f7_topic_to_label" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
     @property
     def v_sweep_f1_win_matrix_path(self) -> Path:
         return self.v_sweep_dir / "f1_win_matrix.json"
+
+    @property
+    def v_sweep_f1_bayesian_posterior_path(self) -> Path:
+        return self.v_sweep_dir / "f1_bayesian_posterior.json"
 
 
 @lru_cache

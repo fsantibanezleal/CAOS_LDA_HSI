@@ -1,0 +1,29 @@
+{
+  "recipe": "V7",
+  "scene_id": "pavia-university",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "D": 1980,
+  "V": 197,
+  "mean_doc_length": 5.9788,
+  "raw_logistic_per_fold": [
+    0.816353,
+    0.773638,
+    0.793916,
+    0.800527,
+    0.839401
+  ],
+  "topic_routed_soft_per_fold": [
+    0.816144,
+    0.800673,
+    0.825976,
+    0.813203,
+    0.850563
+  ],
+  "raw_logistic_mean": 0.804767,
+  "topic_routed_soft_mean": 0.821312,
+  "gain_routed_over_raw": 0.016545,
+  "status": "ok",
+  "generated_at": "2026-05-26T21:53:08Z"
+}
