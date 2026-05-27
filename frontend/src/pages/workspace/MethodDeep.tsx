@@ -305,6 +305,13 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
             >
               F-18 0.7
             </th>
+            <th
+              className="text-right px-3 py-1.5 border"
+              style={{ borderColor: "var(--color-border)" }}
+              title="HDP backbone F-2 c_v (alternative model selection)"
+            >
+              HDP c_v
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -382,6 +389,14 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
               >
                 {s.f18?.frac_above_0_7 !== null && s.f18?.frac_above_0_7 !== undefined
                   ? s.f18.frac_above_0_7.toFixed(3)
+                  : "-"}
+              </td>
+              <td
+                className="px-3 py-1 border text-right"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {s.hdp?.f2_c_v !== null && s.hdp?.f2_c_v !== undefined
+                  ? s.hdp.f2_c_v.toFixed(3)
                   : "-"}
               </td>
             </tr>
