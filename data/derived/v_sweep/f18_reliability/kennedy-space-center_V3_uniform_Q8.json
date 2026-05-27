@@ -1,0 +1,35 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V3",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "n_seeds": 5,
+  "top_n": 10,
+  "seeds_used": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mean_matched_cosine": 0.43,
+  "frac_above_0.5": 0.425,
+  "frac_above_0.7": 0.258333,
+  "per_pair_cosine_mean_per_topic": [
+    0.29,
+    0.36,
+    0.48,
+    0.36,
+    0.58,
+    0.47,
+    0.52,
+    0.5,
+    0.39,
+    0.34,
+    0.58,
+    0.29
+  ],
+  "generated_at": "2026-05-27T04:43:43Z",
+  "builder": "build_v_sweep_f18_reliability v0.1"
+}

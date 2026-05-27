@@ -1,0 +1,26 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "n_seeds": 5,
+  "top_n": 10,
+  "seeds_used": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mean_matched_cosine": 0.806667,
+  "frac_above_0.5": 1.0,
+  "frac_above_0.7": 0.933333,
+  "per_pair_cosine_mean_per_topic": [
+    0.8,
+    0.79,
+    0.83
+  ],
+  "generated_at": "2026-05-27T05:31:46Z",
+  "builder": "build_v_sweep_f18_reliability v0.1"
+}
