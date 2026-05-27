@@ -107,6 +107,8 @@ BUILDER_DIRS = [
     ("build_v_sweep_f17_cross_scene", "v_sweep/f17_cross_scene"),
     ("build_v_sweep_f18_reliability", "v_sweep/f18_reliability"),
     ("build_v_sweep_hidsag", "v_sweep/hidsag/topic_views"),
+    ("build_v_sweep_hidsag_f7", "v_sweep/hidsag/f7_topic_to_owner"),
+    ("build_v_sweep_hdp", "v_sweep/hdp_backbone"),
     ("audit_citation_openalex", "v_sweep/citation_audit.json"),
     # ---- pre-precompute ("foundational") layer ------------------------
     # These directories pre-date the precompute waves but their outputs
