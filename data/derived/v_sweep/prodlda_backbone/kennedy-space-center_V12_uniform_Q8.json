@@ -1,0 +1,17 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V12",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ProdLDA",
+  "K": 12,
+  "D": 2686,
+  "V": 1408,
+  "mean_doc_length": 176.0,
+  "f2_c_v": 0.858233,
+  "f14_mean_pairwise_jaccard": 0.251122,
+  "fit_seconds": 22.078,
+  "status": "ok",
+  "generated_at": "2026-05-27T12:53:04Z",
+  "builder": "build_v_sweep_prodlda_backbone v0.1"
+}
