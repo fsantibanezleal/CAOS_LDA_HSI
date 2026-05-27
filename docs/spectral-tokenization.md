@@ -212,7 +212,7 @@ The next tokenizer implementation should expose:
 - tests for deterministic output under a fixed seed
 - size checks for generated assets
 
-## Known Gaps
+## Known Gaps (pre-V-sweep)
 
 - Current public app assets do not yet store calibrated band centers for
   every scene.
@@ -223,3 +223,63 @@ The next tokenizer implementation should expose:
 - Topic stability now has a first automated multi-seed component report
   in the local core, but there is still no full sensitivity layer across
   preprocessing, tokenizers, and scene splits.
+
+## V-sweep (issue #606, 2026-05-26)
+
+The above gaps motivated a full V-sweep where twelve concrete wordification
+recipes are implemented and benchmarked against the twelve-axis evaluation
+framework. The recipes V1..V12 cover the design space:
+
+| V | Token alphabet | Construction |
+|---|---|---|
+| V1  | (band, q-bin)            | canonical, every band emits one token |
+| V2  | q-bin (band-agnostic)    | drop band identity; histogram of intensities |
+| V3  | joint (band, bin)        | Cartesian product vocab `B*Q` |
+| V4  | derivative-bin           | local d/dλ slope |
+| V5  | 2nd-derivative bin       | curvature |
+| V6  | wavelet coefficient      | Db4 level-4 DWT |
+| V7  | absorption triplet       | continuum-removed + 6 features (centroid, depth, area) |
+| V8  | endmember-fraction       | NFINDR + NNLS unmixing |
+| V9  | region + SAM             | Felzenszwalb + spectral-angle to region mean |
+| V10 | band group               | VNIR / SWIR-1 / SWIR-2 means |
+| V11 | product-quantisation     | nanopq M=4 sub-vectors of Q codewords |
+| V12 | GMM-component token      | global GMM over band intensities |
+
+Each recipe has been built deterministically for the six labelled scenes
+under three quantization schemes (uniform / quantile / lloyd_max) × three
+Q values (8 / 16 / 32) = 108 combinations per recipe × 6 scenes = 648
+corpora. Topic models are pre-fit only on the canonical `uniform / Q=8`
+combination per recipe.
+
+### V-sweep result tables (uniform / Q=8 only)
+
+See the internal technical report `internal_tech_report/03_v_sweep_results.md`
+in the paper repo for the full numbers across F-1 macro-F1, F-2 c_v
+coherence and F-7 normalised MI.
+
+Cross-axis winner counts (5 labelled scenes; Botswana row partial):
+
+| Recipe | F-1 wins | F-2 wins | F-7 wins | Total |
+|---|---|---|---|---|
+| V12 | 2 | 3 | 2 | **7** |
+| V3  | 0 | 0 | 3 | 3 |
+| V2  | 2 | 0 | 0 | 2 |
+| V1  | 1 | 2 | 0 | 3 |
+| V8  | 1 | 0 | 0 | 1 |
+
+V1 wins zero F-7 cells across all scenes — the strongest single-axis
+finding of the sweep. The canonical V1 of P1 is the right *reproducibility*
+default but not a universal best.
+
+### UI / code discrepancies fixed during the sweep
+
+- **V3**: original schematic claimed "concat trigram" (3-band context);
+  the implementation is joint `(band, bin)` Cartesian product without
+  context. The "trigram" framing was a documentation error.
+- **V9**: original schematic claimed "SLIC-500 superpixel"; the
+  implementation is Felzenszwalb region + spectral-angle to region mean.
+  No SLIC. No superpixel aggregation.
+- **V11**: nanopq codebook fit is not explicitly seeded; results may
+  drift across nanopq versions. Marked "approximate" in P3 until fixed.
+
+These are tracked in `internal_tech_report/01_design_space.md`.

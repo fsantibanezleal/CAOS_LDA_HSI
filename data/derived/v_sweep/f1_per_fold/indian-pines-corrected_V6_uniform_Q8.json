@@ -1,0 +1,29 @@
+{
+  "recipe": "V6",
+  "scene_id": "indian-pines-corrected",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "D": 2812,
+  "V": 227,
+  "mean_doc_length": 75.4331,
+  "raw_logistic_per_fold": [
+    0.791008,
+    0.861797,
+    0.838799,
+    0.843076,
+    0.831114
+  ],
+  "topic_routed_soft_per_fold": [
+    0.800984,
+    0.866688,
+    0.845054,
+    0.847056,
+    0.836607
+  ],
+  "raw_logistic_mean": 0.833159,
+  "topic_routed_soft_mean": 0.839278,
+  "gain_routed_over_raw": 0.006119,
+  "status": "ok",
+  "generated_at": "2026-05-26T19:08:43Z"
+}

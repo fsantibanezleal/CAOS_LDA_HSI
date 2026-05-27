@@ -1,0 +1,283 @@
+{
+  "method_evaluated": "topic_routed_soft",
+  "scheme": "uniform",
+  "Q": 8,
+  "recipes": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12"
+  ],
+  "n_total_observations": 360,
+  "B": 5000,
+  "random_state": 42,
+  "recipe_posteriors": [
+    {
+      "recipe": "V12",
+      "n_observations": 30,
+      "posterior_mean": 0.92168,
+      "posterior_std": 0.011203,
+      "hdi94_lo": 0.900495,
+      "hdi94_hi": 0.942433
+    },
+    {
+      "recipe": "V2",
+      "n_observations": 30,
+      "posterior_mean": 0.917134,
+      "posterior_std": 0.012383,
+      "hdi94_lo": 0.893183,
+      "hdi94_hi": 0.939527
+    },
+    {
+      "recipe": "V11",
+      "n_observations": 30,
+      "posterior_mean": 0.916281,
+      "posterior_std": 0.011451,
+      "hdi94_lo": 0.893931,
+      "hdi94_hi": 0.9375
+    },
+    {
+      "recipe": "V8",
+      "n_observations": 30,
+      "posterior_mean": 0.916067,
+      "posterior_std": 0.012039,
+      "hdi94_lo": 0.893271,
+      "hdi94_hi": 0.938604
+    },
+    {
+      "recipe": "V3",
+      "n_observations": 30,
+      "posterior_mean": 0.915638,
+      "posterior_std": 0.012152,
+      "hdi94_lo": 0.892193,
+      "hdi94_hi": 0.93811
+    },
+    {
+      "recipe": "V1",
+      "n_observations": 30,
+      "posterior_mean": 0.915289,
+      "posterior_std": 0.012127,
+      "hdi94_lo": 0.892377,
+      "hdi94_hi": 0.937539
+    },
+    {
+      "recipe": "V4",
+      "n_observations": 30,
+      "posterior_mean": 0.914889,
+      "posterior_std": 0.011887,
+      "hdi94_lo": 0.892672,
+      "hdi94_hi": 0.936722
+    },
+    {
+      "recipe": "V5",
+      "n_observations": 30,
+      "posterior_mean": 0.914302,
+      "posterior_std": 0.012186,
+      "hdi94_lo": 0.890246,
+      "hdi94_hi": 0.936725
+    },
+    {
+      "recipe": "V9",
+      "n_observations": 30,
+      "posterior_mean": 0.914059,
+      "posterior_std": 0.012069,
+      "hdi94_lo": 0.890475,
+      "hdi94_hi": 0.936034
+    },
+    {
+      "recipe": "V7",
+      "n_observations": 30,
+      "posterior_mean": 0.914031,
+      "posterior_std": 0.011674,
+      "hdi94_lo": 0.89197,
+      "hdi94_hi": 0.935422
+    },
+    {
+      "recipe": "V10",
+      "n_observations": 30,
+      "posterior_mean": 0.913326,
+      "posterior_std": 0.012678,
+      "hdi94_lo": 0.888101,
+      "hdi94_hi": 0.936409
+    },
+    {
+      "recipe": "V6",
+      "n_observations": 30,
+      "posterior_mean": 0.913156,
+      "posterior_std": 0.012307,
+      "hdi94_lo": 0.889268,
+      "hdi94_hi": 0.936162
+    }
+  ],
+  "pairwise_p_a_gt_b": {
+    "V1": {
+      "V2": 0.4592,
+      "V3": 0.492,
+      "V4": 0.506,
+      "V5": 0.5224,
+      "V6": 0.5512,
+      "V7": 0.5334,
+      "V8": 0.4796,
+      "V9": 0.5248,
+      "V10": 0.5456,
+      "V11": 0.4728,
+      "V12": 0.351
+    },
+    "V2": {
+      "V1": 0.5408,
+      "V3": 0.5378,
+      "V4": 0.552,
+      "V5": 0.5682,
+      "V6": 0.5966,
+      "V7": 0.5772,
+      "V8": 0.5316,
+      "V9": 0.57,
+      "V10": 0.5846,
+      "V11": 0.523,
+      "V12": 0.3896
+    },
+    "V3": {
+      "V1": 0.508,
+      "V2": 0.4622,
+      "V4": 0.512,
+      "V5": 0.539,
+      "V6": 0.56,
+      "V7": 0.5374,
+      "V8": 0.5042,
+      "V9": 0.5344,
+      "V10": 0.5474,
+      "V11": 0.4838,
+      "V12": 0.359
+    },
+    "V4": {
+      "V1": 0.494,
+      "V2": 0.448,
+      "V3": 0.488,
+      "V5": 0.5124,
+      "V6": 0.5436,
+      "V7": 0.5122,
+      "V8": 0.4744,
+      "V9": 0.5166,
+      "V10": 0.5362,
+      "V11": 0.465,
+      "V12": 0.3416
+    },
+    "V5": {
+      "V1": 0.4776,
+      "V2": 0.4318,
+      "V3": 0.461,
+      "V4": 0.4876,
+      "V6": 0.5316,
+      "V7": 0.506,
+      "V8": 0.457,
+      "V9": 0.5008,
+      "V10": 0.523,
+      "V11": 0.45,
+      "V12": 0.3304
+    },
+    "V6": {
+      "V1": 0.4488,
+      "V2": 0.4034,
+      "V3": 0.44,
+      "V4": 0.4564,
+      "V5": 0.4684,
+      "V7": 0.4784,
+      "V8": 0.4326,
+      "V9": 0.4756,
+      "V10": 0.4926,
+      "V11": 0.4292,
+      "V12": 0.3078
+    },
+    "V7": {
+      "V1": 0.4666,
+      "V2": 0.4228,
+      "V3": 0.4626,
+      "V4": 0.4878,
+      "V5": 0.494,
+      "V6": 0.5216,
+      "V8": 0.4496,
+      "V9": 0.4982,
+      "V10": 0.513,
+      "V11": 0.4462,
+      "V12": 0.3174
+    },
+    "V8": {
+      "V1": 0.5204,
+      "V2": 0.4684,
+      "V3": 0.4958,
+      "V4": 0.5256,
+      "V5": 0.543,
+      "V6": 0.5674,
+      "V7": 0.5504,
+      "V9": 0.541,
+      "V10": 0.559,
+      "V11": 0.4984,
+      "V12": 0.374
+    },
+    "V9": {
+      "V1": 0.4752,
+      "V2": 0.43,
+      "V3": 0.4656,
+      "V4": 0.4834,
+      "V5": 0.4992,
+      "V6": 0.5244,
+      "V7": 0.5018,
+      "V8": 0.459,
+      "V10": 0.5182,
+      "V11": 0.4498,
+      "V12": 0.3256
+    },
+    "V10": {
+      "V1": 0.4544,
+      "V2": 0.4154,
+      "V3": 0.4526,
+      "V4": 0.4638,
+      "V5": 0.477,
+      "V6": 0.5074,
+      "V7": 0.487,
+      "V8": 0.441,
+      "V9": 0.4818,
+      "V11": 0.436,
+      "V12": 0.3178
+    },
+    "V11": {
+      "V1": 0.5272,
+      "V2": 0.477,
+      "V3": 0.5162,
+      "V4": 0.535,
+      "V5": 0.55,
+      "V6": 0.5708,
+      "V7": 0.5538,
+      "V8": 0.5016,
+      "V9": 0.5502,
+      "V10": 0.564,
+      "V12": 0.3702
+    },
+    "V12": {
+      "V1": 0.649,
+      "V2": 0.6104,
+      "V3": 0.641,
+      "V4": 0.6584,
+      "V5": 0.6696,
+      "V6": 0.6922,
+      "V7": 0.6826,
+      "V8": 0.626,
+      "V9": 0.6744,
+      "V10": 0.6822,
+      "V11": 0.6298
+    }
+  },
+  "spread": 0.008524,
+  "verdict": "tight-overlap",
+  "model_description": "Bootstrap percentile intervals (B=5000). Per-recipe means are computed by resampling the per-fold macro-F1 scores with replacement and recomputing the mean. The 3%-97% quantile of the bootstrap distribution is reported as HDI94 by analogy. Pairwise probability is the empirical fraction of bootstrap pairs where the first recipe's mean exceeds the second's.",
+  "generated_at": "2026-05-27T01:33:18Z",
+  "builder_version": "build_v_sweep_f1_bootstrap v0.1"
+}

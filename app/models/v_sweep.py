@@ -49,11 +49,25 @@ class VSweepF2Record(BaseModel):
     c_v: Optional[float] = None
 
 
+class VSweepF7Record(BaseModel):
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    K: int
+    n_classes: int
+    H_label_marginal_bits: float
+    H_label_given_topic_bits: float
+    mutual_information_bits: float
+    normalised_mi: float
+
+
 class VSweepRecipeScene(BaseModel):
     scene_id: str
     topic_view: Optional[VSweepTopicViewSummary] = None
     f1: Optional[VSweepF1Record] = None
     f2: Optional[VSweepF2Record] = None
+    f7: Optional[VSweepF7Record] = None
 
 
 class VSweepRecipeReport(BaseModel):

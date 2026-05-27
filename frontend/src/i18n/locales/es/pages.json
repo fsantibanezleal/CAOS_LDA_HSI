@@ -729,7 +729,8 @@
       "title": "Workspace por métodos",
       "lead": "Explora cada método de topic modelling en su propia página: cómo se construyen los tokens, la hipótesis teórica, el sweep F-eje, y comparadores lado a lado. Doce recetas de wordification (V1..V12) más cuatro baselines neuronales.",
       "wordifications_heading": "Recetas de wordification",
-      "neural_heading": "Baselines neuronales"
+      "neural_heading": "Baselines neuronales",
+      "matrix_heading": "Matriz de resultados (F-1 / F-2 / F-7)"
     },
     "deep": {
       "not_found": "No existe un método con id {{id}}.",
@@ -838,6 +839,9 @@
         "summary": "Autoencoder variacional desentangled. Ya evaluado.",
         "theory": "Beta-VAE favorece dimensiones factorizadas vía un término KL re-ponderado. Como el CAE, sólo aquí para comparación; no se re-corre por receta."
       }
+    },
+    "matrix": {
+      "lead": "Doce recetas evaluadas en tres F-ejes (F-1 macro-F1, F-2 c_v, F-7 NMI normalizada). Celdas resaltadas = ganadora por escena por eje. La matriz es el headline del V-sweep: V12 gana F-2 en la mayoría de escenas y F-7 en 2; V3 gana F-7 en 3; V1 (canónica actual) gana F-2 en 2 y F-7 en 0."
     }
   },
   "not_found": {

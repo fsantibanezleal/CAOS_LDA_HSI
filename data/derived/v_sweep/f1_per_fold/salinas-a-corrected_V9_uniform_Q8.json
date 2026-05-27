@@ -1,0 +1,29 @@
+{
+  "recipe": "V9",
+  "scene_id": "salinas-a-corrected",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 4,
+  "D": 1320,
+  "V": 112,
+  "mean_doc_length": 1.0,
+  "raw_logistic_per_fold": [
+    0.996212,
+    1.0,
+    0.996212,
+    0.996212,
+    0.996212
+  ],
+  "topic_routed_soft_per_fold": [
+    0.992465,
+    1.0,
+    0.996212,
+    0.996212,
+    0.996212
+  ],
+  "raw_logistic_mean": 0.996969,
+  "topic_routed_soft_mean": 0.99622,
+  "gain_routed_over_raw": -0.000749,
+  "status": "ok",
+  "generated_at": "2026-05-26T21:34:31Z"
+}
