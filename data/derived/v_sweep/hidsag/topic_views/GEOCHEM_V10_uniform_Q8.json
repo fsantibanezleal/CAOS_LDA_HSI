@@ -1,0 +1,26 @@
+{
+  "subset": "GEOCHEM",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "D": 954,
+  "V": 24,
+  "mean_doc_length": 3.0,
+  "perplexity": 5.3951,
+  "fit_seconds": 5.963,
+  "f2_c_v": 0.261327,
+  "f2_c_npmi": -0.101122,
+  "f2_u_mass": -3.71623,
+  "f14_mean_pairwise_jaccard": 0.538462,
+  "f14_max_pairwise_jaccard": 0.538462,
+  "lda_config": {
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "generated_at": "2026-05-27T03:13:56Z",
+  "builder": "build_v_sweep_hidsag v0.1",
+  "vocab_size": 24
+}

@@ -1,0 +1,15 @@
+{
+  "source_scene": "botswana",
+  "target_scene": "salinas-a-corrected",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "source_vocab_size": 24,
+  "H_label_bits": 2.584963,
+  "H_label_given_topic_bits": 1.85459,
+  "mutual_information_bits": 0.730373,
+  "normalised_mi": 0.282547,
+  "generated_at": "2026-05-27T02:37:28Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

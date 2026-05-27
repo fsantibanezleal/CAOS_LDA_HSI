@@ -1,0 +1,152 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 24,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 10,
+          "token": "SWIR1_q02",
+          "mean_abs_shap": 0.152427
+        },
+        {
+          "vocab_index": 11,
+          "token": "SWIR1_q03",
+          "mean_abs_shap": 0.151154
+        },
+        {
+          "vocab_index": 23,
+          "token": "SWIR2_q07",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "SWIR2_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 19,
+          "token": "SWIR2_q03",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 18,
+          "token": "SWIR2_q02",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "SWIR2_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "SWIR2_q04",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 10,
+          "token": "SWIR1_q02",
+          "mean_abs_shap": 0.102043
+        },
+        {
+          "vocab_index": 11,
+          "token": "SWIR1_q03",
+          "mean_abs_shap": 0.011688
+        },
+        {
+          "vocab_index": 23,
+          "token": "SWIR2_q07",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "SWIR2_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 19,
+          "token": "SWIR2_q03",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 18,
+          "token": "SWIR2_q02",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "SWIR2_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "SWIR2_q04",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 10,
+          "token": "SWIR1_q02",
+          "mean_abs_shap": 0.25447
+        },
+        {
+          "vocab_index": 11,
+          "token": "SWIR1_q03",
+          "mean_abs_shap": 0.139467
+        },
+        {
+          "vocab_index": 23,
+          "token": "SWIR2_q07",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "SWIR2_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 19,
+          "token": "SWIR2_q03",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 18,
+          "token": "SWIR2_q02",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "SWIR2_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "SWIR2_q04",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-27T03:22:13Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.15
+}

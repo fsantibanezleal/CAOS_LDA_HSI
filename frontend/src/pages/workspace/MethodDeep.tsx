@@ -291,6 +291,20 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
             >
               F-7 NMI
             </th>
+            <th
+              className="text-right px-3 py-1.5 border"
+              style={{ borderColor: "var(--color-border)" }}
+              title="F-14 mean off-diagonal top-10 jaccard (lower = more diverse)"
+            >
+              F-14 jacc
+            </th>
+            <th
+              className="text-right px-3 py-1.5 border"
+              style={{ borderColor: "var(--color-border)" }}
+              title="F-18 fraction of seed-pair topic alignments with cosine > 0.7"
+            >
+              F-18 0.7
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -352,6 +366,22 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
               >
                 {s.f7?.normalised_mi !== null && s.f7?.normalised_mi !== undefined
                   ? s.f7.normalised_mi.toFixed(3)
+                  : "-"}
+              </td>
+              <td
+                className="px-3 py-1 border text-right"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {s.f14?.mean_pairwise_jaccard !== null && s.f14?.mean_pairwise_jaccard !== undefined
+                  ? s.f14.mean_pairwise_jaccard.toFixed(3)
+                  : "-"}
+              </td>
+              <td
+                className="px-3 py-1 border text-right"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {s.f18?.frac_above_0_7 !== null && s.f18?.frac_above_0_7 !== undefined
+                  ? s.f18.frac_above_0_7.toFixed(3)
                   : "-"}
               </td>
             </tr>

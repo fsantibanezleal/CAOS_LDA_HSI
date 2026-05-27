@@ -1,0 +1,15 @@
+{
+  "source_scene": "indian-pines-corrected",
+  "target_scene": "salinas-a-corrected",
+  "recipe": "V11",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "source_vocab_size": 32,
+  "H_label_bits": 2.584963,
+  "H_label_given_topic_bits": 1.737795,
+  "mutual_information_bits": 0.847168,
+  "normalised_mi": 0.327729,
+  "generated_at": "2026-05-27T02:38:00Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

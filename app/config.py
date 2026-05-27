@@ -383,6 +383,12 @@ class Settings(BaseSettings):
     def v_sweep_f7_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
         return self.v_sweep_dir / "f7_topic_to_label" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
 
+    def v_sweep_f14_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f14_repetitiveness" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    def v_sweep_f18_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f18_reliability" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
     @property
     def v_sweep_f1_win_matrix_path(self) -> Path:
         return self.v_sweep_dir / "f1_win_matrix.json"

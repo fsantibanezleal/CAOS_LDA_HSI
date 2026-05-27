@@ -1,0 +1,197 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V9",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 4,
+  "V": 536,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 248,
+          "token": "region042_q00",
+          "mean_abs_shap": 0.036042
+        },
+        {
+          "vocab_index": 152,
+          "token": "region025_q00",
+          "mean_abs_shap": 0.024494
+        },
+        {
+          "vocab_index": 448,
+          "token": "region078_q00",
+          "mean_abs_shap": 0.022847
+        },
+        {
+          "vocab_index": 488,
+          "token": "region094_q00",
+          "mean_abs_shap": 0.022252
+        },
+        {
+          "vocab_index": 252,
+          "token": "region042_q04",
+          "mean_abs_shap": 0.021106
+        },
+        {
+          "vocab_index": 251,
+          "token": "region042_q03",
+          "mean_abs_shap": 0.021087
+        },
+        {
+          "vocab_index": 344,
+          "token": "region058_q00",
+          "mean_abs_shap": 0.015891
+        },
+        {
+          "vocab_index": 216,
+          "token": "region037_q00",
+          "mean_abs_shap": 0.013355
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 344,
+          "token": "region058_q00",
+          "mean_abs_shap": 0.046601
+        },
+        {
+          "vocab_index": 488,
+          "token": "region094_q00",
+          "mean_abs_shap": 0.021306
+        },
+        {
+          "vocab_index": 119,
+          "token": "region018_q07",
+          "mean_abs_shap": 0.021116
+        },
+        {
+          "vocab_index": 248,
+          "token": "region042_q00",
+          "mean_abs_shap": 0.012164
+        },
+        {
+          "vocab_index": 216,
+          "token": "region037_q00",
+          "mean_abs_shap": 0.01161
+        },
+        {
+          "vocab_index": 449,
+          "token": "region078_q01",
+          "mean_abs_shap": 0.011415
+        },
+        {
+          "vocab_index": 489,
+          "token": "region094_q01",
+          "mean_abs_shap": 0.01127
+        },
+        {
+          "vocab_index": 114,
+          "token": "region018_q02",
+          "mean_abs_shap": 0.01107
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 488,
+          "token": "region094_q00",
+          "mean_abs_shap": 0.063941
+        },
+        {
+          "vocab_index": 216,
+          "token": "region037_q00",
+          "mean_abs_shap": 0.036526
+        },
+        {
+          "vocab_index": 153,
+          "token": "region025_q01",
+          "mean_abs_shap": 0.023633
+        },
+        {
+          "vocab_index": 304,
+          "token": "region050_q00",
+          "mean_abs_shap": 0.021126
+        },
+        {
+          "vocab_index": 393,
+          "token": "region068_q01",
+          "mean_abs_shap": 0.020407
+        },
+        {
+          "vocab_index": 344,
+          "token": "region058_q00",
+          "mean_abs_shap": 0.01595
+        },
+        {
+          "vocab_index": 32,
+          "token": "region005_q00",
+          "mean_abs_shap": 0.012866
+        },
+        {
+          "vocab_index": 489,
+          "token": "region094_q01",
+          "mean_abs_shap": 0.012258
+        }
+      ]
+    },
+    {
+      "topic": 3,
+      "features": [
+        {
+          "vocab_index": 489,
+          "token": "region094_q01",
+          "mean_abs_shap": 0.040627
+        },
+        {
+          "vocab_index": 219,
+          "token": "region037_q03",
+          "mean_abs_shap": 0.03694
+        },
+        {
+          "vocab_index": 217,
+          "token": "region037_q01",
+          "mean_abs_shap": 0.031379
+        },
+        {
+          "vocab_index": 250,
+          "token": "region042_q02",
+          "mean_abs_shap": 0.029223
+        },
+        {
+          "vocab_index": 345,
+          "token": "region058_q01",
+          "mean_abs_shap": 0.024036
+        },
+        {
+          "vocab_index": 488,
+          "token": "region094_q00",
+          "mean_abs_shap": 0.021491
+        },
+        {
+          "vocab_index": 344,
+          "token": "region058_q00",
+          "mean_abs_shap": 0.013856
+        },
+        {
+          "vocab_index": 466,
+          "token": "region085_q02",
+          "mean_abs_shap": 0.012424
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-27T03:22:13Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.88
+}

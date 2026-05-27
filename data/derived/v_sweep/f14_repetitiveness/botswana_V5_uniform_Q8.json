@@ -1,0 +1,13 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V5",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "top_n": 10,
+  "mean_pairwise_jaccard": 0.344588,
+  "max_pairwise_jaccard": 0.666667,
+  "n_redundant_pairs_above_0.5": 11,
+  "generated_at": "2026-05-27T02:46:34Z",
+  "builder": "build_v_sweep_f14_repetitiveness v0.1"
+}
