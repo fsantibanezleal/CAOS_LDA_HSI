@@ -1,0 +1,14 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V13",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 128,
+  "top_n": 10,
+  "u_mass": -2.961228,
+  "c_npmi": -0.120486,
+  "c_v": 0.290584,
+  "generated_at": "2026-05-27T12:17:05Z",
+  "builder": "build_v_sweep_f2_coherence v0.1"
+}

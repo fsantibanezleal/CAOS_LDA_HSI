@@ -61,7 +61,7 @@ LABELLED_SCENES = [
     "kennedy-space-center",
     "botswana",
 ]
-RECIPES = [f"V{i}" for i in range(1, 13)]
+RECIPES = [f"V{i}" for i in range(1, 14)]
 SAMPLES_PER_CLASS = 220
 N_FOLDS = 5
 RANDOM_STATE = 42
