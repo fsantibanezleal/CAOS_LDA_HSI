@@ -1,0 +1,14 @@
+{
+  "n_owners": 99,
+  "K": 3,
+  "H_owner_bits": 6.629357,
+  "H_owner_given_topic_bits": 5.383781,
+  "mutual_information_bits": 1.245575,
+  "normalised_mi": 0.187888,
+  "subset": "MINERAL1",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-27T03:40:00Z",
+  "builder": "build_v_sweep_hidsag_f7 v0.1"
+}

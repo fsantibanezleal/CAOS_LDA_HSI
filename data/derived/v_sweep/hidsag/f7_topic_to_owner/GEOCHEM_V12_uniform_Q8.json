@@ -1,0 +1,14 @@
+{
+  "n_owners": 28,
+  "K": 8,
+  "H_owner_bits": 4.784524,
+  "H_owner_given_topic_bits": 4.649733,
+  "mutual_information_bits": 0.134791,
+  "normalised_mi": 0.028172,
+  "subset": "GEOCHEM",
+  "recipe": "V12",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-27T03:40:00Z",
+  "builder": "build_v_sweep_hidsag_f7 v0.1"
+}
