@@ -1,0 +1,26 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V7",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "n_seeds": 5,
+  "top_n": 10,
+  "seeds_used": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mean_matched_cosine": 0.556667,
+  "frac_above_0.5": 0.666667,
+  "frac_above_0.7": 0.066667,
+  "per_pair_cosine_mean_per_topic": [
+    0.68,
+    0.54,
+    0.45
+  ],
+  "generated_at": "2026-05-27T04:30:07Z",
+  "builder": "build_v_sweep_f18_reliability v0.1"
+}
