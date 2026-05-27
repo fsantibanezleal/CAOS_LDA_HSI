@@ -1,0 +1,18 @@
+{
+  "scene_id": "salinas-a-corrected",
+  "recipe": "V5",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 6,
+  "V": 204,
+  "n_samples": 20,
+  "n_flipped_within_max_steps": 20,
+  "n_not_flipped": 0,
+  "counterfactual_l1_median": 3.0,
+  "counterfactual_l1_mean": 3.05,
+  "max_steps": 50,
+  "step_size": 1.0,
+  "generated_at": "2026-05-27T03:47:13Z",
+  "builder": "build_v_sweep_counterfactual v0.1",
+  "elapsed_seconds": 0.0
+}
