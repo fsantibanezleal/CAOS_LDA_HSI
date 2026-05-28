@@ -874,6 +874,12 @@
         "title": "Mutual-info weighted band tokens (V20)",
         "summary": "V1 (band, q-bin) tokens but with copies weighted by per-band mutual information with labels. Up to 8 copies per band per pixel.",
         "theory": "V20 takes V1's vocabulary and re-weights each band by its discriminative power (sklearn mutual_info_classif). Bands with high MI emit more copies; near-zero MI bands emit ~none. F-2 c_v 0.74-0.95 — competitive with V12. **V20 wins F-7 NMI on 3 of 5 scenes (indian-pines, salinas-A, kennedy-SC)**, beating V12. The simplest interpretable recipe that beats GMM-token on label-coupling."
+      },
+      "V18": {
+        "tag": "graph-Laplacian",
+        "title": "Graph-Laplacian eigenvector tokens (V18)",
+        "summary": "k-NN cosine-affinity graph over pixels; first 16 normalised Laplacian eigenvectors per-axis percentile-binned. Vocab 16*Q = 128.",
+        "theory": "V18 borrows spectral-clustering machinery: build a k-NN affinity graph (k=10), compute the symmetric normalised Laplacian, project pixels onto its 16 smallest-eigenvalue eigenvectors, bin each. F-2 c_v 0.50-0.66 mean ~0.57. F-7 NMI 0.27-0.52 mean ~0.43 (very strong on pavia/salinas-A/salinas). Novel LDA-on-Laplacian framing for HSI."
       }
     },
     "matrix": {

@@ -874,6 +874,12 @@
         "title": "Tokens bandas MI-ponderadas (V20)",
         "summary": "Tokens V1 (banda, q-bin) pero con copias ponderadas por la información mutua por banda con las etiquetas. Hasta 8 copias por banda por píxel.",
         "theory": "V20 toma el vocabulario de V1 y re-pondera cada banda por su poder discriminativo (sklearn mutual_info_classif). Bandas con MI alta emiten más copias; bandas con MI ~0 emiten ~ninguna. F-2 c_v 0.74-0.95 — competitivo con V12. **V20 gana F-7 NMI en 3 de 5 escenas (indian-pines, salinas-A, kennedy-SC)**, superando a V12. La receta interpretable más simple que vence a GMM-token en label-coupling."
+      },
+      "V18": {
+        "tag": "Laplaciano grafo",
+        "title": "Tokens eigenvector Laplaciano (V18)",
+        "summary": "Grafo k-NN coseno-afinidad sobre píxeles; primeros 16 eigenvectores del Laplaciano normalizado per-axis percentile-binned. Vocab 16*Q = 128.",
+        "theory": "V18 toma maquinaria de spectral clustering: construir grafo k-NN (k=10) con afinidad coseno, calcular Laplaciano normalizado simétrico, proyectar píxeles a sus 16 eigenvectores menores, biniza cada eje. F-2 c_v 0.50-0.66 media ~0.57. F-7 NMI 0.27-0.52 media ~0.43 (muy fuerte en pavia/salinas-A/salinas). Encuadre novel LDA-sobre-Laplaciano para HSI."
       }
     },
     "matrix": {
