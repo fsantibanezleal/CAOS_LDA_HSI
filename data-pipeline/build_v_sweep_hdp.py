@@ -104,9 +104,23 @@ def fit_hdp(doc_term: sp.csr_matrix, scene_id: str, recipe: str):
         phi = np.concatenate([phi, pad], axis=1)
     K_inferred = phi.shape[0]
 
-    # Topic mass (alpha-like quantity) — sum of phi as proxy
-    topic_mass = phi.sum(axis=1)
-    K_effective = int((topic_mass > 0.01 * topic_mass.max()).sum()) if topic_mass.max() > 0 else 0
+    # Topic prevalence via projecting the corpus through the inferred HDP
+    # and counting topics that hold meaningful posterior mass. gensim's
+    # HdpModel doesn't expose theta directly; we approximate prevalence
+    # by the L1-norm of each topic's word distribution after subtracting
+    # the uniform baseline, then count topics whose prevalence is at
+    # least 5% of the maximum. This better tracks the 'effective' K than
+    # truncation level alone.
+    if phi.shape[1] > 0:
+        uniform = 1.0 / phi.shape[1]
+        deviation = np.abs(phi - uniform).sum(axis=1)  # L1 from uniform
+        if deviation.max() > 0:
+            normalised = deviation / deviation.max()
+            K_effective = int((normalised > 0.05).sum())
+        else:
+            K_effective = 0
+    else:
+        K_effective = 0
 
     n_classes = CLASS_COUNTS.get(scene_id, 0)
     f16 = abs(K_effective - n_classes) if n_classes else None
@@ -168,7 +182,7 @@ def fit_hdp(doc_term: sp.csr_matrix, scene_id: str, recipe: str):
         "f14_mean_pairwise_jaccard": round(mean_jacc, 6),
         "fit_seconds": round(fit_secs, 3),
         "D": int(D), "V": int(V),
-        "topic_mass_top5": [round(float(x), 6) for x in sorted(topic_mass)[::-1][:5]],
+        "topic_deviation_top5": [round(float(x), 6) for x in sorted(deviation)[::-1][:5]] if phi.shape[1] > 0 else [],
         "generated_at": datetime.now(timezone.utc)
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
