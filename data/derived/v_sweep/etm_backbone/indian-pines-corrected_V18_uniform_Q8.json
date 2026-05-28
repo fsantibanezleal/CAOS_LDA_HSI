@@ -1,0 +1,17 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V18",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ETM",
+  "K": 12,
+  "D": 2812,
+  "V": 128,
+  "mean_doc_length": 16.0,
+  "f2_c_v": 0.54862,
+  "f14_mean_pairwise_jaccard": 0.407223,
+  "fit_seconds": 3.297,
+  "status": "ok",
+  "generated_at": "2026-05-28T11:39:02Z",
+  "builder": "build_v_sweep_etm_backbone v0.1"
+}

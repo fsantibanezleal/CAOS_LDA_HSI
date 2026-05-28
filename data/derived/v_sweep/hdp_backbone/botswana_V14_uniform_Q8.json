@@ -1,0 +1,26 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "HDP",
+  "T_truncation": 20,
+  "K_inferred_total": 20,
+  "K_effective": 20,
+  "K_ground_truth_classes": 14,
+  "f16_model_selection_adequacy": 6,
+  "f2_c_v": 0.305481,
+  "f14_mean_pairwise_jaccard": 0.004432,
+  "fit_seconds": 0.894,
+  "D": 2775,
+  "V": 1024,
+  "topic_deviation_top5": [
+    0.758007,
+    0.7526,
+    0.748483,
+    0.742487,
+    0.738324
+  ],
+  "generated_at": "2026-05-28T11:38:25Z",
+  "builder": "build_v_sweep_hdp v0.1"
+}
