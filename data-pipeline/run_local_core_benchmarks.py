@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import sys
 from collections import Counter
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -1788,7 +1788,11 @@ def benchmark_hidsag_subset(subset_code: str = "MINERAL2") -> dict[str, object]:
 def main() -> None:
     payload = {
         "source": "Local-first PTM/LDA, clustering, stability, and unmixing benchmarks over real spectral datasets",
-        "generated_at": str(date.today()),
+        # Audit fix (#589 Tier 1, c391): ISO-8601 with timezone.
+        "generated_at": datetime.now(timezone.utc)
+        .isoformat(timespec="seconds")
+        .replace("+00:00", "Z"),
+        "builder_version": "run_local_core_benchmarks v0.2",
         "methods": {
             "representation": "band-frequency count vectors from normalized spectra",
             "topic_model": "scikit-learn LatentDirichletAllocation",

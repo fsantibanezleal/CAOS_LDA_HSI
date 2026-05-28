@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -664,7 +664,11 @@ def main() -> None:
 
     payload = {
         "source": "HIDSAG preprocessing sensitivity benchmark driven by local heuristic bad-band policies",
-        "generated_at": str(date.today()),
+        # Audit fix (#589 Tier 1, c391): ISO-8601 with timezone.
+        "generated_at": datetime.now(timezone.utc)
+        .isoformat(timespec="seconds")
+        .replace("+00:00", "Z"),
+        "builder_version": "run_hidsag_preprocessing_sensitivity v0.2",
         "methods": {
             "task_selection": "Per subset, reuse one representative classification task and one representative regression target selected from the current local_core_benchmarks.json results.",
             "policy_count": len(POLICIES),

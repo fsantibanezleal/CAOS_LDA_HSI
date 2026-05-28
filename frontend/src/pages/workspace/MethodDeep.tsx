@@ -238,8 +238,11 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
         <thead style={{ backgroundColor: "var(--color-panel)" }}>
           <tr>
             <th
-              className="text-left px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
+              className="sticky left-0 z-10 text-left px-3 py-1.5 border"
+              style={{
+                borderColor: "var(--color-border)",
+                backgroundColor: "var(--color-panel)",
+              }}
             >
               Scene
             </th>
@@ -332,8 +335,11 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
           {report.scenes.map((s) => (
             <tr key={s.scene_id}>
               <td
-                className="px-3 py-1 border font-mono"
-                style={{ borderColor: "var(--color-border)" }}
+                className="sticky left-0 z-10 px-3 py-1 border font-mono"
+                style={{
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--color-bg)",
+                }}
               >
                 {s.scene_id}
               </td>
