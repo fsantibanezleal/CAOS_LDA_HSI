@@ -229,6 +229,14 @@ function SweepPanelPlaceholder({
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [tab, setTab] = useState<AxisTab>("fit");
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (loaded) return;
+    setElapsed(0);
+    const id = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => clearInterval(id);
+  }, [loaded, method.id]);
 
   useEffect(() => {
     let alive = true;
@@ -287,13 +295,22 @@ function SweepPanelPlaceholder({
     );
   }
   if (!loaded) {
+    const stillLoading = elapsed >= 15;
     return (
-      <p
+      <div
         className="text-[13px] leading-relaxed"
         style={{ color: "var(--color-fg-subtle)" }}
       >
-        Loading sweep results...
-      </p>
+        <p>
+          Loading sweep results... <span className="font-mono">({elapsed}s)</span>
+        </p>
+        {stillLoading && (
+          <p className="mt-1 text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
+            Sweep payload is taking longer than usual. The backend may be cold-starting;
+            give it another 15-20 seconds. If it never finishes, the API is unavailable.
+          </p>
+        )}
+      </div>
     );
   }
   if (err) {
