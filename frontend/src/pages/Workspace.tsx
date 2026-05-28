@@ -238,15 +238,25 @@ export default function Workspace() {
     queryFn: api.inventory,
   });
 
-  // Restore state from URL on first inventory load.
+  // Restore state from URL — runs on initial inventory load AND on
+  // browser back/forward navigation when the URL drifts from the
+  // machine's context.
+  //
   // Supports two URL shapes:
   //   ?family=X&subset=Y&rep=Z   (canonical)
   //   ?scene=<subset>            (shortcut from Overview SceneCard links —
   //                               infers family from the inventory)
   // If `rep` is missing on a labelled scene, defaults to "lda" so the user
   // lands on Explore with the canonical topic basis pre-selected.
+  //
+  // Audit fix (#592 Tier 1 item 5, c389): previously this used a
+  // one-shot restoredRef guard, so browser back/forward exited the
+  // workspace instead of stepping through tab/subset selections in
+  // history. We now compare URL params to machine context on every
+  // searchParams change and re-apply only when they actually differ
+  // (preventing the URL-mirror effect below from triggering an echo
+  // loop).
   useEffect(() => {
-    if (restoredRef.current) return;
     if (!data) return;
     let fam = searchParams.get("family");
     let sub = searchParams.get("subset");
@@ -260,6 +270,23 @@ export default function Workspace() {
         fam = ds.family_id as DatasetFamily;
       }
     }
+
+    // Idempotency check: only dispatch if the URL state actually
+    // differs from the machine's context. Without this guard, the
+    // URL-mirror effect below would echo-loop.
+    const ctx = state.context;
+    const urlFam = fam ?? null;
+    const urlSub = sub ?? null;
+    const urlRep = rp ?? (sub ? "lda" : null);
+    if (
+      ctx.family === urlFam &&
+      ctx.subset === urlSub &&
+      ctx.rep === urlRep
+    ) {
+      restoredRef.current = true;
+      return;
+    }
+
     if (fam) {
       send({ type: "PICK_FAMILY", family: fam as DatasetFamily });
       if (sub) {
@@ -271,6 +298,11 @@ export default function Workspace() {
       }
     }
     restoredRef.current = true;
+    // state.context intentionally excluded from deps: we only want to
+    // re-run when the URL changes, not when our own dispatches
+    // mutate the machine. The idempotency guard above protects against
+    // self-echo.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, searchParams, send]);
 
   // Mirror machine state to URL
