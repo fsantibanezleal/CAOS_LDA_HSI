@@ -240,6 +240,7 @@ def build_scene(config: SegmentationConfig) -> dict:
     rows, cols, bands = cube.shape
     wavelengths = wavelengths_for_cube(config, bands)
     features = rgb_features(cube, wavelengths)
+    # Audit fix (#589 Tier 1): pin random_seed so SLIC is deterministic.
     segments = slic(
         features,
         n_segments=config.n_segments,
@@ -248,6 +249,7 @@ def build_scene(config: SegmentationConfig) -> dict:
         channel_axis=-1,
         convert2lab=False,
         enforce_connectivity=True,
+        random_seed=42,
     ).astype(np.int32)
     segment_ids, segment_sizes = np.unique(segments, return_counts=True)
     metrics, examples = label_metrics(config, segments, gt)

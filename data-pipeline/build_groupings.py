@@ -173,6 +173,9 @@ def assignment_summary(
 
 
 def slic_assignment(cube_norm: np.ndarray, n_segments: int) -> np.ndarray:
+    # Audit fix (#589 Tier 1): pass random_seed so SLIC's internal
+    # K-means init is deterministic and outputs do not drift between
+    # builder runs.
     return slic(
         cube_norm.astype(np.float32),
         n_segments=n_segments,
@@ -180,6 +183,7 @@ def slic_assignment(cube_norm: np.ndarray, n_segments: int) -> np.ndarray:
         channel_axis=2,
         start_label=0,
         enforce_connectivity=True,
+        random_seed=42,
     ).astype(np.int32)
 
 
