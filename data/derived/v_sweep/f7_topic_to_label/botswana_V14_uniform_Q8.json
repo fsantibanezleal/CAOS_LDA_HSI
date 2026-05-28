@@ -1,0 +1,232 @@
+{
+  "K": 12,
+  "n_classes": 14,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "H_label_marginal_bits": 3.768685,
+  "H_label_given_topic_bits": 2.096973,
+  "mutual_information_bits": 1.671711,
+  "normalised_mi": 0.44358,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 57,
+      "p_topic": 0.020541,
+      "label_distribution": [
+        0.0,
+        0.052632,
+        0.0,
+        0.0,
+        0.929825,
+        0.017544,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.292516
+    },
+    {
+      "topic": 1,
+      "n_docs": 69,
+      "p_topic": 0.024865,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.130435,
+        0.0,
+        0.0,
+        0.014493,
+        0.0,
+        0.0,
+        0.855072
+      ],
+      "kl_vs_marginal": 4.043
+    },
+    {
+      "topic": 2,
+      "n_docs": 227,
+      "p_topic": 0.081802,
+      "label_distribution": [
+        0.004405,
+        0.035242,
+        0.0,
+        0.0,
+        0.008811,
+        0.123348,
+        0.0,
+        0.0,
+        0.515419,
+        0.110132,
+        0.0,
+        0.0,
+        0.202643,
+        0.0
+      ],
+      "kl_vs_marginal": 1.749324
+    },
+    {
+      "topic": 3,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 4,
+      "n_docs": 517,
+      "p_topic": 0.186306,
+      "label_distribution": [
+        0.0,
+        0.046422,
+        0.0,
+        0.015474,
+        0.257253,
+        0.199226,
+        0.0,
+        0.0,
+        0.158607,
+        0.0,
+        0.0,
+        0.191489,
+        0.131528,
+        0.0
+      ],
+      "kl_vs_marginal": 1.234314
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 167,
+      "p_topic": 0.06018,
+      "label_distribution": [
+        0.0,
+        0.359281,
+        0.0,
+        0.0,
+        0.071856,
+        0.51497,
+        0.0,
+        0.0,
+        0.053892,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 2.536741
+    },
+    {
+      "topic": 7,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 8,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 9,
+      "n_docs": 437,
+      "p_topic": 0.157477,
+      "label_distribution": [
+        0.501144,
+        0.0,
+        0.011442,
+        0.0,
+        0.0,
+        0.0,
+        0.464531,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.022883
+      ],
+      "kl_vs_marginal": 2.472804
+    },
+    {
+      "topic": 10,
+      "n_docs": 854,
+      "p_topic": 0.307748,
+      "label_distribution": [
+        0.0,
+        0.001171,
+        0.249415,
+        0.042155,
+        0.003513,
+        0.0,
+        0.017564,
+        0.187354,
+        0.0,
+        0.201405,
+        0.25644,
+        0.0,
+        0.010539,
+        0.030445
+      ],
+      "kl_vs_marginal": 1.239188
+    },
+    {
+      "topic": 11,
+      "n_docs": 447,
+      "p_topic": 0.161081,
+      "label_distribution": [
+        0.0,
+        0.011186,
+        0.004474,
+        0.38255,
+        0.038031,
+        0.004474,
+        0.004474,
+        0.076063,
+        0.026846,
+        0.051454,
+        0.0,
+        0.183445,
+        0.217002,
+        0.0
+      ],
+      "kl_vs_marginal": 1.285469
+    }
+  ],
+  "scene_id": "botswana",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-28T11:04:28Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}

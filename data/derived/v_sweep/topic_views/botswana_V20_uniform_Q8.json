@@ -1,0 +1,42 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 8,
+  "status": "ok",
+  "K": 12,
+  "D": 2775,
+  "V": 1160,
+  "mean_doc_length": 841.0,
+  "doc_length_quantiles": {
+    "p05": 841.0,
+    "p50": 841.0,
+    "p95": 841.0
+  },
+  "topic_prevalence": [
+    0.04487,
+    0.256862,
+    0.235994,
+    0.032533,
+    0.00055,
+    0.041668,
+    0.036997,
+    0.080658,
+    0.073145,
+    0.131633,
+    0.034806,
+    0.030286
+  ],
+  "perplexity": 186.2786,
+  "fit_seconds": 46.255,
+  "lda_config": {
+    "method": "sklearn.LatentDirichletAllocation online",
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "local_artefacts_dir": "local\\v_sweep\\lda_fits\\botswana_V20_uniform_Q8",
+  "generated_at": "2026-05-28T11:04:18Z",
+  "builder": "build_v_sweep_canonical_fit v0.1"
+}
