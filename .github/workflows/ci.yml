@@ -1,0 +1,57 @@
+name: CI
+
+# Audit fix (#590): minimal GitHub Actions workflow for CAOS_LDA_HSI.
+# Runs on every PR + push to develop/main and exercises:
+#   1. Python backend imports (no pytest installed in our local venvs,
+#      so this is the smoke test we have)
+#   2. Frontend type-check + Vite build
+#   3. data/derived/manifests/index.json is valid JSON
+#
+# Heavier tests (builder unit tests, smoke harness against running
+# backend) live in #590 follow-up tickets.
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  backend-smoke:
+    name: Backend import smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backend deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Verify routers import + count routes
+        run: |
+          python -c "from app.routers.content import router; n=len(router.routes); print(f'{n} routes registered'); assert n >= 50, 'too few routes — regression?'"
+      - name: Verify manifest is valid JSON
+        run: |
+          python -c "import json; d=json.load(open('data/derived/manifests/index.json')); n=len(d.get('artifacts', [])); print(f'manifest has {n} artefacts')"
+
+  frontend-build:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend deps
+        run: npm ci --no-audit --no-fund
+      - name: Build (tsc -b + vite build)
+        run: npm run build
