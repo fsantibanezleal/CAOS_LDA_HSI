@@ -1,18 +1,8 @@
 {
   "recipes": [
-    "V1",
-    "V2",
-    "V3",
-    "V4",
-    "V5",
-    "V6",
-    "V7",
-    "V8",
-    "V9",
-    "V10",
-    "V11",
-    "V12",
-    "V13"
+    "V14",
+    "V18",
+    "V20"
   ],
   "scenes": [
     "botswana",
@@ -24,703 +14,203 @@
   ],
   "by_method_recipe_scene": {
     "raw_logistic": {
-      "V10": {
-        "botswana": 0.962327,
+      "V14": {
         "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
+        "salinas-corrected": 0.950961,
         "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
+        "pavia-university": 0.804767,
+        "kennedy-space-center": 0.91394,
+        "botswana": 0.962327
       },
-      "V11": {
-        "botswana": 0.962327,
+      "V18": {
         "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
+        "salinas-corrected": 0.950961,
         "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
+        "pavia-university": 0.804767,
+        "kennedy-space-center": 0.91394,
+        "botswana": 0.962327
       },
-      "V12": {
-        "botswana": 0.962327,
+      "V20": {
         "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
+        "salinas-corrected": 0.950961,
         "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V13": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
         "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V1": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
         "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V2": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V3": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V4": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V5": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V6": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V7": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V8": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
-      },
-      "V9": {
-        "botswana": 0.962327,
-        "indian-pines-corrected": 0.833159,
-        "kennedy-space-center": 0.91394,
-        "pavia-university": 0.804767,
-        "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950961
+        "botswana": 0.962327
       }
     },
     "topic_routed_soft": {
-      "V10": {
-        "botswana": 0.965135,
-        "indian-pines-corrected": 0.842264,
-        "kennedy-space-center": 0.916049,
-        "pavia-university": 0.808159,
-        "salinas-a-corrected": 0.996212,
-        "salinas-corrected": 0.952359
-      },
-      "V11": {
-        "botswana": 0.962748,
-        "indian-pines-corrected": 0.844836,
-        "kennedy-space-center": 0.914712,
-        "pavia-university": 0.828129,
-        "salinas-a-corrected": 0.99622,
-        "salinas-corrected": 0.949825
-      },
-      "V12": {
-        "botswana": 0.965244,
-        "indian-pines-corrected": 0.852884,
-        "kennedy-space-center": 0.930058,
-        "pavia-university": 0.83361,
-        "salinas-a-corrected": 0.996212,
-        "salinas-corrected": 0.951766
-      },
-      "V13": {
-        "botswana": 0.963762,
-        "indian-pines-corrected": 0.839152,
-        "kennedy-space-center": 0.91874,
-        "pavia-university": 0.804547,
+      "V14": {
+        "indian-pines-corrected": 0.847412,
+        "salinas-corrected": 0.951202,
         "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.951776
+        "pavia-university": 0.811143,
+        "kennedy-space-center": 0.916643,
+        "botswana": 0.964284
       },
-      "V1": {
-        "botswana": 0.96282,
-        "indian-pines-corrected": 0.842328,
-        "kennedy-space-center": 0.923012,
-        "pavia-university": 0.814956,
+      "V18": {
+        "indian-pines-corrected": 0.836967,
+        "salinas-corrected": 0.950698,
         "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950991
+        "pavia-university": 0.809958,
+        "kennedy-space-center": 0.919406,
+        "botswana": 0.965024
       },
-      "V2": {
-        "botswana": 0.965473,
-        "indian-pines-corrected": 0.861165,
-        "kennedy-space-center": 0.92138,
-        "pavia-university": 0.803743,
-        "salinas-a-corrected": 0.99622,
-        "salinas-corrected": 0.955875
-      },
-      "V3": {
-        "botswana": 0.965788,
-        "indian-pines-corrected": 0.851804,
-        "kennedy-space-center": 0.923085,
-        "pavia-university": 0.804987,
-        "salinas-a-corrected": 0.99622,
-        "salinas-corrected": 0.950119
-      },
-      "V4": {
-        "botswana": 0.963784,
-        "indian-pines-corrected": 0.843886,
-        "kennedy-space-center": 0.918661,
-        "pavia-university": 0.817758,
-        "salinas-a-corrected": 0.996212,
-        "salinas-corrected": 0.950253
-      },
-      "V5": {
-        "botswana": 0.963197,
-        "indian-pines-corrected": 0.841223,
-        "kennedy-space-center": 0.919643,
-        "pavia-university": 0.814652,
-        "salinas-a-corrected": 0.996212,
-        "salinas-corrected": 0.951881
-      },
-      "V6": {
-        "botswana": 0.959333,
-        "indian-pines-corrected": 0.839278,
-        "kennedy-space-center": 0.918872,
-        "pavia-university": 0.815447,
+      "V20": {
+        "indian-pines-corrected": 0.858138,
+        "salinas-corrected": 0.950188,
         "salinas-a-corrected": 0.996969,
-        "salinas-corrected": 0.950934
-      },
-      "V7": {
-        "botswana": 0.963015,
-        "indian-pines-corrected": 0.840066,
-        "kennedy-space-center": 0.916478,
-        "pavia-university": 0.821312,
-        "salinas-a-corrected": 0.99622,
-        "salinas-corrected": 0.94842
-      },
-      "V8": {
-        "botswana": 0.966493,
-        "indian-pines-corrected": 0.84959,
-        "kennedy-space-center": 0.919827,
-        "pavia-university": 0.81418,
-        "salinas-a-corrected": 0.995462,
-        "salinas-corrected": 0.952099
-      },
-      "V9": {
-        "botswana": 0.961797,
-        "indian-pines-corrected": 0.844998,
-        "kennedy-space-center": 0.918772,
-        "pavia-university": 0.813107,
-        "salinas-a-corrected": 0.99622,
-        "salinas-corrected": 0.950692
+        "pavia-university": 0.810858,
+        "kennedy-space-center": 0.920853,
+        "botswana": 0.964028
       }
     }
   },
   "per_scene_winner_topic_routed_soft": {
     "botswana": {
-      "best": "V8",
-      "best_score": 0.966493,
+      "best": "V18",
+      "best_score": 0.965024,
       "ranking": [
         {
-          "recipe": "V8",
-          "score": 0.966493
+          "recipe": "V18",
+          "score": 0.965024
         },
         {
-          "recipe": "V3",
-          "score": 0.965788
+          "recipe": "V14",
+          "score": 0.964284
         },
         {
-          "recipe": "V2",
-          "score": 0.965473
-        },
-        {
-          "recipe": "V12",
-          "score": 0.965244
-        },
-        {
-          "recipe": "V10",
-          "score": 0.965135
-        },
-        {
-          "recipe": "V4",
-          "score": 0.963784
-        },
-        {
-          "recipe": "V13",
-          "score": 0.963762
-        },
-        {
-          "recipe": "V5",
-          "score": 0.963197
-        },
-        {
-          "recipe": "V7",
-          "score": 0.963015
-        },
-        {
-          "recipe": "V1",
-          "score": 0.96282
-        },
-        {
-          "recipe": "V11",
-          "score": 0.962748
-        },
-        {
-          "recipe": "V9",
-          "score": 0.961797
-        },
-        {
-          "recipe": "V6",
-          "score": 0.959333
+          "recipe": "V20",
+          "score": 0.964028
         }
       ]
     },
     "indian-pines-corrected": {
-      "best": "V2",
-      "best_score": 0.861165,
+      "best": "V20",
+      "best_score": 0.858138,
       "ranking": [
         {
-          "recipe": "V2",
-          "score": 0.861165
+          "recipe": "V20",
+          "score": 0.858138
         },
         {
-          "recipe": "V12",
-          "score": 0.852884
+          "recipe": "V14",
+          "score": 0.847412
         },
         {
-          "recipe": "V3",
-          "score": 0.851804
-        },
-        {
-          "recipe": "V8",
-          "score": 0.84959
-        },
-        {
-          "recipe": "V9",
-          "score": 0.844998
-        },
-        {
-          "recipe": "V11",
-          "score": 0.844836
-        },
-        {
-          "recipe": "V4",
-          "score": 0.843886
-        },
-        {
-          "recipe": "V1",
-          "score": 0.842328
-        },
-        {
-          "recipe": "V10",
-          "score": 0.842264
-        },
-        {
-          "recipe": "V5",
-          "score": 0.841223
-        },
-        {
-          "recipe": "V7",
-          "score": 0.840066
-        },
-        {
-          "recipe": "V6",
-          "score": 0.839278
-        },
-        {
-          "recipe": "V13",
-          "score": 0.839152
+          "recipe": "V18",
+          "score": 0.836967
         }
       ]
     },
     "kennedy-space-center": {
-      "best": "V12",
-      "best_score": 0.930058,
+      "best": "V20",
+      "best_score": 0.920853,
       "ranking": [
         {
-          "recipe": "V12",
-          "score": 0.930058
+          "recipe": "V20",
+          "score": 0.920853
         },
         {
-          "recipe": "V3",
-          "score": 0.923085
+          "recipe": "V18",
+          "score": 0.919406
         },
         {
-          "recipe": "V1",
-          "score": 0.923012
-        },
-        {
-          "recipe": "V2",
-          "score": 0.92138
-        },
-        {
-          "recipe": "V8",
-          "score": 0.919827
-        },
-        {
-          "recipe": "V5",
-          "score": 0.919643
-        },
-        {
-          "recipe": "V6",
-          "score": 0.918872
-        },
-        {
-          "recipe": "V9",
-          "score": 0.918772
-        },
-        {
-          "recipe": "V13",
-          "score": 0.91874
-        },
-        {
-          "recipe": "V4",
-          "score": 0.918661
-        },
-        {
-          "recipe": "V7",
-          "score": 0.916478
-        },
-        {
-          "recipe": "V10",
-          "score": 0.916049
-        },
-        {
-          "recipe": "V11",
-          "score": 0.914712
+          "recipe": "V14",
+          "score": 0.916643
         }
       ]
     },
     "pavia-university": {
-      "best": "V12",
-      "best_score": 0.83361,
+      "best": "V14",
+      "best_score": 0.811143,
       "ranking": [
         {
-          "recipe": "V12",
-          "score": 0.83361
+          "recipe": "V14",
+          "score": 0.811143
         },
         {
-          "recipe": "V11",
-          "score": 0.828129
+          "recipe": "V20",
+          "score": 0.810858
         },
         {
-          "recipe": "V7",
-          "score": 0.821312
-        },
-        {
-          "recipe": "V4",
-          "score": 0.817758
-        },
-        {
-          "recipe": "V6",
-          "score": 0.815447
-        },
-        {
-          "recipe": "V1",
-          "score": 0.814956
-        },
-        {
-          "recipe": "V5",
-          "score": 0.814652
-        },
-        {
-          "recipe": "V8",
-          "score": 0.81418
-        },
-        {
-          "recipe": "V9",
-          "score": 0.813107
-        },
-        {
-          "recipe": "V10",
-          "score": 0.808159
-        },
-        {
-          "recipe": "V3",
-          "score": 0.804987
-        },
-        {
-          "recipe": "V13",
-          "score": 0.804547
-        },
-        {
-          "recipe": "V2",
-          "score": 0.803743
+          "recipe": "V18",
+          "score": 0.809958
         }
       ]
     },
     "salinas-a-corrected": {
-      "best": "V1",
+      "best": "V14",
       "best_score": 0.996969,
       "ranking": [
         {
-          "recipe": "V1",
+          "recipe": "V14",
           "score": 0.996969
         },
         {
-          "recipe": "V6",
+          "recipe": "V18",
           "score": 0.996969
         },
         {
-          "recipe": "V13",
+          "recipe": "V20",
           "score": 0.996969
-        },
-        {
-          "recipe": "V2",
-          "score": 0.99622
-        },
-        {
-          "recipe": "V3",
-          "score": 0.99622
-        },
-        {
-          "recipe": "V7",
-          "score": 0.99622
-        },
-        {
-          "recipe": "V9",
-          "score": 0.99622
-        },
-        {
-          "recipe": "V11",
-          "score": 0.99622
-        },
-        {
-          "recipe": "V4",
-          "score": 0.996212
-        },
-        {
-          "recipe": "V5",
-          "score": 0.996212
-        },
-        {
-          "recipe": "V10",
-          "score": 0.996212
-        },
-        {
-          "recipe": "V12",
-          "score": 0.996212
-        },
-        {
-          "recipe": "V8",
-          "score": 0.995462
         }
       ]
     },
     "salinas-corrected": {
-      "best": "V2",
-      "best_score": 0.955875,
+      "best": "V14",
+      "best_score": 0.951202,
       "ranking": [
         {
-          "recipe": "V2",
-          "score": 0.955875
+          "recipe": "V14",
+          "score": 0.951202
         },
         {
-          "recipe": "V10",
-          "score": 0.952359
+          "recipe": "V18",
+          "score": 0.950698
         },
         {
-          "recipe": "V8",
-          "score": 0.952099
-        },
-        {
-          "recipe": "V5",
-          "score": 0.951881
-        },
-        {
-          "recipe": "V13",
-          "score": 0.951776
-        },
-        {
-          "recipe": "V12",
-          "score": 0.951766
-        },
-        {
-          "recipe": "V1",
-          "score": 0.950991
-        },
-        {
-          "recipe": "V6",
-          "score": 0.950934
-        },
-        {
-          "recipe": "V9",
-          "score": 0.950692
-        },
-        {
-          "recipe": "V4",
-          "score": 0.950253
-        },
-        {
-          "recipe": "V3",
-          "score": 0.950119
-        },
-        {
-          "recipe": "V11",
-          "score": 0.949825
-        },
-        {
-          "recipe": "V7",
-          "score": 0.94842
+          "recipe": "V20",
+          "score": 0.950188
         }
       ]
     }
   },
   "per_recipe_mean": {
     "raw_logistic": {
-      "V1": {
+      "V14": {
         "mean": 0.910354,
-        "std": 0.076122,
+        "std": 0.06949,
         "n_scenes": 6
       },
-      "V2": {
+      "V18": {
         "mean": 0.910354,
-        "std": 0.076122,
+        "std": 0.06949,
         "n_scenes": 6
       },
-      "V3": {
+      "V20": {
         "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V4": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V5": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V6": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V7": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V8": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V9": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V10": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V11": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V12": {
-        "mean": 0.910354,
-        "std": 0.076122,
-        "n_scenes": 6
-      },
-      "V13": {
-        "mean": 0.910354,
-        "std": 0.076122,
+        "std": 0.06949,
         "n_scenes": 6
       }
     },
     "topic_routed_soft": {
-      "V1": {
-        "mean": 0.915179,
-        "std": 0.071631,
+      "V14": {
+        "mean": 0.914609,
+        "std": 0.065593,
         "n_scenes": 6
       },
-      "V2": {
-        "mean": 0.917309,
-        "std": 0.07225,
+      "V18": {
+        "mean": 0.91317,
+        "std": 0.067845,
         "n_scenes": 6
       },
-      "V3": {
-        "mean": 0.915334,
-        "std": 0.072898,
-        "n_scenes": 6
-      },
-      "V4": {
-        "mean": 0.915092,
-        "std": 0.070349,
-        "n_scenes": 6
-      },
-      "V5": {
-        "mean": 0.914468,
-        "std": 0.071849,
-        "n_scenes": 6
-      },
-      "V6": {
-        "mean": 0.913472,
-        "std": 0.071584,
-        "n_scenes": 6
-      },
-      "V7": {
-        "mean": 0.914252,
-        "std": 0.069872,
-        "n_scenes": 6
-      },
-      "V8": {
-        "mean": 0.916275,
-        "std": 0.070652,
-        "n_scenes": 6
-      },
-      "V9": {
-        "mean": 0.914264,
-        "std": 0.07121,
-        "n_scenes": 6
-      },
-      "V10": {
-        "mean": 0.913363,
-        "std": 0.07375,
-        "n_scenes": 6
-      },
-      "V11": {
-        "mean": 0.916078,
-        "std": 0.06716,
-        "n_scenes": 6
-      },
-      "V12": {
-        "mean": 0.921629,
-        "std": 0.06468,
-        "n_scenes": 6
-      },
-      "V13": {
-        "mean": 0.912491,
-        "std": 0.075337,
+      "V20": {
+        "mean": 0.916839,
+        "std": 0.063841,
         "n_scenes": 6
       }
     }
   },
-  "generated_at": "2026-05-27T12:33:58Z"
+  "generated_at": "2026-05-28T13:25:41Z"
 }
