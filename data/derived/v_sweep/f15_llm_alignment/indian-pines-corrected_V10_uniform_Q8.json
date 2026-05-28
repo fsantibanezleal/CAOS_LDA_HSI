@@ -1,0 +1,120 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V10",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 24,
+  "n_docs": 20,
+  "n_yes": 20,
+  "n_no": 0,
+  "n_ambiguous": 0,
+  "f15_alignment": 1.0,
+  "decisions": [
+    {
+      "doc_idx": 2162,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2013,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 564,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2735,
+      "topic": 2,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2360,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2135,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 359,
+      "topic": 2,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 249,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1829,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1441,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1211,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 240,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1266,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2402,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 263,
+      "topic": 2,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2063,
+      "topic": 2,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2207,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1227,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1952,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1475,
+      "topic": 0,
+      "verdict": "YES"
+    }
+  ],
+  "model": "claude-opus-4-7 (1M context, self-judgment, deterministic rule)",
+  "judge_method": "self_judgment_deterministic_rule",
+  "judge_rule_description": "YES if doc top-10 shares >=3 elements with topic top-10, OR doc top-1 is in topic top-5. NO if doc top-3 shares 0 elements with topic top-10. AMBIGUOUS otherwise. Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_v_sweep_f15_llm_alignment.py.",
+  "generated_at": "2026-05-28T03:00:14Z",
+  "builder": "build_v_sweep_f15_self_judge v0.1"
+}
