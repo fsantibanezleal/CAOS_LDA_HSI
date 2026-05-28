@@ -51,7 +51,7 @@ LABELLED_SCENES = [
     "kennedy-space-center",
     "botswana",
 ]
-RECIPES = [f"V{i}" for i in range(1, 14)]
+RECIPES = [f"V{i}" for i in range(1, 16)]
 SCHEMES = ["uniform", "quantile", "lloyd_max"]
 Q_VALUES = [8, 16, 32]
 
