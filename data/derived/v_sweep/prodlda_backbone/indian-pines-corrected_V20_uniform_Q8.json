@@ -1,0 +1,17 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ProdLDA",
+  "K": 12,
+  "D": 2812,
+  "V": 1600,
+  "mean_doc_length": 1187.0,
+  "f2_c_v": 0.404559,
+  "f14_mean_pairwise_jaccard": 0.552861,
+  "fit_seconds": 13.652,
+  "status": "ok",
+  "generated_at": "2026-05-28T11:39:37Z",
+  "builder": "build_v_sweep_prodlda_backbone v0.1"
+}

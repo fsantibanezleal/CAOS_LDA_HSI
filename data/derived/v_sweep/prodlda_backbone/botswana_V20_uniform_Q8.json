@@ -1,0 +1,17 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ProdLDA",
+  "K": 12,
+  "D": 2775,
+  "V": 1160,
+  "mean_doc_length": 841.0,
+  "f2_c_v": 0.685584,
+  "f14_mean_pairwise_jaccard": 0.438501,
+  "fit_seconds": 9.977,
+  "status": "ok",
+  "generated_at": "2026-05-28T11:41:59Z",
+  "builder": "build_v_sweep_prodlda_backbone v0.1"
+}
