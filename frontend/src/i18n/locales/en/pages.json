@@ -850,6 +850,30 @@
         "title": "Classical RS index tokens (V15)",
         "summary": "Per-pixel NDVI/MNDWI/NBR/NDSI/EVI/SAVI quantised to Q bins. Vocab = 6 indices × Q = 48 (or 24 on VNIR-only scenes).",
         "theory": "V15 is the classical remote-sensing baseline: hand-crafted vegetation, water, and burn-severity indices, computed per pixel and discretised. Forces reviewers to engage with whether topic models add anything over standard indices. Salinas-A wins F-7 at 0.51 NMI (NDVI cleanly separates crops); other scenes mid-pack."
+      },
+      "V14": {
+        "tag": "CWT-Morlet wavelet",
+        "title": "CWT-Morlet tokens (V14)",
+        "summary": "Continuous wavelet transform with Morlet mother on 16 log-scales × 8 position buckets. Top-16 magnitude cells per pixel. Vocab 1024.",
+        "theory": "V14 differs from V6 (Db4 DWT level-4) by using *continuous* scales. The Morlet mother gives joint time-frequency localization unlike V6 dyadic scales. F-2 c_v 0.46-0.76 across scenes; competitive with V12 on coherence but distinct on the (scale, position, magnitude) vocabulary."
+      },
+      "V17": {
+        "tag": "sparse-coding dict",
+        "title": "Sparse dictionary tokens (V17)",
+        "summary": "sklearn MiniBatchDictionaryLearning K=64 atoms with LASSO-LARS sparse coding (n_nonzero=8). Vocab 64×Q = 512.",
+        "theory": "V17 trains an over-complete spectral dictionary then emits one (atom, abundance_bin) token per non-zero coefficient. Generalises V8 endmember unmixing without requiring NFINDR. F-2 c_v 0.34-0.58 — underperforms because per-pixel sparse coding does not align with class structure."
+      },
+      "V19": {
+        "tag": "UMAP coords",
+        "title": "UMAP coordinate tokens (V19)",
+        "summary": "3D UMAP embedding per scene (n_neighbors=15, min_dist=0.1, seed=42), per-axis percentile-binned. 3 tokens per doc, vocab 24.",
+        "theory": "V19 reduces each pixel to 3D UMAP coordinates then bins each axis. Abstract tokens carry no spectral semantics — F-2 c_v 0.32-0.41 (low) but F-7 NMI 0.21-0.36 because UMAP separates classes by construction. Documents F-2 / F-7 are NOT measuring the same thing."
+      },
+      "V20": {
+        "tag": "MI-weighted bands",
+        "title": "Mutual-info weighted band tokens (V20)",
+        "summary": "V1 (band, q-bin) tokens but with copies weighted by per-band mutual information with labels. Up to 8 copies per band per pixel.",
+        "theory": "V20 takes V1's vocabulary and re-weights each band by its discriminative power (sklearn mutual_info_classif). Bands with high MI emit more copies; near-zero MI bands emit ~none. F-2 c_v 0.74-0.95 — competitive with V12. **V20 wins F-7 NMI on 3 of 5 scenes (indian-pines, salinas-A, kennedy-SC)**, beating V12. The simplest interpretable recipe that beats GMM-token on label-coupling."
       }
     },
     "matrix": {
