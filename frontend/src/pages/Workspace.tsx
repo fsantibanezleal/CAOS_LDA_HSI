@@ -824,10 +824,18 @@ function ExploreStep({
     enabled: isLabelled && tab === "topics",
   });
 
+  // Audit fix (#592): topic-to-data was being fetched under three
+  // distinct query keys (topic-to-data, raster-meta, embed3d). Each
+  // tab switch triggered a refetch even though the payload is
+  // identical. Now a single query is enabled whenever any of the
+  // three consuming tabs is active, and rasterMeta / embed3d alias
+  // it — TanStack Query de-duplicates the network call to one.
   const topicToData = useQuery({
     queryKey: ["topic-to-data", subsetId],
     queryFn: () => api.topicToData(subsetId!),
-    enabled: isLabelled && tab === "topiclabel",
+    enabled:
+      isLabelled &&
+      (tab === "topiclabel" || tab === "raster" || tab === "embed3d"),
   });
 
   const routed = useQuery({
@@ -836,17 +844,10 @@ function ExploreStep({
     enabled: isLabelled && tab === "routed",
   });
 
-  const rasterMeta = useQuery({
-    queryKey: ["raster-meta", subsetId],
-    queryFn: () => api.topicToData(subsetId!),
-    enabled: isLabelled && tab === "raster",
-  });
-
-  const embed3d = useQuery({
-    queryKey: ["embed3d", subsetId],
-    queryFn: () => api.topicToData(subsetId!),
-    enabled: isLabelled && tab === "embed3d",
-  });
+  // rasterMeta and embed3d reuse topicToData under the same query
+  // key; no separate fetch is issued.
+  const rasterMeta = topicToData;
+  const embed3d = topicToData;
 
   const browserMeta = useQuery({
     queryKey: ["browser-meta", subsetId],
@@ -890,8 +891,12 @@ function ExploreStep({
     queryFn: () => api.endmemberBaseline(subsetId!),
     enabled: isLabelled && tab === "unmixing",
   });
+  // Audit fix (#592): the unmixing tab was issuing a separate eda
+  // query under key ["eda", subsetId, "for-endmember"] when it could
+  // share the canonical eda query above. TanStack de-duplicates if
+  // we keep the same key.
   const endmemberEda = useQuery({
-    queryKey: ["eda", subsetId, "for-endmember"],
+    queryKey: ["eda", subsetId],
     queryFn: () => api.edaPerScene(subsetId!),
     enabled: isLabelled && tab === "unmixing",
   });
