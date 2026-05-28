@@ -1,0 +1,120 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V4",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "V": 176,
+  "n_docs": 20,
+  "n_yes": 14,
+  "n_no": 6,
+  "n_ambiguous": 0,
+  "f15_alignment": 0.7,
+  "decisions": [
+    {
+      "doc_idx": 2064,
+      "topic": 7,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1923,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 538,
+      "topic": 8,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2612,
+      "topic": 7,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2254,
+      "topic": 11,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2039,
+      "topic": 7,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 343,
+      "topic": 8,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 238,
+      "topic": 6,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1747,
+      "topic": 6,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1376,
+      "topic": 5,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1156,
+      "topic": 4,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 229,
+      "topic": 8,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1209,
+      "topic": 9,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 2294,
+      "topic": 6,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 252,
+      "topic": 8,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1971,
+      "topic": 6,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2108,
+      "topic": 3,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1171,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1864,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1409,
+      "topic": 5,
+      "verdict": "YES"
+    }
+  ],
+  "model": "claude-opus-4-7 (1M context, self-judgment, deterministic rule)",
+  "judge_method": "self_judgment_deterministic_rule",
+  "judge_rule_description": "YES if doc top-10 shares >=3 elements with topic top-10, OR doc top-1 is in topic top-5. NO if doc top-3 shares 0 elements with topic top-10. AMBIGUOUS otherwise. Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_v_sweep_f15_llm_alignment.py.",
+  "generated_at": "2026-05-28T03:00:15Z",
+  "builder": "build_v_sweep_f15_self_judge v0.1"
+}
