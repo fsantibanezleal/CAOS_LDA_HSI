@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, GizmoHelper, GizmoViewport } from "@react-three/drei";
 import * as THREE from "three";
@@ -99,7 +99,11 @@ function PointCloud({
 
   // Apply per-instance matrix + color
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  useMemo(() => {
+  // Audit fix (#592): this block was a useMemo-as-effect anti-pattern
+  // (computed nothing, only side-effected the THREE mesh state).
+  // Converting to useEffect so React schedules it correctly after
+  // render commit rather than during render.
+  useEffect(() => {
     if (!meshRef.current) return;
     points.forEach((p, i) => {
       dummy.position.set(
