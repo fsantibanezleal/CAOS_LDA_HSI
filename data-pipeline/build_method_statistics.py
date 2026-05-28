@@ -26,7 +26,7 @@ from __future__ import annotations
 import json
 import math
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -449,7 +449,12 @@ def main() -> int:
 
     payload: dict[str, Any] = {
         "source": "Statistical depth — k-fold x multi-seed evaluations with paired comparisons",
-        "generated_at": date.today().isoformat(),
+        # Audit fix (#589 Tier 1, c391): ISO-8601 with timezone instead of
+        # bare date.today() to match the project's provenance convention.
+        "generated_at": datetime.now(timezone.utc)
+        .isoformat(timespec="seconds")
+        .replace("+00:00", "Z"),
+        "builder_version": "build_method_statistics v0.2",
         "method_definitions": {
             "raw_logistic_regression": "Logistic regression on standardised raw reflectance.",
             "pca_logistic_regression": (
