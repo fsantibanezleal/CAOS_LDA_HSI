@@ -20,6 +20,8 @@ export const METHOD_CATALOG: MethodEntry[] = [
   { id: "V10", family: "wordification", hasSweepArtefacts: true },
   { id: "V11", family: "wordification", hasSweepArtefacts: true },
   { id: "V12", family: "wordification", hasSweepArtefacts: true },
+  { id: "V13", family: "wordification", hasSweepArtefacts: true },
+  { id: "V15", family: "wordification", hasSweepArtefacts: true },
   { id: "ProdLDA", family: "neural", hasSweepArtefacts: false },
   { id: "ETM", family: "neural", hasSweepArtefacts: false },
   { id: "CAE", family: "neural", hasSweepArtefacts: false },
