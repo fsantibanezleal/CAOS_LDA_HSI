@@ -1,0 +1,26 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V18",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "HDP",
+  "T_truncation": 20,
+  "K_inferred_total": 20,
+  "K_effective": 20,
+  "K_ground_truth_classes": 13,
+  "f16_model_selection_adequacy": 7,
+  "f2_c_v": 0.389822,
+  "f14_mean_pairwise_jaccard": 0.045041,
+  "fit_seconds": 0.935,
+  "D": 2686,
+  "V": 128,
+  "topic_deviation_top5": [
+    0.776602,
+    0.762887,
+    0.741743,
+    0.738353,
+    0.731889
+  ],
+  "generated_at": "2026-05-28T11:38:24Z",
+  "builder": "build_v_sweep_hdp v0.1"
+}
