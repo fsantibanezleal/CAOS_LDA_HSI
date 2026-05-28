@@ -330,6 +330,62 @@ export default function MethodologyRepresentations() {
                   Fit a GMM with G components on pixel spectra; soft-assign each pixel to a Gaussian; token = (g, bin(responsibility g)).
                 </td>
               </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V13</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>VQ-VAE codebook</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  PyTorch VQ-VAE with M=4 sub-vectors and K=32 codewords each, trained via straight-through estimator. Vocab = M·K = 128.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V14</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>CWT-Morlet</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Continuous wavelet transform with Morlet mother on 16 log-scales × 8 position buckets; top-16 magnitude cells per pixel.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V15</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>spectral indices</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  NDVI, MNDWI, NBR, NDSI, EVI, SAVI computed per pixel from nearest VNIR/SWIR band approximations; each index value q-binned.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V16</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>foundation embedding (scaffold)</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Frozen HyperSIGMA ViT (billion-parameter, pre-trained on HyperGlobal-450K) embeds each pixel; embedding quantised via PQ / VQ-VAE / k-means. Code-ready; weights not yet vendored.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V17</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>sparse-coding atom</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  sklearn MiniBatchDictionaryLearning over-complete dictionary (K=64 atoms, lasso-LARS, n_nonzero=8). Token = (atom, abundance_bin).
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V18</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>graph-Laplacian eigvec</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  Build kNN cosine-affinity graph; extract first K=16 eigenvectors of the sym-normalised Laplacian; bin each eigenvector axis. Token = (eigvec, bin).
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V19</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>UMAP coordinate</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  3D UMAP embedding (n_neighbors=15, min_dist=0.1) per scene; each axis q-binned. 3 tokens per pixel.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V20</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>MI-weighted band</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
+                  V1 (band, q-bin) tokens but with per-band copies weighted by mutual information with labels. Bands with high MI emit more copies; near-zero MI bands emit ~none.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -363,10 +419,11 @@ export default function MethodologyRepresentations() {
           className="mt-3 text-[12.5px] italic"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          The {`{V1..V12}`} × {`{U,Q,L}`} × Q∈{`{8,16,32}`} cross-product
-          generates 108 candidate vocabularies per scene; the methodology
-          chooses one per scene by joint validation of perplexity, c_v
-          coherence and downstream ARI.
+          The {`{V1..V15, V17..V20}`} × {`{U,Q,L}`} × Q∈{`{8,16,32}`}
+          cross-product generates 171 candidate vocabularies per scene
+          (with V16 reserved for the foundation-model wordification);
+          the methodology chooses one per scene by joint validation of
+          perplexity, c_v coherence and downstream ARI.
         </p>
 
         <h3
@@ -573,6 +630,8 @@ function RecipeGridSVG() {
     "V1 band-frequency", "V2 intensity-as-word", "V3 concat-spectra", "V4 derivative-bin",
     "V5 2nd-derivative", "V6 wavelet", "V7 absorption-triplet", "V8 endmember-fraction",
     "V9 region-token", "V10 band-group", "V11 codebook-VQ", "V12 GMM-token",
+    "V13 VQ-VAE", "V14 CWT-Morlet", "V15 spectral indices", "V16 foundation (scaffold)",
+    "V17 sparse-coding", "V18 graph-Laplacian", "V19 UMAP coords", "V20 MI-weighted",
   ];
   const cols = ["U/8", "U/16", "U/32", "Q/8", "Q/16", "Q/32", "L/8", "L/16", "L/32"];
   const cellW = 32;
