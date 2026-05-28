@@ -5,22 +5,10 @@ import type {
   RepresentationKind,
 } from "@/state/useSelectionStore";
 
-export type WorkspaceView =
-  | "raw"
-  | "spectra"
-  | "labels"
-  | "segmentation"
-  | "embed2d"
-  | "embed3d"
-  | "topicMap"
-  | "topicVsLabel";
-
 export type WorkspaceContext = {
   family: DatasetFamily | null;
   subset: string | null;
   rep: RepresentationKind | null;
-  view: WorkspaceView | null;
-  docId: string | null;
 };
 
 export type WorkspaceEvent =
@@ -28,25 +16,25 @@ export type WorkspaceEvent =
   | { type: "PICK_SUBSET"; subset: string }
   | { type: "PICK_REP"; rep: RepresentationKind }
   | { type: "SWITCH_SUBSET"; subset: string }
-  | { type: "GO_VIEW"; view: WorkspaceView }
-  | { type: "PICK_DOC"; docId: string }
   | { type: "BACK" };
 
 const initialContext: WorkspaceContext = {
   family: null,
   subset: null,
   rep: null,
-  view: null,
-  docId: null,
 };
 
 /**
- * Workspace wizard state machine — implements the FSM described in
- * `_CAOS_MANAGE/wip/caos-lda-hsi/web-app-spec.md` §4.
+ * Workspace wizard state machine. Tracks the four-step picker
+ * (family -> subset -> rep -> explore) with per-step BACK and a
+ * mid-explore SWITCH_SUBSET that lets the user pivot the dataset
+ * without leaving the chosen recipe.
  *
- * Step gates: each transition is unconditional in this skeleton; guards
- * (e.g. `repAvailableForSubset`) will be added when the manifest is
- * wired and the page-level UIs are implemented.
+ * Audit cleanup (#592 Tier 1 item 3, c389): the previous skeleton
+ * carried orphaned GO_VIEW + PICK_DOC events, the matching `view`
+ * and `docId` context fields, the `explore.dynamic` substate, and a
+ * `benchmarkFork` final state — none of which were dispatched after
+ * the 6-tab -> 28-tab refactor at c133. Removed.
  */
 export const workspaceMachine = setup({
   types: {
@@ -85,26 +73,12 @@ export const workspaceMachine = setup({
       },
     },
     explore: {
-      initial: "raw",
       on: {
-        GO_VIEW: {
-          target: ".dynamic",
-          actions: assign({ view: ({ event }) => event.view }),
-        },
-        PICK_DOC: {
-          target: "benchmarkFork",
-          actions: assign({ docId: ({ event }) => event.docId }),
-        },
         SWITCH_SUBSET: {
           actions: assign({ subset: ({ event }) => event.subset }),
         },
         BACK: { target: "pickRep" },
       },
-      states: {
-        raw: {},
-        dynamic: {},
-      },
     },
-    benchmarkFork: { type: "final" },
   },
 });
