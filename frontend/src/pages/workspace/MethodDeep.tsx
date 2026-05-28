@@ -10,6 +10,11 @@ import { MethodTopicLabelHeatmap } from "./MethodTopicLabelHeatmap";
 export default function MethodDeep() {
   const { methodId = "" } = useParams();
   const method = useMemo(() => findMethod(methodId), [methodId]);
+  const [compareId, setCompareId] = useState<string>("");
+  const compareMethod = useMemo(
+    () => (compareId ? findMethod(compareId) : null),
+    [compareId],
+  );
   const { t } = useTranslation(["pages", "common"]);
 
   if (!method) {
@@ -90,13 +95,40 @@ export default function MethodDeep() {
       </section>
 
       <section className="mb-8">
-        <h2
-          className="mb-2 text-[13px] uppercase tracking-widest font-semibold"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {t("pages:workspace_methods.deep.sweep_heading")}
-        </h2>
-        <SweepPanelPlaceholder method={method} />
+        <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
+          <h2
+            className="text-[13px] uppercase tracking-widest font-semibold"
+            style={{ color: "var(--color-fg-faint)" }}
+          >
+            {t("pages:workspace_methods.deep.sweep_heading")}
+          </h2>
+          <label
+            className="text-[12px] flex items-center gap-2"
+            style={{ color: "var(--color-fg-subtle)" }}
+          >
+            Compare with
+            <select
+              value={compareId}
+              onChange={(e) => setCompareId(e.target.value)}
+              className="text-[12.5px] px-2 py-1 rounded font-mono"
+              style={{
+                backgroundColor: "var(--color-panel)",
+                color: "var(--color-fg)",
+                border: "1px solid var(--color-border)",
+              }}
+            >
+              <option value="">— none —</option>
+              {METHOD_CATALOG.filter((m) => m.id !== method.id && m.hasSweepArtefacts).map(
+                (m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.id}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+        </div>
+        <SweepPanelPlaceholder method={method} compareMethod={compareMethod} />
       </section>
 
       {method.hasSweepArtefacts && (
@@ -148,6 +180,33 @@ export default function MethodDeep() {
 
 type AxisTab = "fit" | "f1" | "f2" | "f7" | "reliability" | "backbones";
 
+// For each metric, "higher" = true if higher value is preferred. F-14 (jaccard
+// repetitiveness) is the only "lower is better" axis surfaced in the panel.
+const HIGHER_IS_BETTER: Record<string, boolean> = {
+  K: true,
+  mean_doc_length: true,
+  perplexity: false,
+  f1_routed: true,
+  f1_raw: true,
+  c_v: true,
+  c_npmi: true,
+  nmi: true,
+  jaccard: false,
+  f18: true,
+  hdp_cv: true,
+  prodlda_cv: true,
+  etm_cv: true,
+};
+
+function diffColor(a: number | null | undefined, b: number | null | undefined, metric: string): string {
+  if (a === null || a === undefined || b === null || b === undefined) return "var(--color-fg)";
+  const delta = a - b;
+  if (Math.abs(delta) < 0.005) return "var(--color-fg-subtle)";
+  const higher = HIGHER_IS_BETTER[metric] ?? true;
+  const aBetter = higher ? delta > 0 : delta < 0;
+  return aBetter ? "var(--color-success, #16a34a)" : "var(--color-danger, #dc2626)";
+}
+
 const AXIS_TABS: Array<{ id: AxisTab; label: string; title: string }> = [
   { id: "fit", label: "Fit", title: "K, mean doc length, perplexity" },
   { id: "f1", label: "F-1", title: "Classification macro-F1 (routed soft + raw logistic)" },
@@ -157,9 +216,16 @@ const AXIS_TABS: Array<{ id: AxisTab; label: string; title: string }> = [
   { id: "backbones", label: "Backbones", title: "F-2 c_v under HDP / ProdLDA / ETM backbones" },
 ];
 
-function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
+function SweepPanelPlaceholder({
+  method,
+  compareMethod,
+}: {
+  method: MethodEntry;
+  compareMethod?: MethodEntry | null | undefined;
+}) {
   const { t } = useTranslation(["pages"]);
   const [report, setReport] = useState<VSweepRecipeReport | null>(null);
+  const [compareReport, setCompareReport] = useState<VSweepRecipeReport | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [tab, setTab] = useState<AxisTab>("fit");
@@ -189,6 +255,26 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
       alive = false;
     };
   }, [method.id, method.hasSweepArtefacts]);
+
+  useEffect(() => {
+    let alive = true;
+    if (!compareMethod || !compareMethod.hasSweepArtefacts) {
+      setCompareReport(null);
+      return () => {
+        alive = false;
+      };
+    }
+    vSweepMethodReport(compareMethod.id)
+      .then((data) => {
+        if (alive) setCompareReport(data);
+      })
+      .catch(() => {
+        if (alive) setCompareReport(null);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [compareMethod]);
 
   if (!method.hasSweepArtefacts) {
     return (
@@ -354,9 +440,34 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
         </thead>
         <tbody>
           {report.scenes.map((s) => {
-            const cell = (val: string | number | null | undefined, digits = 3) => {
+            const cs = compareReport?.scenes.find((x) => x.scene_id === s.scene_id);
+            const fmt = (val: string | number | null | undefined, digits = 3) => {
               if (val === null || val === undefined || val === "-") return "-";
               return typeof val === "number" ? val.toFixed(digits) : val;
+            };
+            const diffCell = (
+              a: number | null | undefined,
+              b: number | null | undefined,
+              digits: number,
+              metric: string,
+            ) => {
+              const aStr = fmt(a, digits);
+              if (!compareMethod) return aStr;
+              const bStr = fmt(b, digits);
+              const color = diffColor(a, b, metric);
+              return (
+                <div>
+                  <div>{aStr}</div>
+                  <div className="text-[11px] mt-0.5" style={{ color }}>
+                    {bStr}
+                    {a !== null && a !== undefined && b !== null && b !== undefined && (
+                      <span className="ml-1 opacity-70">
+                        Δ{(a - b >= 0 ? "+" : "") + (a - b).toFixed(digits)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
             };
             return (
               <tr key={s.scene_id}>
@@ -371,37 +482,65 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
                 </td>
                 {tab === "fit" && (
                   <>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{s.topic_view?.K ?? "-"}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.topic_view?.mean_doc_length, 1)}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.topic_view?.perplexity, 2)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {compareMethod
+                        ? diffCell(s.topic_view?.K ?? null, cs?.topic_view?.K ?? null, 0, "K")
+                        : (s.topic_view?.K ?? "-")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.topic_view?.mean_doc_length, cs?.topic_view?.mean_doc_length, 1, "mean_doc_length")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.topic_view?.perplexity, cs?.topic_view?.perplexity, 2, "perplexity")}
+                    </td>
                   </>
                 )}
                 {tab === "f1" && (
                   <>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f1?.topic_routed_soft_mean)}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f1?.raw_logistic_mean)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f1?.topic_routed_soft_mean, cs?.f1?.topic_routed_soft_mean, 3, "f1_routed")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f1?.raw_logistic_mean, cs?.f1?.raw_logistic_mean, 3, "f1_raw")}
+                    </td>
                   </>
                 )}
                 {tab === "f2" && (
                   <>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f2?.c_v)}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f2?.c_npmi)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f2?.c_v, cs?.f2?.c_v, 3, "c_v")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f2?.c_npmi, cs?.f2?.c_npmi, 3, "c_npmi")}
+                    </td>
                   </>
                 )}
                 {tab === "f7" && (
-                  <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f7?.normalised_mi)}</td>
+                  <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                    {diffCell(s.f7?.normalised_mi, cs?.f7?.normalised_mi, 3, "nmi")}
+                  </td>
                 )}
                 {tab === "reliability" && (
                   <>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f14?.mean_pairwise_jaccard)}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f18?.frac_above_0_7)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f14?.mean_pairwise_jaccard, cs?.f14?.mean_pairwise_jaccard, 3, "jaccard")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f18?.frac_above_0_7, cs?.f18?.frac_above_0_7, 3, "f18")}
+                    </td>
                   </>
                 )}
                 {tab === "backbones" && (
                   <>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.hdp?.f2_c_v)}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.prodlda?.f2_c_v)}</td>
-                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.etm?.f2_c_v)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.hdp?.f2_c_v, cs?.hdp?.f2_c_v, 3, "hdp_cv")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.prodlda?.f2_c_v, cs?.prodlda?.f2_c_v, 3, "prodlda_cv")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.etm?.f2_c_v, cs?.etm?.f2_c_v, 3, "etm_cv")}
+                    </td>
                   </>
                 )}
               </tr>
@@ -410,6 +549,16 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
         </tbody>
       </table>
       </div>
+      {compareMethod && (
+        <p
+          className="mt-2 text-[11.5px]"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          Larger value in each cell is <strong>{method.id}</strong>; smaller value
+          is <strong>{compareMethod.id}</strong>. Δ colour: green if {method.id}
+          {" "}is better on that metric, red if worse.
+        </p>
+      )}
     </div>
   );
 }
