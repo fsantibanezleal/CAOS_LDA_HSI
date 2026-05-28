@@ -1088,7 +1088,7 @@ def _read_json_or_none(path):
         return None
 
 
-_V_SWEEP_RECIPES = [f"V{i}" for i in range(1, 13)]
+_V_SWEEP_RECIPES = [f"V{i}" for i in range(1, 14)]
 _V_SWEEP_SCENES = [
     "indian-pines-corrected",
     "salinas-corrected",
@@ -1142,6 +1142,8 @@ def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> V
         f14 = _read_json_or_none(s.v_sweep_f14_path(scene, recipe, scheme, q))
         f18 = _read_json_or_none(s.v_sweep_f18_path(scene, recipe, scheme, q))
         hdp = _read_json_or_none(s.v_sweep_hdp_path(scene, recipe, scheme, q))
+        prod = _read_json_or_none(s.v_sweep_prodlda_path(scene, recipe, scheme, q))
+        etm = _read_json_or_none(s.v_sweep_etm_path(scene, recipe, scheme, q))
         scenes_payload.append(VSweepRecipeScene(
             scene_id=scene,
             topic_view=tv,
@@ -1151,6 +1153,8 @@ def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> V
             f14=f14,
             f18=f18,
             hdp=hdp,
+            prodlda=prod,
+            etm=etm,
         ))
     return VSweepRecipeReport(
         recipe=recipe,

@@ -312,6 +312,20 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
             >
               HDP c_v
             </th>
+            <th
+              className="text-right px-3 py-1.5 border"
+              style={{ borderColor: "var(--color-border)" }}
+              title="ProdLDA backbone F-2 c_v (logistic-normal prior)"
+            >
+              ProdLDA c_v
+            </th>
+            <th
+              className="text-right px-3 py-1.5 border"
+              style={{ borderColor: "var(--color-border)" }}
+              title="ETM backbone F-2 c_v (embedded topic model)"
+            >
+              ETM c_v
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -397,6 +411,22 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
               >
                 {s.hdp?.f2_c_v !== null && s.hdp?.f2_c_v !== undefined
                   ? s.hdp.f2_c_v.toFixed(3)
+                  : "-"}
+              </td>
+              <td
+                className="px-3 py-1 border text-right"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {s.prodlda?.f2_c_v !== null && s.prodlda?.f2_c_v !== undefined
+                  ? s.prodlda.f2_c_v.toFixed(3)
+                  : "-"}
+              </td>
+              <td
+                className="px-3 py-1 border text-right"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {s.etm?.f2_c_v !== null && s.etm?.f2_c_v !== undefined
+                  ? s.etm.f2_c_v.toFixed(3)
                   : "-"}
               </td>
             </tr>
