@@ -11,16 +11,16 @@
   "f16_model_selection_adequacy": 11,
   "f2_c_v": 0.578618,
   "f14_mean_pairwise_jaccard": 0.030328,
-  "fit_seconds": 0.788,
+  "fit_seconds": 0.551,
   "D": 1980,
   "V": 197,
-  "topic_mass_top5": [
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    1.0
+  "topic_deviation_top5": [
+    0.773601,
+    0.76828,
+    0.754102,
+    0.753629,
+    0.752043
   ],
-  "generated_at": "2026-05-27T03:34:43Z",
+  "generated_at": "2026-05-28T03:06:50Z",
   "builder": "build_v_sweep_hdp v0.1"
 }
