@@ -1,0 +1,17 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "ETM",
+  "K": 12,
+  "D": 3520,
+  "V": 1632,
+  "mean_doc_length": 1269.0,
+  "f2_c_v": 0.594154,
+  "f14_mean_pairwise_jaccard": 0.124152,
+  "fit_seconds": 4.236,
+  "status": "ok",
+  "generated_at": "2026-05-28T11:39:19Z",
+  "builder": "build_v_sweep_etm_backbone v0.1"
+}

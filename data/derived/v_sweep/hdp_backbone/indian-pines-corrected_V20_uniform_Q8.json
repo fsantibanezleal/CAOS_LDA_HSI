@@ -1,0 +1,26 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "HDP",
+  "T_truncation": 20,
+  "K_inferred_total": 20,
+  "K_effective": 20,
+  "K_ground_truth_classes": 16,
+  "f16_model_selection_adequacy": 4,
+  "f2_c_v": 0.33251,
+  "f14_mean_pairwise_jaccard": 0.003601,
+  "fit_seconds": 0.933,
+  "D": 2812,
+  "V": 1600,
+  "topic_deviation_top5": [
+    1.447426,
+    1.428825,
+    0.895903,
+    0.753146,
+    0.748457
+  ],
+  "generated_at": "2026-05-28T11:38:15Z",
+  "builder": "build_v_sweep_hdp v0.1"
+}
