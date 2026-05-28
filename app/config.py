@@ -392,6 +392,12 @@ class Settings(BaseSettings):
     def v_sweep_hdp_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
         return self.v_sweep_dir / "hdp_backbone" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
 
+    def v_sweep_prodlda_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "prodlda_backbone" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    def v_sweep_etm_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "etm_backbone" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
     @property
     def v_sweep_f1_win_matrix_path(self) -> Path:
         return self.v_sweep_dir / "f1_win_matrix.json"

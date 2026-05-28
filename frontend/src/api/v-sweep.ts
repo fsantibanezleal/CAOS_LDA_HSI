@@ -105,6 +105,22 @@ export type VSweepHdpRecord = {
   fit_seconds: number;
 };
 
+export type VSweepBackboneRecord = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  backbone: string;
+  K: number;
+  D: number;
+  V: number;
+  mean_doc_length: number;
+  f2_c_v: number;
+  f14_mean_pairwise_jaccard: number;
+  fit_seconds: number;
+  status: string;
+};
+
 export type VSweepRecipeScene = {
   scene_id: string;
   topic_view?: VSweepTopicViewSummary | null;
@@ -114,6 +130,8 @@ export type VSweepRecipeScene = {
   f14?: VSweepF14Record | null;
   f18?: VSweepF18Record | null;
   hdp?: VSweepHdpRecord | null;
+  prodlda?: VSweepBackboneRecord | null;
+  etm?: VSweepBackboneRecord | null;
 };
 
 export type VSweepRecipeReport = {
