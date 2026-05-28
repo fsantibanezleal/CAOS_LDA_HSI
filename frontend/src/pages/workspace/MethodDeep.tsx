@@ -146,11 +146,23 @@ export default function MethodDeep() {
   );
 }
 
+type AxisTab = "fit" | "f1" | "f2" | "f7" | "reliability" | "backbones";
+
+const AXIS_TABS: Array<{ id: AxisTab; label: string; title: string }> = [
+  { id: "fit", label: "Fit", title: "K, mean doc length, perplexity" },
+  { id: "f1", label: "F-1", title: "Classification macro-F1 (routed soft + raw logistic)" },
+  { id: "f2", label: "F-2", title: "Topic-word coherence (c_v, c_npmi)" },
+  { id: "f7", label: "F-7", title: "Topic-label normalised mutual information" },
+  { id: "reliability", label: "Reliability", title: "F-14 repetitiveness, F-18 seed-pair top-10 alignment" },
+  { id: "backbones", label: "Backbones", title: "F-2 c_v under HDP / ProdLDA / ETM backbones" },
+];
+
 function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
   const { t } = useTranslation(["pages"]);
   const [report, setReport] = useState<VSweepRecipeReport | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [tab, setTab] = useState<AxisTab>("fit");
 
   useEffect(() => {
     let alive = true;
@@ -230,7 +242,34 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div>
+      <div
+        role="tablist"
+        aria-label="F-axis groups"
+        className="flex flex-wrap gap-1 mb-3"
+      >
+        {AXIS_TABS.map((tabDef) => {
+          const active = tab === tabDef.id;
+          return (
+            <button
+              key={tabDef.id}
+              role="tab"
+              aria-selected={active}
+              title={tabDef.title}
+              onClick={() => setTab(tabDef.id)}
+              className="text-[12.5px] font-medium px-2.5 py-1 rounded transition-colors"
+              style={{
+                backgroundColor: active ? "var(--color-accent)" : "var(--color-panel)",
+                color: active ? "var(--color-bg)" : "var(--color-fg-subtle)",
+                border: "1px solid var(--color-border)",
+              }}
+            >
+              {tabDef.label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="overflow-x-auto">
       <table
         className="w-full text-[12.5px] border-collapse"
         style={{ borderColor: "var(--color-border)" }}
@@ -246,199 +285,131 @@ function SweepPanelPlaceholder({ method }: { method: MethodEntry }) {
             >
               Scene
             </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              K
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              mean doc
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              perp
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              F-1 routed
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              F-1 raw
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              F-2 c_v
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              F-2 c_npmi
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-            >
-              F-7 NMI
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-              title="F-14 mean off-diagonal top-10 jaccard (lower = more diverse)"
-            >
-              F-14 jacc
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-              title="F-18 fraction of seed-pair topic alignments with cosine > 0.7"
-            >
-              F-18 0.7
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-              title="HDP backbone F-2 c_v (alternative model selection)"
-            >
-              HDP c_v
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-              title="ProdLDA backbone F-2 c_v (logistic-normal prior)"
-            >
-              ProdLDA c_v
-            </th>
-            <th
-              className="text-right px-3 py-1.5 border"
-              style={{ borderColor: "var(--color-border)" }}
-              title="ETM backbone F-2 c_v (embedded topic model)"
-            >
-              ETM c_v
-            </th>
+            {tab === "fit" && (
+              <>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>K</th>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>mean doc</th>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>perp</th>
+              </>
+            )}
+            {tab === "f1" && (
+              <>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-1 routed</th>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-1 raw</th>
+              </>
+            )}
+            {tab === "f2" && (
+              <>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-2 c_v</th>
+                <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-2 c_npmi</th>
+              </>
+            )}
+            {tab === "f7" && (
+              <th className="text-right px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>F-7 NMI</th>
+            )}
+            {tab === "reliability" && (
+              <>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="F-14 mean off-diagonal top-10 jaccard (lower = more diverse)"
+                >
+                  F-14 jacc
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="F-18 fraction of seed-pair topic alignments with cosine > 0.7"
+                >
+                  F-18 0.7
+                </th>
+              </>
+            )}
+            {tab === "backbones" && (
+              <>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="HDP backbone F-2 c_v (alternative model selection)"
+                >
+                  HDP c_v
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="ProdLDA backbone F-2 c_v (logistic-normal prior)"
+                >
+                  ProdLDA c_v
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="ETM backbone F-2 c_v (embedded topic model)"
+                >
+                  ETM c_v
+                </th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
-          {report.scenes.map((s) => (
-            <tr key={s.scene_id}>
-              <td
-                className="sticky left-0 z-10 px-3 py-1 border font-mono"
-                style={{
-                  borderColor: "var(--color-border)",
-                  backgroundColor: "var(--color-bg)",
-                }}
-              >
-                {s.scene_id}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.topic_view?.K ?? "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.topic_view?.mean_doc_length?.toFixed(1) ?? "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.topic_view?.perplexity?.toFixed(2) ?? "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f1?.topic_routed_soft_mean?.toFixed(3) ?? "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f1?.raw_logistic_mean?.toFixed(3) ?? "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f2?.c_v?.toFixed(3) ?? "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f2?.c_npmi !== null && s.f2?.c_npmi !== undefined
-                  ? s.f2.c_npmi.toFixed(3)
-                  : "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f7?.normalised_mi !== null && s.f7?.normalised_mi !== undefined
-                  ? s.f7.normalised_mi.toFixed(3)
-                  : "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f14?.mean_pairwise_jaccard !== null && s.f14?.mean_pairwise_jaccard !== undefined
-                  ? s.f14.mean_pairwise_jaccard.toFixed(3)
-                  : "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.f18?.frac_above_0_7 !== null && s.f18?.frac_above_0_7 !== undefined
-                  ? s.f18.frac_above_0_7.toFixed(3)
-                  : "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.hdp?.f2_c_v !== null && s.hdp?.f2_c_v !== undefined
-                  ? s.hdp.f2_c_v.toFixed(3)
-                  : "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.prodlda?.f2_c_v !== null && s.prodlda?.f2_c_v !== undefined
-                  ? s.prodlda.f2_c_v.toFixed(3)
-                  : "-"}
-              </td>
-              <td
-                className="px-3 py-1 border text-right"
-                style={{ borderColor: "var(--color-border)" }}
-              >
-                {s.etm?.f2_c_v !== null && s.etm?.f2_c_v !== undefined
-                  ? s.etm.f2_c_v.toFixed(3)
-                  : "-"}
-              </td>
-            </tr>
-          ))}
+          {report.scenes.map((s) => {
+            const cell = (val: string | number | null | undefined, digits = 3) => {
+              if (val === null || val === undefined || val === "-") return "-";
+              return typeof val === "number" ? val.toFixed(digits) : val;
+            };
+            return (
+              <tr key={s.scene_id}>
+                <td
+                  className="sticky left-0 z-10 px-3 py-1 border font-mono"
+                  style={{
+                    borderColor: "var(--color-border)",
+                    backgroundColor: "var(--color-bg)",
+                  }}
+                >
+                  {s.scene_id}
+                </td>
+                {tab === "fit" && (
+                  <>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{s.topic_view?.K ?? "-"}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.topic_view?.mean_doc_length, 1)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.topic_view?.perplexity, 2)}</td>
+                  </>
+                )}
+                {tab === "f1" && (
+                  <>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f1?.topic_routed_soft_mean)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f1?.raw_logistic_mean)}</td>
+                  </>
+                )}
+                {tab === "f2" && (
+                  <>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f2?.c_v)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f2?.c_npmi)}</td>
+                  </>
+                )}
+                {tab === "f7" && (
+                  <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f7?.normalised_mi)}</td>
+                )}
+                {tab === "reliability" && (
+                  <>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f14?.mean_pairwise_jaccard)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.f18?.frac_above_0_7)}</td>
+                  </>
+                )}
+                {tab === "backbones" && (
+                  <>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.hdp?.f2_c_v)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.prodlda?.f2_c_v)}</td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>{cell(s.etm?.f2_c_v)}</td>
+                  </>
+                )}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
