@@ -857,6 +857,12 @@
         "summary": "Transformada wavelet continua con Morlet sobre 16 escalas log × 8 buckets de posición. Top-16 celdas de magnitud por píxel. Vocab 1024.",
         "theory": "V14 difiere de V6 (DWT Db4 nivel 4) por usar escalas *continuas*. La función madre Morlet da localización tiempo-frecuencia conjunta a diferencia de las escalas diádicas de V6. F-2 c_v 0.46-0.76; competitivo con V12 en coherencia pero con vocabulario (escala, posición, magnitud) distinto."
       },
+      "V16": {
+        "tag": "embedding foundation (scaffold)",
+        "title": "Tokens foundation-model HyperSIGMA (V16, scaffold)",
+        "summary": "Embedding congelado de HyperSIGMA por píxel, cuantizado vía PQ / VQ-VAE / k-means. Vocab según codebook (PQ: 256, VQ-VAE: 128, k-means: 200).",
+        "theory": "V16 usa el ViT mil-millones-de-parámetros HyperSIGMA (TPAMI'25, pre-entrenado en HyperGlobal-450K) para embebir cada píxel, luego cuantiza el embedding en tokens LDA. Tesis: una base aprendida sobre 450K escenas hiperespectrales lleva información discriminativa que V1..V15 no captan. **Estado (2026-05-28): solo scaffold; pesos no vendorizados; GPU-only en práctica.** Mayor apuesta de novedad de la extensión V."
+      },
       "V17": {
         "tag": "dict sparse-coding",
         "title": "Tokens diccionario sparse (V17)",
