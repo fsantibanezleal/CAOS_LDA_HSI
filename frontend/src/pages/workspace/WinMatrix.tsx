@@ -187,21 +187,36 @@ export function WinMatrix() {
                           key={m.id}
                           className="text-right px-2 py-1 border tabular-nums"
                           style={{
-                            borderColor: "var(--color-border)",
-                            backgroundColor: cell?.value !== null && cell?.value !== undefined
-                              ? colorFor(cell.value, key)
-                              : "var(--color-panel)",
+                            borderColor: isWinner
+                              ? "var(--color-accent)"
+                              : "var(--color-border)",
+                            backgroundColor:
+                              cell?.value !== null && cell?.value !== undefined
+                                ? colorFor(cell.value, key)
+                                : "var(--color-panel)",
                             color: "white",
-                            fontWeight: isWinner ? 700 : 400,
-                            outline: isWinner ? "2px solid #fff" : undefined,
-                            outlineOffset: isWinner ? -2 : undefined,
+                            fontWeight: isWinner ? 800 : 400,
+                            // UX audit fix (c391): stronger winner badge.
+                            // Was a 2px white outline that disappeared on
+                            // bright cells; now a 3px accent ring + slight
+                            // scale so the eye lands on the winner first.
+                            outline: isWinner
+                              ? "3px solid var(--color-accent)"
+                              : undefined,
+                            outlineOffset: isWinner ? -3 : undefined,
+                            boxShadow: isWinner
+                              ? "0 0 0 1px rgba(255,255,255,0.6) inset"
+                              : undefined,
                           }}
                           title={
                             cell?.value !== null && cell?.value !== undefined
-                              ? `${m.id} / ${scene}: ${cell.value.toFixed(4)}`
+                              ? `${m.id} / ${scene}: ${cell.value.toFixed(4)}${
+                                  isWinner ? " (winner)" : ""
+                                }`
                               : "no data"
                           }
                         >
+                          {isWinner ? "★ " : ""}
                           {cell?.value !== null && cell?.value !== undefined
                             ? cell.value.toFixed(2)
                             : "-"}
