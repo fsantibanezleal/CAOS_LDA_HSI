@@ -857,6 +857,12 @@
         "summary": "Continuous wavelet transform with Morlet mother on 16 log-scales × 8 position buckets. Top-16 magnitude cells per pixel. Vocab 1024.",
         "theory": "V14 differs from V6 (Db4 DWT level-4) by using *continuous* scales. The Morlet mother gives joint time-frequency localization unlike V6 dyadic scales. F-2 c_v 0.46-0.76 across scenes; competitive with V12 on coherence but distinct on the (scale, position, magnitude) vocabulary."
       },
+      "V16": {
+        "tag": "foundation embedding (scaffold)",
+        "title": "HyperSIGMA foundation-model tokens (V16, scaffold)",
+        "summary": "Frozen HyperSIGMA embedding of each pixel, quantised via PQ / VQ-VAE / k-means. Vocab depends on codebook (PQ: 256, VQ-VAE: 128, k-means: 200).",
+        "theory": "V16 uses the TPAMI'25 HyperSIGMA billion-parameter ViT (pre-trained on HyperGlobal-450K) to embed each pixel, then quantises the embedding into LDA tokens. The thesis: a basis learnt on 450K hyperspectral scenes carries discriminative information V1..V15 cannot. **Status (2026-05-28): scaffolded only; weights not vendored; GPU-only in practice.** Highest novelty bet in the V-extension space."
+      },
       "V17": {
         "tag": "sparse-coding dict",
         "title": "Sparse dictionary tokens (V17)",
