@@ -144,7 +144,61 @@ export function WinMatrix() {
           >
             {label}
           </h3>
-          <div className="overflow-x-auto">
+          <div className="md:hidden space-y-3">
+            {scenes.map((scene) => (
+              <div
+                key={`mobile-${scene}`}
+                className="border rounded-md p-2"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                <p
+                  className="text-[11.5px] font-mono mb-1.5"
+                  style={{ color: "var(--color-fg-subtle)" }}
+                >
+                  {scene}
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {wordifications.map((m) => {
+                    const cell = cells.find(
+                      (c) => c.recipe === m.id && c.scene === scene && c.axis === key,
+                    );
+                    const isWinner = winners.get(`${key}|${scene}`) === m.id;
+                    const val =
+                      cell?.value !== null && cell?.value !== undefined
+                        ? cell.value
+                        : null;
+                    return (
+                      <div
+                        key={`mobile-${m.id}-${scene}`}
+                        className="text-[11px] px-1.5 py-0.5 rounded font-mono"
+                        style={{
+                          backgroundColor:
+                            val !== null
+                              ? colorFor(val, key)
+                              : "var(--color-panel)",
+                          color: "white",
+                          border: isWinner
+                            ? "2px solid var(--color-accent)"
+                            : "1px solid var(--color-border)",
+                          fontWeight: isWinner ? 700 : 400,
+                        }}
+                        title={
+                          val !== null
+                            ? `${m.id} / ${scene}: ${val.toFixed(4)}${
+                                isWinner ? " (winner)" : ""
+                              }`
+                            : "no data"
+                        }
+                      >
+                        {isWinner ? "★" : ""}{m.id}: {val !== null ? val.toFixed(2) : "-"}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="hidden md:block overflow-x-auto">
             <table
               className="text-[12px] border-collapse"
               style={{ borderColor: "var(--color-border)" }}
