@@ -838,6 +838,18 @@
         "title": "Beta-VAE",
         "summary": "Autoencoder variacional desentangled. Ya evaluado.",
         "theory": "Beta-VAE favorece dimensiones factorizadas vía un término KL re-ponderado. Como el CAE, sólo aquí para comparación; no se re-corre por receta."
+      },
+      "V13": {
+        "tag": "VQ-VAE aprendido",
+        "title": "Tokens codebook VQ-VAE (V13)",
+        "summary": "Codebook aprendido end-to-end vía VQ-VAE. M=4 sub-vectores, K=32 codewords c/u. Vocab 128 desde cuantizador entrenado por gradiente.",
+        "theory": "V13 entrena la wordification end-to-end desde el objetivo de reconstrucción del espectro. A diferencia de V11 (k-means PQ) o V12 (GMM estadística), el codebook se optimiza por gradiente. En la práctica *bajo-rinde* recetas handcrafted en F-1 (último lugar de 13) porque el objetivo de reconstrucción no se alinea con clasificación/coherencia. Útil como punto de diseño que muestra que wordifications aprendidas no son automáticamente mejores."
+      },
+      "V15": {
+        "tag": "índices espectrales",
+        "title": "Tokens de índices RS clásicos (V15)",
+        "summary": "NDVI/MNDWI/NBR/NDSI/EVI/SAVI por píxel cuantizados a Q bins. Vocab = 6 índices × Q = 48 (o 24 en escenas VNIR-only).",
+        "theory": "V15 es la baseline clásica de remote sensing: índices handcrafted de vegetación, agua, severidad de quemado, calculados por píxel y discretizados. Fuerza a reviewers a engancharse con si los topic models aportan algo sobre los índices estándar. Salinas-A gana F-7 con 0.51 NMI (NDVI separa cultivos limpiamente); resto mid-pack."
       }
     },
     "matrix": {
