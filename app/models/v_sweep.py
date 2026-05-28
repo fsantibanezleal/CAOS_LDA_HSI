@@ -106,6 +106,24 @@ class VSweepHdpRecord(BaseModel):
     fit_seconds: float
 
 
+class VSweepBackboneRecord(BaseModel):
+    """Common shape for the ProdLDA + ETM backbone records — same
+    schema as the per-backbone V-sweep result JSON files."""
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    backbone: str
+    K: int
+    D: int
+    V: int
+    mean_doc_length: float
+    f2_c_v: float
+    f14_mean_pairwise_jaccard: float
+    fit_seconds: float
+    status: str
+
+
 class VSweepRecipeScene(BaseModel):
     scene_id: str
     topic_view: Optional[VSweepTopicViewSummary] = None
@@ -115,6 +133,8 @@ class VSweepRecipeScene(BaseModel):
     f14: Optional[VSweepF14Record] = None
     f18: Optional[VSweepF18Record] = None
     hdp: Optional[VSweepHdpRecord] = None
+    prodlda: Optional[VSweepBackboneRecord] = None
+    etm: Optional[VSweepBackboneRecord] = None
 
 
 class VSweepRecipeReport(BaseModel):
