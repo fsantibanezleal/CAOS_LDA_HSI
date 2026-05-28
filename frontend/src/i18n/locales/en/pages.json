@@ -838,6 +838,18 @@
         "title": "Beta-VAE",
         "summary": "Disentangled variational autoencoder. Already evaluated.",
         "theory": "Beta-VAE encourages factorised latent dimensions via a re-weighted KL term. Like the CAE, this is here for comparison against deep latent-space alternatives, not re-run per recipe."
+      },
+      "V13": {
+        "tag": "VQ-VAE learned",
+        "title": "VQ-VAE codebook tokens (V13)",
+        "summary": "End-to-end learned codebook via VQ-VAE. M=4 sub-vectors, K=32 codewords each. 128-word vocab from gradient-trained quantizer.",
+        "theory": "V13 trains the wordification end-to-end from the spectrum reconstruction objective. Unlike V11 (k-means PQ) or V12 (statistical GMM), the codebook is gradient-optimised. In practice this *underperforms* handcrafted recipes on F-1 (ranks 13th of 13) because the reconstruction target does not align with classification/coherence. Useful as a design point that shows learned wordifications are not automatically better."
+      },
+      "V15": {
+        "tag": "spectral indices",
+        "title": "Classical RS index tokens (V15)",
+        "summary": "Per-pixel NDVI/MNDWI/NBR/NDSI/EVI/SAVI quantised to Q bins. Vocab = 6 indices × Q = 48 (or 24 on VNIR-only scenes).",
+        "theory": "V15 is the classical remote-sensing baseline: hand-crafted vegetation, water, and burn-severity indices, computed per pixel and discretised. Forces reviewers to engage with whether topic models add anything over standard indices. Salinas-A wins F-7 at 0.51 NMI (NDVI cleanly separates crops); other scenes mid-pack."
       }
     },
     "matrix": {
