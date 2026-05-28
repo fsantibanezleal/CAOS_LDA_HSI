@@ -44,6 +44,20 @@ class Settings(BaseSettings):
     @property
     def origins(self) -> list[str]:
         if self.allowed_origins.strip():
+            # Audit fix (#588 Tier 1): warn when the back-compat
+            # override is silently winning over the env-based default.
+            # Production deployments that set ALLOWED_ORIGINS by
+            # accident should see a startup-time warning, not a
+            # mystery CORS configuration.
+            if self.app_env.lower() == "production":
+                import warnings
+                warnings.warn(
+                    "CORS: ALLOWED_ORIGINS env var is overriding the "
+                    f"production-mode default ({self.prod_origins!r}). "
+                    "Confirm this is intentional.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
             raw = self.allowed_origins
         elif self.app_env.lower() == "production":
             raw = self.prod_origins
