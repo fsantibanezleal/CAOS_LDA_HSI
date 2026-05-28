@@ -1,0 +1,214 @@
+{
+  "K": 12,
+  "n_classes": 16,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "H_label_marginal_bits": 4.0,
+  "H_label_given_topic_bits": 1.947504,
+  "mutual_information_bits": 2.052496,
+  "normalised_mi": 0.513124,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 308,
+      "p_topic": 0.0875,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.003247,
+        0.412338,
+        0.0,
+        0.003247,
+        0.0,
+        0.0,
+        0.0,
+        0.038961,
+        0.272727,
+        0.269481
+      ],
+      "kl_vs_marginal": 2.215893
+    },
+    {
+      "topic": 1,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 2,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 3,
+      "n_docs": 630,
+      "p_topic": 0.178977,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.047619,
+        0.0,
+        0.0,
+        0.004762,
+        0.0,
+        0.0,
+        0.007937,
+        0.234921,
+        0.349206,
+        0.347619,
+        0.0,
+        0.003175,
+        0.003175,
+        0.001587
+      ],
+      "kl_vs_marginal": 2.080392
+    },
+    {
+      "topic": 4,
+      "n_docs": 733,
+      "p_topic": 0.208239,
+      "label_distribution": [
+        0.300136,
+        0.298772,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.298772,
+        0.001364,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.100955
+      ],
+      "kl_vs_marginal": 2.090455
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 487,
+      "p_topic": 0.138352,
+      "label_distribution": [
+        0.0,
+        0.002053,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.172485,
+        0.0,
+        0.055441,
+        0.0,
+        0.0,
+        0.010267,
+        0.392197,
+        0.26694,
+        0.100616
+      ],
+      "kl_vs_marginal": 1.873585
+    },
+    {
+      "topic": 7,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 8,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 9,
+      "n_docs": 851,
+      "p_topic": 0.241761,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.223267,
+        0.258519,
+        0.258519,
+        0.0,
+        0.0,
+        0.0,
+        0.251469,
+        0.007051,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.001175,
+        0.0
+      ],
+      "kl_vs_marginal": 1.94531
+    },
+    {
+      "topic": 10,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 11,
+      "n_docs": 511,
+      "p_topic": 0.14517,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.424658,
+        0.0,
+        0.015656,
+        0.001957,
+        0.074364,
+        0.0,
+        0.001957,
+        0.420744,
+        0.029354,
+        0.005871,
+        0.02544
+      ],
+      "kl_vs_marginal": 2.214177
+    }
+  ],
+  "scene_id": "salinas-corrected",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 8,
+  "generated_at": "2026-05-28T11:04:31Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}
