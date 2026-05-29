@@ -219,9 +219,11 @@ export default function MethodologyRepresentations() {
           <Equation tex="x \in \mathbb{R}^B" />, each recipe defines a map
           to a multiset of tokens drawn from a vocabulary{" "}
           <Equation tex="\mathcal{V}" />. The LDA model treats those
-          multisets as documents. The 12 recipes differ in (a) which
-          feature of <em>x</em> becomes the token alphabet and (b) how
-          continuous values are quantised.
+          multisets as documents. The nineteen built recipes (V1..V15,
+          V17..V20; V16 reserved for foundation-model embeddings) differ
+          in (a) which feature of <em>x</em> becomes the token alphabet,
+          (b) how continuous values are quantised, and (c) whether the
+          vocabulary is fixed, learnt unsupervised, or label-aware.
         </p>
         <div className="overflow-x-auto mt-3">
           <table
@@ -391,7 +393,27 @@ export default function MethodologyRepresentations() {
         </div>
 
         <h3
-          className="text-[13px] uppercase tracking-widest font-semibold mt-6 mb-3"
+          className="text-[13px] uppercase tracking-widest font-semibold mt-8 mb-3"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          Mechanistic deep dive — V14, V18, V20
+        </h3>
+        <p
+          className="mb-3 text-[13px] leading-relaxed"
+          style={{ color: "var(--color-fg-subtle)" }}
+        >
+          Three of the seven extension recipes (V14 CWT-Morlet, V18
+          graph-Laplacian, V20 mutual-information-weighted) carry the
+          headline findings of the V-sweep. The full mathematical
+          construction of each follows.
+        </p>
+
+        <V20MechanismCard />
+        <V18MechanismCard />
+        <V14MechanismCard />
+
+        <h3
+          className="text-[13px] uppercase tracking-widest font-semibold mt-8 mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
           Q-schemes (quantisation)
@@ -673,6 +695,530 @@ function RecipeGridSVG() {
             ))}
           </g>
         ))}
+      </g>
+    </svg>
+  );
+}
+
+function MechanismShell({
+  recipe,
+  title,
+  oneLiner,
+  children,
+  highlightColor = "var(--color-accent)",
+}: {
+  recipe: string;
+  title: string;
+  oneLiner: string;
+  children: React.ReactNode;
+  highlightColor?: string;
+}) {
+  return (
+    <div
+      className="mt-4 mb-6 border rounded-lg p-4 md:p-5"
+      style={{
+        borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-panel)",
+      }}
+    >
+      <div className="flex items-baseline gap-2 mb-2">
+        <span
+          className="font-mono text-[12px] px-2 py-0.5 rounded"
+          style={{
+            backgroundColor: highlightColor,
+            color: "var(--color-bg)",
+          }}
+        >
+          {recipe}
+        </span>
+        <h4
+          className="text-[14px] font-semibold"
+          style={{ color: "var(--color-fg)" }}
+        >
+          {title}
+        </h4>
+      </div>
+      <p
+        className="text-[12.5px] italic mb-3"
+        style={{ color: "var(--color-fg-subtle)" }}
+      >
+        {oneLiner}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function V20MechanismCard() {
+  return (
+    <MechanismShell
+      recipe="V20"
+      title="Mutual-information-weighted bands"
+      oneLiner="V1 band-frequency tokens, re-emitted per band with multiplicities proportional to the band's discriminative power against labels."
+      highlightColor="#9333ea"
+    >
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <div>
+            <strong>Step 1 — Per-band MI estimate.</strong>{" "}
+            For each band <Equation tex="b \in [1, B]" />, treat the
+            scalar feature <Equation tex="\{x_{d, b}\}_{d=1}^{D}" /> as
+            a regressor against the categorical label{" "}
+            <Equation tex="y \in \{1, \ldots, C\}" /> using a kNN-based
+            estimator (Kraskov 2004):
+          </div>
+          <div className="py-1">
+            <Equation tex="\widehat{I}(x_b; y) = \psi(k) - \langle \psi(n_x + 1) + \psi(n_y + 1)\rangle + \psi(N)" />
+          </div>
+          <div>
+            <strong>Step 2 — Normalise into copy counts.</strong>
+          </div>
+          <div className="py-1">
+            <Equation tex="w_b = \mathrm{round}\!\Big(\tfrac{\widehat{I}(x_b; y)}{\max_{b'} \widehat{I}(x_{b'}; y)} \cdot w_{\max}\Big)" />,{" "}
+            <Equation tex="w_{\max} = 8" />
+          </div>
+          <div>
+            <strong>Step 3 — Emit weighted tokens.</strong>{" "}
+            Per pixel <em>d</em>, per band <em>b</em>, the V20 multiset
+            adds <em>w<sub>b</sub></em> copies of the token{" "}
+            <Equation tex="(b, \mathrm{bin}_Q(x_{d, b}))" />:
+          </div>
+          <div className="py-1">
+            <Equation tex="\mathrm{wordify}_{V20}(x_d) = \biguplus_{b=1}^{B} w_b \cdot \{(b, \mathrm{bin}_Q(x_{d, b}))\}" />
+          </div>
+          <div className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
+            Vocabulary <Equation tex="|\mathcal{V}_{V20}| = B \cdot Q" />,
+            matching V3. Document length is{" "}
+            <Equation tex="\sum_b w_b" />, typically a few × B.
+          </div>
+        </div>
+        <V20MechanismSVG />
+      </div>
+      <p
+        className="mt-3 text-[12.5px]"
+        style={{ color: "var(--color-fg-subtle)" }}
+      >
+        <strong>Empirical signature.</strong> V20 is the only recipe in
+        the sweep with a triple-axis win on a single labelled scene
+        (Indian Pines, F-1 = 0.858, F-2 c<sub>v</sub> = 0.88, F-7 NMI =
+        0.44). The mechanism: amplifying high-MI bands sharpens the LDA
+        topic-word likelihood, while zero-copy bands collapse out of
+        the document, reducing topic-mass dilution.
+      </p>
+    </MechanismShell>
+  );
+}
+
+function V20MechanismSVG() {
+  // Synthetic MI profile across 16 bands — bumps at b=3, 7, 12
+  const bands = Array.from({ length: 16 }, (_, b) => b);
+  const mi = bands.map((b) => {
+    return (
+      0.12 +
+      0.8 * Math.exp(-((b - 3) ** 2) / 1.2) +
+      0.55 * Math.exp(-((b - 7) ** 2) / 1.8) +
+      0.4 * Math.exp(-((b - 12) ** 2) / 1.5)
+    );
+  });
+  const maxMI = Math.max(...mi);
+  const copies = mi.map((m) => Math.round((m / maxMI) * 8));
+  const cellW = 28;
+  const baseY = 200;
+  return (
+    <svg
+      viewBox="0 0 480 280"
+      width="100%"
+      role="img"
+      aria-label="V20 mechanism: per-band MI translated to per-band token copies"
+      style={{ color: "var(--color-fg)" }}
+    >
+      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
+        <text x="240" y="14" textAnchor="middle" fontSize="11" fontWeight="700">
+          V20 — Per-band MI ⇒ per-band copy count
+        </text>
+
+        {/* MI curve */}
+        <text x="10" y="48" fontSize="10" opacity="0.7">MI(x_b; y)</text>
+        <polyline
+          fill="none"
+          stroke="#9333ea"
+          strokeWidth="1.6"
+          points={mi
+            .map((m, i) => `${30 + i * cellW},${75 - 45 * (m / maxMI)}`)
+            .join(" ")}
+        />
+        {bands.map((b) => (
+          <circle
+            key={`mi-${b}`}
+            cx={30 + b * cellW}
+            cy={75 - 45 * ((mi[b] ?? 0) / maxMI)}
+            r="2"
+            fill="#9333ea"
+          />
+        ))}
+
+        {/* Arrow */}
+        <text x="240" y="100" textAnchor="middle" fontSize="9" opacity="0.6">
+          round(MI / max(MI) · 8)
+        </text>
+        <path
+          d="M 235 105 L 235 118 L 230 118 L 240 130 L 250 118 L 245 118 L 245 105 Z"
+          fill="#9333ea"
+          opacity="0.7"
+        />
+
+        {/* Copies bar chart */}
+        <text x="10" y="148" fontSize="10" opacity="0.7">copies w_b</text>
+        {bands.map((b) => {
+          const cb = copies[b] ?? 0;
+          const h = cb * 6;
+          const x = 30 + b * cellW - 9;
+          const isZero = cb === 0;
+          return (
+            <g key={`bar-${b}`}>
+              <rect
+                x={x}
+                y={baseY - h}
+                width="18"
+                height={Math.max(h, 1)}
+                fill={isZero ? "#cbd5e1" : "#9333ea"}
+                opacity={isZero ? 0.4 : 0.85}
+              />
+              <text
+                x={30 + b * cellW}
+                y={baseY + 12}
+                textAnchor="middle"
+                fontSize="9"
+                fill={isZero ? "#94a3b8" : "currentColor"}
+                fontWeight={isZero ? 400 : 700}
+              >
+                {cb}
+              </text>
+              <text
+                x={30 + b * cellW}
+                y={baseY + 24}
+                textAnchor="middle"
+                fontSize="8"
+                opacity="0.5"
+              >
+                b{b}
+              </text>
+            </g>
+          );
+        })}
+        <line x1="20" y1={baseY + 1} x2="470" y2={baseY + 1} stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+
+        {/* Token emission diagram */}
+        <text x="240" y={baseY + 50} textAnchor="middle" fontSize="9.5" fontStyle="italic" opacity="0.7">
+          high-MI bands amplify; near-zero-MI bands collapse to zero copies
+        </text>
+      </g>
+    </svg>
+  );
+}
+
+function V18MechanismCard() {
+  return (
+    <MechanismShell
+      recipe="V18"
+      title="Graph-Laplacian eigenvector tokens"
+      oneLiner="Build a kNN cosine-affinity graph over pixels, take low-frequency Laplacian eigenvectors as semantic axes, bin each axis to form tokens."
+      highlightColor="#0ea5e9"
+    >
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <div>
+            <strong>Step 1 — Affinity graph.</strong> Build a k-nearest-neighbour
+            graph (<Equation tex="K = 10" />) over the normalised pixel
+            spectra using cosine distance, then symmetrise and convert
+            distances to similarities:
+          </div>
+          <div className="py-1">
+            <Equation tex="A_{ij} = \exp(-\|x_i - x_j\|^2 / \sigma^2) \cdot \mathbf{1}[j \in \mathrm{kNN}(i) \cup i \in \mathrm{kNN}(j)]" />
+          </div>
+          <div>
+            <strong>Step 2 — Normalised Laplacian.</strong> Compute the
+            symmetric-normalised graph Laplacian:
+          </div>
+          <div className="py-1">
+            <Equation tex="L_{\text{sym}} = I - D^{-1/2} A D^{-1/2}" />,{" "}
+            <Equation tex="D = \mathrm{diag}(\sum_j A_{ij})" />
+          </div>
+          <div>
+            <strong>Step 3 — Spectral coordinates.</strong> Extract the
+            first <Equation tex="K_e = 16" /> eigenvectors corresponding
+            to the smallest eigenvalues (low-frequency modes carry
+            manifold structure):
+          </div>
+          <div className="py-1">
+            <Equation tex="L_{\text{sym}} \phi_k = \lambda_k \phi_k,\quad \lambda_1 \le \lambda_2 \le \cdots \le \lambda_{K_e}" />
+          </div>
+          <div>
+            <strong>Step 4 — Per-axis percentile binning.</strong> For each
+            pixel <em>d</em> and each eigenvector <em>k</em>, project the
+            pixel onto <Equation tex="\phi_k" />, then percentile-bin the
+            projection into <em>Q</em> buckets. Emit one token per axis:
+          </div>
+          <div className="py-1">
+            <Equation tex="\mathrm{wordify}_{V18}(x_d) = \big\{(k, \mathrm{bin}_Q(\phi_k(d)))\big\}_{k=1}^{K_e}" />
+          </div>
+          <div className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
+            Vocabulary <Equation tex="|\mathcal{V}_{V18}| = K_e \cdot Q = 128" />;
+            document length is exactly <em>K<sub>e</sub></em>.
+          </div>
+        </div>
+        <V18MechanismSVG />
+      </div>
+      <p
+        className="mt-3 text-[12.5px]"
+        style={{ color: "var(--color-fg-subtle)" }}
+      >
+        <strong>Empirical signature.</strong> Highest F-2 c<sub>v</sub>
+        on Pavia U among V13..V20 (0.66) and third on F-7 mean (0.43).
+        Captures scenes whose labelled classes correspond to connected
+        manifold regions (urban land-cover, agricultural fields).
+      </p>
+    </MechanismShell>
+  );
+}
+
+function V18MechanismSVG() {
+  // Stylised kNN graph + eigenvector projection diagram
+  const nodes = [
+    { x: 90, y: 90, c: "#0ea5e9" },
+    { x: 130, y: 70, c: "#0ea5e9" },
+    { x: 110, y: 130, c: "#0ea5e9" },
+    { x: 70, y: 130, c: "#0ea5e9" },
+    { x: 180, y: 100, c: "#f59e0b" },
+    { x: 220, y: 80, c: "#f59e0b" },
+    { x: 210, y: 140, c: "#f59e0b" },
+    { x: 175, y: 165, c: "#f59e0b" },
+    { x: 280, y: 110, c: "#16a34a" },
+    { x: 320, y: 90, c: "#16a34a" },
+    { x: 310, y: 145, c: "#16a34a" },
+  ];
+  const edges = [
+    [0, 1], [0, 2], [0, 3], [1, 2], [1, 4], [2, 3], [2, 7],
+    [4, 5], [4, 6], [4, 7], [5, 6], [6, 7], [6, 8], [8, 9],
+    [8, 10], [9, 10],
+  ];
+  return (
+    <svg
+      viewBox="0 0 480 280"
+      width="100%"
+      role="img"
+      aria-label="V18 mechanism: kNN graph + Laplacian eigenvector binning"
+      style={{ color: "var(--color-fg)" }}
+    >
+      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
+        <text x="240" y="14" textAnchor="middle" fontSize="11" fontWeight="700">
+          V18 — kNN graph ⇒ Laplacian spectrum ⇒ binned tokens
+        </text>
+        <text x="180" y="32" textAnchor="middle" fontSize="9" opacity="0.6">
+          (a) kNN cosine graph (3 latent classes)
+        </text>
+
+        {edges.map((pair, k) => {
+          const [i, j] = pair;
+          const ni = nodes[i!];
+          const nj = nodes[j!];
+          if (!ni || !nj) return null;
+          return (
+            <line
+              key={`e-${k}`}
+              x1={ni.x}
+              y1={ni.y}
+              x2={nj.x}
+              y2={nj.y}
+              stroke="#cbd5e1"
+              strokeWidth="0.8"
+            />
+          );
+        })}
+        {nodes.map((n, i) => (
+          <circle key={`n-${i}`} cx={n.x} cy={n.y} r="6" fill={n.c} opacity="0.85" />
+        ))}
+
+        <text x="380" y="32" textAnchor="middle" fontSize="9" opacity="0.6">
+          (b) φ_1 — Fiedler vector
+        </text>
+        {nodes.map((n, i) => {
+          const phi = (i < 4 ? -0.7 : i < 8 ? 0.0 : 0.7) + (i % 3) * 0.06;
+          return (
+            <rect
+              key={`bar-${i}`}
+              x={360 + (i % 6) * 18}
+              y={60 + Math.floor(i / 6) * 50 - phi * 20}
+              width="14"
+              height={Math.abs(phi) * 40 + 1}
+              fill={n.c}
+              opacity="0.7"
+            />
+          );
+        })}
+
+        <line x1="20" y1="200" x2="460" y2="200" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+        <text x="240" y="220" textAnchor="middle" fontSize="9.5" opacity="0.7">
+          (c) bin φ_k along Q-percentiles ⇒ token (k, bin) per axis
+        </text>
+
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((q) => (
+          <g key={`bin-${q}`}>
+            <rect
+              x={120 + q * 28}
+              y={240}
+              width="24"
+              height="14"
+              rx="2"
+              fill="#0ea5e9"
+              opacity={0.25 + (q === 3 ? 0.6 : 0)}
+            />
+            <text
+              x={132 + q * 28}
+              y={251}
+              textAnchor="middle"
+              fontSize="8"
+              fill={q === 3 ? "white" : "currentColor"}
+              fontWeight={q === 3 ? 700 : 400}
+            >
+              q{q}
+            </text>
+          </g>
+        ))}
+        <text x="240" y="272" textAnchor="middle" fontSize="9" opacity="0.5">
+          ★ pixel d's bin on φ_1
+        </text>
+      </g>
+    </svg>
+  );
+}
+
+function V14MechanismCard() {
+  return (
+    <MechanismShell
+      recipe="V14"
+      title="Continuous-wavelet (Morlet) tokens"
+      oneLiner="Decompose each spectrum on the Morlet mother wavelet across log-scales; keep the top-K magnitude cells as (scale, position) tokens."
+      highlightColor="#f59e0b"
+    >
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
+          <div>
+            <strong>Step 1 — CWT decomposition.</strong> The continuous
+            wavelet transform of a spectrum <em>x</em> at scale{" "}
+            <em>s</em> and position <em>τ</em> is:
+          </div>
+          <div className="py-1">
+            <Equation tex="W_x(s, \tau) = \int_{-\infty}^{\infty} x(b) \cdot \tfrac{1}{\sqrt{s}} \psi^* \!\left(\tfrac{b - \tau}{s}\right) db" />
+          </div>
+          <div className="text-[12px]">
+            with <Equation tex="\psi" /> the complex Morlet mother
+            wavelet <Equation tex="\psi(t) = \pi^{-1/4} e^{i \omega_0 t} e^{-t^2/2}" />.
+          </div>
+          <div>
+            <strong>Step 2 — Discretise scales and positions.</strong>{" "}
+            Use <Equation tex="S = 16" /> log-spaced scales{" "}
+            <Equation tex="\{s_i\}_{i=1}^{S}" /> and partition the band
+            axis into <Equation tex="P = 8" /> equal-width position
+            buckets:
+          </div>
+          <div className="py-1">
+            <Equation tex="C_{i, j} = \max_{\tau \in P_j} |W_x(s_i, \tau)|,\quad |\mathcal{V}_{V14}| = S \cdot P = 128" />
+          </div>
+          <div>
+            <strong>Step 3 — Top-K selection.</strong> Sort the{" "}
+            <Equation tex="S \cdot P" /> magnitudes and emit the top-16
+            cells as the document's tokens:
+          </div>
+          <div className="py-1">
+            <Equation tex="\mathrm{wordify}_{V14}(x_d) = \mathrm{top}\text{-}16\big(\{(i, j, |W_x(s_i, P_j)|)\}_{i, j}\big)" />
+          </div>
+        </div>
+        <V14MechanismSVG />
+      </div>
+      <p
+        className="mt-3 text-[12.5px]"
+        style={{ color: "var(--color-fg-subtle)" }}
+      >
+        <strong>Empirical signature.</strong> Multi-scale absorption
+        feature detection: V14 outperforms its discrete-wavelet sibling
+        V6 on every scene (c<sub>v</sub> mean V14 0.63 vs V6 0.45)
+        because the Morlet mother gives joint scale-position
+        localisation absent from dyadic Db4.
+      </p>
+    </MechanismShell>
+  );
+}
+
+function V14MechanismSVG() {
+  const positions = 8;
+  const scales = 8;
+  // synthetic time-scale magnitude profile w/ a blob at (s=4, p=2) and (s=6, p=5)
+  const cell = (s: number, p: number) =>
+    0.05 +
+    0.9 * Math.exp(-((s - 4) ** 2 + (p - 2) ** 2) / 1.4) +
+    0.7 * Math.exp(-((s - 6) ** 2 + (p - 5) ** 2) / 1.8);
+  // identify top 16 cells
+  const flat: { s: number; p: number; v: number }[] = [];
+  for (let s = 0; s < scales; s++)
+    for (let p = 0; p < positions; p++) flat.push({ s, p, v: cell(s, p) });
+  flat.sort((a, b) => b.v - a.v);
+  const topSet = new Set(flat.slice(0, 16).map((c) => `${c.s},${c.p}`));
+  const w = 32;
+  const h = 22;
+  const x0 = 70;
+  const y0 = 50;
+  return (
+    <svg
+      viewBox="0 0 480 280"
+      width="100%"
+      role="img"
+      aria-label="V14 mechanism: Morlet CWT cells with top-16 highlighted"
+      style={{ color: "var(--color-fg)" }}
+    >
+      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
+        <text x="240" y="14" textAnchor="middle" fontSize="11" fontWeight="700">
+          V14 — CWT-Morlet (scale × position) cells; top-16 ⇒ tokens
+        </text>
+        <text x="10" y={y0 - 8} fontSize="9" opacity="0.7">
+          scale (log)
+        </text>
+        <text x={x0 + (positions * w) / 2} y={y0 + scales * h + 18} textAnchor="middle" fontSize="9" opacity="0.7">
+          band position
+        </text>
+        {Array.from({ length: scales }, (_, s) =>
+          Array.from({ length: positions }, (_, p) => {
+            const v = cell(s, p);
+            const top = topSet.has(`${s},${p}`);
+            return (
+              <g key={`${s}-${p}`}>
+                <rect
+                  x={x0 + p * w}
+                  y={y0 + (scales - 1 - s) * h}
+                  width={w - 2}
+                  height={h - 2}
+                  fill={`rgb(${Math.round(245 - 100 * v)}, ${Math.round(158 - 30 * v)}, ${Math.round(40 + 30 * v)})`}
+                  opacity={0.4 + 0.5 * v}
+                />
+                {top && (
+                  <text
+                    x={x0 + p * w + (w - 2) / 2}
+                    y={y0 + (scales - 1 - s) * h + (h - 2) / 2 + 3}
+                    textAnchor="middle"
+                    fontSize="9"
+                    fontWeight="700"
+                    fill="white"
+                  >
+                    ★
+                  </text>
+                )}
+              </g>
+            );
+          }),
+        )}
+        <text x={240} y={y0 + scales * h + 40} textAnchor="middle" fontSize="9.5" opacity="0.7" fontStyle="italic">
+          ★ = top-16 magnitudes selected per pixel → tokens
+        </text>
       </g>
     </svg>
   );
