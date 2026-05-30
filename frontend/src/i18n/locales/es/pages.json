@@ -879,7 +879,7 @@
         "tag": "bandas ponderadas por MI",
         "title": "Tokens bandas MI-ponderadas (V20)",
         "summary": "Tokens V1 (banda, q-bin) pero con copias ponderadas por la información mutua por banda con las etiquetas. Hasta 8 copias por banda por píxel.",
-        "theory": "V20 toma el vocabulario de V1 y re-pondera cada banda por su poder discriminativo (sklearn mutual_info_classif). Bandas con MI alta emiten más copias; bandas con MI ~0 emiten ~ninguna. F-2 c_v 0.74-0.95 — competitivo con V12. **V20 gana F-7 NMI en 3 de 5 escenas (indian-pines, salinas-A, kennedy-SC) a Q=8 y supera a V12 en la media LDA al refinar Q (Q=8→Q=32: F-2 +0.060, F-7 +0.043)**. Base de tópicos más robusta contrafactualmente a Q=8 (F-22 media mediana L1 = 26.3), con pico no monotónico a Q=16 (41.8, +59%). Trade-off: V20 cae en el régimen informativa-pero-seed-sensitive en F-18 (~0.45)."
+        "theory": "V20 toma el vocabulario de V1 y re-pondera cada banda por su poder discriminativo (sklearn mutual_info_classif). Bandas con MI alta emiten más copias; bandas con MI ~0 emiten ~ninguna. F-2 c_v 0.85-0.91 — competitivo con V12. **La dominancia de V20 escala fuertemente con Q (de ganadora LDA F-7 en 1/6 escenas a Q=8 a 4/6 a Q=32, cross-19-recetas) y supera a V12 en la media LDA al refinar Q (Q=8→Q=32: F-2 +0.060, F-7 +0.043)**. Base de tópicos más robusta contrafactualmente a Q=8 (F-22 media mediana L1 = 26.3), con pico no monotónico a Q=16 (41.8, +59%). Trade-off: V20 cae en el régimen informativa-pero-seed-sensitive en F-18 (~0.45)."
       },
       "V18": {
         "tag": "Laplaciano grafo",

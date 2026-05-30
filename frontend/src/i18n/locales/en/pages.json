@@ -879,7 +879,7 @@
         "tag": "MI-weighted bands",
         "title": "Mutual-info weighted band tokens (V20)",
         "summary": "V1 (band, q-bin) tokens but with copies weighted by per-band mutual information with labels. Up to 8 copies per band per pixel.",
-        "theory": "V20 takes V1's vocabulary and re-weights each band by its discriminative power (sklearn mutual_info_classif). Bands with high MI emit more copies; near-zero MI bands emit ~none. F-2 c_v 0.74-0.95 — competitive with V12. **V20 wins F-7 NMI on 3 of 5 scenes (indian-pines, salinas-A, kennedy-SC) at Q=8 and overtakes V12 on the LDA mean as Q refines (Q=8 to Q=32: F-2 +0.060, F-7 +0.043)**. Most robust counterfactual topic basis at Q=8 (F-22 mean median L1 = 26.3), with a non-monotonic Q=16 peak (41.8, +59%). Trade-off: V20 falls in the informative-but-seed-sensitive F-18 regime (~0.45)."
+        "theory": "V20 takes V1's vocabulary and re-weights each band by its discriminative power (sklearn mutual_info_classif). Bands with high MI emit more copies; near-zero MI bands emit ~none. F-2 c_v 0.85-0.91 — competitive with V12. **V20 dominance scales sharply with Q (cross-19-recipe LDA F-7 winner on 1/6 scenes at Q=8 to 4/6 at Q=32) and overtakes V12 on the LDA mean (Q=8 to Q=32: F-2 +0.060, F-7 +0.043)**. Most robust counterfactual topic basis at Q=8 (F-22 mean median L1 = 26.3), with a non-monotonic Q=16 peak (41.8, +59%). Trade-off: V20 falls in the informative-but-seed-sensitive F-18 regime (~0.45)."
       },
       "V18": {
         "tag": "graph-Laplacian",
