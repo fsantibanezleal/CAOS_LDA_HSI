@@ -789,7 +789,7 @@
         "tag": "endmember · NFINDR",
         "title": "Endmember-fraction tokens (V8)",
         "summary": "NFINDR-precomputed endmembers; NNLS unmixing produces one token per endmember weighted by abundance.",
-        "theory": "Bakes the linear-mixing-model assumption into the tokens. Expected wins on Salinas where field-edge mixed pixels dominate, and F-12 against unmixing literature. Limit: seed stability (F-3) depends on which NFINDR endmembers were chosen, and NFINDR itself is seed-dependent."
+        "theory": "Bakes the linear-mixing-model assumption into the tokens. **V8 is the cross-axis composite leader of the V-sweep**: top-3 cross-backbone F-7 NMI (mean 0.431 across LDA, HDP, ProdLDA, ETM) AND F-18 mean matched cosine 0.957 at Q=8 / 0.962 at Q=16. Unlike V2/V6, V8's reliability is geometric (convex hull over the spectral simplex), not vocab-size artefact. F-22 robustness rises monotonically with Q (3.58 to 9.58 to 20.25). Recommended when the backbone is uncertain or reseed reliability matters."
       },
       "V9": {
         "tag": "region · SAM",
@@ -879,7 +879,7 @@
         "tag": "MI-weighted bands",
         "title": "Mutual-info weighted band tokens (V20)",
         "summary": "V1 (band, q-bin) tokens but with copies weighted by per-band mutual information with labels. Up to 8 copies per band per pixel.",
-        "theory": "V20 takes V1's vocabulary and re-weights each band by its discriminative power (sklearn mutual_info_classif). Bands with high MI emit more copies; near-zero MI bands emit ~none. F-2 c_v 0.74-0.95 — competitive with V12. **V20 wins F-7 NMI on 3 of 5 scenes (indian-pines, salinas-A, kennedy-SC)**, beating V12. The simplest interpretable recipe that beats GMM-token on label-coupling."
+        "theory": "V20 takes V1's vocabulary and re-weights each band by its discriminative power (sklearn mutual_info_classif). Bands with high MI emit more copies; near-zero MI bands emit ~none. F-2 c_v 0.74-0.95 — competitive with V12. **V20 wins F-7 NMI on 3 of 5 scenes (indian-pines, salinas-A, kennedy-SC) at Q=8 and overtakes V12 on the LDA mean as Q refines (Q=8 to Q=32: F-2 +0.060, F-7 +0.043)**. Most robust counterfactual topic basis at Q=8 (F-22 mean median L1 = 26.3), with a non-monotonic Q=16 peak (41.8, +59%). Trade-off: V20 falls in the informative-but-seed-sensitive F-18 regime (~0.45)."
       },
       "V18": {
         "tag": "graph-Laplacian",

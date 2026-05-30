@@ -59,11 +59,11 @@ N_BACKGROUND = 25  # SHAP background reference docs
 RANDOM_STATE = 42
 
 
-def load_artefacts(scene_id: str, recipe: str):
-    fit_dir = SWEEP_LOCAL / f"{scene_id}_{recipe}_uniform_Q8"
+def load_artefacts(scene_id: str, recipe: str, q: int = 8):
+    fit_dir = SWEEP_LOCAL / f"{scene_id}_{recipe}_uniform_Q{q}"
     phi_path = fit_dir / "phi.npy"
     vocab_path = fit_dir / "vocab.json"
-    corpus_dir = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id
+    corpus_dir = WORDIFICATION_LOCAL / recipe / f"uniform_Q{q}" / scene_id
     dt_path = corpus_dir / "doc_term.npz"
     if not (phi_path.exists() and vocab_path.exists() and dt_path.exists()):
         return None
@@ -101,8 +101,8 @@ def make_predict_fn_from_phi(phi: np.ndarray, alpha: float = 0.45):
     return predict_fn
 
 
-def shap_attribution(recipe: str, scene_id: str) -> dict | None:
-    pl = load_artefacts(scene_id, recipe)
+def shap_attribution(recipe: str, scene_id: str, q: int = 8) -> dict | None:
+    pl = load_artefacts(scene_id, recipe, q)
     if pl is None:
         return None
     phi, vocab, doc_term = pl
@@ -163,7 +163,7 @@ def shap_attribution(recipe: str, scene_id: str) -> dict | None:
         })
 
     return {
-        "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": 8,
+        "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": q,
         "K": int(K), "V": int(V),
         "n_samples_explained": int(len(sample_idx)),
         "n_background": int(len(bg_idx)),
@@ -182,6 +182,7 @@ def main() -> int:
     parser.add_argument("--recipes", nargs="+", default=RECIPES, choices=RECIPES)
     parser.add_argument("--scenes", nargs="+", default=LABELLED_SCENES,
                         choices=LABELLED_SCENES)
+    parser.add_argument("--q", type=int, default=8, choices=[8, 16, 32])
     args = parser.parse_args()
 
     F13_DERIVED.mkdir(parents=True, exist_ok=True)
@@ -192,7 +193,7 @@ def main() -> int:
             print(f"[f13] {tag} ...", flush=True)
             t0 = time.perf_counter()
             try:
-                result = shap_attribution(recipe, scene)
+                result = shap_attribution(recipe, scene, args.q)
             except Exception as exc:
                 print(f"  FAILED: {exc}", flush=True)
                 n_fail += 1
@@ -202,7 +203,7 @@ def main() -> int:
                 continue
             elapsed = time.perf_counter() - t0
             result["elapsed_seconds"] = round(elapsed, 2)
-            out = F13_DERIVED / f"{scene}_{recipe}_uniform_Q8.json"
+            out = F13_DERIVED / f"{scene}_{recipe}_uniform_Q{args.q}.json"
             with out.open("w", encoding="utf-8") as h:
                 json.dump(result, h, indent=2)
             if result["status"] == "ok":

@@ -1,0 +1,14 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V17",
+  "scheme": "uniform",
+  "Q": 16,
+  "K": 3,
+  "V": 1024,
+  "top_n": 10,
+  "u_mass": -3.537221,
+  "c_npmi": -0.472909,
+  "c_v": 0.522447,
+  "generated_at": "2026-05-30T08:14:23Z",
+  "builder": "build_v_sweep_f2_coherence v0.1"
+}

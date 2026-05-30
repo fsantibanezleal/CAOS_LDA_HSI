@@ -1,0 +1,34 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V9",
+  "scheme": "uniform",
+  "Q": 16,
+  "status": "ok",
+  "K": 4,
+  "D": 2812,
+  "V": 1072,
+  "mean_doc_length": 1.0,
+  "doc_length_quantiles": {
+    "p05": 1.0,
+    "p50": 1.0,
+    "p95": 1.0
+  },
+  "topic_prevalence": [
+    0.257227,
+    0.25038,
+    0.249882,
+    0.24251
+  ],
+  "perplexity": 704.5633,
+  "fit_seconds": 2.819,
+  "lda_config": {
+    "method": "sklearn.LatentDirichletAllocation online",
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "local_artefacts_dir": "local\\v_sweep\\lda_fits\\indian-pines-corrected_V9_uniform_Q16",
+  "generated_at": "2026-05-30T09:07:15Z",
+  "builder": "build_v_sweep_canonical_fit v0.1"
+}

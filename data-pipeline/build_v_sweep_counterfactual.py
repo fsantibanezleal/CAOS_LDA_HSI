@@ -53,10 +53,10 @@ STEP_SIZE = 1.0  # perturb one count at a time
 RANDOM_STATE = 42
 
 
-def load_artefacts(scene_id: str, recipe: str):
-    fit_dir = SWEEP_LOCAL / f"{scene_id}_{recipe}_uniform_Q8"
+def load_artefacts(scene_id: str, recipe: str, q: int = 8):
+    fit_dir = SWEEP_LOCAL / f"{scene_id}_{recipe}_uniform_Q{q}"
     phi_path = fit_dir / "phi.npy"
-    corpus_dir = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id
+    corpus_dir = WORDIFICATION_LOCAL / recipe / f"uniform_Q{q}" / scene_id
     dt_path = corpus_dir / "doc_term.npz"
     if not (phi_path.exists() and dt_path.exists()):
         return None
@@ -99,8 +99,8 @@ def counterfactual_l1(x: np.ndarray, log_phi: np.ndarray, alpha: float,
     return float("inf"), n_steps
 
 
-def for_cell(recipe: str, scene_id: str) -> dict | None:
-    pl = load_artefacts(scene_id, recipe)
+def for_cell(recipe: str, scene_id: str, q: int = 8) -> dict | None:
+    pl = load_artefacts(scene_id, recipe, q)
     if pl is None:
         return None
     phi, doc_term = pl
@@ -139,7 +139,7 @@ def for_cell(recipe: str, scene_id: str) -> dict | None:
         median_l1 = float(np.median(l1s))
         mean_l1 = float(np.mean(l1s))
     return {
-        "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": 8,
+        "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": q,
         "K": int(K), "V": int(V),
         "n_samples": int(len(sample_idx)),
         "n_flipped_within_max_steps": int(len(l1s)),
@@ -160,6 +160,7 @@ def main() -> int:
     parser.add_argument("--recipes", nargs="+", default=RECIPES, choices=RECIPES)
     parser.add_argument("--scenes", nargs="+", default=LABELLED_SCENES,
                         choices=LABELLED_SCENES)
+    parser.add_argument("--q", type=int, default=8, choices=[8, 16, 32])
     args = parser.parse_args()
 
     CF_DERIVED.mkdir(parents=True, exist_ok=True)
@@ -170,7 +171,7 @@ def main() -> int:
             tag = f"{scene} {recipe}"
             t0 = time.perf_counter()
             try:
-                res = for_cell(recipe, scene)
+                res = for_cell(recipe, scene, args.q)
             except Exception as exc:
                 print(f"[cf] {tag} FAILED: {exc}", flush=True)
                 n_skip += 1
@@ -179,7 +180,7 @@ def main() -> int:
                 n_skip += 1
                 continue
             res["elapsed_seconds"] = round(time.perf_counter() - t0, 2)
-            out = CF_DERIVED / f"{scene}_{recipe}_uniform_Q8.json"
+            out = CF_DERIVED / f"{scene}_{recipe}_uniform_Q{args.q}.json"
             with out.open("w", encoding="utf-8") as h:
                 json.dump(res, h, indent=2)
             n_ok += 1

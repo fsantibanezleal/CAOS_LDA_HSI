@@ -1,216 +1,116 @@
 {
   "recipes": [
-    "V14",
-    "V18",
+    "V2",
+    "V8",
     "V20"
   ],
   "scenes": [
-    "botswana",
-    "indian-pines-corrected",
-    "kennedy-space-center",
     "pavia-university",
-    "salinas-a-corrected",
-    "salinas-corrected"
+    "salinas-a-corrected"
   ],
   "by_method_recipe_scene": {
     "raw_logistic": {
-      "V14": {
-        "indian-pines-corrected": 0.833159,
-        "salinas-corrected": 0.950961,
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.804767,
-        "kennedy-space-center": 0.91394,
-        "botswana": 0.962327
-      },
-      "V18": {
-        "indian-pines-corrected": 0.833159,
-        "salinas-corrected": 0.950961,
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.804767,
-        "kennedy-space-center": 0.91394,
-        "botswana": 0.962327
-      },
       "V20": {
-        "indian-pines-corrected": 0.833159,
-        "salinas-corrected": 0.950961,
         "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.804767,
-        "kennedy-space-center": 0.91394,
-        "botswana": 0.962327
+        "pavia-university": 0.804767
+      },
+      "V8": {
+        "salinas-a-corrected": 0.996969,
+        "pavia-university": 0.804767
+      },
+      "V2": {
+        "salinas-a-corrected": 0.996969,
+        "pavia-university": 0.804767
       }
     },
     "topic_routed_soft": {
-      "V14": {
-        "indian-pines-corrected": 0.847412,
-        "salinas-corrected": 0.951202,
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.811143,
-        "kennedy-space-center": 0.916643,
-        "botswana": 0.964284
-      },
-      "V18": {
-        "indian-pines-corrected": 0.836967,
-        "salinas-corrected": 0.950698,
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.809958,
-        "kennedy-space-center": 0.919406,
-        "botswana": 0.965024
-      },
       "V20": {
-        "indian-pines-corrected": 0.858138,
-        "salinas-corrected": 0.950188,
         "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.810858,
-        "kennedy-space-center": 0.920853,
-        "botswana": 0.964028
+        "pavia-university": 0.812297
+      },
+      "V8": {
+        "salinas-a-corrected": 0.996969,
+        "pavia-university": 0.816865
+      },
+      "V2": {
+        "salinas-a-corrected": 0.996969,
+        "pavia-university": 0.813597
       }
     }
   },
   "per_scene_winner_topic_routed_soft": {
-    "botswana": {
-      "best": "V18",
-      "best_score": 0.965024,
-      "ranking": [
-        {
-          "recipe": "V18",
-          "score": 0.965024
-        },
-        {
-          "recipe": "V14",
-          "score": 0.964284
-        },
-        {
-          "recipe": "V20",
-          "score": 0.964028
-        }
-      ]
-    },
-    "indian-pines-corrected": {
-      "best": "V20",
-      "best_score": 0.858138,
-      "ranking": [
-        {
-          "recipe": "V20",
-          "score": 0.858138
-        },
-        {
-          "recipe": "V14",
-          "score": 0.847412
-        },
-        {
-          "recipe": "V18",
-          "score": 0.836967
-        }
-      ]
-    },
-    "kennedy-space-center": {
-      "best": "V20",
-      "best_score": 0.920853,
-      "ranking": [
-        {
-          "recipe": "V20",
-          "score": 0.920853
-        },
-        {
-          "recipe": "V18",
-          "score": 0.919406
-        },
-        {
-          "recipe": "V14",
-          "score": 0.916643
-        }
-      ]
-    },
     "pavia-university": {
-      "best": "V14",
-      "best_score": 0.811143,
+      "best": "V8",
+      "best_score": 0.816865,
       "ranking": [
         {
-          "recipe": "V14",
-          "score": 0.811143
+          "recipe": "V8",
+          "score": 0.816865
+        },
+        {
+          "recipe": "V2",
+          "score": 0.813597
         },
         {
           "recipe": "V20",
-          "score": 0.810858
-        },
-        {
-          "recipe": "V18",
-          "score": 0.809958
+          "score": 0.812297
         }
       ]
     },
     "salinas-a-corrected": {
-      "best": "V14",
+      "best": "V2",
       "best_score": 0.996969,
       "ranking": [
         {
-          "recipe": "V14",
+          "recipe": "V2",
           "score": 0.996969
         },
         {
-          "recipe": "V18",
+          "recipe": "V8",
           "score": 0.996969
         },
         {
           "recipe": "V20",
           "score": 0.996969
-        }
-      ]
-    },
-    "salinas-corrected": {
-      "best": "V14",
-      "best_score": 0.951202,
-      "ranking": [
-        {
-          "recipe": "V14",
-          "score": 0.951202
-        },
-        {
-          "recipe": "V18",
-          "score": 0.950698
-        },
-        {
-          "recipe": "V20",
-          "score": 0.950188
         }
       ]
     }
   },
   "per_recipe_mean": {
     "raw_logistic": {
-      "V14": {
-        "mean": 0.910354,
-        "std": 0.06949,
-        "n_scenes": 6
+      "V2": {
+        "mean": 0.900868,
+        "std": 0.096101,
+        "n_scenes": 2
       },
-      "V18": {
-        "mean": 0.910354,
-        "std": 0.06949,
-        "n_scenes": 6
+      "V8": {
+        "mean": 0.900868,
+        "std": 0.096101,
+        "n_scenes": 2
       },
       "V20": {
-        "mean": 0.910354,
-        "std": 0.06949,
-        "n_scenes": 6
+        "mean": 0.900868,
+        "std": 0.096101,
+        "n_scenes": 2
       }
     },
     "topic_routed_soft": {
-      "V14": {
-        "mean": 0.914609,
-        "std": 0.065593,
-        "n_scenes": 6
+      "V2": {
+        "mean": 0.905283,
+        "std": 0.091686,
+        "n_scenes": 2
       },
-      "V18": {
-        "mean": 0.91317,
-        "std": 0.067845,
-        "n_scenes": 6
+      "V8": {
+        "mean": 0.906917,
+        "std": 0.090052,
+        "n_scenes": 2
       },
       "V20": {
-        "mean": 0.916839,
-        "std": 0.063841,
-        "n_scenes": 6
+        "mean": 0.904633,
+        "std": 0.092336,
+        "n_scenes": 2
       }
     }
   },
-  "generated_at": "2026-05-28T13:25:41Z"
+  "generated_at": "2026-05-30T15:36:39Z"
 }

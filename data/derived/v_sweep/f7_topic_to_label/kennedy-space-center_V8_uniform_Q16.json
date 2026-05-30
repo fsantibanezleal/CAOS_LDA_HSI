@@ -1,0 +1,208 @@
+{
+  "K": 12,
+  "n_classes": 13,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "H_label_marginal_bits": 3.678599,
+  "H_label_given_topic_bits": 2.907938,
+  "mutual_information_bits": 0.770661,
+  "normalised_mi": 0.209498,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 1,
+      "p_topic": 0.000372,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.609884
+    },
+    {
+      "topic": 1,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 2,
+      "n_docs": 1108,
+      "p_topic": 0.412509,
+      "label_distribution": [
+        0.000903,
+        0.0,
+        0.002708,
+        0.002708,
+        0.000903,
+        0.0,
+        0.0,
+        0.184116,
+        0.145307,
+        0.097473,
+        0.198556,
+        0.17509,
+        0.192238
+      ],
+      "kl_vs_marginal": 1.004008
+    },
+    {
+      "topic": 3,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 4,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 1,
+      "p_topic": 0.000372,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.609884
+    },
+    {
+      "topic": 7,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 8,
+      "n_docs": 1540,
+      "p_topic": 0.573343,
+      "label_distribution": [
+        0.142208,
+        0.142208,
+        0.140909,
+        0.14026,
+        0.103896,
+        0.142857,
+        0.068182,
+        0.01039,
+        0.038312,
+        0.061688,
+        0.0,
+        0.009091,
+        0.0
+      ],
+      "kl_vs_marginal": 0.570329
+    },
+    {
+      "topic": 9,
+      "n_docs": 19,
+      "p_topic": 0.007074,
+      "label_distribution": [
+        0.0,
+        0.052632,
+        0.0,
+        0.052632,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.578947,
+        0.0,
+        0.210526,
+        0.105263
+      ],
+      "kl_vs_marginal": 1.891101
+    },
+    {
+      "topic": 10,
+      "n_docs": 16,
+      "p_topic": 0.005957,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3125,
+        0.0,
+        0.375,
+        0.3125
+      ],
+      "kl_vs_marginal": 2.03045
+    },
+    {
+      "topic": 11,
+      "n_docs": 1,
+      "p_topic": 0.000372,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.609884
+    }
+  ],
+  "scene_id": "kennedy-space-center",
+  "recipe": "V8",
+  "scheme": "uniform",
+  "Q": 16,
+  "generated_at": "2026-05-30T09:14:09Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}

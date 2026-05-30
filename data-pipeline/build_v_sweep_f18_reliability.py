@@ -81,8 +81,8 @@ def k_for(scene_id: str, mean_doc: float) -> int:
     return upper
 
 
-def load_doc_term(recipe: str, scene_id: str) -> sp.csr_matrix | None:
-    p = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id / "doc_term.npz"
+def load_doc_term(recipe: str, scene_id: str, q: int = 8) -> sp.csr_matrix | None:
+    p = WORDIFICATION_LOCAL / recipe / f"uniform_Q{q}" / scene_id / "doc_term.npz"
     if not p.exists():
         return None
     return sp.load_npz(p).tocsr()
@@ -120,8 +120,8 @@ def matched_cosines(ind_a: np.ndarray, ind_b: np.ndarray) -> np.ndarray:
     return cos[row_idx, col_idx]
 
 
-def for_cell(recipe: str, scene_id: str) -> dict | None:
-    doc_term = load_doc_term(recipe, scene_id)
+def for_cell(recipe: str, scene_id: str, q: int = 8) -> dict | None:
+    doc_term = load_doc_term(recipe, scene_id, q)
     if doc_term is None:
         return None
     mean_doc = float(np.asarray(doc_term.sum(axis=1)).reshape(-1).mean())
@@ -147,7 +147,7 @@ def for_cell(recipe: str, scene_id: str) -> dict | None:
         for t in THRESHOLDS
     }
     return {
-        "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": 8,
+        "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": q,
         "K": int(K), "n_seeds": int(len(phis)), "top_n": TOP_N,
         "seeds_used": SEEDS[: len(phis)],
         "mean_matched_cosine": round(mean_cos, 6),
@@ -167,6 +167,7 @@ def main() -> int:
     parser.add_argument("--recipes", nargs="+", default=RECIPES, choices=RECIPES)
     parser.add_argument("--scenes", nargs="+", default=LABELLED_SCENES,
                         choices=LABELLED_SCENES)
+    parser.add_argument("--q", type=int, default=8, choices=[8, 16, 32])
     args = parser.parse_args()
 
     F18_DERIVED.mkdir(parents=True, exist_ok=True)
@@ -176,7 +177,7 @@ def main() -> int:
             tag = f"{scene} {recipe}"
             print(f"[f18] {tag} ...", flush=True)
             try:
-                res = for_cell(recipe, scene)
+                res = for_cell(recipe, scene, args.q)
             except Exception as exc:
                 print(f"  FAILED: {exc}", flush=True)
                 n_skip += 1
@@ -184,7 +185,7 @@ def main() -> int:
             if res is None:
                 n_skip += 1
                 continue
-            out_path = F18_DERIVED / f"{scene}_{recipe}_uniform_Q8.json"
+            out_path = F18_DERIVED / f"{scene}_{recipe}_uniform_Q{args.q}.json"
             with out_path.open("w", encoding="utf-8") as h:
                 json.dump(res, h, indent=2)
             n_ok += 1

@@ -1,0 +1,13 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V2",
+  "scheme": "uniform",
+  "Q": 32,
+  "K": 9,
+  "top_n": 10,
+  "mean_pairwise_jaccard": 0.220893,
+  "max_pairwise_jaccard": 0.818182,
+  "n_redundant_pairs_above_0.5": 7,
+  "generated_at": "2026-05-30T09:21:49Z",
+  "builder": "build_v_sweep_f14_repetitiveness v0.1"
+}

@@ -1,0 +1,238 @@
+{
+  "K": 12,
+  "n_classes": 13,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "H_label_marginal_bits": 3.678599,
+  "H_label_given_topic_bits": 2.371909,
+  "mutual_information_bits": 1.306689,
+  "normalised_mi": 0.355214,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 16,
+      "p_topic": 0.005957,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3125,
+        0.0,
+        0.375,
+        0.3125
+      ],
+      "kl_vs_marginal": 2.03045
+    },
+    {
+      "topic": 1,
+      "n_docs": 236,
+      "p_topic": 0.087863,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.004237,
+        0.0,
+        0.0,
+        0.0,
+        0.122881,
+        0.144068,
+        0.0,
+        0.690678,
+        0.038136,
+        0.0
+      ],
+      "kl_vs_marginal": 2.253627
+    },
+    {
+      "topic": 2,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 3,
+      "n_docs": 263,
+      "p_topic": 0.097915,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.003802,
+        0.0,
+        0.0,
+        0.0,
+        0.152091,
+        0.0,
+        0.623574,
+        0.0,
+        0.220532,
+        0.0
+      ],
+      "kl_vs_marginal": 2.260237
+    },
+    {
+      "topic": 4,
+      "n_docs": 6,
+      "p_topic": 0.002234,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.609884
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 12,
+      "p_topic": 0.004468,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.609884
+    },
+    {
+      "topic": 7,
+      "n_docs": 272,
+      "p_topic": 0.101266,
+      "label_distribution": [
+        0.0,
+        0.003676,
+        0.0,
+        0.003676,
+        0.0,
+        0.0,
+        0.0,
+        0.044118,
+        0.0,
+        0.014706,
+        0.0,
+        0.150735,
+        0.783088
+      ],
+      "kl_vs_marginal": 2.574525
+    },
+    {
+      "topic": 8,
+      "n_docs": 16,
+      "p_topic": 0.005957,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.375,
+        0.125
+      ],
+      "kl_vs_marginal": 2.204245
+    },
+    {
+      "topic": 9,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 10,
+      "n_docs": 1456,
+      "p_topic": 0.54207,
+      "label_distribution": [
+        0.149725,
+        0.150412,
+        0.150412,
+        0.149038,
+        0.110577,
+        0.149038,
+        0.072115,
+        0.029533,
+        0.016484,
+        0.010302,
+        0.0,
+        0.012363,
+        0.0
+      ],
+      "kl_vs_marginal": 0.666791
+    },
+    {
+      "topic": 11,
+      "n_docs": 409,
+      "p_topic": 0.152271,
+      "label_distribution": [
+        0.00489,
+        0.0,
+        0.002445,
+        0.0,
+        0.0,
+        0.007335,
+        0.0,
+        0.220049,
+        0.396088,
+        0.05868,
+        0.139364,
+        0.171149,
+        0.0
+      ],
+      "kl_vs_marginal": 1.417157
+    }
+  ],
+  "scene_id": "kennedy-space-center",
+  "recipe": "V6",
+  "scheme": "uniform",
+  "Q": 32,
+  "generated_at": "2026-05-30T09:14:12Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}
