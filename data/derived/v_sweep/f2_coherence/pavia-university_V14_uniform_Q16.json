@@ -1,0 +1,14 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 16,
+  "K": 9,
+  "V": 2048,
+  "top_n": 10,
+  "u_mass": -1.29206,
+  "c_npmi": 0.275729,
+  "c_v": 0.730642,
+  "generated_at": "2026-05-30T06:18:56Z",
+  "builder": "build_v_sweep_f2_coherence v0.1"
+}
