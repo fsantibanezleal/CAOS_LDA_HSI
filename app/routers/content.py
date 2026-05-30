@@ -1150,3 +1150,70 @@ def v_sweep_coverage() -> dict:
             detail="coverage_matrix.json not generated yet",
         )
     return data
+
+
+@router.get("/v-sweep/backbones-f7")
+def v_sweep_backbones_f7() -> dict:
+    """F-7 NMI under each non-LDA backbone (HDP / ProdLDA / ETM) for
+    every (recipe, scene) pair currently on disk. The LDA F-7 comes
+    from the existing f7_topic_to_label endpoint and is included here
+    for cross-backbone comparison."""
+    s = get_settings()
+    out_dir = s.v_sweep_dir / "backbones_f7"
+    if not out_dir.is_dir():
+        raise HTTPException(status_code=404, detail="backbones_f7 dir missing")
+    from collections import defaultdict
+    by_backbone: dict[str, dict[str, dict[str, float]]] = defaultdict(
+        lambda: defaultdict(dict)
+    )
+    # LDA F-7 comes from f7_topic_to_label
+    lda_dir = s.v_sweep_dir / "f7_topic_to_label"
+    if lda_dir.is_dir():
+        for p in lda_dir.glob("*_uniform_Q8.json"):
+            stem = p.stem.replace("_uniform_Q8", "")
+            # split scene_recipe by trailing _V<digit>
+            import re
+            m = re.match(r"^(.+)_(V\d+)$", stem)
+            if not m:
+                continue
+            scene, recipe = m.group(1), m.group(2)
+            data = json.loads(p.read_text(encoding="utf-8"))
+            nmi = data.get("normalised_mi")
+            if nmi is not None:
+                by_backbone["LDA"][scene][recipe] = float(nmi)
+    # HDP / ProdLDA / ETM from backbones_f7 dir
+    for p in out_dir.glob("*_uniform_Q8.json"):
+        parts = p.stem.split("_", 1)
+        if len(parts) != 2:
+            continue
+        backbone = parts[0].upper().replace("PRODLDA", "ProdLDA")
+        rest = parts[1].replace("_uniform_Q8", "")
+        import re
+        m = re.match(r"^(.+)_(V\d+)$", rest)
+        if not m:
+            continue
+        scene, recipe = m.group(1), m.group(2)
+        data = json.loads(p.read_text(encoding="utf-8"))
+        nmi = data.get("normalised_mi")
+        if nmi is not None:
+            by_backbone[backbone][scene][recipe] = float(nmi)
+    # Compute per-backbone per-recipe mean
+    summary: list[dict] = []
+    for backbone in ("LDA", "HDP", "ProdLDA", "ETM"):
+        scene_dict = by_backbone.get(backbone, {})
+        all_recipes: dict[str, list[float]] = {}
+        cells = {}
+        for scene, rd in scene_dict.items():
+            cells[scene] = rd
+            for r, v in rd.items():
+                all_recipes.setdefault(r, []).append(v)
+        recipe_means = {
+            r: round(sum(v) / len(v), 4) for r, v in all_recipes.items()
+        }
+        summary.append({
+            "backbone": backbone,
+            "cells": cells,
+            "recipe_means": recipe_means,
+            "n_cells": sum(len(rd) for rd in scene_dict.values()),
+        })
+    return {"backbones": summary}
