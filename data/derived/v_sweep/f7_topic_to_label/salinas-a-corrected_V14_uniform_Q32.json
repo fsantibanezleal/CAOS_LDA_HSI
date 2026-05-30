@@ -1,0 +1,92 @@
+{
+  "K": 6,
+  "n_classes": 6,
+  "classes": [
+    1,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "H_label_marginal_bits": 2.584963,
+  "H_label_given_topic_bits": 1.220752,
+  "mutual_information_bits": 1.364211,
+  "normalised_mi": 0.527749,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 215,
+      "p_topic": 0.162879,
+      "label_distribution": [
+        0.0,
+        0.190698,
+        0.0,
+        0.451163,
+        0.0,
+        0.35814
+      ],
+      "kl_vs_marginal": 1.080461
+    },
+    {
+      "topic": 1,
+      "n_docs": 468,
+      "p_topic": 0.354545,
+      "label_distribution": [
+        0.002137,
+        0.264957,
+        0.470085,
+        0.262821,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 1.039702
+    },
+    {
+      "topic": 2,
+      "n_docs": 275,
+      "p_topic": 0.208333,
+      "label_distribution": [
+        0.0,
+        0.196364,
+        0.0,
+        0.0,
+        0.8,
+        0.003636
+      ],
+      "kl_vs_marginal": 1.836813
+    },
+    {
+      "topic": 3,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 4,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 5,
+      "n_docs": 362,
+      "p_topic": 0.274242,
+      "label_distribution": [
+        0.604972,
+        0.002762,
+        0.0,
+        0.0,
+        0.0,
+        0.392265
+      ],
+      "kl_vs_marginal": 1.593245
+    }
+  ],
+  "scene_id": "salinas-a-corrected",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 32,
+  "generated_at": "2026-05-30T07:57:49Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}
