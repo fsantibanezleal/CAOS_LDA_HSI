@@ -155,13 +155,13 @@
           "V15": true,
           "V17": true,
           "V18": true,
-          "V19": false,
+          "V19": true,
           "V20": true
         }
       },
-      "have": 113,
+      "have": 114,
       "target": 114,
-      "pct": 99.1
+      "pct": 100.0
     },
     {
       "axis": "F-2",
@@ -726,7 +726,7 @@
         "salinas-corrected": {
           "V1": true,
           "V2": true,
-          "V3": false,
+          "V3": true,
           "V4": true,
           "V5": true,
           "V6": true,
@@ -742,7 +742,7 @@
           "V17": true,
           "V18": true,
           "V19": true,
-          "V20": false
+          "V20": true
         },
         "salinas-a-corrected": {
           "V1": true,
@@ -757,13 +757,13 @@
           "V10": true,
           "V11": true,
           "V12": true,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
+          "V13": true,
+          "V14": true,
+          "V15": true,
+          "V17": true,
+          "V18": true,
+          "V19": true,
+          "V20": true
         },
         "pavia-university": {
           "V1": true,
@@ -778,13 +778,13 @@
           "V10": true,
           "V11": true,
           "V12": true,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
+          "V13": true,
+          "V14": true,
+          "V15": true,
+          "V17": true,
+          "V18": true,
+          "V19": true,
+          "V20": true
         },
         "kennedy-space-center": {
           "V1": true,
@@ -799,13 +799,13 @@
           "V10": true,
           "V11": true,
           "V12": true,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
+          "V13": true,
+          "V14": true,
+          "V15": true,
+          "V17": true,
+          "V18": true,
+          "V19": true,
+          "V20": true
         },
         "botswana": {
           "V1": true,
@@ -820,18 +820,18 @@
           "V10": true,
           "V11": true,
           "V12": true,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
+          "V13": true,
+          "V14": true,
+          "V15": true,
+          "V17": true,
+          "V18": true,
+          "V19": true,
+          "V20": true
         }
       },
-      "have": 84,
+      "have": 114,
       "target": 114,
-      "pct": 73.7
+      "pct": 100.0
     },
     {
       "axis": "F-22",
@@ -1370,5 +1370,5 @@
       "pct": 100.0
     }
   ],
-  "generated_at": "2026-05-30T12:00:00Z"
+  "generated_at": "2026-05-30T05:52:35Z"
 }
