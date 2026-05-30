@@ -1,0 +1,19 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 32,
+  "K": 12,
+  "V": 4640,
+  "n_samples": 20,
+  "n_flipped_within_max_steps": 1,
+  "n_not_flipped": 19,
+  "all_not_flipped": false,
+  "counterfactual_l1_median": 3.0,
+  "counterfactual_l1_mean": 3.0,
+  "max_steps": 50,
+  "step_size": 1.0,
+  "generated_at": "2026-05-30T13:23:08Z",
+  "builder": "build_v_sweep_counterfactual v0.2",
+  "elapsed_seconds": 0.14
+}
