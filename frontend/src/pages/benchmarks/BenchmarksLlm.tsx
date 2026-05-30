@@ -39,8 +39,8 @@ function LlmTeaLeavesSection() {
 
   return (
     <Section
-      title="B-12 — LLM tea-leaves (Stammbach et al. TACL 2024)"
-      lead="Per-scene word-intrusion accuracy + per-topic LLM labels. Higher intrusion accuracy means the LLM correctly identifies the foreign word slipped into each topic's top-10 — a coherence signal that correlates with NPMI in prior work."
+      title="B-12 — LLM tea-leaves (Stammbach et al. 2023, EMNLP)"
+      lead="Per-scene word-intrusion accuracy + per-topic LLM-generated labels. Higher intrusion accuracy means the LLM correctly identifies the foreign word slipped into each topic's top-10 — a coherence signal that correlates with NPMI in prior work. Outputs shipped here are the deterministic Claude Opus 4.7 self-judgment stand-in (see model column); a full API-driven run via build_b12_llm_tea_leaves.py is also implemented for external reproduction."
     >
       <div className="space-y-6">
         <table
