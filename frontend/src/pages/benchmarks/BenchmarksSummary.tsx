@@ -20,12 +20,14 @@ const METHOD_COLOR: Record<string, string> = {
 };
 
 import { VSweepCoverageMatrix } from "./VSweepCoverageMatrix";
+import { BackboneF7Panel } from "./BackboneF7Panel";
 
 export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
   return (
     <div className="space-y-8">
       <ProtocolBox stats={data} />
       <VSweepCoverageMatrix />
+      <BackboneF7Panel />
       <Section
         id="forest"
         title="Forest plot — macro-F1 with CI95 per scene"
