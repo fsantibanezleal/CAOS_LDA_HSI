@@ -1042,7 +1042,7 @@ def _read_json_or_none(path):
         return None
 
 
-_V_SWEEP_RECIPES = [f"V{i}" for i in range(1, 16)]  # V1..V15 (V14 reserved for CWT-Morlet, not yet built)
+_V_SWEEP_RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]  # V1..V15, V17..V20 (V16 = HyperSIGMA scaffold-only)
 _V_SWEEP_SCENES = [
     "indian-pines-corrected",
     "salinas-corrected",
