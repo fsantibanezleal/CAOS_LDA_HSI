@@ -1,0 +1,94 @@
+{
+  "K": 3,
+  "n_classes": 13,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "H_label_marginal_bits": 3.678599,
+  "H_label_given_topic_bits": 2.805061,
+  "mutual_information_bits": 0.873538,
+  "normalised_mi": 0.237465,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 642,
+      "p_topic": 0.239017,
+      "label_distribution": [
+        0.163551,
+        0.098131,
+        0.211838,
+        0.233645,
+        0.079439,
+        0.165109,
+        0.007788,
+        0.034268,
+        0.0,
+        0.003115,
+        0.0,
+        0.003115,
+        0.0
+      ],
+      "kl_vs_marginal": 0.941181
+    },
+    {
+      "topic": 1,
+      "n_docs": 1267,
+      "p_topic": 0.471705,
+      "label_distribution": [
+        0.002368,
+        0.000789,
+        0.007103,
+        0.003946,
+        0.0,
+        0.004736,
+        0.0,
+        0.137332,
+        0.165746,
+        0.168903,
+        0.173639,
+        0.1618,
+        0.173639
+      ],
+      "kl_vs_marginal": 0.903498
+    },
+    {
+      "topic": 2,
+      "n_docs": 777,
+      "p_topic": 0.289278,
+      "label_distribution": [
+        0.144144,
+        0.200772,
+        0.096525,
+        0.083655,
+        0.14157,
+        0.138996,
+        0.1287,
+        0.030888,
+        0.01287,
+        0.005148,
+        0.0,
+        0.016731,
+        0.0
+      ],
+      "kl_vs_marginal": 0.768794
+    }
+  ],
+  "scene_id": "kennedy-space-center",
+  "recipe": "V15",
+  "scheme": "uniform",
+  "Q": 16,
+  "generated_at": "2026-05-30T08:14:26Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}

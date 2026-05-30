@@ -25,7 +25,7 @@
     0.155853
   ],
   "perplexity": 3.5747,
-  "fit_seconds": 6.143,
+  "fit_seconds": 6.621,
   "lda_config": {
     "method": "sklearn.LatentDirichletAllocation online",
     "max_iter": 60,
@@ -34,6 +34,6 @@
     "random_state": 42
   },
   "local_artefacts_dir": "local\\v_sweep\\lda_fits\\pavia-university_V8_uniform_Q32",
-  "generated_at": "2026-05-30T07:32:06Z",
+  "generated_at": "2026-05-30T09:12:25Z",
   "builder": "build_v_sweep_canonical_fit v0.1"
 }

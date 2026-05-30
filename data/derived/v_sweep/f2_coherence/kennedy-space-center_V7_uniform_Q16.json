@@ -1,0 +1,14 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V7",
+  "scheme": "uniform",
+  "Q": 16,
+  "K": 3,
+  "V": 835,
+  "top_n": 10,
+  "u_mass": -3.437493,
+  "c_npmi": -0.322487,
+  "c_v": 0.317284,
+  "generated_at": "2026-05-30T09:14:04Z",
+  "builder": "build_v_sweep_f2_coherence v0.1"
+}
