@@ -172,3 +172,78 @@ def test_v20_vocab_matches_b_times_q() -> None:
     # Build the V20 token col index: b * Q + q_int
     cols_max = q_int.max() + B_test * Q_test
     assert cols_max < expected_vocab + Q_test, "V20 col index out of vocab range"
+
+
+def test_v18_knn_graph_is_sparse_and_symmetric() -> None:
+    """V18 builds a kNN cosine-affinity graph that must be symmetric and
+    sparse (each row has at most ~K_NN non-zero entries after
+    symmetrisation)."""
+    from sklearn.neighbors import kneighbors_graph
+    import scipy.sparse as sp_
+
+    X, _ = _make_test_spectra()
+    K_NN = 4
+    knn = kneighbors_graph(X, n_neighbors=K_NN, mode="distance", metric="cosine")
+    knn = (knn + knn.T) / 2.0
+    # Symmetric
+    diff = (knn - knn.T).toarray()
+    np.testing.assert_allclose(diff, 0, atol=1e-10)
+    # Sparsity: each row should have between K_NN and 2*K_NN nonzeros
+    nnz_per_row = (knn > 0).sum(axis=1)
+    assert nnz_per_row.min() >= K_NN, f"row min nnz {nnz_per_row.min()} < K_NN {K_NN}"
+    assert nnz_per_row.max() <= 2 * K_NN, f"row max nnz {nnz_per_row.max()} > 2*K_NN"
+
+
+def test_v18_normalised_laplacian_eigvals_in_unit_interval() -> None:
+    """V18 uses the symmetric-normalised Laplacian L = I - D^(-1/2) A D^(-1/2).
+    Its eigenvalues must lie in [0, 2], with the smallest = 0."""
+    import scipy.sparse as sp_
+    from scipy.sparse.linalg import eigsh
+    from sklearn.neighbors import kneighbors_graph
+
+    X, _ = _make_test_spectra()
+    knn = kneighbors_graph(X, n_neighbors=4, mode="distance", metric="cosine")
+    knn = (knn + knn.T) / 2.0
+    aff = sp_.csr_matrix(knn.copy())
+    aff.data = np.exp(-(aff.data ** 2) / (1.0 + 1e-12))
+    deg = np.asarray(aff.sum(axis=1)).reshape(-1)
+    deg_inv_sqrt = 1.0 / np.sqrt(np.maximum(deg, 1e-12))
+    D_inv = sp_.diags(deg_inv_sqrt)
+    L = sp_.eye(X.shape[0], format="csr") - D_inv @ aff @ D_inv
+    # First 3 eigenvalues smallest-magnitude
+    eigvals, _ = eigsh(L, k=3, which="SM")
+    assert eigvals.min() >= -1e-6, f"smallest eigval {eigvals.min()} should be ~0"
+    assert eigvals.max() <= 2.0 + 1e-6, f"max eigval {eigvals.max()} should be <= 2"
+
+
+def test_v20_zero_mi_band_emits_zero_copies() -> None:
+    """V20: a band that is uniform across classes (zero MI with labels)
+    should emit zero copies, not one."""
+    from sklearn.feature_selection import mutual_info_classif
+
+    # Construct: bands 0..7 have label-correlated bumps; bands 8..15 are
+    # uniform noise (independent of label).
+    rng = np.random.default_rng(0)
+    X = np.zeros((N, 16), dtype=np.float32)
+    y = np.zeros(N, dtype=np.int32)
+    per_class = N // 4
+    for c in range(4):
+        for i in range(per_class):
+            pi = c * per_class + i
+            # bands 0..7 carry the class signal
+            X[pi, c * 2] = 0.8 + rng.normal(0, 0.01)
+            X[pi, c * 2 + 1] = 0.8 + rng.normal(0, 0.01)
+            # bands 8..15 are class-independent
+            X[pi, 8:] = rng.uniform(0, 1, size=8)
+            y[pi] = c + 1
+    mi = mutual_info_classif(X, y, random_state=42)
+    mi_norm = mi / max(mi.max(), 1e-12)
+    copies = np.round(mi_norm * 8).astype(np.int32)
+    # Some band in 8..15 should have zero copies
+    assert (copies[8:] == 0).any(), (
+        f"V20 should zero out at least one noise band; copies[8:] = {copies[8:]}"
+    )
+    # Class-signal bands 0..7 should have high copies
+    assert copies[:8].max() >= 6, (
+        f"V20 should amplify at least one signal band; copies[:8] = {copies[:8]}"
+    )
