@@ -121,14 +121,54 @@ export type VSweepBackboneRecord = {
   status: string;
 };
 
+export type VSweepF13TopFeature = {
+  vocab_index?: number | null;
+  token?: string | null;
+  name?: string | null;
+  mean_abs_shap: number;
+};
+
+export type VSweepF13Topic = {
+  topic: number;
+  features?: VSweepF13TopFeature[] | null;
+  top_features?: VSweepF13TopFeature[] | null;
+};
+
+export type VSweepF13Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  top_m: number;
+  n_samples_explained?: number | null;
+  n_background?: number | null;
+  top_features_per_topic?: VSweepF13Topic[] | null;
+};
+
+export type VSweepF22Record = {
+  scene_id: string;
+  recipe: string;
+  scheme: string;
+  Q: number;
+  K: number;
+  n_samples: number;
+  n_flipped_within_max_steps?: number | null;
+  n_not_flipped?: number | null;
+  counterfactual_l1_median?: number | null;
+  counterfactual_l1_mean?: number | null;
+};
+
 export type VSweepRecipeScene = {
   scene_id: string;
   topic_view?: VSweepTopicViewSummary | null;
   f1?: VSweepF1Record | null;
   f2?: VSweepF2Record | null;
   f7?: VSweepF7Record | null;
+  f13?: VSweepF13Record | null;
   f14?: VSweepF14Record | null;
   f18?: VSweepF18Record | null;
+  f22?: VSweepF22Record | null;
   hdp?: VSweepHdpRecord | null;
   prodlda?: VSweepBackboneRecord | null;
   etm?: VSweepBackboneRecord | null;

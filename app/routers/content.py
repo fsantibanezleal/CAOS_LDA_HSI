@@ -1095,6 +1095,8 @@ def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> V
         f7 = _read_json_or_none(s.v_sweep_f7_path(scene, recipe, scheme, q))
         f14 = _read_json_or_none(s.v_sweep_f14_path(scene, recipe, scheme, q))
         f18 = _read_json_or_none(s.v_sweep_f18_path(scene, recipe, scheme, q))
+        f13 = _read_json_or_none(s.v_sweep_f13_path(scene, recipe, scheme, q))
+        f22 = _read_json_or_none(s.v_sweep_f22_path(scene, recipe, scheme, q))
         hdp = _read_json_or_none(s.v_sweep_hdp_path(scene, recipe, scheme, q))
         prod = _read_json_or_none(s.v_sweep_prodlda_path(scene, recipe, scheme, q))
         etm = _read_json_or_none(s.v_sweep_etm_path(scene, recipe, scheme, q))
@@ -1104,8 +1106,10 @@ def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> V
             f1=f1,
             f2=f2,
             f7=f7,
+            f13=f13,
             f14=f14,
             f18=f18,
+            f22=f22,
             hdp=hdp,
             prodlda=prod,
             etm=etm,
