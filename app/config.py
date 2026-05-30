@@ -412,6 +412,15 @@ class Settings(BaseSettings):
     def v_sweep_etm_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
         return self.v_sweep_dir / "etm_backbone" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
 
+    def v_sweep_f13_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f13_shap" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    def v_sweep_f22_path(self, scene_id: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f22_counterfactual" / f"{scene_id}_{recipe}_{scheme}_Q{q}.json"
+
+    def v_sweep_f17_path(self, src: str, tgt: str, recipe: str, scheme: str, q: int) -> Path:
+        return self.v_sweep_dir / "f17_cross_scene" / f"{src}_to_{tgt}_{recipe}_{scheme}_Q{q}.json"
+
     @property
     def v_sweep_f1_win_matrix_path(self) -> Path:
         return self.v_sweep_dir / "f1_win_matrix.json"
