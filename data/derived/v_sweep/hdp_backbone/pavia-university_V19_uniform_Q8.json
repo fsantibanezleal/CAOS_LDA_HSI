@@ -1,0 +1,26 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V19",
+  "scheme": "uniform",
+  "Q": 8,
+  "backbone": "HDP",
+  "T_truncation": 20,
+  "K_inferred_total": 20,
+  "K_effective": 20,
+  "K_ground_truth_classes": 9,
+  "f16_model_selection_adequacy": 11,
+  "f2_c_v": 0.505885,
+  "f14_mean_pairwise_jaccard": 0.266886,
+  "fit_seconds": 1.625,
+  "D": 1980,
+  "V": 24,
+  "topic_deviation_top5": [
+    0.913875,
+    0.846945,
+    0.824385,
+    0.819588,
+    0.800427
+  ],
+  "generated_at": "2026-05-30T04:59:10Z",
+  "builder": "build_v_sweep_hdp v0.1"
+}

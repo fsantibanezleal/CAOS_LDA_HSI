@@ -49,7 +49,7 @@ LABELLED_SCENES = [
     "kennedy-space-center",
     "botswana",
 ]
-RECIPES = [f"V{i}" for i in range(1, 13)]
+RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 N_SEEDS = 5
 SEEDS = [42, 43, 44, 45, 46]
 TOP_N = 10

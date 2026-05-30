@@ -46,7 +46,7 @@ LABELLED_SCENES = [
     "indian-pines-corrected", "salinas-corrected", "salinas-a-corrected",
     "pavia-university", "kennedy-space-center", "botswana",
 ]
-RECIPES = [f"V{i}" for i in range(1, 13)]
+RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 N_SAMPLES = 20
 MAX_STEPS = 50  # coordinate descent steps before giving up
 STEP_SIZE = 1.0  # perturb one count at a time
