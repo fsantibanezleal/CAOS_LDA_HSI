@@ -1,0 +1,35 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 32,
+  "K": 12,
+  "n_seeds": 5,
+  "top_n": 10,
+  "seeds_used": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mean_matched_cosine": 0.440833,
+  "frac_above_0.5": 0.408333,
+  "frac_above_0.7": 0.275,
+  "per_pair_cosine_mean_per_topic": [
+    0.3,
+    0.45,
+    0.18,
+    0.4,
+    0.45,
+    0.57,
+    0.38,
+    0.32,
+    0.6,
+    0.54,
+    0.58,
+    0.52
+  ],
+  "generated_at": "2026-05-30T15:21:27Z",
+  "builder": "build_v_sweep_f18_reliability v0.1"
+}
