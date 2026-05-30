@@ -127,23 +127,31 @@ def for_cell(recipe: str, scene_id: str) -> dict | None:
             not_flipped += 1
             continue
         l1s.append(l1)
+    # If every sample failed to flip, that is itself a strong signal
+    # (extremely robust topics). Persist with a sentinel median + lower
+    # bound = MAX_STEPS, so the cell appears in the matrix.
     if not l1s:
-        return None
-    median_l1 = float(np.median(l1s))
-    mean_l1 = float(np.mean(l1s))
+        all_not_flipped = True
+        median_l1 = float(MAX_STEPS)
+        mean_l1 = float(MAX_STEPS)
+    else:
+        all_not_flipped = False
+        median_l1 = float(np.median(l1s))
+        mean_l1 = float(np.mean(l1s))
     return {
         "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": 8,
         "K": int(K), "V": int(V),
         "n_samples": int(len(sample_idx)),
         "n_flipped_within_max_steps": int(len(l1s)),
         "n_not_flipped": int(not_flipped),
+        "all_not_flipped": all_not_flipped,
         "counterfactual_l1_median": round(median_l1, 4),
         "counterfactual_l1_mean": round(mean_l1, 4),
         "max_steps": MAX_STEPS, "step_size": STEP_SIZE,
         "generated_at": datetime.now(timezone.utc)
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
-        "builder": "build_v_sweep_counterfactual v0.1",
+        "builder": "build_v_sweep_counterfactual v0.2",
     }
 
 
