@@ -1,0 +1,223 @@
+{
+  "K": 12,
+  "n_classes": 13,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "H_label_marginal_bits": 3.678599,
+  "H_label_given_topic_bits": 2.73689,
+  "mutual_information_bits": 0.941709,
+  "normalised_mi": 0.255997,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 204,
+      "p_topic": 0.075949,
+      "label_distribution": [
+        0.058824,
+        0.137255,
+        0.112745,
+        0.068627,
+        0.014706,
+        0.04902,
+        0.019608,
+        0.142157,
+        0.245098,
+        0.0,
+        0.151961,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 0.659119
+    },
+    {
+      "topic": 1,
+      "n_docs": 750,
+      "p_topic": 0.279226,
+      "label_distribution": [
+        0.001333,
+        0.006667,
+        0.0,
+        0.009333,
+        0.0,
+        0.0,
+        0.0,
+        0.138667,
+        0.0,
+        0.222667,
+        0.044,
+        0.286667,
+        0.290667
+      ],
+      "kl_vs_marginal": 1.375105
+    },
+    {
+      "topic": 2,
+      "n_docs": 732,
+      "p_topic": 0.272524,
+      "label_distribution": [
+        0.122951,
+        0.07377,
+        0.169399,
+        0.178962,
+        0.129781,
+        0.143443,
+        0.087432,
+        0.001366,
+        0.016393,
+        0.0,
+        0.076503,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 0.748802
+    },
+    {
+      "topic": 3,
+      "n_docs": 296,
+      "p_topic": 0.110201,
+      "label_distribution": [
+        0.070946,
+        0.084459,
+        0.138514,
+        0.114865,
+        0.070946,
+        0.131757,
+        0.043919,
+        0.121622,
+        0.138514,
+        0.003378,
+        0.077703,
+        0.003378,
+        0.0
+      ],
+      "kl_vs_marginal": 0.402438
+    },
+    {
+      "topic": 4,
+      "n_docs": 255,
+      "p_topic": 0.094937,
+      "label_distribution": [
+        0.070588,
+        0.231373,
+        0.015686,
+        0.019608,
+        0.0,
+        0.035294,
+        0.007843,
+        0.152941,
+        0.329412,
+        0.0,
+        0.12549,
+        0.011765,
+        0.0
+      ],
+      "kl_vs_marginal": 1.036111
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 54,
+      "p_topic": 0.020104,
+      "label_distribution": [
+        0.074074,
+        0.018519,
+        0.277778,
+        0.259259,
+        0.111111,
+        0.037037,
+        0.12963,
+        0.0,
+        0.0,
+        0.0,
+        0.055556,
+        0.0,
+        0.037037
+      ],
+      "kl_vs_marginal": 1.077125
+    },
+    {
+      "topic": 7,
+      "n_docs": 74,
+      "p_topic": 0.02755,
+      "label_distribution": [
+        0.013514,
+        0.027027,
+        0.0,
+        0.0,
+        0.027027,
+        0.027027,
+        0.0,
+        0.121622,
+        0.013514,
+        0.702703,
+        0.054054,
+        0.013514,
+        0.0
+      ],
+      "kl_vs_marginal": 1.99304
+    },
+    {
+      "topic": 8,
+      "n_docs": 321,
+      "p_topic": 0.119509,
+      "label_distribution": [
+        0.227414,
+        0.143302,
+        0.040498,
+        0.046729,
+        0.105919,
+        0.165109,
+        0.046729,
+        0.006231,
+        0.099688,
+        0.0,
+        0.11838,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 0.705729
+    },
+    {
+      "topic": 9,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 10,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 11,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    }
+  ],
+  "scene_id": "kennedy-space-center",
+  "recipe": "V18",
+  "scheme": "uniform",
+  "Q": 16,
+  "generated_at": "2026-05-30T06:19:22Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}

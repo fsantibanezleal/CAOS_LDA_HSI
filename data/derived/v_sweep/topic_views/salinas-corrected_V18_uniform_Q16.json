@@ -1,0 +1,42 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V18",
+  "scheme": "uniform",
+  "Q": 16,
+  "status": "ok",
+  "K": 12,
+  "D": 3520,
+  "V": 256,
+  "mean_doc_length": 16.0,
+  "doc_length_quantiles": {
+    "p05": 16.0,
+    "p50": 16.0,
+    "p95": 16.0
+  },
+  "topic_prevalence": [
+    0.131802,
+    0.080021,
+    0.124054,
+    0.062963,
+    0.038146,
+    0.063672,
+    0.076128,
+    0.140505,
+    0.131682,
+    0.042176,
+    0.063707,
+    0.045144
+  ],
+  "perplexity": 46.9081,
+  "fit_seconds": 13.201,
+  "lda_config": {
+    "method": "sklearn.LatentDirichletAllocation online",
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "local_artefacts_dir": "local\\v_sweep\\lda_fits\\salinas-corrected_V18_uniform_Q16",
+  "generated_at": "2026-05-30T06:18:22Z",
+  "builder": "build_v_sweep_canonical_fit v0.1"
+}
