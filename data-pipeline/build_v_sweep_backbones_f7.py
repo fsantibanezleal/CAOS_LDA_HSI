@@ -97,6 +97,52 @@ def compute_nmi(argmax_topic: np.ndarray, labels: np.ndarray) -> float:
     return float(mi / max(h_c, EPS))
 
 
+def run_prodlda(doc_term: sp.csr_matrix, labels: np.ndarray, K: int) -> float:
+    """Fit ProdLDA, extract argmax topic per doc, compute F-7 NMI."""
+    import importlib.util
+
+    pipe = Path(__file__).resolve().parent
+    spec = importlib.util.spec_from_file_location(
+        "neural_models", pipe / "build_neural_topic_models.py",
+    )
+    neural = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(neural)
+    dense = doc_term.toarray().astype(np.float32)
+    fit = neural.fit_prodlda(dense, K, seed=42)
+    theta = fit["theta"]  # [D, K]
+    argmax_topic = np.argmax(theta, axis=1).astype(np.int32)
+    return compute_nmi(argmax_topic, labels)
+
+
+def run_etm(doc_term: sp.csr_matrix, labels: np.ndarray, K: int) -> float:
+    """Fit ETM, extract argmax topic per doc, compute F-7 NMI."""
+    import importlib.util
+
+    pipe = Path(__file__).resolve().parent
+    spec = importlib.util.spec_from_file_location(
+        "neural_models", pipe / "build_neural_topic_models.py",
+    )
+    neural = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(neural)
+    dense = doc_term.toarray().astype(np.float32)
+    fit = neural.fit_etm(dense, K, seed=42)
+    theta = fit["theta"]
+    argmax_topic = np.argmax(theta, axis=1).astype(np.int32)
+    return compute_nmi(argmax_topic, labels)
+
+
+CLASS_COUNTS = {
+    "indian-pines-corrected": 16, "salinas-corrected": 16,
+    "salinas-a-corrected": 6, "pavia-university": 9,
+    "kennedy-space-center": 13, "botswana": 14,
+}
+
+
+def k_for(scene_id: str, mean_doc: float) -> int:
+    n = CLASS_COUNTS.get(scene_id, 4)
+    return max(4, min(12, n))
+
+
 def run_hdp(doc_term: sp.csr_matrix, labels: np.ndarray) -> float:
     """Fit gensim HDP, project corpus, compute F-7 NMI."""
     from gensim.models import HdpModel
@@ -141,7 +187,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="F-7 NMI under HDP backbone (extension).")
     parser.add_argument("--recipes", nargs="+", default=RECIPES, choices=RECIPES)
     parser.add_argument("--scenes", nargs="+", default=LABELLED_SCENES, choices=LABELLED_SCENES)
-    parser.add_argument("--backbone", default="hdp", choices=["hdp"])
+    parser.add_argument("--backbone", default="hdp", choices=["hdp", "prodlda", "etm"])
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -165,7 +211,16 @@ def main() -> int:
                 n_skip += 1
                 continue
             try:
-                nmi = run_hdp(doc_term, labels)
+                if args.backbone == "hdp":
+                    nmi = run_hdp(doc_term, labels)
+                elif args.backbone == "prodlda":
+                    K = k_for(scene, 0.0)
+                    nmi = run_prodlda(doc_term, labels, K)
+                elif args.backbone == "etm":
+                    K = k_for(scene, 0.0)
+                    nmi = run_etm(doc_term, labels, K)
+                else:
+                    raise ValueError(f"unknown backbone {args.backbone}")
             except Exception as exc:
                 print(f"[bb_f7] {scene} {recipe} FAILED: {exc}", flush=True)
                 n_skip += 1
