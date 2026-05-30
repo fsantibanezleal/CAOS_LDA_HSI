@@ -1,0 +1,29 @@
+{
+  "recipe": "V17",
+  "scene_id": "kennedy-space-center",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "D": 2686,
+  "V": 512,
+  "mean_doc_length": 3.1485,
+  "raw_logistic_per_fold": [
+    0.90798,
+    0.918548,
+    0.901903,
+    0.926174,
+    0.915092
+  ],
+  "topic_routed_soft_per_fold": [
+    0.910277,
+    0.923,
+    0.915493,
+    0.925689,
+    0.92759
+  ],
+  "raw_logistic_mean": 0.91394,
+  "topic_routed_soft_mean": 0.92041,
+  "gain_routed_over_raw": 0.00647,
+  "status": "ok",
+  "generated_at": "2026-05-30T05:20:49Z"
+}

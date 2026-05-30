@@ -426,6 +426,10 @@ class Settings(BaseSettings):
         return self.v_sweep_dir / "f1_win_matrix.json"
 
     @property
+    def v_sweep_coverage_matrix_path(self) -> Path:
+        return self.v_sweep_dir / "coverage_matrix.json"
+
+    @property
     def v_sweep_f1_bayesian_posterior_path(self) -> Path:
         return self.v_sweep_dir / "f1_bayesian_posterior.json"
 

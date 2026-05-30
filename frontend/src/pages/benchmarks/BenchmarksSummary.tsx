@@ -19,10 +19,13 @@ const METHOD_COLOR: Record<string, string> = {
   topic_logistic_regression: "#22c55e",
 };
 
+import { VSweepCoverageMatrix } from "./VSweepCoverageMatrix";
+
 export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
   return (
     <div className="space-y-8">
       <ProtocolBox stats={data} />
+      <VSweepCoverageMatrix />
       <Section
         id="forest"
         title="Forest plot — macro-F1 with CI95 per scene"
