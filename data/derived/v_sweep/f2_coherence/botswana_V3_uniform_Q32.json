@@ -1,0 +1,14 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V3",
+  "scheme": "uniform",
+  "Q": 32,
+  "K": 12,
+  "V": 4640,
+  "top_n": 10,
+  "u_mass": -0.266291,
+  "c_npmi": 0.32713,
+  "c_v": 0.705202,
+  "generated_at": "2026-05-30T07:41:09Z",
+  "builder": "build_v_sweep_f2_coherence v0.1"
+}

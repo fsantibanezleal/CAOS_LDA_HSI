@@ -1,0 +1,238 @@
+{
+  "K": 12,
+  "n_classes": 13,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "H_label_marginal_bits": 3.678599,
+  "H_label_given_topic_bits": 2.081644,
+  "mutual_information_bits": 1.596954,
+  "normalised_mi": 0.43412,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 341,
+      "p_topic": 0.126955,
+      "label_distribution": [
+        0.055718,
+        0.42522,
+        0.099707,
+        0.020528,
+        0.005865,
+        0.032258,
+        0.026393,
+        0.117302,
+        0.002933,
+        0.146628,
+        0.0,
+        0.067449,
+        0.0
+      ],
+      "kl_vs_marginal": 1.039724
+    },
+    {
+      "topic": 1,
+      "n_docs": 227,
+      "p_topic": 0.084512,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.008811,
+        0.700441,
+        0.23348,
+        0.057269
+      ],
+      "kl_vs_marginal": 2.463661
+    },
+    {
+      "topic": 2,
+      "n_docs": 201,
+      "p_topic": 0.074832,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.00995,
+        0.99005
+      ],
+      "kl_vs_marginal": 3.529421
+    },
+    {
+      "topic": 3,
+      "n_docs": 11,
+      "p_topic": 0.004095,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.090909,
+        0.0,
+        0.0,
+        0.0,
+        0.909091,
+        0.0
+      ],
+      "kl_vs_marginal": 3.170387
+    },
+    {
+      "topic": 4,
+      "n_docs": 569,
+      "p_topic": 0.211839,
+      "label_distribution": [
+        0.11775,
+        0.029877,
+        0.098418,
+        0.202109,
+        0.207381,
+        0.242531,
+        0.100176,
+        0.0,
+        0.0,
+        0.001757,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 1.185084
+    },
+    {
+      "topic": 5,
+      "n_docs": 572,
+      "p_topic": 0.212956,
+      "label_distribution": [
+        0.001748,
+        0.003497,
+        0.012238,
+        0.003497,
+        0.005245,
+        0.01049,
+        0.0,
+        0.307692,
+        0.382867,
+        0.057692,
+        0.017483,
+        0.195804,
+        0.001748
+      ],
+      "kl_vs_marginal": 1.483079
+    },
+    {
+      "topic": 6,
+      "n_docs": 129,
+      "p_topic": 0.048027,
+      "label_distribution": [
+        0.0,
+        0.007752,
+        0.0,
+        0.007752,
+        0.0,
+        0.023256,
+        0.0,
+        0.0,
+        0.0,
+        0.899225,
+        0.0,
+        0.062016,
+        0.0
+      ],
+      "kl_vs_marginal": 2.988429
+    },
+    {
+      "topic": 7,
+      "n_docs": 547,
+      "p_topic": 0.203649,
+      "label_distribution": [
+        0.243144,
+        0.09872,
+        0.224863,
+        0.171846,
+        0.06947,
+        0.113346,
+        0.071298,
+        0.005484,
+        0.0,
+        0.001828,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 1.017921
+    },
+    {
+      "topic": 8,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 9,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 10,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 11,
+      "n_docs": 89,
+      "p_topic": 0.033135,
+      "label_distribution": [
+        0.0,
+        0.011236,
+        0.0,
+        0.011236,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.191011,
+        0.573034,
+        0.134831,
+        0.078652
+      ],
+      "kl_vs_marginal": 1.869562
+    }
+  ],
+  "scene_id": "kennedy-space-center",
+  "recipe": "V3",
+  "scheme": "uniform",
+  "Q": 32,
+  "generated_at": "2026-05-30T07:41:12Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}

@@ -1,0 +1,178 @@
+{
+  "K": 12,
+  "n_classes": 13,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "H_label_marginal_bits": 3.678599,
+  "H_label_given_topic_bits": 2.820466,
+  "mutual_information_bits": 0.858133,
+  "normalised_mi": 0.233277,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 1,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 2,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 3,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 4,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 7,
+      "n_docs": 1249,
+      "p_topic": 0.465004,
+      "label_distribution": [
+        0.001601,
+        0.004804,
+        0.003203,
+        0.003203,
+        0.001601,
+        0.001601,
+        0.0,
+        0.168935,
+        0.167334,
+        0.13771,
+        0.176141,
+        0.163331,
+        0.170536
+      ],
+      "kl_vs_marginal": 0.913627
+    },
+    {
+      "topic": 8,
+      "n_docs": 1399,
+      "p_topic": 0.520849,
+      "label_distribution": [
+        0.155826,
+        0.152252,
+        0.154396,
+        0.153681,
+        0.113653,
+        0.155826,
+        0.075054,
+        0.006433,
+        0.007863,
+        0.022159,
+        0.0,
+        0.002859,
+        0.0
+      ],
+      "kl_vs_marginal": 0.775796
+    },
+    {
+      "topic": 9,
+      "n_docs": 20,
+      "p_topic": 0.007446,
+      "label_distribution": [
+        0.0,
+        0.05,
+        0.0,
+        0.05,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6,
+        0.0,
+        0.2,
+        0.1
+      ],
+      "kl_vs_marginal": 1.938933
+    },
+    {
+      "topic": 10,
+      "n_docs": 16,
+      "p_topic": 0.005957,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3125,
+        0.0,
+        0.375,
+        0.3125
+      ],
+      "kl_vs_marginal": 2.03045
+    },
+    {
+      "topic": 11,
+      "n_docs": 2,
+      "p_topic": 0.000745,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.609884
+    }
+  ],
+  "scene_id": "kennedy-space-center",
+  "recipe": "V8",
+  "scheme": "uniform",
+  "Q": 32,
+  "generated_at": "2026-05-30T07:35:41Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}
