@@ -1137,3 +1137,16 @@ def v_sweep_f1_win_matrix() -> VSweepWinMatrix:
             detail="f1_win_matrix.json not generated yet (sweep in progress)",
         )
     return VSweepWinMatrix(**data)
+
+
+@router.get("/v-sweep/coverage")
+def v_sweep_coverage() -> dict:
+    """Per-axis × scene × recipe boolean coverage matrix."""
+    s = get_settings()
+    data = _read_json_or_none(s.v_sweep_coverage_matrix_path)
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail="coverage_matrix.json not generated yet",
+        )
+    return data

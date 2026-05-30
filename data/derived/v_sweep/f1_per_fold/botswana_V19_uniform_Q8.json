@@ -1,0 +1,29 @@
+{
+  "recipe": "V19",
+  "scene_id": "botswana",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "D": 2775,
+  "V": 24,
+  "mean_doc_length": 3.0,
+  "raw_logistic_per_fold": [
+    0.954931,
+    0.959258,
+    0.964835,
+    0.970621,
+    0.961987
+  ],
+  "topic_routed_soft_per_fold": [
+    0.960616,
+    0.960762,
+    0.971066,
+    0.970544,
+    0.96142
+  ],
+  "raw_logistic_mean": 0.962327,
+  "topic_routed_soft_mean": 0.964882,
+  "gain_routed_over_raw": 0.002555,
+  "status": "ok",
+  "generated_at": "2026-05-30T05:27:51Z"
+}
