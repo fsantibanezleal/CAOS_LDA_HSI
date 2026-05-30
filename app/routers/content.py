@@ -1177,7 +1177,7 @@ def v_sweep_backbones_f7() -> dict:
             if not m:
                 continue
             scene, recipe = m.group(1), m.group(2)
-            data = json.loads(p.read_text(encoding="utf-8"))
+            data = _json.loads(p.read_text(encoding="utf-8"))
             nmi = data.get("normalised_mi")
             if nmi is not None:
                 by_backbone["LDA"][scene][recipe] = float(nmi)
@@ -1193,7 +1193,7 @@ def v_sweep_backbones_f7() -> dict:
         if not m:
             continue
         scene, recipe = m.group(1), m.group(2)
-        data = json.loads(p.read_text(encoding="utf-8"))
+        data = _json.loads(p.read_text(encoding="utf-8"))
         nmi = data.get("normalised_mi")
         if nmi is not None:
             by_backbone[backbone][scene][recipe] = float(nmi)
