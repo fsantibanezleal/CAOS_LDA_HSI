@@ -1,0 +1,557 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V20",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 12,
+  "V": 1408,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 129,
+          "token": "miw_b016_q01",
+          "mean_abs_shap": 0.017924
+        },
+        {
+          "vocab_index": 96,
+          "token": "miw_b012_q00",
+          "mean_abs_shap": 0.014766
+        },
+        {
+          "vocab_index": 104,
+          "token": "miw_b013_q00",
+          "mean_abs_shap": 0.014692
+        },
+        {
+          "vocab_index": 177,
+          "token": "miw_b022_q01",
+          "mean_abs_shap": 0.011226
+        },
+        {
+          "vocab_index": 144,
+          "token": "miw_b018_q00",
+          "mean_abs_shap": 0.009343
+        },
+        {
+          "vocab_index": 1403,
+          "token": "miw_b175_q03",
+          "mean_abs_shap": 0.008806
+        },
+        {
+          "vocab_index": 654,
+          "token": "miw_b081_q06",
+          "mean_abs_shap": 0.008458
+        },
+        {
+          "vocab_index": 48,
+          "token": "miw_b006_q00",
+          "mean_abs_shap": 0.008
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 136,
+          "token": "miw_b017_q00",
+          "mean_abs_shap": 0.009656
+        },
+        {
+          "vocab_index": 299,
+          "token": "miw_b037_q03",
+          "mean_abs_shap": 0.00854
+        },
+        {
+          "vocab_index": 128,
+          "token": "miw_b016_q00",
+          "mean_abs_shap": 0.006622
+        },
+        {
+          "vocab_index": 526,
+          "token": "miw_b065_q06",
+          "mean_abs_shap": 0.006354
+        },
+        {
+          "vocab_index": 803,
+          "token": "miw_b100_q03",
+          "mean_abs_shap": 0.006037
+        },
+        {
+          "vocab_index": 324,
+          "token": "miw_b040_q04",
+          "mean_abs_shap": 0.006037
+        },
+        {
+          "vocab_index": 9,
+          "token": "miw_b001_q01",
+          "mean_abs_shap": 0.005969
+        },
+        {
+          "vocab_index": 224,
+          "token": "miw_b028_q00",
+          "mean_abs_shap": 0.005913
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 1104,
+          "token": "miw_b138_q00",
+          "mean_abs_shap": 63122.165075
+        },
+        {
+          "vocab_index": 615,
+          "token": "miw_b076_q07",
+          "mean_abs_shap": 63122.165046
+        },
+        {
+          "vocab_index": 129,
+          "token": "miw_b016_q01",
+          "mean_abs_shap": 0.015841
+        },
+        {
+          "vocab_index": 323,
+          "token": "miw_b040_q03",
+          "mean_abs_shap": 0.015346
+        },
+        {
+          "vocab_index": 96,
+          "token": "miw_b012_q00",
+          "mean_abs_shap": 0.014267
+        },
+        {
+          "vocab_index": 258,
+          "token": "miw_b032_q02",
+          "mean_abs_shap": 0.0132
+        },
+        {
+          "vocab_index": 81,
+          "token": "miw_b010_q01",
+          "mean_abs_shap": 0.011198
+        },
+        {
+          "vocab_index": 518,
+          "token": "miw_b064_q06",
+          "mean_abs_shap": 0.010527
+        }
+      ]
+    },
+    {
+      "topic": 3,
+      "features": [
+        {
+          "vocab_index": 53,
+          "token": "miw_b006_q05",
+          "mean_abs_shap": 0.02288
+        },
+        {
+          "vocab_index": 240,
+          "token": "miw_b030_q00",
+          "mean_abs_shap": 0.008
+        },
+        {
+          "vocab_index": 341,
+          "token": "miw_b042_q05",
+          "mean_abs_shap": 0.00504
+        },
+        {
+          "vocab_index": 129,
+          "token": "miw_b016_q01",
+          "mean_abs_shap": 0.00328
+        },
+        {
+          "vocab_index": 415,
+          "token": "miw_b051_q07",
+          "mean_abs_shap": 0.00176
+        },
+        {
+          "vocab_index": 667,
+          "token": "miw_b083_q03",
+          "mean_abs_shap": 0.00136
+        },
+        {
+          "vocab_index": 259,
+          "token": "miw_b032_q03",
+          "mean_abs_shap": 0.0004
+        },
+        {
+          "vocab_index": 451,
+          "token": "miw_b056_q03",
+          "mean_abs_shap": 0.0004
+        }
+      ]
+    },
+    {
+      "topic": 4,
+      "features": [
+        {
+          "vocab_index": 340,
+          "token": "miw_b042_q04",
+          "mean_abs_shap": 0.01
+        },
+        {
+          "vocab_index": 390,
+          "token": "miw_b048_q06",
+          "mean_abs_shap": 0.005997
+        },
+        {
+          "vocab_index": 282,
+          "token": "miw_b035_q02",
+          "mean_abs_shap": 0.005997
+        },
+        {
+          "vocab_index": 1289,
+          "token": "miw_b161_q01",
+          "mean_abs_shap": 0.005992
+        },
+        {
+          "vocab_index": 1023,
+          "token": "miw_b127_q07",
+          "mean_abs_shap": 0.004797
+        },
+        {
+          "vocab_index": 121,
+          "token": "miw_b015_q01",
+          "mean_abs_shap": 0.001612
+        },
+        {
+          "vocab_index": 1403,
+          "token": "miw_b175_q03",
+          "mean_abs_shap": 0.001318
+        },
+        {
+          "vocab_index": 767,
+          "token": "miw_b095_q07",
+          "mean_abs_shap": 0.0012
+        }
+      ]
+    },
+    {
+      "topic": 5,
+      "features": [
+        {
+          "vocab_index": 186,
+          "token": "miw_b023_q02",
+          "mean_abs_shap": 0.028
+        },
+        {
+          "vocab_index": 145,
+          "token": "miw_b018_q01",
+          "mean_abs_shap": 0.0168
+        },
+        {
+          "vocab_index": 405,
+          "token": "miw_b050_q05",
+          "mean_abs_shap": 0.014499
+        },
+        {
+          "vocab_index": 81,
+          "token": "miw_b010_q01",
+          "mean_abs_shap": 0.0144
+        },
+        {
+          "vocab_index": 121,
+          "token": "miw_b015_q01",
+          "mean_abs_shap": 0.011
+        },
+        {
+          "vocab_index": 128,
+          "token": "miw_b016_q00",
+          "mean_abs_shap": 0.0108
+        },
+        {
+          "vocab_index": 1402,
+          "token": "miw_b175_q02",
+          "mean_abs_shap": 0.0096
+        },
+        {
+          "vocab_index": 144,
+          "token": "miw_b018_q00",
+          "mean_abs_shap": 0.0096
+        }
+      ]
+    },
+    {
+      "topic": 6,
+      "features": [
+        {
+          "vocab_index": 16,
+          "token": "miw_b002_q00",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 17,
+          "token": "miw_b002_q01",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 18,
+          "token": "miw_b002_q02",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 19,
+          "token": "miw_b002_q03",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 20,
+          "token": "miw_b002_q04",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 21,
+          "token": "miw_b002_q05",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 22,
+          "token": "miw_b002_q06",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "vocab_index": 23,
+          "token": "miw_b002_q07",
+          "mean_abs_shap": 0.0
+        }
+      ]
+    },
+    {
+      "topic": 7,
+      "features": [
+        {
+          "vocab_index": 81,
+          "token": "miw_b010_q01",
+          "mean_abs_shap": 0.015487
+        },
+        {
+          "vocab_index": 72,
+          "token": "miw_b009_q00",
+          "mean_abs_shap": 0.012849
+        },
+        {
+          "vocab_index": 144,
+          "token": "miw_b018_q00",
+          "mean_abs_shap": 0.009399
+        },
+        {
+          "vocab_index": 184,
+          "token": "miw_b023_q00",
+          "mean_abs_shap": 0.007425
+        },
+        {
+          "vocab_index": 104,
+          "token": "miw_b013_q00",
+          "mean_abs_shap": 0.007376
+        },
+        {
+          "vocab_index": 153,
+          "token": "miw_b019_q01",
+          "mean_abs_shap": 0.007353
+        },
+        {
+          "vocab_index": 241,
+          "token": "miw_b030_q01",
+          "mean_abs_shap": 0.00666
+        },
+        {
+          "vocab_index": 446,
+          "token": "miw_b055_q06",
+          "mean_abs_shap": 0.005738
+        }
+      ]
+    },
+    {
+      "topic": 8,
+      "features": [
+        {
+          "vocab_index": 1402,
+          "token": "miw_b175_q02",
+          "mean_abs_shap": 356967260465375.5
+        },
+        {
+          "vocab_index": 510,
+          "token": "miw_b063_q06",
+          "mean_abs_shap": 356967260465375.5
+        },
+        {
+          "vocab_index": 399,
+          "token": "miw_b049_q07",
+          "mean_abs_shap": 356967260465375.5
+        },
+        {
+          "vocab_index": 1401,
+          "token": "miw_b175_q01",
+          "mean_abs_shap": 356967260465375.44
+        },
+        {
+          "vocab_index": 366,
+          "token": "miw_b045_q06",
+          "mean_abs_shap": 0.09
+        },
+        {
+          "vocab_index": 128,
+          "token": "miw_b016_q00",
+          "mean_abs_shap": 0.016421
+        },
+        {
+          "vocab_index": 9,
+          "token": "miw_b001_q01",
+          "mean_abs_shap": 0.013696
+        },
+        {
+          "vocab_index": 104,
+          "token": "miw_b013_q00",
+          "mean_abs_shap": 0.013265
+        }
+      ]
+    },
+    {
+      "topic": 9,
+      "features": [
+        {
+          "vocab_index": 828,
+          "token": "miw_b103_q04",
+          "mean_abs_shap": 1.159581
+        },
+        {
+          "vocab_index": 241,
+          "token": "miw_b030_q01",
+          "mean_abs_shap": 1.159106
+        },
+        {
+          "vocab_index": 365,
+          "token": "miw_b045_q05",
+          "mean_abs_shap": 0.007218
+        },
+        {
+          "vocab_index": 484,
+          "token": "miw_b060_q04",
+          "mean_abs_shap": 0.0052
+        },
+        {
+          "vocab_index": 177,
+          "token": "miw_b022_q01",
+          "mean_abs_shap": 0.0052
+        },
+        {
+          "vocab_index": 1376,
+          "token": "miw_b172_q00",
+          "mean_abs_shap": 0.003374
+        },
+        {
+          "vocab_index": 574,
+          "token": "miw_b071_q06",
+          "mean_abs_shap": 0.003218
+        },
+        {
+          "vocab_index": 715,
+          "token": "miw_b089_q03",
+          "mean_abs_shap": 0.002726
+        }
+      ]
+    },
+    {
+      "topic": 10,
+      "features": [
+        {
+          "vocab_index": 381,
+          "token": "miw_b047_q05",
+          "mean_abs_shap": 645938657115.5856
+        },
+        {
+          "vocab_index": 452,
+          "token": "miw_b056_q04",
+          "mean_abs_shap": 645938657115.5856
+        },
+        {
+          "vocab_index": 11,
+          "token": "miw_b001_q03",
+          "mean_abs_shap": 0.0172
+        },
+        {
+          "vocab_index": 128,
+          "token": "miw_b016_q00",
+          "mean_abs_shap": 0.0168
+        },
+        {
+          "vocab_index": 323,
+          "token": "miw_b040_q03",
+          "mean_abs_shap": 0.015795
+        },
+        {
+          "vocab_index": 96,
+          "token": "miw_b012_q00",
+          "mean_abs_shap": 0.010504
+        },
+        {
+          "vocab_index": 41,
+          "token": "miw_b005_q01",
+          "mean_abs_shap": 0.01045
+        },
+        {
+          "vocab_index": 32,
+          "token": "miw_b004_q00",
+          "mean_abs_shap": 0.01032
+        }
+      ]
+    },
+    {
+      "topic": 11,
+      "features": [
+        {
+          "vocab_index": 128,
+          "token": "miw_b016_q00",
+          "mean_abs_shap": 3559316480759.0737
+        },
+        {
+          "vocab_index": 185,
+          "token": "miw_b023_q01",
+          "mean_abs_shap": 3559316480759.072
+        },
+        {
+          "vocab_index": 73,
+          "token": "miw_b009_q01",
+          "mean_abs_shap": 0.017949
+        },
+        {
+          "vocab_index": 339,
+          "token": "miw_b042_q03",
+          "mean_abs_shap": 0.014898
+        },
+        {
+          "vocab_index": 300,
+          "token": "miw_b037_q04",
+          "mean_abs_shap": 0.006602
+        },
+        {
+          "vocab_index": 234,
+          "token": "miw_b029_q02",
+          "mean_abs_shap": 0.005202
+        },
+        {
+          "vocab_index": 129,
+          "token": "miw_b016_q01",
+          "mean_abs_shap": 0.003651
+        },
+        {
+          "vocab_index": 390,
+          "token": "miw_b048_q06",
+          "mean_abs_shap": 0.003419
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-30T05:04:11Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 6.45
+}

@@ -1,0 +1,152 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V15",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 48,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 6,
+          "token": "EVI_q06",
+          "mean_abs_shap": 0.014819
+        },
+        {
+          "vocab_index": 44,
+          "token": "SAVI_q04",
+          "mean_abs_shap": 0.007117
+        },
+        {
+          "vocab_index": 7,
+          "token": "EVI_q07",
+          "mean_abs_shap": 0.006729
+        },
+        {
+          "vocab_index": 15,
+          "token": "MNDWI_q07",
+          "mean_abs_shap": 0.006552
+        },
+        {
+          "vocab_index": 24,
+          "token": "NDSI_q00",
+          "mean_abs_shap": 0.00519
+        },
+        {
+          "vocab_index": 14,
+          "token": "MNDWI_q06",
+          "mean_abs_shap": 0.004382
+        },
+        {
+          "vocab_index": 30,
+          "token": "NDSI_q06",
+          "mean_abs_shap": 0.004286
+        },
+        {
+          "vocab_index": 36,
+          "token": "NDVI_q04",
+          "mean_abs_shap": 0.003379
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 47,
+          "token": "SAVI_q07",
+          "mean_abs_shap": 0.040071
+        },
+        {
+          "vocab_index": 39,
+          "token": "NDVI_q07",
+          "mean_abs_shap": 0.03301
+        },
+        {
+          "vocab_index": 7,
+          "token": "EVI_q07",
+          "mean_abs_shap": 0.028802
+        },
+        {
+          "vocab_index": 6,
+          "token": "EVI_q06",
+          "mean_abs_shap": 0.025785
+        },
+        {
+          "vocab_index": 24,
+          "token": "NDSI_q00",
+          "mean_abs_shap": 0.022965
+        },
+        {
+          "vocab_index": 23,
+          "token": "NBR_q07",
+          "mean_abs_shap": 0.022685
+        },
+        {
+          "vocab_index": 45,
+          "token": "SAVI_q05",
+          "mean_abs_shap": 0.022628
+        },
+        {
+          "vocab_index": 8,
+          "token": "MNDWI_q00",
+          "mean_abs_shap": 0.022555
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 47,
+          "token": "SAVI_q07",
+          "mean_abs_shap": 0.037268
+        },
+        {
+          "vocab_index": 39,
+          "token": "NDVI_q07",
+          "mean_abs_shap": 0.033531
+        },
+        {
+          "vocab_index": 6,
+          "token": "EVI_q06",
+          "mean_abs_shap": 0.029639
+        },
+        {
+          "vocab_index": 24,
+          "token": "NDSI_q00",
+          "mean_abs_shap": 0.024999
+        },
+        {
+          "vocab_index": 44,
+          "token": "SAVI_q04",
+          "mean_abs_shap": 0.023917
+        },
+        {
+          "vocab_index": 22,
+          "token": "NBR_q06",
+          "mean_abs_shap": 0.022782
+        },
+        {
+          "vocab_index": 37,
+          "token": "NDVI_q05",
+          "mean_abs_shap": 0.022726
+        },
+        {
+          "vocab_index": 7,
+          "token": "EVI_q07",
+          "mean_abs_shap": 0.022664
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-30T05:04:02Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.26
+}
