@@ -62,8 +62,8 @@ def load_labels_for_scene(scene_id: str) -> np.ndarray | None:
     return labels[sample_local]
 
 
-def load_doc_term(recipe: str, scene_id: str) -> sp.csr_matrix | None:
-    p = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id / "doc_term.npz"
+def load_doc_term(recipe: str, scene_id: str, q: int = 8) -> sp.csr_matrix | None:
+    p = WORDIFICATION_LOCAL / recipe / f"uniform_Q{q}" / scene_id / "doc_term.npz"
     if not p.exists():
         return None
     return sp.load_npz(p).tocsr()
@@ -188,6 +188,7 @@ def main() -> int:
     parser.add_argument("--recipes", nargs="+", default=RECIPES, choices=RECIPES)
     parser.add_argument("--scenes", nargs="+", default=LABELLED_SCENES, choices=LABELLED_SCENES)
     parser.add_argument("--backbone", default="hdp", choices=["hdp", "prodlda", "etm"])
+    parser.add_argument("--q", type=int, default=8, choices=[8, 16, 32])
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -199,7 +200,7 @@ def main() -> int:
             print(f"[bb_f7] {scene}: no labels", flush=True)
             continue
         for recipe in args.recipes:
-            doc_term = load_doc_term(recipe, scene)
+            doc_term = load_doc_term(recipe, scene, args.q)
             if doc_term is None:
                 print(f"[bb_f7] {scene} {recipe}: no doc_term", flush=True)
                 n_skip += 1
@@ -227,14 +228,14 @@ def main() -> int:
                 continue
             rec = {
                 "scene_id": scene, "recipe": recipe, "backbone": args.backbone,
-                "scheme": "uniform", "Q": 8,
+                "scheme": "uniform", "Q": args.q,
                 "normalised_mi": round(nmi, 6),
                 "n_docs": int(D),
                 "generated_at": datetime.now(timezone.utc)
                 .isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "builder": "build_v_sweep_backbones_f7 v0.1",
             }
-            out = OUT_DIR / f"{args.backbone}_{scene}_{recipe}_uniform_Q8.json"
+            out = OUT_DIR / f"{args.backbone}_{scene}_{recipe}_uniform_Q{args.q}.json"
             with out.open("w", encoding="utf-8") as h:
                 json.dump(rec, h, indent=2)
             n_ok += 1

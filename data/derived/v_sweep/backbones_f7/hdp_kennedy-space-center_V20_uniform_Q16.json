@@ -1,0 +1,11 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V20",
+  "backbone": "hdp",
+  "scheme": "uniform",
+  "Q": 16,
+  "normalised_mi": 0.402714,
+  "n_docs": 2686,
+  "generated_at": "2026-05-30T13:30:00Z",
+  "builder": "build_v_sweep_backbones_f7 v0.1"
+}

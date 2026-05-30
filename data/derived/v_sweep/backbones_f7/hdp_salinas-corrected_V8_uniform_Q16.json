@@ -1,0 +1,11 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V8",
+  "backbone": "hdp",
+  "scheme": "uniform",
+  "Q": 16,
+  "normalised_mi": 0.549496,
+  "n_docs": 3520,
+  "generated_at": "2026-05-30T13:29:43Z",
+  "builder": "build_v_sweep_backbones_f7 v0.1"
+}
