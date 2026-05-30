@@ -178,7 +178,7 @@ export default function MethodDeep() {
   );
 }
 
-type AxisTab = "fit" | "f1" | "f2" | "f7" | "reliability" | "backbones";
+type AxisTab = "fit" | "f1" | "f2" | "f7" | "reliability" | "backbones" | "interp";
 
 // For each metric, "higher" = true if higher value is preferred. F-14 (jaccard
 // repetitiveness) is the only "lower is better" axis surfaced in the panel.
@@ -193,6 +193,7 @@ const HIGHER_IS_BETTER: Record<string, boolean> = {
   nmi: true,
   jaccard: false,
   f18: true,
+  cf_l1: true,
   hdp_cv: true,
   prodlda_cv: true,
   etm_cv: true,
@@ -213,6 +214,7 @@ const AXIS_TABS: Array<{ id: AxisTab; label: string; title: string }> = [
   { id: "f2", label: "F-2", title: "Topic-word coherence (c_v, c_npmi)" },
   { id: "f7", label: "F-7", title: "Topic-label normalised mutual information" },
   { id: "reliability", label: "Reliability", title: "F-14 repetitiveness, F-18 seed-pair top-10 alignment" },
+  { id: "interp", label: "Interp", title: "F-13 SHAP top-feature, F-22 counterfactual L1 to flip argmax topic" },
   { id: "backbones", label: "Backbones", title: "F-2 c_v under HDP / ProdLDA / ETM backbones" },
 ];
 
@@ -428,6 +430,24 @@ function SweepPanelPlaceholder({
                 </th>
               </>
             )}
+            {tab === "interp" && (
+              <>
+                <th
+                  className="text-left px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="F-13 SHAP top-feature for topic 0"
+                >
+                  F-13 top SHAP (topic 0)
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="F-22 counterfactual median L1 perturbation to flip argmax topic"
+                >
+                  F-22 L1 (median)
+                </th>
+              </>
+            )}
             {tab === "backbones" && (
               <>
                 <th
@@ -544,6 +564,23 @@ function SweepPanelPlaceholder({
                     </td>
                     <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
                       {diffCell(s.f18?.frac_above_0_7, cs?.f18?.frac_above_0_7, 3, "f18")}
+                    </td>
+                  </>
+                )}
+                {tab === "interp" && (
+                  <>
+                    <td className="px-3 py-1 border text-left text-[11.5px] font-mono" style={{ borderColor: "var(--color-border)" }}>
+                      {(() => {
+                        const t0 = s.f13?.top_features_per_topic?.find((tp) => tp.topic === 0);
+                        const feats = t0?.features ?? t0?.top_features;
+                        const first = feats?.[0];
+                        if (!first) return "-";
+                        const name = first.token ?? first.name ?? `idx ${first.vocab_index}`;
+                        return `${name} (${first.mean_abs_shap.toFixed(4)})`;
+                      })()}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.f22?.counterfactual_l1_median, cs?.f22?.counterfactual_l1_median, 2, "cf_l1")}
                     </td>
                   </>
                 )}

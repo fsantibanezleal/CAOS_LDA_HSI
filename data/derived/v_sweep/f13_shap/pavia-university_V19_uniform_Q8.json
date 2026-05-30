@@ -1,0 +1,152 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V19",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 24,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 15,
+          "token": "umap_d1_q07",
+          "mean_abs_shap": 0.053791
+        },
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.036865
+        },
+        {
+          "vocab_index": 23,
+          "token": "umap_d2_q07",
+          "mean_abs_shap": 0.036332
+        },
+        {
+          "vocab_index": 8,
+          "token": "umap_d1_q00",
+          "mean_abs_shap": 0.035989
+        },
+        {
+          "vocab_index": 5,
+          "token": "umap_d0_q05",
+          "mean_abs_shap": 0.032723
+        },
+        {
+          "vocab_index": 2,
+          "token": "umap_d0_q02",
+          "mean_abs_shap": 0.032096
+        },
+        {
+          "vocab_index": 12,
+          "token": "umap_d1_q04",
+          "mean_abs_shap": 0.031444
+        },
+        {
+          "vocab_index": 19,
+          "token": "umap_d2_q03",
+          "mean_abs_shap": 0.027763
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.037691
+        },
+        {
+          "vocab_index": 15,
+          "token": "umap_d1_q07",
+          "mean_abs_shap": 0.034881
+        },
+        {
+          "vocab_index": 10,
+          "token": "umap_d1_q02",
+          "mean_abs_shap": 0.032386
+        },
+        {
+          "vocab_index": 5,
+          "token": "umap_d0_q05",
+          "mean_abs_shap": 0.029215
+        },
+        {
+          "vocab_index": 0,
+          "token": "umap_d0_q00",
+          "mean_abs_shap": 0.027853
+        },
+        {
+          "vocab_index": 9,
+          "token": "umap_d1_q01",
+          "mean_abs_shap": 0.027399
+        },
+        {
+          "vocab_index": 19,
+          "token": "umap_d2_q03",
+          "mean_abs_shap": 0.0269
+        },
+        {
+          "vocab_index": 7,
+          "token": "umap_d0_q07",
+          "mean_abs_shap": 0.022714
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 15,
+          "token": "umap_d1_q07",
+          "mean_abs_shap": 0.088348
+        },
+        {
+          "vocab_index": 5,
+          "token": "umap_d0_q05",
+          "mean_abs_shap": 0.057408
+        },
+        {
+          "vocab_index": 7,
+          "token": "umap_d0_q07",
+          "mean_abs_shap": 0.03805
+        },
+        {
+          "vocab_index": 4,
+          "token": "umap_d0_q04",
+          "mean_abs_shap": 0.036659
+        },
+        {
+          "vocab_index": 2,
+          "token": "umap_d0_q02",
+          "mean_abs_shap": 0.030905
+        },
+        {
+          "vocab_index": 21,
+          "token": "umap_d2_q05",
+          "mean_abs_shap": 0.029467
+        },
+        {
+          "vocab_index": 0,
+          "token": "umap_d0_q00",
+          "mean_abs_shap": 0.025741
+        },
+        {
+          "vocab_index": 10,
+          "token": "umap_d1_q02",
+          "mean_abs_shap": 0.024618
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-30T05:03:55Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.49
+}

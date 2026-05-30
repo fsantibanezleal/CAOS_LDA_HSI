@@ -1,0 +1,152 @@
+{
+  "scene_id": "kennedy-space-center",
+  "recipe": "V19",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 24,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.079738
+        },
+        {
+          "vocab_index": 18,
+          "token": "umap_d2_q02",
+          "mean_abs_shap": 0.066139
+        },
+        {
+          "vocab_index": 8,
+          "token": "umap_d1_q00",
+          "mean_abs_shap": 0.065818
+        },
+        {
+          "vocab_index": 10,
+          "token": "umap_d1_q02",
+          "mean_abs_shap": 0.059314
+        },
+        {
+          "vocab_index": 15,
+          "token": "umap_d1_q07",
+          "mean_abs_shap": 0.052512
+        },
+        {
+          "vocab_index": 14,
+          "token": "umap_d1_q06",
+          "mean_abs_shap": 0.045657
+        },
+        {
+          "vocab_index": 3,
+          "token": "umap_d0_q03",
+          "mean_abs_shap": 0.039817
+        },
+        {
+          "vocab_index": 17,
+          "token": "umap_d2_q01",
+          "mean_abs_shap": 0.037349
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 14,
+          "token": "umap_d1_q06",
+          "mean_abs_shap": 0.125755
+        },
+        {
+          "vocab_index": 17,
+          "token": "umap_d2_q01",
+          "mean_abs_shap": 0.084972
+        },
+        {
+          "vocab_index": 4,
+          "token": "umap_d0_q04",
+          "mean_abs_shap": 0.062491
+        },
+        {
+          "vocab_index": 21,
+          "token": "umap_d2_q05",
+          "mean_abs_shap": 0.060748
+        },
+        {
+          "vocab_index": 8,
+          "token": "umap_d1_q00",
+          "mean_abs_shap": 0.032631
+        },
+        {
+          "vocab_index": 3,
+          "token": "umap_d0_q03",
+          "mean_abs_shap": 0.031781
+        },
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.03159
+        },
+        {
+          "vocab_index": 16,
+          "token": "umap_d2_q00",
+          "mean_abs_shap": 0.031373
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 8,
+          "token": "umap_d1_q00",
+          "mean_abs_shap": 0.098883
+        },
+        {
+          "vocab_index": 21,
+          "token": "umap_d2_q05",
+          "mean_abs_shap": 0.090107
+        },
+        {
+          "vocab_index": 14,
+          "token": "umap_d1_q06",
+          "mean_abs_shap": 0.07388
+        },
+        {
+          "vocab_index": 18,
+          "token": "umap_d2_q02",
+          "mean_abs_shap": 0.070308
+        },
+        {
+          "vocab_index": 4,
+          "token": "umap_d0_q04",
+          "mean_abs_shap": 0.054157
+        },
+        {
+          "vocab_index": 16,
+          "token": "umap_d2_q00",
+          "mean_abs_shap": 0.053943
+        },
+        {
+          "vocab_index": 17,
+          "token": "umap_d2_q01",
+          "mean_abs_shap": 0.048836
+        },
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.047384
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-30T05:04:04Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.25
+}

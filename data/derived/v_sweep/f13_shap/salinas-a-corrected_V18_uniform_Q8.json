@@ -1,0 +1,287 @@
+{
+  "scene_id": "salinas-a-corrected",
+  "recipe": "V18",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 6,
+  "V": 128,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 12,
+          "token": "lap_e01_q04",
+          "mean_abs_shap": 0.008686
+        },
+        {
+          "vocab_index": 71,
+          "token": "lap_e08_q07",
+          "mean_abs_shap": 0.007751
+        },
+        {
+          "vocab_index": 45,
+          "token": "lap_e05_q05",
+          "mean_abs_shap": 0.005145
+        },
+        {
+          "vocab_index": 18,
+          "token": "lap_e02_q02",
+          "mean_abs_shap": 0.005102
+        },
+        {
+          "vocab_index": 55,
+          "token": "lap_e06_q07",
+          "mean_abs_shap": 0.003941
+        },
+        {
+          "vocab_index": 27,
+          "token": "lap_e03_q03",
+          "mean_abs_shap": 0.003663
+        },
+        {
+          "vocab_index": 28,
+          "token": "lap_e03_q04",
+          "mean_abs_shap": 0.003642
+        },
+        {
+          "vocab_index": 109,
+          "token": "lap_e13_q05",
+          "mean_abs_shap": 0.003182
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 72,
+          "token": "lap_e09_q00",
+          "mean_abs_shap": 0.003106
+        },
+        {
+          "vocab_index": 78,
+          "token": "lap_e09_q06",
+          "mean_abs_shap": 0.002724
+        },
+        {
+          "vocab_index": 119,
+          "token": "lap_e14_q07",
+          "mean_abs_shap": 0.001912
+        },
+        {
+          "vocab_index": 63,
+          "token": "lap_e07_q07",
+          "mean_abs_shap": 0.001776
+        },
+        {
+          "vocab_index": 39,
+          "token": "lap_e04_q07",
+          "mean_abs_shap": 0.001573
+        },
+        {
+          "vocab_index": 10,
+          "token": "lap_e01_q02",
+          "mean_abs_shap": 0.00139
+        },
+        {
+          "vocab_index": 23,
+          "token": "lap_e02_q07",
+          "mean_abs_shap": 0.001389
+        },
+        {
+          "vocab_index": 88,
+          "token": "lap_e11_q00",
+          "mean_abs_shap": 0.001364
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 41,
+          "token": "lap_e05_q01",
+          "mean_abs_shap": 0.015764
+        },
+        {
+          "vocab_index": 1,
+          "token": "lap_e00_q01",
+          "mean_abs_shap": 0.015672
+        },
+        {
+          "vocab_index": 45,
+          "token": "lap_e05_q05",
+          "mean_abs_shap": 0.014164
+        },
+        {
+          "vocab_index": 22,
+          "token": "lap_e02_q06",
+          "mean_abs_shap": 0.013292
+        },
+        {
+          "vocab_index": 49,
+          "token": "lap_e06_q01",
+          "mean_abs_shap": 0.011673
+        },
+        {
+          "vocab_index": 44,
+          "token": "lap_e05_q04",
+          "mean_abs_shap": 0.011588
+        },
+        {
+          "vocab_index": 9,
+          "token": "lap_e01_q01",
+          "mean_abs_shap": 0.010647
+        },
+        {
+          "vocab_index": 0,
+          "token": "lap_e00_q00",
+          "mean_abs_shap": 0.009871
+        }
+      ]
+    },
+    {
+      "topic": 3,
+      "features": [
+        {
+          "vocab_index": 54,
+          "token": "lap_e06_q06",
+          "mean_abs_shap": 0.01945
+        },
+        {
+          "vocab_index": 1,
+          "token": "lap_e00_q01",
+          "mean_abs_shap": 0.016531
+        },
+        {
+          "vocab_index": 53,
+          "token": "lap_e06_q05",
+          "mean_abs_shap": 0.014939
+        },
+        {
+          "vocab_index": 9,
+          "token": "lap_e01_q01",
+          "mean_abs_shap": 0.011765
+        },
+        {
+          "vocab_index": 97,
+          "token": "lap_e12_q01",
+          "mean_abs_shap": 0.01004
+        },
+        {
+          "vocab_index": 12,
+          "token": "lap_e01_q04",
+          "mean_abs_shap": 0.008881
+        },
+        {
+          "vocab_index": 70,
+          "token": "lap_e08_q06",
+          "mean_abs_shap": 0.007889
+        },
+        {
+          "vocab_index": 43,
+          "token": "lap_e05_q03",
+          "mean_abs_shap": 0.006911
+        }
+      ]
+    },
+    {
+      "topic": 4,
+      "features": [
+        {
+          "vocab_index": 1,
+          "token": "lap_e00_q01",
+          "mean_abs_shap": 0.033815
+        },
+        {
+          "vocab_index": 53,
+          "token": "lap_e06_q05",
+          "mean_abs_shap": 0.016057
+        },
+        {
+          "vocab_index": 45,
+          "token": "lap_e05_q05",
+          "mean_abs_shap": 0.01542
+        },
+        {
+          "vocab_index": 51,
+          "token": "lap_e06_q03",
+          "mean_abs_shap": 0.015137
+        },
+        {
+          "vocab_index": 71,
+          "token": "lap_e08_q07",
+          "mean_abs_shap": 0.014822
+        },
+        {
+          "vocab_index": 0,
+          "token": "lap_e00_q00",
+          "mean_abs_shap": 0.014413
+        },
+        {
+          "vocab_index": 9,
+          "token": "lap_e01_q01",
+          "mean_abs_shap": 0.014118
+        },
+        {
+          "vocab_index": 13,
+          "token": "lap_e01_q05",
+          "mean_abs_shap": 0.013832
+        }
+      ]
+    },
+    {
+      "topic": 5,
+      "features": [
+        {
+          "vocab_index": 51,
+          "token": "lap_e06_q03",
+          "mean_abs_shap": 0.017167
+        },
+        {
+          "vocab_index": 7,
+          "token": "lap_e00_q07",
+          "mean_abs_shap": 0.009817
+        },
+        {
+          "vocab_index": 45,
+          "token": "lap_e05_q05",
+          "mean_abs_shap": 0.008202
+        },
+        {
+          "vocab_index": 65,
+          "token": "lap_e08_q01",
+          "mean_abs_shap": 0.004265
+        },
+        {
+          "vocab_index": 22,
+          "token": "lap_e02_q06",
+          "mean_abs_shap": 0.003949
+        },
+        {
+          "vocab_index": 70,
+          "token": "lap_e08_q06",
+          "mean_abs_shap": 0.003902
+        },
+        {
+          "vocab_index": 18,
+          "token": "lap_e02_q02",
+          "mean_abs_shap": 0.003293
+        },
+        {
+          "vocab_index": 24,
+          "token": "lap_e03_q00",
+          "mean_abs_shap": 0.003227
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-30T05:03:42Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.55
+}

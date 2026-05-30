@@ -1,0 +1,13 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V19",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "top_n": 10,
+  "mean_pairwise_jaccard": 0.165692,
+  "max_pairwise_jaccard": 0.333333,
+  "n_redundant_pairs_above_0.5": 0,
+  "generated_at": "2026-05-30T04:58:45Z",
+  "builder": "build_v_sweep_f14_repetitiveness v0.1"
+}

@@ -124,14 +124,60 @@ class VSweepBackboneRecord(BaseModel):
     status: str
 
 
+class VSweepF13TopFeature(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    vocab_index: Optional[int] = None
+    token: Optional[str] = None
+    name: Optional[str] = None
+    mean_abs_shap: float
+
+
+class VSweepF13Topic(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    topic: int
+    features: Optional[list[VSweepF13TopFeature]] = None
+    top_features: Optional[list[VSweepF13TopFeature]] = None
+
+
+class VSweepF13Record(BaseModel):
+    """SHAP attributions per topic, per recipe, per scene."""
+    model_config = ConfigDict(extra="allow")
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    K: int
+    top_m: int
+    n_samples_explained: Optional[int] = None
+    n_background: Optional[int] = None
+    top_features_per_topic: Optional[list[VSweepF13Topic]] = None
+
+
+class VSweepF22Record(BaseModel):
+    """Counterfactual L1 perturbation to flip argmax topic."""
+    model_config = ConfigDict(extra="allow")
+    scene_id: str
+    recipe: str
+    scheme: str
+    Q: int
+    K: int
+    n_samples: int
+    n_flipped_within_max_steps: Optional[int] = None
+    n_not_flipped: Optional[int] = None
+    counterfactual_l1_median: Optional[float] = None
+    counterfactual_l1_mean: Optional[float] = None
+
+
 class VSweepRecipeScene(BaseModel):
     scene_id: str
     topic_view: Optional[VSweepTopicViewSummary] = None
     f1: Optional[VSweepF1Record] = None
     f2: Optional[VSweepF2Record] = None
     f7: Optional[VSweepF7Record] = None
+    f13: Optional[VSweepF13Record] = None
     f14: Optional[VSweepF14Record] = None
     f18: Optional[VSweepF18Record] = None
+    f22: Optional[VSweepF22Record] = None
     hdp: Optional[VSweepHdpRecord] = None
     prodlda: Optional[VSweepBackboneRecord] = None
     etm: Optional[VSweepBackboneRecord] = None

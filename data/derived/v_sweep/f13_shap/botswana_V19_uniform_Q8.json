@@ -1,0 +1,152 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V19",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 24,
+  "n_samples_explained": 50,
+  "n_background": 25,
+  "top_m": 8,
+  "top_features_per_topic": [
+    {
+      "topic": 0,
+      "features": [
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.064193
+        },
+        {
+          "vocab_index": 12,
+          "token": "umap_d1_q04",
+          "mean_abs_shap": 0.061575
+        },
+        {
+          "vocab_index": 5,
+          "token": "umap_d0_q05",
+          "mean_abs_shap": 0.053902
+        },
+        {
+          "vocab_index": 13,
+          "token": "umap_d1_q05",
+          "mean_abs_shap": 0.04874
+        },
+        {
+          "vocab_index": 19,
+          "token": "umap_d2_q03",
+          "mean_abs_shap": 0.045186
+        },
+        {
+          "vocab_index": 8,
+          "token": "umap_d1_q00",
+          "mean_abs_shap": 0.026029
+        },
+        {
+          "vocab_index": 15,
+          "token": "umap_d1_q07",
+          "mean_abs_shap": 0.025696
+        },
+        {
+          "vocab_index": 23,
+          "token": "umap_d2_q07",
+          "mean_abs_shap": 0.022603
+        }
+      ]
+    },
+    {
+      "topic": 1,
+      "features": [
+        {
+          "vocab_index": 13,
+          "token": "umap_d1_q05",
+          "mean_abs_shap": 0.133134
+        },
+        {
+          "vocab_index": 19,
+          "token": "umap_d2_q03",
+          "mean_abs_shap": 0.047386
+        },
+        {
+          "vocab_index": 12,
+          "token": "umap_d1_q04",
+          "mean_abs_shap": 0.040672
+        },
+        {
+          "vocab_index": 17,
+          "token": "umap_d2_q01",
+          "mean_abs_shap": 0.039589
+        },
+        {
+          "vocab_index": 18,
+          "token": "umap_d2_q02",
+          "mean_abs_shap": 0.033998
+        },
+        {
+          "vocab_index": 5,
+          "token": "umap_d0_q05",
+          "mean_abs_shap": 0.033184
+        },
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.025152
+        },
+        {
+          "vocab_index": 21,
+          "token": "umap_d2_q05",
+          "mean_abs_shap": 0.025055
+        }
+      ]
+    },
+    {
+      "topic": 2,
+      "features": [
+        {
+          "vocab_index": 19,
+          "token": "umap_d2_q03",
+          "mean_abs_shap": 0.102366
+        },
+        {
+          "vocab_index": 13,
+          "token": "umap_d1_q05",
+          "mean_abs_shap": 0.073015
+        },
+        {
+          "vocab_index": 15,
+          "token": "umap_d1_q07",
+          "mean_abs_shap": 0.051994
+        },
+        {
+          "vocab_index": 8,
+          "token": "umap_d1_q00",
+          "mean_abs_shap": 0.043289
+        },
+        {
+          "vocab_index": 20,
+          "token": "umap_d2_q04",
+          "mean_abs_shap": 0.035212
+        },
+        {
+          "vocab_index": 18,
+          "token": "umap_d2_q02",
+          "mean_abs_shap": 0.027172
+        },
+        {
+          "vocab_index": 12,
+          "token": "umap_d1_q04",
+          "mean_abs_shap": 0.024302
+        },
+        {
+          "vocab_index": 22,
+          "token": "umap_d2_q06",
+          "mean_abs_shap": 0.02323
+        }
+      ]
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-05-30T05:04:20Z",
+  "builder": "build_v_sweep_f13_shap v0.1",
+  "elapsed_seconds": 0.49
+}

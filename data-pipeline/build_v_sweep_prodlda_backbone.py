@@ -46,7 +46,7 @@ LABELLED_SCENES = [
     "indian-pines-corrected", "salinas-corrected", "salinas-a-corrected",
     "pavia-university", "kennedy-space-center", "botswana",
 ]
-RECIPES = [f"V{i}" for i in range(1, 14)] + ["V14", "V18", "V20"]
+RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 TOP_N = 10
 EPS = 1e-12
 
