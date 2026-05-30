@@ -1,0 +1,11 @@
+{
+  "scene_id": "botswana",
+  "recipe": "V7",
+  "backbone": "prodlda",
+  "scheme": "uniform",
+  "Q": 8,
+  "normalised_mi": 0.10133,
+  "n_docs": 2775,
+  "generated_at": "2026-05-30T06:56:51Z",
+  "builder": "build_v_sweep_backbones_f7 v0.1"
+}
