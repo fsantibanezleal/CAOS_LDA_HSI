@@ -43,7 +43,7 @@ from research_core.raw_scenes import (  # noqa: E402
 WORDIFICATION_LOCAL = DATA_DIR / "local" / "wordifications"
 F17_DERIVED = DERIVED_DIR / "v_sweep" / "f17_cross_scene"
 
-PORTABLE_RECIPES = ["V2", "V10", "V11"]
+PORTABLE_RECIPES = ["V2", "V10", "V11", "V14"]
 SCENES_LABELLED = [
     "indian-pines-corrected",
     "salinas-corrected",

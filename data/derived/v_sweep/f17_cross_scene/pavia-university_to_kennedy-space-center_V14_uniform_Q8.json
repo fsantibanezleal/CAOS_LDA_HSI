@@ -1,0 +1,15 @@
+{
+  "source_scene": "pavia-university",
+  "target_scene": "kennedy-space-center",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 9,
+  "source_vocab_size": 1024,
+  "H_label_bits": 3.678599,
+  "H_label_given_topic_bits": 2.697938,
+  "mutual_information_bits": 0.980661,
+  "normalised_mi": 0.266585,
+  "generated_at": "2026-05-30T05:03:16Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}

@@ -1,0 +1,15 @@
+{
+  "source_scene": "pavia-university",
+  "target_scene": "indian-pines-corrected",
+  "recipe": "V14",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 9,
+  "source_vocab_size": 1024,
+  "H_label_bits": 3.815683,
+  "H_label_given_topic_bits": 3.325184,
+  "mutual_information_bits": 0.490499,
+  "normalised_mi": 0.128548,
+  "generated_at": "2026-05-30T05:03:13Z",
+  "builder": "build_v_sweep_f17_cross_scene v0.1"
+}
