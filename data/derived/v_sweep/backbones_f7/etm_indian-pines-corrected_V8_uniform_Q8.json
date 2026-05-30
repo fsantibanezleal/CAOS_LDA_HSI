@@ -1,0 +1,11 @@
+{
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V8",
+  "backbone": "etm",
+  "scheme": "uniform",
+  "Q": 8,
+  "normalised_mi": 0.433373,
+  "n_docs": 2812,
+  "generated_at": "2026-05-30T06:43:07Z",
+  "builder": "build_v_sweep_backbones_f7 v0.1"
+}
