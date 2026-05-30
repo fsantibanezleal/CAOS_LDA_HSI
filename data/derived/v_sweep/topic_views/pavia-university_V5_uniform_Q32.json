@@ -1,0 +1,39 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V5",
+  "scheme": "uniform",
+  "Q": 32,
+  "status": "ok",
+  "K": 9,
+  "D": 1980,
+  "V": 103,
+  "mean_doc_length": 1483.7096,
+  "doc_length_quantiles": {
+    "p05": 812.0,
+    "p50": 1477.0,
+    "p95": 2238.0
+  },
+  "topic_prevalence": [
+    0.094013,
+    0.106282,
+    0.09872,
+    0.145114,
+    0.099375,
+    0.112469,
+    0.098059,
+    0.120695,
+    0.125273
+  ],
+  "perplexity": 102.0027,
+  "fit_seconds": 44.376,
+  "lda_config": {
+    "method": "sklearn.LatentDirichletAllocation online",
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "local_artefacts_dir": "local\\v_sweep\\lda_fits\\pavia-university_V5_uniform_Q32",
+  "generated_at": "2026-05-30T09:01:00Z",
+  "builder": "build_v_sweep_canonical_fit v0.1"
+}

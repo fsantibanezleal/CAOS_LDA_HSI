@@ -47,7 +47,7 @@ from research_core.raw_scenes import (  # noqa: E402
     valid_spectra_mask,
 )
 
-WORDIFICATION_LOCAL = DATA_DIR / "local" / "wordifications" / "V15" / "uniform_Q8"
+WORDIFICATION_LOCAL_ROOT = DATA_DIR / "local" / "wordifications" / "V15"
 
 LABELLED_SCENES = [
     "indian-pines-corrected", "salinas-corrected", "salinas-a-corrected",
@@ -195,7 +195,7 @@ def main() -> int:
             print("  SKIP", flush=True)
             n_skip += 1
             continue
-        out_dir = WORDIFICATION_LOCAL / scene
+        out_dir = WORDIFICATION_LOCAL_ROOT / f"uniform_Q{args.q}" / scene
         out_dir.mkdir(parents=True, exist_ok=True)
         sp.save_npz(out_dir / "doc_term.npz", res["doc_term"])
         with (out_dir / "vocab.json").open("w", encoding="utf-8") as h:

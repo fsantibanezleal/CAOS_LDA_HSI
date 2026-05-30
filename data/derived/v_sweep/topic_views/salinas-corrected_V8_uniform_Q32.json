@@ -28,7 +28,7 @@
     0.056997
   ],
   "perplexity": 3.9098,
-  "fit_seconds": 28.997,
+  "fit_seconds": 31.141,
   "lda_config": {
     "method": "sklearn.LatentDirichletAllocation online",
     "max_iter": 60,
@@ -37,6 +37,6 @@
     "random_state": 42
   },
   "local_artefacts_dir": "local\\v_sweep\\lda_fits\\salinas-corrected_V8_uniform_Q32",
-  "generated_at": "2026-05-30T07:31:47Z",
+  "generated_at": "2026-05-30T09:12:05Z",
   "builder": "build_v_sweep_canonical_fit v0.1"
 }

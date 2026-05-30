@@ -25,6 +25,12 @@ This is "Q=8" only nominally because VQ-VAE doesn't bin by intensity;
 the parameter is repurposed as `K = 4 * Q` codewords. Documented in
 the per-scene metadata so downstream builders can read it correctly.
 
+V13 is structurally Q-insensitive at the recipe-token level — the
+codebook size K affects training but the vocabulary M·K is the only
+knob, and there is no per-pixel intensity bin. To compare V13 at
+different Q values, retrain the codebook with a different K (e.g.
+K=64 for Q=16-equivalent, K=128 for Q=32-equivalent) and re-derive.
+
 Tracks issue #620 (V13 VQ-VAE learned wordification).
 """
 from __future__ import annotations

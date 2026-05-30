@@ -1,0 +1,214 @@
+{
+  "K": 12,
+  "n_classes": 16,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "H_label_marginal_bits": 3.815683,
+  "H_label_given_topic_bits": 3.110193,
+  "mutual_information_bits": 0.705491,
+  "normalised_mi": 0.184892,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 1,
+      "n_docs": 917,
+      "p_topic": 0.326102,
+      "label_distribution": [
+        0.005453,
+        0.004362,
+        0.0,
+        0.017448,
+        0.198473,
+        0.1494,
+        0.0,
+        0.013086,
+        0.014177,
+        0.0,
+        0.001091,
+        0.001091,
+        0.19084,
+        0.239913,
+        0.164667,
+        0.0
+      ],
+      "kl_vs_marginal": 1.137898
+    },
+    {
+      "topic": 2,
+      "n_docs": 370,
+      "p_topic": 0.131579,
+      "label_distribution": [
+        0.002703,
+        0.097297,
+        0.094595,
+        0.089189,
+        0.018919,
+        0.054054,
+        0.002703,
+        0.013514,
+        0.0,
+        0.1,
+        0.091892,
+        0.132432,
+        0.037838,
+        0.0,
+        0.037838,
+        0.227027
+      ],
+      "kl_vs_marginal": 0.672247
+    },
+    {
+      "topic": 3,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 4,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 5,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 6,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 7,
+      "n_docs": 32,
+      "p_topic": 0.01138,
+      "label_distribution": [
+        0.40625,
+        0.0,
+        0.0,
+        0.0,
+        0.0625,
+        0.0,
+        0.0,
+        0.3125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.21875,
+        0.0
+      ],
+      "kl_vs_marginal": 2.811267
+    },
+    {
+      "topic": 8,
+      "n_docs": 6,
+      "p_topic": 0.002134,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.166667,
+        0.5,
+        0.0,
+        0.166667,
+        0.166667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 2.379207
+    },
+    {
+      "topic": 9,
+      "n_docs": 0,
+      "label_distribution": null,
+      "kl_vs_marginal": null
+    },
+    {
+      "topic": 10,
+      "n_docs": 3,
+      "p_topic": 0.001067,
+      "label_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.676021
+    },
+    {
+      "topic": 11,
+      "n_docs": 1484,
+      "p_topic": 0.527738,
+      "label_distribution": [
+        0.018194,
+        0.121294,
+        0.124663,
+        0.115229,
+        0.019542,
+        0.042453,
+        0.01752,
+        0.126011,
+        0.004717,
+        0.122642,
+        0.123989,
+        0.114555,
+        0.010782,
+        0.0,
+        0.032345,
+        0.006065
+      ],
+      "kl_vs_marginal": 0.388404
+    }
+  ],
+  "scene_id": "indian-pines-corrected",
+  "recipe": "V6",
+  "scheme": "uniform",
+  "Q": 16,
+  "generated_at": "2026-05-30T09:14:07Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}

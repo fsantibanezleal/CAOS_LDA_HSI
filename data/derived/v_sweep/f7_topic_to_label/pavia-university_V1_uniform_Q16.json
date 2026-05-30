@@ -1,0 +1,180 @@
+{
+  "K": 9,
+  "n_classes": 9,
+  "classes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "H_label_marginal_bits": 3.169925,
+  "H_label_given_topic_bits": 1.758135,
+  "mutual_information_bits": 1.41179,
+  "normalised_mi": 0.44537,
+  "per_topic": [
+    {
+      "topic": 0,
+      "n_docs": 164,
+      "p_topic": 0.082828,
+      "label_distribution": [
+        0.359756,
+        0.006098,
+        0.371951,
+        0.0,
+        0.0,
+        0.0,
+        0.121951,
+        0.134146,
+        0.006098
+      ],
+      "kl_vs_marginal": 1.259916
+    },
+    {
+      "topic": 1,
+      "n_docs": 62,
+      "p_topic": 0.031313,
+      "label_distribution": [
+        0.467742,
+        0.016129,
+        0.290323,
+        0.0,
+        0.0,
+        0.048387,
+        0.096774,
+        0.064516,
+        0.016129
+      ],
+      "kl_vs_marginal": 1.154515
+    },
+    {
+      "topic": 2,
+      "n_docs": 278,
+      "p_topic": 0.140404,
+      "label_distribution": [
+        0.201439,
+        0.0,
+        0.043165,
+        0.0,
+        0.010791,
+        0.017986,
+        0.561151,
+        0.165468,
+        0.0
+      ],
+      "kl_vs_marginal": 1.436605
+    },
+    {
+      "topic": 3,
+      "n_docs": 1,
+      "p_topic": 0.000505,
+      "label_distribution": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kl_vs_marginal": 3.169925
+    },
+    {
+      "topic": 4,
+      "n_docs": 155,
+      "p_topic": 0.078283,
+      "label_distribution": [
+        0.0,
+        0.419355,
+        0.0,
+        0.012903,
+        0.0,
+        0.535484,
+        0.0,
+        0.032258,
+        0.0
+      ],
+      "kl_vs_marginal": 1.920845
+    },
+    {
+      "topic": 5,
+      "n_docs": 642,
+      "p_topic": 0.324242,
+      "label_distribution": [
+        0.012461,
+        0.23676,
+        0.0,
+        0.339564,
+        0.0,
+        0.172897,
+        0.001558,
+        0.0,
+        0.23676
+      ],
+      "kl_vs_marginal": 1.125449
+    },
+    {
+      "topic": 6,
+      "n_docs": 303,
+      "p_topic": 0.15303,
+      "label_distribution": [
+        0.062706,
+        0.0,
+        0.0,
+        0.0,
+        0.716172,
+        0.0,
+        0.0033,
+        0.0,
+        0.217822
+      ],
+      "kl_vs_marginal": 2.068326
+    },
+    {
+      "topic": 7,
+      "n_docs": 17,
+      "p_topic": 0.008586,
+      "label_distribution": [
+        0.647059,
+        0.058824,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.058824,
+        0.235294,
+        0.0
+      ],
+      "kl_vs_marginal": 1.791506
+    },
+    {
+      "topic": 8,
+      "n_docs": 358,
+      "p_topic": 0.180808,
+      "label_distribution": [
+        0.106145,
+        0.0,
+        0.357542,
+        0.0,
+        0.0,
+        0.050279,
+        0.097765,
+        0.388268,
+        0.0
+      ],
+      "kl_vs_marginal": 1.22113
+    }
+  ],
+  "scene_id": "pavia-university",
+  "recipe": "V1",
+  "scheme": "uniform",
+  "Q": 16,
+  "generated_at": "2026-05-30T09:14:09Z",
+  "builder": "build_v_sweep_f7_topic_to_label v0.1"
+}
