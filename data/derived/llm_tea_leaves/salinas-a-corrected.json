@@ -1,0 +1,208 @@
+{
+  "scene_id": "salinas-a-corrected",
+  "topic_count": 6,
+  "model": "claude-opus-4-7 (1M context, self-judgment, deterministic spectral-region rules; mirror of build_b12_llm_tea_leaves.py)",
+  "lambda_used": "lambda_0.5",
+  "top_n_per_topic": 10,
+  "n_attempted": 6,
+  "n_correct_intrusion": 0,
+  "intrusion_accuracy": 0.0,
+  "per_topic": [
+    {
+      "topic_id": 1,
+      "top_words": [
+        "2376nm",
+        "2386nm",
+        "2428nm",
+        "2397nm",
+        "2448nm",
+        "2469nm",
+        "2500nm",
+        "2407nm",
+        "2438nm",
+        "2490nm"
+      ],
+      "intrusion_candidates": [
+        "2479nm",
+        "2428nm",
+        "2386nm",
+        "2448nm",
+        "2376nm",
+        "2469nm",
+        "2500nm",
+        "2397nm",
+        "2490nm",
+        "2407nm",
+        "2438nm"
+      ],
+      "intruder": "2479nm",
+      "llm_chose": "2376nm",
+      "intrusion_correct": false,
+      "llm_label": "SWIR-2 long (centroid ~2433 nm; spans 2376-2500 nm)"
+    },
+    {
+      "topic_id": 2,
+      "top_words": [
+        "2376nm",
+        "2459nm",
+        "2366nm",
+        "2386nm",
+        "2469nm",
+        "2417nm",
+        "2490nm",
+        "2428nm",
+        "2479nm",
+        "2448nm"
+      ],
+      "intrusion_candidates": [
+        "2490nm",
+        "2376nm",
+        "2459nm",
+        "2500nm",
+        "2428nm",
+        "2479nm",
+        "2386nm",
+        "2469nm",
+        "2417nm",
+        "2448nm",
+        "2366nm"
+      ],
+      "intruder": "2500nm",
+      "llm_chose": "2366nm",
+      "intrusion_correct": false,
+      "llm_label": "SWIR-2 long (centroid ~2431 nm)"
+    },
+    {
+      "topic_id": 3,
+      "top_words": [
+        "2417nm",
+        "2490nm",
+        "2500nm",
+        "2448nm",
+        "2438nm",
+        "2469nm",
+        "2428nm",
+        "2376nm",
+        "2366nm",
+        "2459nm"
+      ],
+      "intrusion_candidates": [
+        "2448nm",
+        "2490nm",
+        "2428nm",
+        "2366nm",
+        "2417nm",
+        "2500nm",
+        "2459nm",
+        "2376nm",
+        "2386nm",
+        "2469nm",
+        "2438nm"
+      ],
+      "intruder": "2386nm",
+      "llm_chose": "2366nm",
+      "intrusion_correct": false,
+      "llm_label": "SWIR-2 long (centroid ~2439 nm; spans 2366-2500 nm)"
+    },
+    {
+      "topic_id": 4,
+      "top_words": [
+        "2459nm",
+        "2490nm",
+        "2386nm",
+        "2407nm",
+        "2479nm",
+        "2397nm",
+        "2376nm",
+        "2500nm",
+        "2448nm",
+        "2438nm"
+      ],
+      "intrusion_candidates": [
+        "2490nm",
+        "2448nm",
+        "2386nm",
+        "2459nm",
+        "2397nm",
+        "2376nm",
+        "2500nm",
+        "2407nm",
+        "2438nm",
+        "2479nm",
+        "2428nm"
+      ],
+      "intruder": "2428nm",
+      "llm_chose": "2376nm",
+      "intrusion_correct": false,
+      "llm_label": "SWIR-2 long (centroid ~2438 nm; spans 2376-2500 nm)"
+    },
+    {
+      "topic_id": 5,
+      "top_words": [
+        "2407nm",
+        "2438nm",
+        "2366nm",
+        "2376nm",
+        "2386nm",
+        "2428nm",
+        "2500nm",
+        "2417nm",
+        "2469nm",
+        "2479nm"
+      ],
+      "intrusion_candidates": [
+        "2397nm",
+        "2386nm",
+        "2438nm",
+        "2500nm",
+        "2407nm",
+        "2469nm",
+        "2376nm",
+        "2479nm",
+        "2428nm",
+        "2366nm",
+        "2417nm"
+      ],
+      "intruder": "2397nm",
+      "llm_chose": "2500nm",
+      "intrusion_correct": false,
+      "llm_label": "SWIR-2 long (centroid ~2426 nm; spans 2366-2500 nm)"
+    },
+    {
+      "topic_id": 6,
+      "top_words": [
+        "2490nm",
+        "2500nm",
+        "2397nm",
+        "2459nm",
+        "2386nm",
+        "2366nm",
+        "2376nm",
+        "2448nm",
+        "2428nm",
+        "2479nm"
+      ],
+      "intrusion_candidates": [
+        "2397nm",
+        "2500nm",
+        "2366nm",
+        "2386nm",
+        "2376nm",
+        "2490nm",
+        "2459nm",
+        "2479nm",
+        "2448nm",
+        "2428nm",
+        "2407nm"
+      ],
+      "intruder": "2407nm",
+      "llm_chose": "2500nm",
+      "intrusion_correct": false,
+      "llm_label": "SWIR-2 long (centroid ~2432 nm; spans 2366-2500 nm)"
+    }
+  ],
+  "framework_axis": "B-12 LLM tea-leaves (Stammbach et al. 2023, EMNLP)",
+  "judge_rule_description": "Word-intrusion: the candidate whose wavelength is farthest from the median wavelength of the candidate set is chosen as the intruder. Label: a 4-6 word region descriptor pulled from a 14-region spectral atlas (VNIR-visible / NIR water / SWIR-1 short / SWIR atmospheric / SWIR Al-OH / SWIR-2 carbonate / etc.) at the topic's median wavelength. Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_b12_llm_tea_leaves.py.",
+  "generated_at": "2026-05-30T04:39:07Z",
+  "builder_version": "build_b12_self_judge v0.1"
+}
