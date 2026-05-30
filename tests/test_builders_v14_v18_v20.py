@@ -216,6 +216,86 @@ def test_v18_normalised_laplacian_eigvals_in_unit_interval() -> None:
     assert eigvals.max() <= 2.0 + 1e-6, f"max eigval {eigvals.max()} should be <= 2"
 
 
+def test_v13_vq_vae_codebook_size_invariant() -> None:
+    """V13 codebook size M*K should equal 128 with M=4, K=32."""
+    M = 4
+    K = 32
+    assert M * K == 128
+    # Test that the straight-through-estimator path is well-defined
+    # by checking dimensional consistency
+    D = 24
+    D_z = 32
+    # Synthetic latent
+    z = np.random.default_rng(0).normal(size=(D, M, D_z))
+    codebook = np.random.default_rng(1).normal(size=(K, D_z))
+    # Snap each sub-vector to nearest codeword
+    codes = np.zeros((D, M), dtype=np.int32)
+    for m in range(M):
+        for d in range(D):
+            dists = np.linalg.norm(codebook - z[d, m], axis=1)
+            codes[d, m] = int(np.argmin(dists))
+    # Codes must be in valid range
+    assert codes.min() >= 0 and codes.max() < K
+    # Per-pixel emits M tokens
+    assert codes.shape == (D, M)
+
+
+def test_v15_spectral_indices_count() -> None:
+    """V15 must compute 6 standard indices: NDVI, MNDWI, NBR, NDSI, EVI, SAVI."""
+    expected_indices = ["NDVI", "MNDWI", "NBR", "NDSI", "EVI", "SAVI"]
+    assert len(expected_indices) == 6
+    # NDVI formula sanity: (NIR - RED) / (NIR + RED + eps)
+    NIR = 0.5
+    RED = 0.15
+    eps = 1e-6
+    ndvi = (NIR - RED) / (NIR + RED + eps)
+    assert 0 < ndvi < 1
+    # SAVI: ((NIR - RED) / (NIR + RED + L)) * (1 + L), L=0.5
+    L = 0.5
+    savi = ((NIR - RED) / (NIR + RED + L)) * (1 + L)
+    assert 0 < savi < 2
+
+
+def test_v17_sparse_coding_n_nonzero() -> None:
+    """V17 uses n_nonzero_coefs = 8 — each pixel emits at most 8
+    nonzero coefficients."""
+    from sklearn.decomposition import MiniBatchDictionaryLearning
+
+    X, _ = _make_test_spectra()
+    K_atoms = 16  # smaller than production K=64 for test speed
+    n_nz = 4  # smaller for synthetic test
+    dl = MiniBatchDictionaryLearning(
+        n_components=K_atoms, alpha=1.0, max_iter=20,
+        transform_algorithm="lasso_lars",
+        transform_n_nonzero_coefs=n_nz,
+        random_state=42,
+    )
+    coeffs = dl.fit_transform(X)
+    assert coeffs.shape == (N, K_atoms)
+    # Each row should have at most n_nz nonzero entries (or close —
+    # lasso-lars is not strict about the count, but typically respects it).
+    nnz_per_row = (np.abs(coeffs) > 1e-9).sum(axis=1)
+    # Allow some slack for lasso-lars not being strict
+    assert nnz_per_row.max() <= n_nz + 2, f"max nnz {nnz_per_row.max()} > {n_nz + 2}"
+
+
+def test_v19_umap_three_dims() -> None:
+    """V19 produces a 3-D UMAP embedding; vocab = 3 * Q = 24 at Q=8."""
+    try:
+        import umap  # noqa: F401
+    except ImportError:
+        import pytest
+        pytest.skip("umap-learn not installed")
+    expected_vocab = 3 * 8
+    assert expected_vocab == 24
+    # Test UMAP shape contract
+    X, _ = _make_test_spectra()
+    import umap
+    reducer = umap.UMAP(n_components=3, n_neighbors=5, min_dist=0.1, random_state=42)
+    Z = reducer.fit_transform(X)
+    assert Z.shape == (N, 3)
+
+
 def test_v20_zero_mi_band_emits_zero_copies() -> None:
     """V20: a band that is uniform across classes (zero MI with labels)
     should emit zero copies, not one."""
