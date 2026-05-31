@@ -60,7 +60,7 @@ LABELLED_SCENES = [
     "indian-pines-corrected", "salinas-corrected", "salinas-a-corrected",
     "pavia-university", "kennedy-space-center", "botswana",
 ]
-RECIPES = [f"V{i}" for i in range(1, 14)]
+RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 N_DOCS = 20
 N_TOP_TOKENS = 10
 RANDOM_STATE = 42

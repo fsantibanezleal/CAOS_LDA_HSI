@@ -1,0 +1,120 @@
+{
+  "scene_id": "salinas-corrected",
+  "recipe": "V15",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 48,
+  "n_docs": 20,
+  "n_yes": 0,
+  "n_no": 20,
+  "n_ambiguous": 0,
+  "f15_alignment": 0.0,
+  "decisions": [
+    {
+      "doc_idx": 2710,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2521,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 706,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 3426,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2955,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2674,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 450,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 312,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2292,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1805,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1517,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 301,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1585,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 3010,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 330,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2584,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2763,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1537,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 2446,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1848,
+      "topic": 2,
+      "verdict": "NO"
+    }
+  ],
+  "model": "claude-opus-4-7 (1M context, self-judgment, deterministic rule)",
+  "judge_method": "self_judgment_deterministic_rule",
+  "judge_rule_description": "YES if doc top-10 shares >=3 elements with topic top-10, OR doc top-1 is in topic top-5. NO if doc top-3 shares 0 elements with topic top-10. AMBIGUOUS otherwise. Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_v_sweep_f15_llm_alignment.py.",
+  "generated_at": "2026-05-31T13:11:48Z",
+  "builder": "build_v_sweep_f15_self_judge v0.1"
+}

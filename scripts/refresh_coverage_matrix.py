@@ -30,12 +30,17 @@ AXES = [
     ("F-7",     "f7_topic_to_label",  "normalised_mi",          False),
     ("F-13",    "f13_shap",           None,                     False),
     ("F-14",    "f14_repetitiveness", "mean_pairwise_jaccard",  True),
+    ("F-15",    "f15_llm_alignment",  "f15_alignment",          False),
+    ("F-17",    "f17_cross_scene",    "transfer_nmi",           False),
     ("F-18",    "f18_reliability",    "frac_above_0.7",         False),
     ("F-22",    "f22_counterfactual", "counterfactual_l1_median", False),
     ("HDP",     "hdp_backbone",       "f2_c_v",                 False),
     ("ProdLDA", "prodlda_backbone",   "f2_c_v",                 False),
     ("ETM",     "etm_backbone",       "f2_c_v",                 False),
 ]
+
+# Q values tracked for the Q-extension axes
+Q_VALUES = [8, 16, 32]
 
 
 def load_value(axis_dir: str, scene: str, recipe: str, key: str | None) -> float | None:
@@ -63,6 +68,7 @@ def load_value(axis_dir: str, scene: str, recipe: str, key: str | None) -> float
 
 def main() -> int:
     matrix: list[dict] = []
+    q_matrix: dict[int, list[dict]] = {q: [] for q in Q_VALUES}
     for axis, d, key, lib in AXES:
         row: dict = {
             "axis": axis,
@@ -99,10 +105,36 @@ def main() -> int:
             row["value_max"] = round(max(vals), 4)
         matrix.append(row)
 
+        # Q=16/32 coverage tracking — handle backbone alternate path
+        backbone_alt = None
+        if axis in ("HDP", "ProdLDA", "ETM"):
+            backbone_alt = ("backbones_f7", axis.lower())
+        for q in (16, 32):
+            q_row = {"axis": axis, "Q": q, "have": 0, "cells_per_recipe": {}}
+            for r in RECIPES:
+                count = 0
+                for sc in SCENES:
+                    fq = SRC / d / f"{sc}_{r}_uniform_Q{q}.json"
+                    if not fq.exists() and backbone_alt:
+                        alt_dir, bb_lower = backbone_alt
+                        fq = SRC / alt_dir / f"{bb_lower}_{sc}_{r}_uniform_Q{q}.json"
+                    if fq.exists():
+                        count += 1
+                        q_row["have"] += 1
+                if count > 0:
+                    q_row["cells_per_recipe"][r] = count
+            q_row["target"] = len(SCENES) * len(RECIPES)
+            q_row["pct"] = round(100 * q_row["have"] / q_row["target"], 1)
+            q_matrix[q].append(q_row)
+
     out = {
         "scenes": SCENES,
         "recipes": RECIPES,
         "axes": matrix,
+        "q_extension": {
+            "Q=16": q_matrix[16],
+            "Q=32": q_matrix[32],
+        },
         "generated_at": datetime.now(timezone.utc)
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
