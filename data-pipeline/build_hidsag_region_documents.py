@@ -33,6 +33,7 @@ import numpy as np
 # c285: route through research_core.paths (continues #444 P1 3.2 sweep).
 from research_core.paths import CORE_DERIVED_DIR
 from research_core.paths import RAW_DIR as _RC_RAW_DIR
+from research_core.paths import ROOT as _RC_ROOT
 
 
 RAW_DIR = _RC_RAW_DIR / "hidsag"
@@ -270,7 +271,9 @@ def main() -> None:
                 "source": "Patch-level HIDSAG region documents derived from local raw ZIP archives",
                 "generated_at": str(date.today()),
                 "patch_grid": {"rows": PATCH_GRID_ROWS, "cols": PATCH_GRID_COLS},
-                "npz_path": str(OUTPUT_NPZ_PATH),
+                # Repo-relative path only — never leak an absolute local
+                # filesystem path into a published data artefact (audit 2026-05-31).
+                "npz_path": OUTPUT_NPZ_PATH.relative_to(_RC_ROOT).as_posix(),
                 "subsets": subset_summaries,
                 # Closes #444 P1 item 3.1 (builder metadata envelope).
                 "framework_axis": "documentation: HIDSAG patch-level region documents",

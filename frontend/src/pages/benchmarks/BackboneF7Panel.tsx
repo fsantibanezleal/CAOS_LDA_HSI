@@ -156,9 +156,11 @@ export function BackboneF7Panel() {
         </table>
       </div>
       <p className="mt-2 text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
-        Recipes ordered by mean F-7 NMI across the four backbones. V20 (MI-weighted) is
-        currently the only recipe in top-3 under all four backbones — the most cross-prior
-        portable label-aligned recipe in the sweep.
+        Recipes ordered by mean F-7 NMI across the four backbones. V8 (NFINDR
+        endmember-fraction) leads the cross-backbone mean (0.431 at Q=8). V20
+        (MI-weighted) is top-3 under LDA and ETM but slips to 4th under ProdLDA and 6th
+        under HDP — no single recipe is top-3 under all four backbones, which is itself the
+        finding: cross-prior portability is recipe-specific, not universal.
       </p>
     </Section>
   );

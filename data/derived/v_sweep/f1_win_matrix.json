@@ -5,73 +5,73 @@
     "V20"
   ],
   "scenes": [
-    "pavia-university",
-    "salinas-a-corrected"
+    "indian-pines-corrected",
+    "salinas-corrected"
   ],
   "by_method_recipe_scene": {
     "raw_logistic": {
       "V20": {
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.804767
+        "indian-pines-corrected": 0.833159,
+        "salinas-corrected": 0.950961
       },
       "V8": {
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.804767
+        "indian-pines-corrected": 0.833159,
+        "salinas-corrected": 0.950961
       },
       "V2": {
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.804767
+        "indian-pines-corrected": 0.833159,
+        "salinas-corrected": 0.950961
       }
     },
     "topic_routed_soft": {
       "V20": {
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.812297
+        "indian-pines-corrected": 0.848004,
+        "salinas-corrected": 0.951253
       },
       "V8": {
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.816865
+        "indian-pines-corrected": 0.852518,
+        "salinas-corrected": 0.950706
       },
       "V2": {
-        "salinas-a-corrected": 0.996969,
-        "pavia-university": 0.813597
+        "indian-pines-corrected": 0.858317,
+        "salinas-corrected": 0.953951
       }
     }
   },
   "per_scene_winner_topic_routed_soft": {
-    "pavia-university": {
-      "best": "V8",
-      "best_score": 0.816865,
+    "indian-pines-corrected": {
+      "best": "V2",
+      "best_score": 0.858317,
       "ranking": [
         {
-          "recipe": "V8",
-          "score": 0.816865
+          "recipe": "V2",
+          "score": 0.858317
         },
         {
-          "recipe": "V2",
-          "score": 0.813597
+          "recipe": "V8",
+          "score": 0.852518
         },
         {
           "recipe": "V20",
-          "score": 0.812297
+          "score": 0.848004
         }
       ]
     },
-    "salinas-a-corrected": {
+    "salinas-corrected": {
       "best": "V2",
-      "best_score": 0.996969,
+      "best_score": 0.953951,
       "ranking": [
         {
           "recipe": "V2",
-          "score": 0.996969
-        },
-        {
-          "recipe": "V8",
-          "score": 0.996969
+          "score": 0.953951
         },
         {
           "recipe": "V20",
-          "score": 0.996969
+          "score": 0.951253
+        },
+        {
+          "recipe": "V8",
+          "score": 0.950706
         }
       ]
     }
@@ -79,38 +79,38 @@
   "per_recipe_mean": {
     "raw_logistic": {
       "V2": {
-        "mean": 0.900868,
-        "std": 0.096101,
+        "mean": 0.89206,
+        "std": 0.058901,
         "n_scenes": 2
       },
       "V8": {
-        "mean": 0.900868,
-        "std": 0.096101,
+        "mean": 0.89206,
+        "std": 0.058901,
         "n_scenes": 2
       },
       "V20": {
-        "mean": 0.900868,
-        "std": 0.096101,
+        "mean": 0.89206,
+        "std": 0.058901,
         "n_scenes": 2
       }
     },
     "topic_routed_soft": {
       "V2": {
-        "mean": 0.905283,
-        "std": 0.091686,
+        "mean": 0.906134,
+        "std": 0.047817,
         "n_scenes": 2
       },
       "V8": {
-        "mean": 0.906917,
-        "std": 0.090052,
+        "mean": 0.901612,
+        "std": 0.049094,
         "n_scenes": 2
       },
       "V20": {
-        "mean": 0.904633,
-        "std": 0.092336,
+        "mean": 0.899628,
+        "std": 0.051625,
         "n_scenes": 2
       }
     }
   },
-  "generated_at": "2026-05-30T15:36:39Z"
+  "generated_at": "2026-05-30T16:58:16Z"
 }
