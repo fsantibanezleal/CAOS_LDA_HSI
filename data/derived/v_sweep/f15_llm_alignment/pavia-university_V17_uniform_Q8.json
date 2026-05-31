@@ -1,0 +1,120 @@
+{
+  "scene_id": "pavia-university",
+  "recipe": "V17",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "V": 512,
+  "n_docs": 20,
+  "n_yes": 7,
+  "n_no": 8,
+  "n_ambiguous": 5,
+  "f15_alignment": 0.466667,
+  "decisions": [
+    {
+      "doc_idx": 1518,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1417,
+      "topic": 0,
+      "verdict": "AMBIGUOUS"
+    },
+    {
+      "doc_idx": 396,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1923,
+      "topic": 1,
+      "verdict": "AMBIGUOUS"
+    },
+    {
+      "doc_idx": 1661,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1502,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 253,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 175,
+      "topic": 1,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1284,
+      "topic": 2,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1014,
+      "topic": 1,
+      "verdict": "AMBIGUOUS"
+    },
+    {
+      "doc_idx": 850,
+      "topic": 2,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 169,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 891,
+      "topic": 1,
+      "verdict": "AMBIGUOUS"
+    },
+    {
+      "doc_idx": 1688,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 185,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1451,
+      "topic": 0,
+      "verdict": "NO"
+    },
+    {
+      "doc_idx": 1553,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 861,
+      "topic": 1,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1372,
+      "topic": 0,
+      "verdict": "YES"
+    },
+    {
+      "doc_idx": 1037,
+      "topic": 1,
+      "verdict": "AMBIGUOUS"
+    }
+  ],
+  "model": "claude-opus-4-7 (1M context, self-judgment, deterministic rule)",
+  "judge_method": "self_judgment_deterministic_rule",
+  "judge_rule_description": "YES if doc top-10 shares >=3 elements with topic top-10, OR doc top-1 is in topic top-5. NO if doc top-3 shares 0 elements with topic top-10. AMBIGUOUS otherwise. Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_v_sweep_f15_llm_alignment.py.",
+  "generated_at": "2026-05-31T13:11:48Z",
+  "builder": "build_v_sweep_f15_self_judge v0.1"
+}
