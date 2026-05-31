@@ -798,12 +798,14 @@ function V20MechanismCard() {
         className="mt-3 text-[12.5px]"
         style={{ color: "var(--color-fg-subtle)" }}
       >
-        <strong>Empirical signature.</strong> V20 is the only recipe in
-        the sweep with a triple-axis win on a single labelled scene
-        (Indian Pines, F-1 = 0.858, F-2 c<sub>v</sub> = 0.88, F-7 NMI =
-        0.44). The mechanism: amplifying high-MI bands sharpens the LDA
-        topic-word likelihood, while zero-copy bands collapse out of
-        the document, reducing topic-mass dilution.
+        <strong>Empirical signature.</strong> On Indian Pines V20 wins
+        F-2 c<sub>v</sub> (0.88) and F-7 NMI (0.44) together; F-1
+        macro-F1 is a non-discriminating tie across recipes (~0.86, V2
+        nominally highest). Across the LDA Q-sweep V20's F-7 ranking
+        inverts from a 0.014 deficit vs V12 at Q=8 to a 0.030 robust
+        lead at Q=32. The mechanism: amplifying high-MI bands sharpens
+        the LDA topic-word likelihood, while zero-copy bands collapse
+        out of the document, reducing topic-mass dilution.
       </p>
     </MechanismShell>
   );
