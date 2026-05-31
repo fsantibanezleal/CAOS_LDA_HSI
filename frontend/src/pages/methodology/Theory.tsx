@@ -531,10 +531,10 @@ function WordificationFlowSVG() {
           per-spectrum,
         </text>
         <text x="230" y="132" textAnchor="middle" opacity="0.85">
-          per-band o
+          per-band or
         </text>
         <text x="230" y="149" textAnchor="middle" opacity="0.85">
-          reflectancia
+          reflectance
         </text>
 
         <rect
