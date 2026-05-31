@@ -261,9 +261,9 @@ export default function MethodologyRepresentations() {
               </tr>
               <tr>
                 <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V3</td>
-                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>concat trigram</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>joint (band, bin)</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
-                  Token = <Equation tex="(\mathrm{bin}(x_{b-1}), \mathrm{bin}(x_b), \mathrm{bin}(x_{b+1}))" /> — captures local spectral shape.
+                  Token = <Equation tex="(b, q_b(x))" /> — one token per band naming its quantised bin (vocabulary <Equation tex="B \cdot Q" />).
                 </td>
               </tr>
               <tr>
@@ -308,7 +308,7 @@ export default function MethodologyRepresentations() {
                 <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V9</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>region-token (spatial)</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
-                  Aggregate pixels within a SLIC-500 superpixel; emit V1 tokens on the region-mean spectrum.
+                  Felzenszwalb spatial pre-segmentation; each pixel emits one token (region&nbsp;id, SAM-distance-to-region-mean bin).
                 </td>
               </tr>
               <tr>
@@ -649,7 +649,7 @@ function MethodSubsection({
 
 function RecipeGridSVG() {
   const RECIPES = [
-    "V1 band-frequency", "V2 intensity-as-word", "V3 concat-spectra", "V4 derivative-bin",
+    "V1 band-frequency", "V2 intensity-as-word", "V3 joint band-bin", "V4 derivative-bin",
     "V5 2nd-derivative", "V6 wavelet", "V7 absorption-triplet", "V8 endmember-fraction",
     "V9 region-token", "V10 band-group", "V11 codebook-VQ", "V12 GMM-token",
     "V13 VQ-VAE", "V14 CWT-Morlet", "V15 spectral indices", "V16 foundation (scaffold)",

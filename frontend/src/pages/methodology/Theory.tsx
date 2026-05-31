@@ -110,10 +110,12 @@ export default function MethodologyTheory() {
         </Figure>
 
         <p>
-          The project ships twelve recipes (V1 wavelength-as-word to V12 GMM
-          token), three quantisation schemes (uniform, quantile, Lloyd-Max) and
-          three levels <em>Q</em> ∈ {`{8, 16, 32}`}. Each combination produces a
-          distinct corpus and therefore a distinct LDA solution.
+          The project ships nineteen wordification recipes (V1 band-frequency
+          through V20 MI-weighted bands; V16 is a scaffolded foundation-model
+          slot). The full sweep runs the uniform scheme at <em>Q</em> = 8, with
+          a Q-sensitivity spot-check at <em>Q</em> ∈ {`{8, 16, 32}`} on the top
+          contenders. Each (recipe, Q) combination produces a distinct corpus
+          and therefore a distinct LDA solution.
         </p>
       </Section>
 
