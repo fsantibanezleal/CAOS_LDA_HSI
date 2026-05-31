@@ -32,6 +32,7 @@ as the API builder).
 """
 from __future__ import annotations
 
+import argparse
 import json
 import random
 import re
@@ -47,6 +48,7 @@ from research_core.paths import DERIVED_DIR  # noqa: E402
 
 OUTPUT_DIR = DERIVED_DIR / "llm_tea_leaves"
 TOPIC_VIEWS_DIR = DERIVED_DIR / "topic_views"
+SWEEP_TOPIC_VIEWS_DIR = DERIVED_DIR / "v_sweep" / "topic_views"
 LABELLED_SCENES = [
     "indian-pines-corrected",
     "salinas-corrected",
@@ -206,12 +208,15 @@ def judge_label(top_words_weighted: list[tuple[str, float]]) -> str:
     return f"{label} (centroid ~{int(centroid)} nm)"
 
 
-def evaluate_scene(scene_id: str) -> dict | None:
-    src = TOPIC_VIEWS_DIR / f"{scene_id}.json"
+def evaluate_scene(scene_id: str, recipe: str = "V1", q: int = 8) -> dict | None:
+    if recipe == "V1":
+        src = TOPIC_VIEWS_DIR / f"{scene_id}.json"
+    else:
+        src = SWEEP_TOPIC_VIEWS_DIR / f"{scene_id}_{recipe}_uniform_Q{q}.json"
     if not src.is_file():
         return None
     payload = json.loads(src.read_text(encoding="utf-8"))
-    topic_count = int(payload.get("topic_count", 0))
+    topic_count = int(payload.get("topic_count", 0) or payload.get("K", 0))
     if topic_count == 0:
         return None
 
@@ -257,6 +262,8 @@ def evaluate_scene(scene_id: str) -> dict | None:
 
     return {
         "scene_id": scene_id,
+        "recipe": recipe,
+        "Q": q,
         "topic_count": topic_count,
         "model": JUDGE_MODEL,
         "lambda_used": LAMBDA,
@@ -284,16 +291,27 @@ def evaluate_scene(scene_id: str) -> dict | None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="B-12 word-intrusion self-judge")
+    parser.add_argument("--recipe", default="V1",
+                        help="V1 reads from data/derived/topic_views/{scene}.json (canonical); "
+                             "any other reads from data/derived/v_sweep/topic_views/{scene}_{V}_uniform_Q{Q}.json")
+    parser.add_argument("--q", type=int, default=8, choices=[8, 16, 32])
+    args = parser.parse_args()
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     ok = skipped = 0
     for scene_id in LABELLED_SCENES:
-        print(f"[b12_self] {scene_id} ...", flush=True)
-        result = evaluate_scene(scene_id)
+        print(f"[b12_self] {scene_id} {args.recipe} Q={args.q} ...", flush=True)
+        result = evaluate_scene(scene_id, args.recipe, args.q)
         if result is None:
             skipped += 1
             print(f"  skipped — no topic_views payload", flush=True)
             continue
-        out = OUTPUT_DIR / f"{scene_id}.json"
+        # When recipe != V1, use suffix in output filename to avoid clobbering
+        if args.recipe == "V1":
+            out = OUTPUT_DIR / f"{scene_id}.json"
+        else:
+            out = OUTPUT_DIR / f"{scene_id}_{args.recipe}_uniform_Q{args.q}.json"
         with out.open("w", encoding="utf-8") as h:
             json.dump(result, h, indent=2)
         ok += 1
