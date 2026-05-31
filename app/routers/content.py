@@ -1153,11 +1153,16 @@ def v_sweep_coverage() -> dict:
 
 
 @router.get("/v-sweep/backbones-f7")
-def v_sweep_backbones_f7() -> dict:
+def v_sweep_backbones_f7(q: int = 8) -> dict:
     """F-7 NMI under each non-LDA backbone (HDP / ProdLDA / ETM) for
-    every (recipe, scene) pair currently on disk. The LDA F-7 comes
-    from the existing f7_topic_to_label endpoint and is included here
-    for cross-backbone comparison."""
+    every (recipe, scene) pair currently on disk at the requested
+    quantisation level Q.
+
+    Defaults to Q=8 (the full sweep). Q=16 returns the V20/V8/V2
+    cross-axis composite sweep for the 4 backbones; Q=32 returns
+    whatever cells are present (currently LDA only)."""
+    if q not in (8, 16, 32):
+        raise HTTPException(status_code=400, detail="q must be 8, 16, or 32")
     s = get_settings()
     out_dir = s.v_sweep_dir / "backbones_f7"
     if not out_dir.is_dir():
@@ -1166,11 +1171,12 @@ def v_sweep_backbones_f7() -> dict:
     by_backbone: dict[str, dict[str, dict[str, float]]] = defaultdict(
         lambda: defaultdict(dict)
     )
+    q_suffix = f"_uniform_Q{q}"
     # LDA F-7 comes from f7_topic_to_label
     lda_dir = s.v_sweep_dir / "f7_topic_to_label"
     if lda_dir.is_dir():
-        for p in lda_dir.glob("*_uniform_Q8.json"):
-            stem = p.stem.replace("_uniform_Q8", "")
+        for p in lda_dir.glob(f"*{q_suffix}.json"):
+            stem = p.stem.replace(q_suffix, "")
             # split scene_recipe by trailing _V<digit>
             import re
             m = re.match(r"^(.+)_(V\d+)$", stem)
@@ -1182,12 +1188,12 @@ def v_sweep_backbones_f7() -> dict:
             if nmi is not None:
                 by_backbone["LDA"][scene][recipe] = float(nmi)
     # HDP / ProdLDA / ETM from backbones_f7 dir
-    for p in out_dir.glob("*_uniform_Q8.json"):
+    for p in out_dir.glob(f"*{q_suffix}.json"):
         parts = p.stem.split("_", 1)
         if len(parts) != 2:
             continue
         backbone = parts[0].upper().replace("PRODLDA", "ProdLDA")
-        rest = parts[1].replace("_uniform_Q8", "")
+        rest = parts[1].replace(q_suffix, "")
         import re
         m = re.match(r"^(.+)_(V\d+)$", rest)
         if not m:
@@ -1216,4 +1222,72 @@ def v_sweep_backbones_f7() -> dict:
             "recipe_means": recipe_means,
             "n_cells": sum(len(rd) for rd in scene_dict.values()),
         })
-    return {"backbones": summary}
+    return {"backbones": summary, "q": q}
+
+
+@router.get("/v-sweep/q-trajectory")
+def v_sweep_q_trajectory(
+    recipe: str,
+    axis: str = "F-7",
+) -> dict:
+    """Per-recipe Q-trajectory across Q={8, 16, 32} for the requested
+    evaluation axis. Returns mean across scenes plus per-scene cells.
+
+    Axis options:
+    - F-1: per-fold mean macro-F1 (topic_routed_soft)
+    - F-2: c_v coherence
+    - F-7: topic-to-label NMI
+    - F-14: mean_pairwise_jaccard (lower=better)
+    - F-18: mean_matched_cosine
+    - F-22: counterfactual_l1_median (higher=more robust)
+    """
+    axis_map = {
+        "F-1":  ("f1_per_fold",        "topic_routed_soft_per_fold",  False, "list_mean"),
+        "F-2":  ("f2_coherence",       "c_v",                         False, "scalar"),
+        "F-7":  ("f7_topic_to_label",  "normalised_mi",               False, "scalar"),
+        "F-14": ("f14_repetitiveness", "mean_pairwise_jaccard",       True,  "scalar"),
+        "F-18": ("f18_reliability",    "mean_matched_cosine",         False, "scalar"),
+        "F-22": ("f22_counterfactual", "counterfactual_l1_median",    False, "scalar"),
+    }
+    if axis not in axis_map:
+        raise HTTPException(status_code=400, detail=f"axis must be one of {list(axis_map)}")
+    sub_dir, key, lower_is_better, value_kind = axis_map[axis]
+
+    s = get_settings()
+    scenes = [
+        "indian-pines-corrected", "salinas-corrected", "salinas-a-corrected",
+        "pavia-university", "kennedy-space-center", "botswana",
+    ]
+    trajectory: dict[str, dict] = {}
+    for q in (8, 16, 32):
+        per_scene = {}
+        for sc in scenes:
+            p = s.v_sweep_dir / sub_dir / f"{sc}_{recipe}_uniform_Q{q}.json"
+            if not p.is_file():
+                continue
+            d = _json.loads(p.read_text(encoding="utf-8"))
+            v = d.get(key)
+            if v is None:
+                continue
+            if value_kind == "list_mean":
+                if isinstance(v, list) and v:
+                    per_scene[sc] = float(sum(v) / len(v))
+            else:
+                try:
+                    per_scene[sc] = float(v)
+                except (TypeError, ValueError):
+                    continue
+        if per_scene:
+            mean = sum(per_scene.values()) / len(per_scene)
+            trajectory[f"Q={q}"] = {
+                "per_scene": {sc: round(v, 6) for sc, v in per_scene.items()},
+                "mean": round(mean, 6),
+                "n_scenes": len(per_scene),
+            }
+
+    return {
+        "recipe": recipe,
+        "axis": axis,
+        "lower_is_better": lower_is_better,
+        "trajectory": trajectory,
+    }
