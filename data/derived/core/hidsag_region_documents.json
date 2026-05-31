@@ -5,7 +5,7 @@
     "rows": 3,
     "cols": 3
   },
-  "npz_path": "D:\\_Repos\\_Web_Projects\\CAOS_LDA_HSI\\data\\derived\\core\\hidsag_region_documents.npz",
+  "npz_path": "data/derived/core/hidsag_region_documents.npz",
   "subsets": [
     {
       "subset_code": "GEOCHEM",
