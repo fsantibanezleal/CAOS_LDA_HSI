@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
+import { ArrowRight } from "lucide-react";
 
 import { Equation } from "@/components/Equation";
 import { Figure } from "@/components/Figure";
@@ -188,6 +190,27 @@ export default function MethodologyRepresentations() {
         <p className="mb-3 text-[14px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
           {t("pages:methodology_representations.recipes_lead")}
         </p>
+
+        <div
+          className="mb-4 rounded-lg border p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+          style={{
+            borderColor: "var(--color-accent)",
+            backgroundColor: "var(--color-accent-soft)",
+          }}
+        >
+          <p className="text-[13px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+            {t("pages:methodology_representations.recipes_deepdive_lead")}
+          </p>
+          <Link
+            to="/workspace/methods"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-semibold"
+            style={{ backgroundColor: "var(--color-accent)", color: "var(--color-bg)" }}
+          >
+            {t("pages:methodology_representations.recipes_deepdive_cta")}
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+
         <h3
           className="text-[13px] uppercase tracking-widest font-semibold mt-2 mb-3"
           style={{ color: "var(--color-fg-faint)" }}
@@ -261,9 +284,9 @@ export default function MethodologyRepresentations() {
               </tr>
               <tr>
                 <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V3</td>
-                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>concat trigram</td>
+                <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>joint (band, bin)</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
-                  Token = <Equation tex="(\mathrm{bin}(x_{b-1}), \mathrm{bin}(x_b), \mathrm{bin}(x_{b+1}))" /> — captures local spectral shape.
+                  Token = <Equation tex="(b, q_b(x))" /> — one token per band naming its quantised bin (vocabulary <Equation tex="B \cdot Q" />).
                 </td>
               </tr>
               <tr>
@@ -308,7 +331,7 @@ export default function MethodologyRepresentations() {
                 <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V9</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>region-token (spatial)</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
-                  Aggregate pixels within a SLIC-500 superpixel; emit V1 tokens on the region-mean spectrum.
+                  Felzenszwalb spatial pre-segmentation; each pixel emits one token (region&nbsp;id, SAM-distance-to-region-mean bin).
                 </td>
               </tr>
               <tr>
@@ -649,7 +672,7 @@ function MethodSubsection({
 
 function RecipeGridSVG() {
   const RECIPES = [
-    "V1 band-frequency", "V2 intensity-as-word", "V3 concat-spectra", "V4 derivative-bin",
+    "V1 band-frequency", "V2 intensity-as-word", "V3 joint band-bin", "V4 derivative-bin",
     "V5 2nd-derivative", "V6 wavelet", "V7 absorption-triplet", "V8 endmember-fraction",
     "V9 region-token", "V10 band-group", "V11 codebook-VQ", "V12 GMM-token",
     "V13 VQ-VAE", "V14 CWT-Morlet", "V15 spectral indices", "V16 foundation (scaffold)",
@@ -798,12 +821,14 @@ function V20MechanismCard() {
         className="mt-3 text-[12.5px]"
         style={{ color: "var(--color-fg-subtle)" }}
       >
-        <strong>Empirical signature.</strong> V20 is the only recipe in
-        the sweep with a triple-axis win on a single labelled scene
-        (Indian Pines, F-1 = 0.858, F-2 c<sub>v</sub> = 0.88, F-7 NMI =
-        0.44). The mechanism: amplifying high-MI bands sharpens the LDA
-        topic-word likelihood, while zero-copy bands collapse out of
-        the document, reducing topic-mass dilution.
+        <strong>Empirical signature.</strong> On Indian Pines V20 wins
+        F-2 c<sub>v</sub> (0.88) and F-7 NMI (0.44) together; F-1
+        macro-F1 is a non-discriminating tie across recipes (~0.86, V2
+        nominally highest). Across the LDA Q-sweep V20's F-7 ranking
+        inverts from a 0.014 deficit vs V12 at Q=8 to a 0.030 robust
+        lead at Q=32. The mechanism: amplifying high-MI bands sharpens
+        the LDA topic-word likelihood, while zero-copy bands collapse
+        out of the document, reducing topic-mass dilution.
       </p>
     </MechanismShell>
   );

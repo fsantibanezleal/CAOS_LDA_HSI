@@ -201,3 +201,66 @@ export function vSweepMethodReport(recipe: string, scheme = "uniform", q = 8) {
     `/api/v-sweep/methods/${encodeURIComponent(recipe)}?${params.toString()}`,
   );
 }
+
+// ---------------------------------------------------------------------------
+// Q-trajectory — how refining quantisation Q∈{8,16,32} moves a single
+// recipe's score on one evaluation axis. Backed by GET /v-sweep/q-trajectory.
+// Each Q level carries the per-scene cells plus the mean across the scenes
+// that have a shard at that Q. `lower_is_better` flips the winner direction
+// (only F-14 repetitiveness in the surfaced axis set).
+// ---------------------------------------------------------------------------
+
+/** Evaluation axes the q-trajectory endpoint accepts. */
+export const Q_TRAJECTORY_AXES = ["F-1", "F-2", "F-7", "F-14", "F-18", "F-22"] as const;
+export type QTrajectoryAxis = (typeof Q_TRAJECTORY_AXES)[number];
+
+export type VSweepQTrajectoryLevel = {
+  /** Mean of `per_scene` across the scenes present at this Q level. */
+  mean: number;
+  /** Number of scenes contributing to `mean`. */
+  n_scenes: number;
+  /** scene_id → axis value at this Q level. */
+  per_scene: Record<string, number>;
+};
+
+export type VSweepQTrajectory = {
+  recipe: string;
+  axis: string;
+  lower_is_better: boolean;
+  /** Keyed "Q=8" | "Q=16" | "Q=32"; a key is absent if no shard exists. */
+  trajectory: Record<string, VSweepQTrajectoryLevel>;
+};
+
+export function vSweepQTrajectory(recipe: string, axis: QTrajectoryAxis) {
+  const params = new URLSearchParams({ recipe, axis });
+  return request<VSweepQTrajectory>(
+    `/api/v-sweep/q-trajectory?${params.toString()}`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Backbones F-7 — topic-to-label NMI under each non-LDA backbone (HDP /
+// ProdLDA / ETM) plus LDA, for every (recipe, scene) cell on disk at the
+// requested quantisation level. Backed by GET /v-sweep/backbones-f7.
+// ---------------------------------------------------------------------------
+
+export type VSweepBackboneF7 = {
+  backbone: string;
+  /** scene_id → recipe → NMI. */
+  cells: Record<string, Record<string, number>>;
+  /** recipe → mean NMI across scenes. */
+  recipe_means: Record<string, number>;
+  n_cells: number;
+};
+
+export type VSweepBackbonesF7 = {
+  q: number;
+  backbones: VSweepBackboneF7[];
+};
+
+export function vSweepBackbonesF7(q: 8 | 16 | 32) {
+  const params = new URLSearchParams({ q: String(q) });
+  return request<VSweepBackbonesF7>(
+    `/api/v-sweep/backbones-f7?${params.toString()}`,
+  );
+}
