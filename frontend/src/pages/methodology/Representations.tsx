@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
+import { ArrowRight } from "lucide-react";
 
 import { Equation } from "@/components/Equation";
 import { Figure } from "@/components/Figure";
@@ -188,6 +190,27 @@ export default function MethodologyRepresentations() {
         <p className="mb-3 text-[14px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
           {t("pages:methodology_representations.recipes_lead")}
         </p>
+
+        <div
+          className="mb-4 rounded-lg border p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+          style={{
+            borderColor: "var(--color-accent)",
+            backgroundColor: "var(--color-accent-soft)",
+          }}
+        >
+          <p className="text-[13px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+            {t("pages:methodology_representations.recipes_deepdive_lead")}
+          </p>
+          <Link
+            to="/workspace/methods"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-semibold"
+            style={{ backgroundColor: "var(--color-accent)", color: "var(--color-bg)" }}
+          >
+            {t("pages:methodology_representations.recipes_deepdive_cta")}
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+
         <h3
           className="text-[13px] uppercase tracking-widest font-semibold mt-2 mb-3"
           style={{ color: "var(--color-fg-faint)" }}

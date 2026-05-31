@@ -48,6 +48,16 @@ const RecipesTab = lazy(() =>
 const QKExploreTab = lazy(() =>
   import("./workspace/tabs/QKExploreTab").then((m) => ({ default: m.QKExploreTab })),
 );
+const QTrajectoryTab = lazy(() =>
+  import("./workspace/tabs/QTrajectoryTab").then((m) => ({
+    default: m.QTrajectoryTab,
+  })),
+);
+const RecipeLabTab = lazy(() =>
+  import("./workspace/tabs/RecipeLabTab").then((m) => ({
+    default: m.RecipeLabTab,
+  })),
+);
 const LlmTeaLeavesTab = lazy(() =>
   import("./workspace/tabs/LlmTeaLeavesTab").then((m) => ({
     default: m.LlmTeaLeavesTab,
@@ -1351,6 +1361,16 @@ function ExploreStep({
                 error={ldaSweepQ.error as Error | null}
                 sweep={ldaSweepQ.data ?? null}
               />
+            </Suspense>
+          )}
+          {tab === "qtraj" && (
+            <Suspense fallback={<TabLoading />}>
+              <QTrajectoryTab />
+            </Suspense>
+          )}
+          {tab === "recipelab" && (
+            <Suspense fallback={<TabLoading />}>
+              <RecipeLabTab sceneId={subsetId!} />
             </Suspense>
           )}
           {tab === "bandmask" && subsetId && isLabelled && (

@@ -29,6 +29,8 @@ export type ExploreTab =
   | "agreement"
   | "applydoc"
   | "qkexplore"
+  | "qtraj"
+  | "recipelab"
   | "bandmask"
   | "stability"
   | "deep"
@@ -63,6 +65,8 @@ export const EXPLORE_TAB_ORDER: ExploreTab[] = [
   "probe",
   "robust",
   "qkexplore",
+  "qtraj",
+  "recipelab",
   "bandmask",
   "agreement",
   "applydoc",
@@ -134,7 +138,9 @@ export const EXPLORE_PHASES: ExplorePhase[] = [
     color: "rgba(234, 179, 8, 1)",
     tabs: [
       { id: "recipes", labelKey: "recipes" },
+      { id: "recipelab", labelKey: "recipelab" },
       { id: "qkexplore", labelKey: "qkexplore" },
+      { id: "qtraj", labelKey: "qtraj" },
       { id: "bandmask", labelKey: "bandmask" },
     ],
   },
@@ -182,7 +188,9 @@ export const TAB_WIKI_PAGE: Record<ExploreTab, string> = {
   agreement: "Multi-Axis-Addendum-B",
   applydoc: "Multi-Axis-Addendum-B",
   recipes: "Corpus-Construction",
+  recipelab: "Corpus-Construction",
   qkexplore: "Mathematical-Background",
+  qtraj: "Mathematical-Background",
   bandmask: "Mathematical-Background",
   neural: "Mathematical-Background",
   gating: "Multi-Axis-Addendum-B",
