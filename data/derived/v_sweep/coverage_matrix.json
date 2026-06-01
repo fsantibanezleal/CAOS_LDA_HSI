@@ -1604,150 +1604,6 @@
       "value_max": 1.0
     },
     {
-      "axis": "F-17",
-      "cells": {
-        "indian-pines-corrected": {
-          "V1": false,
-          "V2": false,
-          "V3": false,
-          "V4": false,
-          "V5": false,
-          "V6": false,
-          "V7": false,
-          "V8": false,
-          "V9": false,
-          "V10": false,
-          "V11": false,
-          "V12": false,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
-        },
-        "salinas-corrected": {
-          "V1": false,
-          "V2": false,
-          "V3": false,
-          "V4": false,
-          "V5": false,
-          "V6": false,
-          "V7": false,
-          "V8": false,
-          "V9": false,
-          "V10": false,
-          "V11": false,
-          "V12": false,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
-        },
-        "salinas-a-corrected": {
-          "V1": false,
-          "V2": false,
-          "V3": false,
-          "V4": false,
-          "V5": false,
-          "V6": false,
-          "V7": false,
-          "V8": false,
-          "V9": false,
-          "V10": false,
-          "V11": false,
-          "V12": false,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
-        },
-        "pavia-university": {
-          "V1": false,
-          "V2": false,
-          "V3": false,
-          "V4": false,
-          "V5": false,
-          "V6": false,
-          "V7": false,
-          "V8": false,
-          "V9": false,
-          "V10": false,
-          "V11": false,
-          "V12": false,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
-        },
-        "kennedy-space-center": {
-          "V1": false,
-          "V2": false,
-          "V3": false,
-          "V4": false,
-          "V5": false,
-          "V6": false,
-          "V7": false,
-          "V8": false,
-          "V9": false,
-          "V10": false,
-          "V11": false,
-          "V12": false,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
-        },
-        "botswana": {
-          "V1": false,
-          "V2": false,
-          "V3": false,
-          "V4": false,
-          "V5": false,
-          "V6": false,
-          "V7": false,
-          "V8": false,
-          "V9": false,
-          "V10": false,
-          "V11": false,
-          "V12": false,
-          "V13": false,
-          "V14": false,
-          "V15": false,
-          "V17": false,
-          "V18": false,
-          "V19": false,
-          "V20": false
-        }
-      },
-      "values": {
-        "indian-pines-corrected": {},
-        "salinas-corrected": {},
-        "salinas-a-corrected": {},
-        "pavia-university": {},
-        "kennedy-space-center": {},
-        "botswana": {}
-      },
-      "have": 0,
-      "lower_is_better": false,
-      "target": 114,
-      "pct": 0.0,
-      "recipe_means": {}
-    },
-    {
       "axis": "F-18",
       "cells": {
         "indian-pines-corrected": {
@@ -3178,6 +3034,23 @@
       "value_max": 0.9998
     }
   ],
+  "transfer_f17": {
+    "axis": "F-17",
+    "note": "cross-scene transfer; scene-pair x vocab-portable-recipe (not the scene x recipe grid)",
+    "have": 120,
+    "recipes": [
+      "V10",
+      "V11",
+      "V14",
+      "V2"
+    ],
+    "cells_per_recipe": {
+      "V10": 30,
+      "V11": 30,
+      "V14": 30,
+      "V2": 30
+    }
+  },
   "q_extension": {
     "Q=16": [
       {
@@ -3287,14 +3160,6 @@
       },
       {
         "axis": "F-15",
-        "Q": 16,
-        "have": 0,
-        "cells_per_recipe": {},
-        "target": 114,
-        "pct": 0.0
-      },
-      {
-        "axis": "F-17",
         "Q": 16,
         "have": 0,
         "cells_per_recipe": {},
@@ -3478,14 +3343,6 @@
         "pct": 0.0
       },
       {
-        "axis": "F-17",
-        "Q": 32,
-        "have": 0,
-        "cells_per_recipe": {},
-        "target": 114,
-        "pct": 0.0
-      },
-      {
         "axis": "F-18",
         "Q": 32,
         "have": 18,
@@ -3536,5 +3393,5 @@
       }
     ]
   },
-  "generated_at": "2026-05-31T13:13:32Z"
+  "generated_at": "2026-06-01T03:40:12Z"
 }
