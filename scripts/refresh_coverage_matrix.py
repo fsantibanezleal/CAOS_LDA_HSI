@@ -24,6 +24,10 @@ SCENES = [
 RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 
 # (axis label, sub-dir, JSON key, lower_is_better)
+# Standard axes follow the scene x recipe grid (filename
+# "{scene}_{recipe}_uniform_Q{q}.json"). F-17 (cross-scene transfer) is
+# intentionally NOT here: it is a scene-PAIR x portable-recipe study
+# ("{src}_to_{tgt}_{recipe}_..."), reported separately below.
 AXES = [
     ("F-1",     "f1_per_fold",        "topic_routed_soft_mean", False),
     ("F-2",     "f2_coherence",       "c_v",                    False),
@@ -31,7 +35,6 @@ AXES = [
     ("F-13",    "f13_shap",           None,                     False),
     ("F-14",    "f14_repetitiveness", "mean_pairwise_jaccard",  True),
     ("F-15",    "f15_llm_alignment",  "f15_alignment",          False),
-    ("F-17",    "f17_cross_scene",    "transfer_nmi",           False),
     ("F-18",    "f18_reliability",    "frac_above_0.7",         False),
     ("F-22",    "f22_counterfactual", "counterfactual_l1_median", False),
     ("HDP",     "hdp_backbone",       "f2_c_v",                 False),
@@ -127,10 +130,30 @@ def main() -> int:
             q_row["pct"] = round(100 * q_row["have"] / q_row["target"], 1)
             q_matrix[q].append(q_row)
 
+    # F-17 cross-scene transfer: scene-PAIR x portable-recipe study,
+    # not the scene x recipe grid. Report it separately so it is not
+    # mis-counted against the 114-cell target.
+    f17_dir = SRC / "f17_cross_scene"
+    f17_files = sorted(f17_dir.glob("*_uniform_Q8.json")) if f17_dir.is_dir() else []
+    f17_recipes: dict[str, int] = {}
+    import re as _re
+    for p in f17_files:
+        m = _re.search(r"_(V\d+)_uniform_Q8\.json$", p.name)
+        if m:
+            f17_recipes[m.group(1)] = f17_recipes.get(m.group(1), 0) + 1
+    f17_report = {
+        "axis": "F-17",
+        "note": "cross-scene transfer; scene-pair x vocab-portable-recipe (not the scene x recipe grid)",
+        "have": len(f17_files),
+        "recipes": sorted(f17_recipes),
+        "cells_per_recipe": f17_recipes,
+    }
+
     out = {
         "scenes": SCENES,
         "recipes": RECIPES,
         "axes": matrix,
+        "transfer_f17": f17_report,
         "q_extension": {
             "Q=16": q_matrix[16],
             "Q=32": q_matrix[32],
