@@ -34,7 +34,12 @@ SWEEP_LOCAL = DATA_DIR / "local" / "v_sweep" / "lda_fits_hidsag"
 F7_DERIVED = DERIVED_DIR / "v_sweep" / "hidsag" / "f7_topic_to_owner"
 
 SUBSETS = ["GEOCHEM", "GEOMET", "MINERAL1", "MINERAL2", "PORPHYRY"]
-RECIPES = [f"V{i}" for i in range(1, 13)]
+# Mirrors the recipe set fitted by build_v_sweep_hidsag (V8/V9 skipped,
+# V15/V16/V20 out of scope). F-7 simply reads the theta.npy each recipe
+# leaves behind, so this list just needs to include every recipe that
+# produces an LDA fit.
+RECIPES = ["V1", "V2", "V3", "V4", "V5", "V6", "V7",
+           "V10", "V11", "V12", "V13", "V14", "V17", "V18", "V19"]
 EPS = 1e-12
 
 
@@ -115,11 +120,12 @@ def main() -> int:
                 print(f"[hidsag_f7] {subset} {recipe} FAILED: {exc}", flush=True)
                 continue
             res.update({
-                "subset": subset, "recipe": recipe, "scheme": "uniform", "Q": 8,
+                "subset": subset, "source_id": subset,
+                "recipe": recipe, "scheme": "uniform", "Q": 8,
                 "generated_at": datetime.now(timezone.utc)
                 .isoformat(timespec="seconds")
                 .replace("+00:00", "Z"),
-                "builder": "build_v_sweep_hidsag_f7 v0.1",
+                "builder": "build_v_sweep_hidsag_f7 v0.2",
             })
             out = F7_DERIVED / f"{subset}_{recipe}_uniform_Q8.json"
             with out.open("w", encoding="utf-8") as h:

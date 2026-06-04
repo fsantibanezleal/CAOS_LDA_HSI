@@ -1,0 +1,27 @@
+{
+  "subset": "MINERAL2",
+  "source_id": "MINERAL2",
+  "recipe": "V18",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 8,
+  "D": 180,
+  "V": 128,
+  "mean_doc_length": 16.0,
+  "perplexity": 91.712,
+  "fit_seconds": 1.51,
+  "f2_c_v": 0.456943,
+  "f2_c_npmi": 0.06681,
+  "f2_u_mass": -0.895248,
+  "f14_mean_pairwise_jaccard": 0.267662,
+  "f14_max_pairwise_jaccard": 0.538462,
+  "lda_config": {
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "generated_at": "2026-06-04T18:49:34Z",
+  "builder": "build_v_sweep_hidsag v0.2",
+  "vocab_size": 128
+}

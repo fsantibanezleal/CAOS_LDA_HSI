@@ -8,9 +8,9 @@ param(
     [Parameter(Position = 0)]
     [ValidateSet(
         # setup
-        "setup-web", "setup-pipeline", "setup-pipeline-gpu", "setup-frontend", "setup-all",
+        "setup-web", "setup-pipeline", "setup-pipeline-gpu", "setup-frontend", "setup-all", "setup-test",
         # web
-        "dev", "build", "preview", "demo", "smoke", "logs",
+        "dev", "build", "preview", "demo", "smoke", "logs", "test",
         # pipeline -- fetch
         "fetch", "fetch-msi", "fetch-spectral", "fetch-unmixing",
         "fetch-hidsag", "fetch-ecostress", "fetch-all",
@@ -206,6 +206,17 @@ switch ($Command) {
         Initialize-PipelineVenv
         Initialize-Frontend
         Write-Host "All local environments ready." -ForegroundColor Green
+    }
+    "setup-test"     {
+        # Backend tests run in the WEB venv (.venv has fastapi/pydantic)
+        # plus the dev-only test deps. NOT the pipeline venv (#757).
+        Initialize-WebVenv
+        & .\.venv\Scripts\python.exe -m pip install -r dev-requirements.txt | Out-Null
+        Write-Host ".venv ready for tests (requirements.txt + dev-requirements.txt)." -ForegroundColor Green
+    }
+    "test"           {
+        if (-not (Test-Path ".venv\Scripts\python.exe")) { Write-Host "run 'setup-test' first" -ForegroundColor Red; exit 1 }
+        & .\.venv\Scripts\python.exe -m pytest tests/ -q
     }
 
     # ---- web -------------------------------------------------------------

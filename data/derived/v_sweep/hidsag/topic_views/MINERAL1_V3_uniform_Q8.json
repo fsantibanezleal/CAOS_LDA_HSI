@@ -1,5 +1,6 @@
 {
   "subset": "MINERAL1",
+  "source_id": "MINERAL1",
   "recipe": "V3",
   "scheme": "uniform",
   "Q": 8,

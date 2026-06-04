@@ -1,5 +1,6 @@
 {
   "subset": "GEOMET",
+  "source_id": "GEOMET",
   "recipe": "V12",
   "scheme": "uniform",
   "Q": 8,

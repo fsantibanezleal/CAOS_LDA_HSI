@@ -166,6 +166,17 @@ case "$cmd" in
     ensure_frontend
     echo "All local environments ready."
     ;;
+  setup-test)
+    # Backend tests run in the WEB venv (.venv has fastapi/pydantic) plus
+    # the dev-only test deps. NOT the pipeline venv (#757).
+    ensure_web_venv
+    "$VENV/bin/python" -m pip install -r dev-requirements.txt >/dev/null
+    echo ".venv ready for tests (requirements.txt + dev-requirements.txt)."
+    ;;
+  test)
+    [ -x "$VENV/bin/python" ] || { echo "run 'setup-test' first"; exit 1; }
+    "$VENV/bin/python" -m pytest tests/ -q
+    ;;
 
   # ---- web -------------------------------------------------------------
   dev)
