@@ -54,3 +54,22 @@ def test_origins_strips_whitespace_in_csv() -> None:
         "https://a.example.com",
         "https://b.example.com",
     ]
+
+
+def test_prod_override_emits_runtime_warning() -> None:
+    """#588: overriding the production CORS default must not be silent.
+    Settings.origins emits a RuntimeWarning; lock it so a future refactor
+    cannot quietly drop the signal."""
+    import warnings
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        s = _fresh_settings(
+            APP_ENV="production",
+            ALLOWED_ORIGINS="https://override.example.com",
+        )
+        _ = s.origins
+    assert any(
+        issubclass(w.category, RuntimeWarning) and "ALLOWED_ORIGINS" in str(w.message)
+        for w in caught
+    ), "production ALLOWED_ORIGINS override must emit a RuntimeWarning"

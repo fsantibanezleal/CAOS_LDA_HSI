@@ -1,14 +1,11 @@
 name: CI
 
-# Audit fix (#590): minimal GitHub Actions workflow for CAOS_LDA_HSI.
-# Runs on every PR + push to develop/main and exercises:
-#   1. Python backend imports (no pytest installed in our local venvs,
-#      so this is the smoke test we have)
-#   2. Frontend type-check + Vite build
-#   3. data/derived/manifests/index.json is valid JSON
-#
-# Heavier tests (builder unit tests, smoke harness against running
-# backend) live in #590 follow-up tickets.
+# GitHub Actions CI for CAOS_LDA_HSI (#590). Runs on every PR + push to
+# develop/main and exercises:
+#   1. Backend: install requirements + dev-requirements, run the full
+#      pytest suite (route inventory, schemas, CORS, builders, helpers).
+#   2. Frontend: tsc -b + Vite build (type-check gate).
+#   3. data/derived/manifests/index.json is valid JSON.
 
 on:
   push:
@@ -26,13 +23,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install backend deps
+      - name: Install backend + test deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -r dev-requirements.txt
       - name: Verify routers import + count routes
         run: |
           python -c "from app.routers.content import router; n=len(router.routes); print(f'{n} routes registered'); assert n >= 50, 'too few routes — regression?'"
+      - name: Run pytest
+        run: python -m pytest tests/ -q
       - name: Verify manifest is valid JSON
         run: |
           python -c "import json; d=json.load(open('data/derived/manifests/index.json')); n=len(d.get('artifacts', [])); print(f'manifest has {n} artefacts')"

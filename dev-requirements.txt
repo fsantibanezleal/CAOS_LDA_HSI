@@ -1,6 +1,11 @@
-# Pinned dev-only deps for the backend test suite (closes #440 P1
-# item 1.7). Keep in sync with the versions installed in the
-# developer venv; the prod systemd unit on Hetzner only installs
-# requirements.txt.
+# Dev-only deps for the backend test suite (closes #440 P1 1.7).
+#
+# TEST VENV CONTRACT (#757): the backend tests import app.main
+# (FastAPI/Pydantic), so they run in the WEB venv .venv — created from
+# requirements.txt — NOT the data .venv-pipeline. Install order:
+#   pip install -r requirements.txt && pip install -r dev-requirements.txt
+# One shot:  ./scripts/local.sh setup-test   (PS: .\scripts\local.ps1 setup-test)
+# Run:       ./scripts/local.sh test
+# Prod (Hetzner systemd) installs requirements.txt only.
 pytest==8.4.2
 httpx==0.27.2
