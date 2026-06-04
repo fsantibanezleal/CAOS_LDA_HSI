@@ -1,5 +1,6 @@
 {
   "subset": "GEOCHEM",
+  "source_id": "GEOCHEM",
   "recipe": "V6",
   "scheme": "uniform",
   "Q": 8,

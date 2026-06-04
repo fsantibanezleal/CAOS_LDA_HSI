@@ -6,6 +6,7 @@
   "mutual_information_bits": 0.920503,
   "normalised_mi": 0.128029,
   "subset": "GEOMET",
+  "source_id": "GEOMET",
   "recipe": "V1",
   "scheme": "uniform",
   "Q": 8,

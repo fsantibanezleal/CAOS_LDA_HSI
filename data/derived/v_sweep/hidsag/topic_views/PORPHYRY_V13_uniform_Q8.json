@@ -1,0 +1,27 @@
+{
+  "subset": "PORPHYRY",
+  "source_id": "PORPHYRY",
+  "recipe": "V13",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "D": 504,
+  "V": 128,
+  "mean_doc_length": 4.0,
+  "perplexity": 7.187,
+  "fit_seconds": 2.396,
+  "f2_c_v": 0.316228,
+  "f2_c_npmi": 0.0,
+  "f2_u_mass": -3.318443,
+  "f14_mean_pairwise_jaccard": 0.25,
+  "f14_max_pairwise_jaccard": 0.25,
+  "lda_config": {
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "generated_at": "2026-06-04T18:49:39Z",
+  "builder": "build_v_sweep_hidsag v0.2",
+  "vocab_size": 128
+}

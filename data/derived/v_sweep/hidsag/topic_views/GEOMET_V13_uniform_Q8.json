@@ -1,0 +1,27 @@
+{
+  "subset": "GEOMET",
+  "source_id": "GEOMET",
+  "recipe": "V13",
+  "scheme": "uniform",
+  "Q": 8,
+  "K": 3,
+  "D": 1314,
+  "V": 128,
+  "mean_doc_length": 4.0,
+  "perplexity": 7.023,
+  "fit_seconds": 5.49,
+  "f2_c_v": 0.219999,
+  "f2_c_npmi": -0.082706,
+  "f2_u_mass": -4.161376,
+  "f14_mean_pairwise_jaccard": 0.538462,
+  "f14_max_pairwise_jaccard": 0.538462,
+  "lda_config": {
+    "max_iter": 60,
+    "doc_topic_prior": 0.45,
+    "topic_word_prior": 0.2,
+    "random_state": 42
+  },
+  "generated_at": "2026-06-04T18:48:27Z",
+  "builder": "build_v_sweep_hidsag v0.2",
+  "vocab_size": 128
+}

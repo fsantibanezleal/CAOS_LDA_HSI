@@ -6,6 +6,7 @@
   "mutual_information_bits": 0.06771,
   "normalised_mi": 0.014152,
   "subset": "GEOCHEM",
+  "source_id": "GEOCHEM",
   "recipe": "V3",
   "scheme": "uniform",
   "Q": 8,

@@ -6,6 +6,7 @@
   "mutual_information_bits": 0.185296,
   "normalised_mi": 0.042873,
   "subset": "MINERAL2",
+  "source_id": "MINERAL2",
   "recipe": "V4",
   "scheme": "uniform",
   "Q": 8,

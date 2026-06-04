@@ -6,6 +6,7 @@
   "mutual_information_bits": 1.823121,
   "normalised_mi": 0.379236,
   "subset": "PORPHYRY",
+  "source_id": "PORPHYRY",
   "recipe": "V12",
   "scheme": "uniform",
   "Q": 8,
