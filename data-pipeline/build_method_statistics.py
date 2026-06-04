@@ -44,6 +44,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research_core.paths import CORE_DERIVED_DIR
+from research_core.provenance import git_sha
 from research_core.raw_scenes import (
     load_scene,
     stratified_sample_indices,
@@ -455,6 +456,9 @@ def main() -> int:
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
         "builder_version": "build_method_statistics v0.2",
+        # Audit fix (#589 Tier 1): per-artefact git sha so a published
+        # number is traceable to the commit that produced it.
+        "git_sha": git_sha(),
         "method_definitions": {
             "raw_logistic_regression": "Logistic regression on standardised raw reflectance.",
             "pca_logistic_regression": (

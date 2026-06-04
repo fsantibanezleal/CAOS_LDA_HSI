@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,10 @@ from scipy.signal import savgol_filter
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from research_core.provenance import git_sha  # noqa: E402 — needs ROOT on path
 CURATED_PATH = ROOT / "data" / "derived" / "core" / "hidsag_curated_subset.json"
 BAND_QUALITY_PATH = ROOT / "data" / "derived" / "core" / "hidsag_band_quality.json"
 BENCHMARK_PATH = ROOT / "data" / "derived" / "core" / "local_core_benchmarks.json"
@@ -669,6 +674,8 @@ def main() -> None:
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
         "builder_version": "run_hidsag_preprocessing_sensitivity v0.2",
+        # Audit fix (#589 Tier 1): per-artefact git sha for traceability.
+        "git_sha": git_sha(),
         "methods": {
             "task_selection": "Per subset, reuse one representative classification task and one representative regression target selected from the current local_core_benchmarks.json results.",
             "policy_count": len(POLICIES),
