@@ -24,7 +24,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 and moves both tensors and models to that device. If CUDA is not
 available the builder transparently falls back to CPU with no extra
-configuration. The five GPU-aware builders are:
+configuration. The six GPU-aware builders are:
 
 | Builder | Methods | Typical CPU vs GPU per scene |
 |---|---|---|
@@ -32,7 +32,8 @@ configuration. The five GPU-aware builders are:
 | `data-pipeline/build_deep_seed_stability.py` | cae_1d, cae_2d, cae_3d, beta_vae × N seeds | N × (5–30 min) vs N × (5–30 s) |
 | `data-pipeline/build_deep_anomaly.py` | cae_1d + beta_vae per-document reconstruction error | 5–10 min vs 5–10 s |
 | `data-pipeline/build_neural_topic_models.py` | ProdLDA (pyro) | 5–30 min vs 5–30 s per (K × scene) cell |
-| `data-pipeline/build_topic_routed_deep_gate.py` | (consumes precomputed deep latents — no GPU work itself) | n/a |
+| `data-pipeline/build_wordifications_v13.py` | V13 VQ-VAE codebook (torch) | 2–10 min vs 2–10 s per scene |
+| `data-pipeline/build_v_sweep_hidsag.py` | embeds the V13 VQ-VAE step for the HIDSAG sweep (torch) | 1–5 min vs 1–5 s per subset |
 
 Builders that are inherently CPU-only and **do not benefit from a GPU**:
 
@@ -45,6 +46,9 @@ Builders that are inherently CPU-only and **do not benefit from a GPU**:
 - All Bayesian builders that use the default `pm.sample` (PyMC NUTS in
   C compiled mode). These can be ported to JAX/NumPyro for GPU but
   this is a separate cycle.
+- `build_topic_routed_deep_gate.py` — consumes precomputed deep latents,
+  does no torch work of its own (previously mis-listed as GPU-aware,
+  #589 Tier 2).
 
 If your machine has no GPU, only the LDA-family training and the
 classical sklearn baselines will run at full speed; the deep methods
@@ -230,5 +234,5 @@ CUDA backend.
 - [NVIDIA driver compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/)
 - [PyTorch CUDA backward compatibility](https://pytorch.org/docs/stable/notes/cuda.html)
 - Internal: see `data-pipeline/build_representations.py` `_torch_device()`
-  helper for the auto-detection pattern used across all five GPU-aware
+  helper for the auto-detection pattern used across all six GPU-aware
   builders.

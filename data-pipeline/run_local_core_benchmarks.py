@@ -32,6 +32,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research_core.paths import CORE_DERIVED_DIR, DERIVED_DIR
+from research_core.provenance import git_sha
 from research_core.raw_scenes import (
     approximate_wavelengths as approximate_scene_wavelengths,
     load_scene,
@@ -1793,6 +1794,8 @@ def main() -> None:
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
         "builder_version": "run_local_core_benchmarks v0.2",
+        # Audit fix (#589 Tier 1): per-artefact git sha for traceability.
+        "git_sha": git_sha(),
         "methods": {
             "representation": "band-frequency count vectors from normalized spectra",
             "topic_model": "scikit-learn LatentDirichletAllocation",
