@@ -576,7 +576,7 @@ function WordificationFlowSVG() {
           Tokens
         </text>
         <text x="545" y="105" textAnchor="middle" opacity="0.85">
-          V1, V2, … V12
+          V1, V2, … V20
         </text>
         <text x="545" y="125" textAnchor="middle" opacity="0.7">
           (band, q) | (k, α_k)

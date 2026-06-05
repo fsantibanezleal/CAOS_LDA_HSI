@@ -1129,7 +1129,7 @@ def v_sweep_method_report(recipe: str, scheme: str = "uniform", q: int = 8) -> V
     response_model_exclude_none=True,
 )
 def v_sweep_f1_win_matrix() -> VSweepWinMatrix:
-    """The aggregate F-1 win-matrix (12 V x 6 scenes)."""
+    """The aggregate F-1 win-matrix (the 3 monotonic-improver recipes V2/V8/V20 x 6 scenes)."""
     s = get_settings()
     data = _read_json_or_none(s.v_sweep_f1_win_matrix_path)
     if data is None:

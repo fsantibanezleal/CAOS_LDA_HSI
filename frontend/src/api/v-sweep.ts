@@ -1,7 +1,7 @@
 /**
  * V-sweep API surface (issue #606). One-shot per-method report or sweep
  * status snapshot. The shards are written by the data pipeline as the
- * 12 V × 12 F-axis sweep progresses; while the pipeline is mid-run the
+ * 19-recipe (V1-V20; V16 scaffold) × multi-axis sweep progresses; while the pipeline is mid-run the
  * /status endpoint reports current coverage and /methods/:recipe returns
  * whatever shards exist with the rest as null fields.
  */
