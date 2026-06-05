@@ -111,3 +111,20 @@ g[role="button"]:focus {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Accessibility (re-audit M4 / WQ-02): honour the OS "reduce motion"
+   preference. Neutralises every CSS animation + transition site-wide —
+   the inline caos-draw / caos-band-fade hero keyframes, animate-pulse
+   fallbacks, SVG chart entrance transitions, and any 3D CSS — in one
+   place, rather than gating each component. Animations are collapsed to a
+   near-instant single pass so forwards-fill end states still apply. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

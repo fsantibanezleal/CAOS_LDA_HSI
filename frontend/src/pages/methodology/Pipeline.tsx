@@ -35,9 +35,9 @@ const STAGES: Stage[] = [
     name: "Wordifications V1..V12",
     command:
       "scripts/local build-wordifications && build-wordifications-v4plus && build-wordifications-v6plus && build-wordifications-v7v11",
-    produces: "data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json (~486 configs)",
+    produces: "data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json (648 configs = 108 per scene × 6 scenes)",
     notes:
-      "The 12 recipes × 3 schemes × 3 Q per scene. Each config is a distinct document-term matrix. All exposed via /api/wordifications.",
+      "The corpus-construction layer: 12 recipes × 3 schemes × 3 Q = 108 per scene. Each config is a distinct document-term matrix, all exposed via /api/wordifications. The full F-axis sweep evaluates all 19 built recipes (V1-V20; V16 scaffold) — see the v_sweep layer.",
   },
   {
     id: "topic-views",

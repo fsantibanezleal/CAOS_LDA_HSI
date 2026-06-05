@@ -1,11 +1,17 @@
 """Generate the workspace_methods i18n block for EN and ES locales.
 
+!!! SUPERSEDED — DO NOT BLINDLY MERGE THIS SCRIPT'S OUTPUT !!!
+`frontend/src/i18n/locales/{en,es}/pages.json` is now the source of truth
+for the workspace_methods block. This generator only defines V1-V12 (its
+word dicts predate the V13-V20 catalog blocks hand-added under #774, and
+its index lead has been corrected to the 19-recipe framing in pages.json
+under #773/#778). Regenerating and merging would REVERT both. Keep it only
+as a reference for the V1-V12 prose; if you extend it, add V13-V20 entries
+AND diff against pages.json before merging.
+
 Run from repo root. Writes JSON snippets to stdout and to:
   /tmp/workspace_methods_en.json
   /tmp/workspace_methods_es.json
-
-Then merge those into frontend/src/i18n/locales/{en,es}/pages.json by
-inserting the block before the `not_found` block.
 """
 from __future__ import annotations
 
@@ -225,14 +231,14 @@ def build(side: str, words: dict, neural: dict) -> dict:
     index = (
         {
             "title": "Methods workspace",
-            "lead": "Explore each topic-modelling method on its own page: how the tokens are built, the theory hypothesis, the F-axis sweep, and side-by-side comparators. Twelve wordification recipes (V1..V12) plus four neural baselines.",
+            "lead": "Explore each topic-modelling method on its own page: how the tokens are built, the theory hypothesis, the F-axis sweep, and side-by-side comparators. Nineteen built wordification recipes (V1..V20; V16 scaffold) plus four neural baselines.",
             "wordifications_heading": "Wordification recipes",
             "neural_heading": "Neural baselines",
         }
         if is_en
         else {
             "title": "Workspace por métodos",
-            "lead": "Explora cada método de topic modelling en su propia página: cómo se construyen los tokens, la hipótesis teórica, el sweep F-eje, y comparadores lado a lado. Doce recetas de wordification (V1..V12) más cuatro baselines neuronales.",
+            "lead": "Explora cada método de topic modelling en su propia página: cómo se construyen los tokens, la hipótesis teórica, el sweep F-eje, y comparadores lado a lado. Diecinueve recetas de wordification construidas (V1..V20; V16 scaffold) más cuatro baselines neuronales.",
             "wordifications_heading": "Recetas de wordification",
             "neural_heading": "Baselines neuronales",
         }

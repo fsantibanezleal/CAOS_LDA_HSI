@@ -120,28 +120,53 @@ export function RecipeV2Svg() {
 }
 
 export function RecipeV3Svg() {
-  // concat-spectra: long flat token vector
+  // joint (band, bin): a band×bin grid with exactly one highlighted cell per
+  // band column — each band emits one (band, q-bin) joint token.
+  const cols = 12;
+  const rows = 5;
+  const gx = PAD;
+  const gy = PAD + 3;
+  const gw = W - 2 * PAD;
+  const gh = H - 2 * PAD - 6;
+  const cw = gw / cols;
+  const ch = gh / rows;
+  const binOf = [3, 2, 4, 1, 2, 0, 3, 4, 2, 1, 3, 2];
   return (
-    <Frame label="V3 concat-spectra schematic">
-      <polyline
-        points={spectrum()}
-        fill="none"
-        stroke={STROKE}
-        strokeWidth="1"
-      />
-      <g>
-        {Array.from({ length: 18 }, (_, i) => (
-          <rect
-            key={i}
-            x={PAD + 2 + i * 6.5}
-            y={H - PAD - 10}
-            width={5}
-            height={6}
-            fill={ACCENT}
-            opacity={0.45 + (i % 3) * 0.18}
-          />
-        ))}
-      </g>
+    <Frame label="V3 joint (band, bin) schematic">
+      {Array.from({ length: rows + 1 }, (_, r) => (
+        <line
+          key={`h${r}`}
+          x1={gx}
+          y1={gy + r * ch}
+          x2={gx + gw}
+          y2={gy + r * ch}
+          stroke={AXIS}
+          strokeWidth="0.4"
+        />
+      ))}
+      {Array.from({ length: cols + 1 }, (_, c) => (
+        <line
+          key={`v${c}`}
+          x1={gx + c * cw}
+          y1={gy}
+          x2={gx + c * cw}
+          y2={gy + gh}
+          stroke={AXIS}
+          strokeWidth="0.4"
+        />
+      ))}
+      {Array.from({ length: cols }, (_, c) => (
+        <rect
+          key={c}
+          x={gx + c * cw + 0.8}
+          y={gy + (binOf[c] ?? 2) * ch + 0.8}
+          width={cw - 1.6}
+          height={ch - 1.6}
+          fill={ACCENT}
+          opacity={0.78}
+          rx="0.6"
+        />
+      ))}
     </Frame>
   );
 }
@@ -512,8 +537,8 @@ const SCHEMATICS: {
   },
   {
     id: "V3",
-    title: "V3 concat-spectra",
-    caption: "Full spectrum is unrolled into a long token vector.",
+    title: "V3 joint (band, bin)",
+    caption: "Each band emits one (band, q-bin) joint token; vocabulary B·Q.",
     Component: RecipeV3Svg,
   },
   {
