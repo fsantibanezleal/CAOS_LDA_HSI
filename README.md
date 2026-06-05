@@ -23,14 +23,15 @@ every deploy.
 ## Live deployment
 
 - **Public URL**: <https://lda-hsi.fasl-work.com>
-- **Smoke**: 133/133 OK lines on every `deploy/update.sh` run
-  (131 GET endpoints + 1 SPA shell + 1 entry-bundle version-marker
-  content assertion). The content assertions close the empty-body
+- **Smoke**: 109/109 OK lines on every `deploy/update.sh` run
+  (108 GET endpoints + 1 SPA root) plus 2 SPA-shell content
+  assertions (non-trivial shell + entry-bundle version-marker).
+  The content assertions close the empty-body
   deploy class that escaped in cycles 99-101 (see
   [`scripts/smoke.sh`](scripts/smoke.sh) and
   [`scripts/smoke.ps1`](scripts/smoke.ps1)). Endpoint inventory is
   the source of truth — count is `grep -c '"/' scripts/smoke.sh`.
-- **Manifest**: 1726 derived artifacts (JSON + binary + PNG; the
+- **Manifest**: 3895 derived artifacts (JSON + binary + PNG; the
   full inventory lives in `data/derived/manifests/index.json` and
   is the authoritative source), audited zero-issues by
   [`data-pipeline/audit_manifest.py`](data-pipeline/audit_manifest.py).
@@ -59,7 +60,7 @@ every deploy.
                             │ build (data-pipeline/build_*)  ← GPU when available
                             ▼
                  ┌──────────────────────┐
-                 │  data/derived/   1592 deterministic JSON / .bin / .png│
+                 │  data/derived/   3895 deterministic JSON / .bin / .png│
                  │  ──────────────  curated by data-pipeline/curate_for_web.py│
                  │   • topic_views (LDA canonical)                    │
                  │   • topic_variants/{lda,prodlda,etm,nmf,...}       │
@@ -339,9 +340,12 @@ constraint `Σ_k θ_d[k] ≈ 1`.
 | pre-c100 | 1592 | baseline |
 | c121 (theta_grid sidecars) | 1598 | +6 (one per labelled scene) |
 | c123 (segmentation assignment binaries) | 1634 | +36 (6 methods × 6 scenes) |
+| 2026-06-04 (post-#765, V-sweep + HIDSAG V13-V20 + deep axes) | 3895 | current |
 
-Audit reports 0 issues at every step; smoke 133/133 (131 GET +
-2 SPA-shell checks) passes on every deploy.
+Audit reports 0 issues at every step; smoke 109/109 (108 GET + 1 SPA
+root + 2 SPA-shell checks) passes on every deploy. The artifact count
+is the live `data/derived/manifests/index.json` length, not a
+hardcoded number.
 
 ## Quick start
 
@@ -399,8 +403,8 @@ production API.
 ```
 
 Runs `scripts/smoke.{sh,ps1}` against `https://lda-hsi.fasl-work.com`,
-asserting HTTP 200 on 131 endpoints + 2 SPA-shell content checks
-in <10 s (133/133 OK lines). The same harness runs on the VPS as
+asserting HTTP 200 on 109 path checks (108 GET + 1 SPA root) + 2
+SPA-shell content checks in <10 s (109/109 OK lines). The same harness runs on the VPS as
 the last step of every `deploy/update.sh`. The endpoint count is
 the source of truth — read it with `grep -c '"/' scripts/smoke.sh`
 rather than hard-coding here.
@@ -416,7 +420,7 @@ CAOS_LDA_HSI/
 │   ├── raw/              gitignored: AVIRIS / ROSIS / Borsoi / MicaSense / HIDSAG ZIPs
 │   ├── manifests/        committed: dataset, family, recipe, subset registries
 │   ├── demo/             synthetic deterministic LDA demo for the landing page
-│   ├── derived/          ★ committed: 1592 deterministic outputs from offline builders
+│   ├── derived/          ★ committed: 3895 deterministic outputs from offline builders
 │   └── local/            gitignored: full-fidelity npz / npy artifacts (per-pixel θ, etc.)
 ├── data-pipeline/        ~57 builders + audit + curate
 ├── scripts/              local.{sh,ps1}, smoke.{sh,ps1}, GPU_SETUP.md, README.md
@@ -496,7 +500,7 @@ Every cycle that lands in production includes:
 3. PR `task/* → develop` with squash-merge + branch deletion
 4. PR `develop → main` titled `Deploy: <summary>` and merged via merge-commit
 5. SSH `bash deploy/update.sh` against the VPS
-6. Smoke harness verifies 131 GET endpoints + 2 SPA-shell content assertions (133/133 OK)
+6. Smoke harness verifies 108 GET endpoints + 1 SPA root + 2 SPA-shell content assertions (109/109 OK)
 7. Cadence comments: PR comment + issue comment + close
 8. Management repo updates: `deployments/caos-lda-hsi.md` + `wip/caos-lda-hsi/current-state.md`
 
