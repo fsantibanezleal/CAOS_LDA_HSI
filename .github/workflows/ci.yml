@@ -4,8 +4,9 @@ name: CI
 # develop/main and exercises:
 #   1. Backend: install requirements + dev-requirements, run the full
 #      pytest suite (route inventory, schemas, CORS, builders, helpers).
-#   2. Frontend: tsc -b + Vite build (type-check gate).
-#   3. data/derived/manifests/index.json is valid JSON.
+#   2. Frontend: tsc -b + Vite build (type-check gate) + vitest run (#775).
+#   3. data/derived/manifests/index.json is valid JSON AND current — not
+#      stale vs the data/derived tree (#776, check_manifest_current.py).
 
 on:
   push:
@@ -36,6 +37,8 @@ jobs:
       - name: Verify manifest is valid JSON
         run: |
           python -c "import json; d=json.load(open('data/derived/manifests/index.json')); n=len(d.get('artifacts', [])); print(f'manifest has {n} artefacts')"
+      - name: Verify manifest is current (not stale vs data/derived) (#776)
+        run: python data-pipeline/check_manifest_current.py
 
   frontend-build:
     name: Frontend build
@@ -55,3 +58,5 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Build (tsc -b + vite build)
         run: npm run build
+      - name: Test (vitest run) (#775)
+        run: npm run test

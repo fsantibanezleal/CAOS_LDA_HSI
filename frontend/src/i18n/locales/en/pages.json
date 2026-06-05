@@ -146,9 +146,9 @@
       "stage1_note": "x ∈ ℝᴮ per pixel · region · sample",
       "stage1_pixel": "pixel",
       "stage2_title": "2 · Discretisation",
-      "stage2_sub": "build_wordifications · V1..V12",
+      "stage2_sub": "build_wordifications · V1..V20",
       "stage2_note1": "band-frequency · band-magnitude · …",
-      "stage2_note2": "12 recipes × 3 schemes × Q ∈ {8, 16, 32}",
+      "stage2_note2": "19 built recipes × 3 schemes × Q ∈ {8, 16, 32}",
       "stage2_note3": "vocab V ∈ [103, 220]",
       "stage3_title": "3 · Topic model",
       "stage3_sub": "LDA · ProdLDA · ETM · CAE-{1D,2D,3D} · β-VAE",
@@ -178,7 +178,7 @@
       "documents_title": "Documents",
       "documents_body": "How to build a document: by pixel, by region (SLIC, Felzenszwalb), by patch or by full sample. Four alternatives materialised in build_groupings; they change the statistical unit upstream.",
       "discretisation_title": "Discretisation",
-      "discretisation_body": "How a continuous spectrum becomes a discrete token: twelve recipes V1..V12, three quantisation schemes (uniform, quantile, equalised), three levels Q ∈ {8, 16, 32}.",
+      "discretisation_body": "How a continuous spectrum becomes a discrete token: nineteen built recipes (V1..V15, V17..V20), three quantisation schemes (uniform, quantile, equalised), three levels Q ∈ {8, 16, 32}.",
       "model_title": "Model",
       "model_body": "Canonical LDA (collapsed Gibbs, variational Bayes, online), HDP, CTM, ProdLDA, ETM, NMF, PCA, ICA, dense-AE, CAE-1D/2D/3D, β-VAE — all at the same K for a fair comparison."
     },
@@ -199,7 +199,7 @@
       "step1_body": "The PTM/LDA model and why an HSI pixel can be treated as a document.",
       "step2_tag": "Methodology",
       "step2_title": "Representations",
-      "step2_body": "The V1..V12 × schemes × Q grid plus 5 deep encoders.",
+      "step2_body": "The V1..V20 × schemes × Q grid plus 5 deep encoders.",
       "step3_tag": "Methodology",
       "step3_title": "Pipeline",
       "step3_body": "Which scripts run locally to produce the material this app serves.",
@@ -225,9 +225,9 @@
       "theory_tag": "PTM · LDA",
       "theory_title": "Theory",
       "theory_body": "The probabilistic topic model (PTM) and why an HSI pixel can be treated as a document. LDA in plate notation, variational inference, generalisations to HDP and CTM.",
-      "repr_tag": "V1..V12 + Deep",
+      "repr_tag": "V1..V20 + Deep",
       "repr_title": "Representations",
-      "repr_body": "Twelve wordification recipes (V1 band → V12 GMM-token), three schemes (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Plus five deep encoders: CAE-1D / CAE-2D / CAE-3D anchor and full-patch / β-VAE. PCA, NMF, ICA as fair K-dim baselines.",
+      "repr_body": "Nineteen built wordification recipes (V1 band-frequency → V20 MI-weighted; V16 is a foundation-model scaffold), three schemes (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Plus five deep encoders: CAE-1D / CAE-2D / CAE-3D anchor and full-patch / β-VAE. PCA, NMF, ICA as fair K-dim baselines.",
       "pipe_tag": "69 builders",
       "pipe_title": "Pipeline",
       "pipe_body": "Diagram of the 12 stages of the data-pipeline: fetch_* (acquire) → research_core (paths/loaders) → build_* (offline compute) → curate_for_web → manifest. Six torch builders detect GPU automatically with CPU fallback.",
@@ -280,9 +280,9 @@
     "section_principles": "Design principles",
     "section_hypothesis": "Starting hypothesis",
     "section_findings": "Findings on the 6 labelled scenes",
-    "recipes_title": "Background · wordification recipes V1..V12",
-    "recipes_lead": "Topic-family methods operate on a discrete word alphabet. The project ships 12 wordification recipes (V1..V12) × 3 quantisation schemes × Q ∈ {8, 16, 32} = 108 configs per scene. The grid below sketches the space. The canonical recipe is V1 (band-frequency, band-as-word) with uniform Q=8.",
-    "recipes_figure_caption": "12 recipes × 9 (3 schemes × 3 Q) = 108 configs per scene.",
+    "recipes_title": "Background · wordification recipes V1..V20",
+    "recipes_lead": "Topic-family methods operate on a discrete word alphabet. The project ships 19 built wordification recipes (V1..V15, V17..V20; V16 is a foundation-model scaffold) × 3 quantisation schemes × Q ∈ {8, 16, 32} = 171 candidate vocabularies per scene. The grid below sketches the space. The canonical fit recipe is V1 (band-frequency, band-as-word) with uniform Q=8, but the sweep evaluates all 19.",
+    "recipes_figure_caption": "19 recipes × 9 (3 schemes × 3 Q) = 171 configs per scene.",
     "recipes_deepdive_lead": "Every recipe has a per-recipe deep-dive page with its F-axis sweep results across all six labelled scenes — the full V1..V20 evidence base.",
     "recipes_deepdive_cta": "Open the per-recipe deep dives",
     "families": {
@@ -680,7 +680,7 @@
       "topiclabel": "Topic vs label",
       "routed": "Routed · ranking",
       "interpret": "Interpretability cards",
-      "recipes": "Recipes · V1..V12 · Q",
+      "recipes": "Recipes · V1..V20 · Q",
       "recipelab": "Recipe lab · V1..V20 side-by-side",
       "qkexplore": "K-sweep · model selection",
       "qtraj": "Q-trajectory · refine quantisation",
@@ -731,7 +731,7 @@
   "workspace_methods": {
     "index": {
       "title": "Methods workspace",
-      "lead": "Explore each topic-modelling method on its own page: how the tokens are built, the theory hypothesis, the F-axis sweep, and side-by-side comparators. Twelve wordification recipes (V1..V12) plus four neural baselines.",
+      "lead": "Explore each topic-modelling method on its own page: how the tokens are built, the theory hypothesis, the F-axis sweep, and side-by-side comparators. Nineteen built wordification recipes (V1..V20; V16 scaffold) plus four neural baselines.",
       "wordifications_heading": "Wordification recipes",
       "neural_heading": "Neural baselines",
       "matrix_heading": "Win matrix (F-1 / F-2 / F-7)"
@@ -893,7 +893,7 @@
       }
     },
     "matrix": {
-      "lead": "Twelve recipes evaluated across three F-axes (F-1 macro-F1, F-2 c_v, F-7 normalised MI). Bold cells = per-axis per-scene winner. The matrix is the headline of the V-sweep: V12 wins F-2 on most scenes and F-7 on 2; V3 wins F-7 on 3; V1 (current canonical) wins F-2 on 2 and F-7 on 0."
+      "lead": "All built recipes (V1..V20; V16 scaffold) evaluated across three F-axes (F-1 macro-F1, F-2 c_v, F-7 normalised MI). Bold cells = per-axis per-scene winner. The matrix is the headline of the V-sweep and is read live from the per-scene shards, so the winners shown are always current (e.g. F-2 c_v at uniform Q=8: V12 and V1 each lead 2 scenes, V3 and V20 one each)."
     }
   },
   "not_found": {

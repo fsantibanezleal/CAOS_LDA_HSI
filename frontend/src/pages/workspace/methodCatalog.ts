@@ -3,7 +3,7 @@ export type MethodFamily = "wordification" | "neural";
 export interface MethodEntry {
   id: string;
   family: MethodFamily;
-  /** Whether F-axis sweep artefacts exist for this method (V1..V12 + 4 neural). */
+  /** Whether F-axis sweep artefacts exist: true for the 19 built recipes (V1-V15, V17-V20); false for V16 (foundation-model scaffold) and the 4 neural baselines. */
   hasSweepArtefacts: boolean;
 }
 
