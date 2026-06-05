@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   vSweepMethodReport,
@@ -49,7 +50,7 @@ const DEFAULT_RECIPES = ["V1", "V8", "V20"];
 type AxisDef = {
   id: string;
   label: string;
-  title: string;
+  titleKey: string;
   higherIsBetter: boolean;
   get: (s: VSweepRecipeScene | undefined) => number | null;
 };
@@ -58,35 +59,35 @@ const AXES: AxisDef[] = [
   {
     id: "f1",
     label: "F-1 macro-F1",
-    title: "Topic-routed soft classification macro-F1 (per-fold mean)",
+    titleKey: "workspace.tabs.RecipeLabTab.axis_title_f1",
     higherIsBetter: true,
     get: (s) => s?.f1?.topic_routed_soft_mean ?? null,
   },
   {
     id: "f2",
     label: "F-2 c_v",
-    title: "Topic-word coherence c_v",
+    titleKey: "workspace.tabs.RecipeLabTab.axis_title_f2",
     higherIsBetter: true,
     get: (s) => s?.f2?.c_v ?? null,
   },
   {
     id: "f7",
     label: "F-7 NMI",
-    title: "Topic-to-label normalised mutual information",
+    titleKey: "workspace.tabs.RecipeLabTab.axis_title_f7",
     higherIsBetter: true,
     get: (s) => s?.f7?.normalised_mi ?? null,
   },
   {
     id: "f14",
     label: "F-14 Jaccard",
-    title: "Mean pairwise top-token Jaccard (repetitiveness) — lower is better",
+    titleKey: "workspace.tabs.RecipeLabTab.axis_title_f14",
     higherIsBetter: false,
     get: (s) => s?.f14?.mean_pairwise_jaccard ?? null,
   },
   {
     id: "f18",
     label: "F-18 cosine",
-    title: "Mean seed-matched topic cosine (reliability)",
+    titleKey: "workspace.tabs.RecipeLabTab.axis_title_f18",
     higherIsBetter: true,
     get: (s) => s?.f18?.mean_matched_cosine ?? null,
   },
@@ -97,6 +98,7 @@ function shortScene(sceneId: string): string {
 }
 
 export function RecipeLabTab({ sceneId }: { sceneId: string }) {
+  const { t } = useTranslation(["pages"]);
   const initialScene = LABELLED_SCENES.includes(sceneId)
     ? sceneId
     : LABELLED_SCENES[0]!;
@@ -190,18 +192,13 @@ export function RecipeLabTab({ sceneId }: { sceneId: string }) {
           className="text-lg font-semibold tracking-tight mt-1 mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Recipe Lab · the representation is the independent variable
+          {t("pages:workspace.tabs.RecipeLabTab.title")}
         </h3>
         <p
           className="text-[12.5px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Fix the scene, then put up to three wordification recipes
-          (V1..V20) side by side. Each column shows the token-bag the
-          recipe builds (vocabulary size, mean document length) and how it
-          scores across five evaluation axes. The per-axis winner is
-          highlighted — read off what each representation buys you. F-14
-          is lower-is-better; all other axes are higher-is-better.
+          {t("pages:workspace.tabs.RecipeLabTab.lead")}
         </p>
 
         <div className="mb-2">
@@ -209,7 +206,7 @@ export function RecipeLabTab({ sceneId }: { sceneId: string }) {
             className="text-[10.5px] uppercase tracking-widest font-semibold mr-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            scene
+            {t("pages:workspace.tabs.RecipeLabTab.picker_scene")}
           </span>
           <div className="inline-flex flex-wrap gap-1 align-middle">
             {LABELLED_SCENES.map((s) => {
@@ -245,7 +242,10 @@ export function RecipeLabTab({ sceneId }: { sceneId: string }) {
             className="text-[10.5px] uppercase tracking-widest font-semibold mr-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            recipes ({recipes.length}/{MAX_RECIPES})
+            {t("pages:workspace.tabs.RecipeLabTab.picker_recipes", {
+              count: recipes.length,
+              max: MAX_RECIPES,
+            })}
           </span>
           <div className="inline-flex flex-wrap gap-1 align-middle">
             {RECIPE_IDS.map((id) => {
@@ -285,7 +285,9 @@ export function RecipeLabTab({ sceneId }: { sceneId: string }) {
 
       {anyLoading ? (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Loading recipe reports for {shortScene(scene)}…
+          {t("pages:workspace.tabs.RecipeLabTab.loading", {
+            scene: shortScene(scene),
+          })}
         </p>
       ) : (
         <div
@@ -309,12 +311,9 @@ export function RecipeLabTab({ sceneId }: { sceneId: string }) {
       )}
 
       <p className="text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
-        Vocabulary V and mean doc length come from each recipe's
-        topic_view shard for this scene; the axis scores are the
-        precomputed F-1/F-2/F-7/F-14/F-18 sweep results. A "—" means that
-        shard is not on disk for this (recipe, scene) yet. For the full
-        per-axis cross-scene table on a single recipe, open its deep-dive
-        page under <span className="font-mono">/workspace/methods</span>.
+        {t("pages:workspace.tabs.RecipeLabTab.footer_pre")}{" "}
+        <span className="font-mono">/workspace/methods</span>
+        {t("pages:workspace.tabs.RecipeLabTab.footer_post")}
       </p>
     </div>
   );
@@ -335,6 +334,7 @@ function RecipeColumn({
   winners: Record<string, number | null>;
   columnIndex: number;
 }) {
+  const { t } = useTranslation(["pages"]);
   const V = sceneRow?.topic_view?.V ?? null;
   const meanDoc = sceneRow?.topic_view?.mean_doc_length ?? null;
   const K = sceneRow?.topic_view?.K ?? null;
@@ -368,11 +368,13 @@ function RecipeColumn({
 
       {error ? (
         <p className="text-[12px]" style={{ color: "var(--color-warn)" }}>
-          load failed: {error.message}
+          {t("pages:workspace.tabs.RecipeLabTab.col_load_failed", {
+            detail: error.message,
+          })}
         </p>
       ) : !sceneRow ? (
         <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
-          No sweep shard for {recipe} on this scene.
+          {t("pages:workspace.tabs.RecipeLabTab.col_no_shard", { recipe })}
         </p>
       ) : (
         <>
@@ -380,24 +382,28 @@ function RecipeColumn({
             className="text-[10.5px] uppercase tracking-widest font-semibold mb-1.5"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Token bag
+            {t("pages:workspace.tabs.RecipeLabTab.token_bag")}
           </h5>
           <div
             className="space-y-1 text-[12.5px] font-mono mb-3"
             style={{ color: "var(--color-fg)" }}
           >
             <div className="flex justify-between">
-              <span style={{ color: "var(--color-fg-faint)" }}>vocab V</span>
+              <span style={{ color: "var(--color-fg-faint)" }}>
+                {t("pages:workspace.tabs.RecipeLabTab.vocab_v")}
+              </span>
               <span>{V != null ? V.toLocaleString() : "—"}</span>
             </div>
             <div className="flex justify-between">
               <span style={{ color: "var(--color-fg-faint)" }}>
-                mean doc len
+                {t("pages:workspace.tabs.RecipeLabTab.mean_doc_len")}
               </span>
               <span>{meanDoc != null ? meanDoc.toFixed(1) : "—"}</span>
             </div>
             <div className="flex justify-between">
-              <span style={{ color: "var(--color-fg-faint)" }}>topics K</span>
+              <span style={{ color: "var(--color-fg-faint)" }}>
+                {t("pages:workspace.tabs.RecipeLabTab.topics_k")}
+              </span>
               <span>{K != null ? K : "—"}</span>
             </div>
           </div>
@@ -406,7 +412,7 @@ function RecipeColumn({
             className="text-[10.5px] uppercase tracking-widest font-semibold mb-1.5"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Scoreboard
+            {t("pages:workspace.tabs.RecipeLabTab.scoreboard")}
           </h5>
           <div className="space-y-1">
             {AXES.map((axis) => {
@@ -415,7 +421,7 @@ function RecipeColumn({
               return (
                 <div
                   key={axis.id}
-                  title={axis.title}
+                  title={t(`pages:${axis.titleKey}`)}
                   className="flex justify-between items-center rounded px-2 py-1 text-[12.5px]"
                   style={{
                     backgroundColor: isWinner

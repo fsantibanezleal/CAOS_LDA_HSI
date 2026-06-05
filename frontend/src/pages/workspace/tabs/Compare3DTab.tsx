@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { cn } from "@/lib/cn";
 
@@ -18,6 +19,7 @@ export const COMPARE_METHODS = [
 export type CompareMethod = (typeof COMPARE_METHODS)[number];
 
 export function Compare3DTab({ sceneId }: { sceneId: string }) {
+  const { t } = useTranslation(["pages"]);
   const [picks, setPicks] = useState<CompareMethod[]>([
     "pca_8",
     "nmf_8",
@@ -51,16 +53,13 @@ export function Compare3DTab({ sceneId }: { sceneId: string }) {
           className="text-base font-semibold mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Multi-method 3D comparator · pick 2–4 representations
+          {t("pages:workspace.tabs.Compare3DTab.title")}
         </h4>
         <p
           className="text-[12px] mb-2"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Each panel renders the picked representation's 3D point cloud (PCA-3D of
-          the K-dim latent) coloured by ground-truth label. Drag to rotate, scroll
-          to zoom. Each panel is independent (no synchronised camera) — pick
-          layouts that let you compare cluster geometry, not identical viewpoints.
+          {t("pages:workspace.tabs.Compare3DTab.lead")}
         </p>
         <div className="flex flex-wrap gap-1.5">
           {COMPARE_METHODS.map((m) => {
@@ -116,6 +115,7 @@ function Compare3DPanel({
   sceneId: string;
   method: CompareMethod;
 }) {
+  const { t } = useTranslation(["pages"]);
   const q = useQuery({
     queryKey: ["rep-fit", sceneId, method],
     queryFn: () => api.representation(method, sceneId),
@@ -156,14 +156,14 @@ function Compare3DPanel({
           className="py-12 text-center text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Loading {method}…
+          {t("pages:workspace.tabs.Compare3DTab.loading_method", { method })}
         </p>
       ) : q.error ? (
         <p
           className="py-12 text-center text-[12px]"
           style={{ color: "var(--color-warn)" }}
         >
-          Failed to load {method}
+          {t("pages:workspace.tabs.Compare3DTab.error_method", { method })}
         </p>
       ) : q.data ? (
         <Suspense
@@ -172,7 +172,7 @@ function Compare3DPanel({
               className="py-12 text-center text-[12px]"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              3D…
+              {t("pages:workspace.tabs.Compare3DTab.loading_3d")}
             </p>
           }
         >

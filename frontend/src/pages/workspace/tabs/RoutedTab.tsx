@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { TopicRoutedClassifier } from "@/api/client";
 import { TabEmpty } from "../components/TabStates";
 
@@ -10,15 +11,14 @@ const ROUTED_LABEL: Record<string, string> = {
   topic_routed_hard: "topic_routed_hard",
 };
 
-const ROUTED_DESC: Record<string, string> = {
-  raw_logistic: "Logistic regression over the raw spectrum (B bands).",
-  theta_logistic: "Logistic regression over theta (K dimensions — control).",
-  pca_12_logistic: "Logistic regression over PCA-K (K-dim control).",
-  pca_K_logistic: "Logistic regression over PCA-K (K-dim control).",
-  topic_routed_soft:
-    "Per-topic specialist over the raw spectrum, mixed by theta (mixture).",
-  topic_routed_hard:
-    "Per-topic specialist over the raw spectrum, hard assignment to the dominant topic.",
+// Translation key leaf per method id; resolved at render via t().
+const ROUTED_DESC_KEY: Record<string, string> = {
+  raw_logistic: "desc_raw_logistic",
+  theta_logistic: "desc_theta_logistic",
+  pca_12_logistic: "desc_pca_k_logistic",
+  pca_K_logistic: "desc_pca_k_logistic",
+  topic_routed_soft: "desc_topic_routed_soft",
+  topic_routed_hard: "desc_topic_routed_hard",
 };
 
 const ROUTED_COLOR: Record<string, string> = {
@@ -39,8 +39,9 @@ export function RoutedTab({
   error: Error | null;
   data: TopicRoutedClassifier | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Loading ranking…</p>;
+    return <p style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.tabs.RoutedTab.loading")}</p>;
   if (error)
     return (
       <div
@@ -52,7 +53,7 @@ export function RoutedTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load topic_routed_classifier.
+          {t("pages:workspace.tabs.RoutedTab.error")}
         </p>
         <p
           className="mt-2 text-sm"
@@ -96,16 +97,17 @@ export function RoutedTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Ranking macro-F1 (5-fold StratifiedKFold) — this scene
+            {t("pages:workspace.tabs.RoutedTab.title")}
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            K={data.K} topics · {data.n_classes} classes ·{" "}
-            {data.n_documents.toLocaleString()} documents. Five methods
-            compared; routed_soft is the one the methodology supports
-            (per-topic specialist over the raw spectrum, mixed by theta).
+            {t("pages:workspace.tabs.RoutedTab.lead", {
+              k: data.K,
+              classes: data.n_classes,
+              documents: data.n_documents.toLocaleString(),
+            })}
           </p>
         </header>
         <svg
@@ -113,7 +115,7 @@ export function RoutedTab({
           viewBox={`0 0 ${w} ${h}`}
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          aria-label="Routed classifier ranking forest"
+          aria-label={t("pages:workspace.tabs.RoutedTab.aria_forest")}
           style={{ color: "var(--color-fg)" }}
         >
           <g
@@ -158,7 +160,7 @@ export function RoutedTab({
               opacity="0.55"
               fontSize="10"
             >
-              macro-F1 (mean ± CI95)
+              {t("pages:workspace.tabs.RoutedTab.axis_x")}
             </text>
             {/* Rows */}
             {ranking.map((r, i) => {
@@ -238,7 +240,7 @@ export function RoutedTab({
           className="text-base font-semibold mb-3"
           style={{ color: "var(--color-fg)" }}
         >
-          Method definitions
+          {t("pages:workspace.tabs.RoutedTab.method_definitions")}
         </h4>
         <dl className="space-y-2 text-[13px]">
           {ranking.map((r) => (
@@ -263,7 +265,9 @@ export function RoutedTab({
                   className="text-[13px]"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  {ROUTED_DESC[r.method] ?? "—"}
+                  {ROUTED_DESC_KEY[r.method]
+                    ? t(`pages:workspace.tabs.RoutedTab.${ROUTED_DESC_KEY[r.method]}`)
+                    : "—"}
                 </dd>
               </div>
             </div>

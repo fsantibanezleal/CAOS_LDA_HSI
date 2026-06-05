@@ -9,6 +9,7 @@
  *
  * Both helpers are module-local — only RobustnessTab consumes them.
  */
+import { useTranslation } from "react-i18next";
 import type {
   CrossSceneTransfer,
   QuantizationSensitivity,
@@ -27,10 +28,11 @@ export function RobustnessTab({
   quant: QuantizationSensitivity | null;
   transfer: CrossSceneTransfer | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading robustness panels…
+        {t("pages:workspace.tabs.RobustnessTab.loading")}
       </p>
     );
   if (error) {
@@ -43,7 +45,7 @@ export function RobustnessTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load robustness data.
+          {t("pages:workspace.tabs.RobustnessTab.error")}
         </p>
         <p
           className="mt-2 text-sm"
@@ -69,6 +71,7 @@ function QuantizationSensitivityCard({
 }: {
   quant: QuantizationSensitivity;
 }) {
+  const { t } = useTranslation(["pages"]);
   const okProbes = quant.probes.filter((p) => p.status === "ok");
   const maxCos = Math.max(
     ...okProbes.map((p) => p.matched_cosine_mean ?? 0),
@@ -87,18 +90,16 @@ function QuantizationSensitivityCard({
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Quantization sensitivity · canonical {quant.canonical_recipe}/
+        {t("pages:workspace.tabs.RobustnessTab.quant_title")} · {quant.canonical_recipe}/
         {quant.canonical_scheme} Q={quant.canonical_Q}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Each probe re-runs LDA with a different wordification config, then
-        matches topics back to the canonical run by maximum-cosine
-        (Hungarian). High <code>matched_cosine_mean</code> ⇒ topics are
-        robust to the probe choice. ARI vs canonical reports whether the
-        dominant-topic assignment per document agrees.
+        {t("pages:workspace.tabs.RobustnessTab.quant_help_pre")}{" "}
+        <code>matched_cosine_mean</code>{" "}
+        {t("pages:workspace.tabs.RobustnessTab.quant_help_post")}
       </p>
       <div className="overflow-x-auto">
         <table
@@ -108,19 +109,19 @@ function QuantizationSensitivityCard({
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                probe config
+                {t("pages:workspace.tabs.RobustnessTab.col_probe_config")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                cosine · mean
+                {t("pages:workspace.tabs.RobustnessTab.col_cosine_mean")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                cosine · min
+                {t("pages:workspace.tabs.RobustnessTab.col_cosine_min")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                ARI vs canonical
+                {t("pages:workspace.tabs.RobustnessTab.col_ari_vs_canonical")}
               </th>
               <th className="text-left font-mono text-[11px] pb-1">
-                match strength
+                {t("pages:workspace.tabs.RobustnessTab.col_match_strength")}
               </th>
             </tr>
           </thead>
@@ -192,6 +193,7 @@ function CrossSceneTransferCard({
   transfer: CrossSceneTransfer;
   currentScene: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   const N = transfer.scene_order.length;
   const labelW = 130;
   const cell = 80;
@@ -200,10 +202,10 @@ function CrossSceneTransferCard({
   const H = labelW + N * cellH + 8;
   const curIdx = transfer.scene_order.indexOf(currentScene);
   const colour = (v: number) => {
-    const t = Math.max(0, Math.min(1, v));
-    const r = Math.round(255 * (1 - t));
-    const g = Math.round(180 * t + 60 * (1 - t));
-    const b = Math.round(60 * t + 60 * (1 - t));
+    const tv = Math.max(0, Math.min(1, v));
+    const r = Math.round(255 * (1 - tv));
+    const g = Math.round(180 * tv + 60 * (1 - tv));
+    const b = Math.round(60 * tv + 60 * (1 - tv));
     return `rgb(${r}, ${g}, ${b})`;
   };
   return (
@@ -219,20 +221,20 @@ function CrossSceneTransferCard({
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Cross-scene transfer · macro F1
+        {t("pages:workspace.tabs.RobustnessTab.transfer_title")}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Each cell M[i,j] = train LDA on scene i, freeze, evaluate
-        downstream classifier on scene j. Common wavelength grid{" "}
-        {transfer.common_wavelength_grid.min_nm}–
-        {transfer.common_wavelength_grid.max_nm} nm,{" "}
-        {transfer.common_wavelength_grid.n_bands} bands. Wordification{" "}
-        {transfer.wordification}, Q={transfer.quantization_scale},
-        samples_per_class={transfer.samples_per_class}. Diagonal =
-        self-transfer.
+        {t("pages:workspace.tabs.RobustnessTab.transfer_help", {
+          minNm: transfer.common_wavelength_grid.min_nm,
+          maxNm: transfer.common_wavelength_grid.max_nm,
+          nBands: transfer.common_wavelength_grid.n_bands,
+          wordification: transfer.wordification,
+          q: transfer.quantization_scale,
+          samplesPerClass: transfer.samples_per_class,
+        })}
       </p>
       <div className="overflow-x-auto">
         <svg
@@ -240,7 +242,7 @@ function CrossSceneTransferCard({
           className="max-w-full h-auto"
           style={{ maxWidth: 1080 }}
           role="img"
-          aria-label="Cross-scene transfer ARI matrix"
+          aria-label={t("pages:workspace.tabs.RobustnessTab.aria_transfer_matrix")}
         >
           {transfer.scene_order.map((sc, j) => (
             <text
@@ -319,14 +321,17 @@ function CrossSceneTransferCard({
           className="mt-3 text-[11.5px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Highlight: current scene{" "}
+          {t("pages:workspace.tabs.RobustnessTab.highlight_pre")}{" "}
           <strong style={{ color: "var(--color-accent)" }}>
             {currentScene}
           </strong>{" "}
-          outlined in row {curIdx} (as source) and column {curIdx} (as
-          target). Self-transfer F1 ={" "}
-          {transfer.transfer_matrix_macro_f1[curIdx]?.[curIdx]?.toFixed(3) ?? "—"}
-          .
+          {t("pages:workspace.tabs.RobustnessTab.highlight_post", {
+            row: curIdx,
+            col: curIdx,
+            f1:
+              transfer.transfer_matrix_macro_f1[curIdx]?.[curIdx]?.toFixed(3) ??
+              "—",
+          })}
         </p>
       ) : null}
     </div>

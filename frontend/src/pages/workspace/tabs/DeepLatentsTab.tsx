@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api, type RepresentationPayload } from "@/api/client";
 
 const DEEP_METHOD_OPTIONS: {
@@ -48,6 +49,7 @@ const CLASS_LABEL_COLORS = [
 ];
 
 export function DeepLatentsTab({ sceneId }: { sceneId: string }) {
+  const { t } = useTranslation(["pages"]);
   const [methodKey, setMethodKey] = useState("cae_1d_8");
   const q = useQuery({
     queryKey: ["repr", methodKey, sceneId],
@@ -72,13 +74,10 @@ export function DeepLatentsTab({ sceneId }: { sceneId: string }) {
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Deep latents · CAE-1D / CAE-2D / CAE-3D / β-VAE × K
+            {t("pages:workspace.tabs.DeepLatentsTab.title")}
           </h4>
           <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
-            Pick a deep encoder and latent dimension. Renders the per-document
-            latent projected to PCA-2D / 3D, with K-means(latent) ARI vs label
-            and per-class silhouette. Capacity-driven scaling shows in the ARI
-            number on the top-right.
+            {t("pages:workspace.tabs.DeepLatentsTab.lead")}
           </p>
         </header>
         <div className="flex items-center gap-2 flex-wrap">
@@ -86,7 +85,7 @@ export function DeepLatentsTab({ sceneId }: { sceneId: string }) {
             className="text-[12px]"
             style={{ color: "var(--color-fg-subtle)" }}
           >
-            Method:
+            {t("pages:workspace.tabs.DeepLatentsTab.method_label")}
           </span>
           {(["cae_1d", "beta_vae", "cae_2d", "cae_3d"] as const).map((fam) => (
             <div key={fam} className="flex items-center gap-1">
@@ -133,8 +132,14 @@ export function DeepLatentsTab({ sceneId }: { sceneId: string }) {
             style={{ color: "var(--color-fg-faint)" }}
           >
             {q.isLoading
-              ? `Loading ${methodKey} for ${sceneId}…`
-              : `No payload for ${methodKey} on ${sceneId}.`}
+              ? t("pages:workspace.tabs.DeepLatentsTab.loading_named", {
+                  method: methodKey,
+                  scene: sceneId,
+                })
+              : t("pages:workspace.tabs.DeepLatentsTab.empty_named", {
+                  method: methodKey,
+                  scene: sceneId,
+                })}
           </p>
         ) : (
           <DeepLatentsBody data={data} />
@@ -145,6 +150,7 @@ export function DeepLatentsTab({ sceneId }: { sceneId: string }) {
 }
 
 function DeepLatentsBody({ data }: { data: RepresentationPayload }) {
+  const { t } = useTranslation(["pages"]);
   const scatter = data.scatter_2d_3d_subsample ?? [];
   const xs = scatter.map((p) => p.x_2d);
   const ys = scatter.map((p) => p.y_2d);
@@ -186,7 +192,7 @@ function DeepLatentsBody({ data }: { data: RepresentationPayload }) {
       <svg
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label="Deep latent PCA-2D projection"
+        aria-label={t("pages:workspace.tabs.DeepLatentsTab.aria_scatter")}
         style={{
           backgroundColor: "var(--color-bg)",
           border: "1px solid var(--color-border)",
@@ -210,10 +216,15 @@ function DeepLatentsBody({ data }: { data: RepresentationPayload }) {
       </svg>
 
       <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
-        PCA-2D projection of the deep latent · {scatter.length} points,
-        coloured by GT class. Reconstruction RMSE
-        {recRmse != null ? ` = ${recRmse.toFixed(4)}` : " not in payload"}.
-        Architecture:{" "}
+        {t("pages:workspace.tabs.DeepLatentsTab.caption_points", {
+          count: scatter.length,
+        })}{" "}
+        {recRmse != null
+          ? t("pages:workspace.tabs.DeepLatentsTab.caption_rmse", {
+              value: recRmse.toFixed(4),
+            })
+          : t("pages:workspace.tabs.DeepLatentsTab.caption_rmse_missing")}{" "}
+        {t("pages:workspace.tabs.DeepLatentsTab.caption_architecture")}{" "}
         <code className="font-mono text-[11px]">
           {String(data.fit_meta.architecture ?? "n/a")}
         </code>

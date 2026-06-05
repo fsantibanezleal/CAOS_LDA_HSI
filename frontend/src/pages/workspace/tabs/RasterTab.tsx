@@ -102,7 +102,9 @@ export function RasterTab({
 
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Loading raster metadata…</p>
+      <p style={{ color: "var(--color-fg-faint)" }}>
+        {t("pages:workspace.tabs.RasterTab.loading")}
+      </p>
     );
   if (error)
     return (
@@ -115,7 +117,7 @@ export function RasterTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load topic_to_data.
+          {t("pages:workspace.tabs.RasterTab.error")}
         </p>
         <p
           className="mt-2 text-sm"
@@ -147,29 +149,30 @@ export function RasterTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Spatial map — dominant topic per pixel
+            {t("pages:workspace.tabs.RasterTab.title")}
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Each labelled pixel is coloured by its dominant topic
-            (arg-max θ_d). Hover the raster to inspect row/col + topic;
-            click to pin the reading. Select a topic below to isolate
-            its spatial footprint.
+            {t("pages:workspace.tabs.RasterTab.lead")}
           </p>
         </header>
 
         <div className="grid lg:grid-cols-[auto_1fr] gap-6 items-start">
           {buf.isLoading && (
             <p style={{ color: "var(--color-fg-faint)" }}>
-              Downloading raster ({meta.spatial_shape[0]}×
-              {meta.spatial_shape[1]} pixels)…
+              {t("pages:workspace.tabs.RasterTab.downloading", {
+                rows: meta.spatial_shape[0],
+                cols: meta.spatial_shape[1],
+              })}
             </p>
           )}
           {buf.error && (
             <p style={{ color: "var(--color-warn)" }}>
-              Could not load the raster: {String(buf.error)}
+              {t("pages:workspace.tabs.RasterTab.raster_error", {
+                detail: String(buf.error),
+              })}
             </p>
           )}
           {buf.data && (
@@ -197,16 +200,18 @@ export function RasterTab({
                 className="text-[11px] uppercase tracking-wider mb-1"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Pinned pixel
+                {t("pages:workspace.tabs.RasterTab.pinned_pixel")}
               </div>
               {pick ? (
                 <div className="font-mono">
-                  ({pick.row}, {pick.col}) → topic{" "}
-                  {pick.topic === null ? "—" : pick.topic + 1}
+                  ({pick.row}, {pick.col}) →{" "}
+                  {t("pages:workspace.tabs.RasterTab.topic_n", {
+                    n: pick.topic === null ? "—" : pick.topic + 1,
+                  })}
                 </div>
               ) : (
                 <span style={{ color: "var(--color-fg-faint)" }}>
-                  Click any pixel on the raster.
+                  {t("pages:workspace.tabs.RasterTab.pinned_pixel_hint")}
                 </span>
               )}
             </div>
@@ -250,7 +255,7 @@ export function RasterTab({
                         : "var(--color-fg-subtle)",
                   }}
                 >
-                  All
+                  {t("pages:workspace.tabs.RasterTab.btn_all")}
                 </button>
                 {Array.from({ length: meta.topic_count }, (_, k) => {
                   const isSel = selectedTopic === k;
@@ -281,7 +286,9 @@ export function RasterTab({
                         className="inline-block w-2.5 h-2.5 rounded-sm"
                         style={{ backgroundColor: color }}
                       />
-                      topic {k + 1}
+                      {t("pages:workspace.tabs.RasterTab.topic_n", {
+                        n: k + 1,
+                      })}
                     </button>
                   );
                 })}
@@ -294,7 +301,7 @@ export function RasterTab({
                   className="text-[11px] uppercase tracking-wider mb-2"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  Compare with
+                  {t("pages:workspace.tabs.RasterTab.compare_with")}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   <button
@@ -316,7 +323,7 @@ export function RasterTab({
                           : "var(--color-fg-subtle)",
                     }}
                   >
-                    none
+                    {t("pages:workspace.tabs.RasterTab.btn_none")}
                   </button>
                   {Array.from({ length: meta.topic_count }, (_, k) => {
                     const isCmp = compareTopic === k;
@@ -353,7 +360,9 @@ export function RasterTab({
                           className="inline-block w-2.5 h-2.5 rounded-sm"
                           style={{ backgroundColor: color }}
                         />
-                        topic {k + 1}
+                        {t("pages:workspace.tabs.RasterTab.topic_n", {
+                          n: k + 1,
+                        })}
                       </button>
                     );
                   })}
@@ -373,8 +382,10 @@ export function RasterTab({
                   className="text-[11px] uppercase tracking-wider mb-2"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  Pairwise overlap — topic {selectedTopic + 1} vs topic{" "}
-                  {compareTopic + 1}
+                  {t("pages:workspace.tabs.RasterTab.pairwise_overlap", {
+                    a: selectedTopic + 1,
+                    b: compareTopic + 1,
+                  })}
                 </div>
                 <ul className="space-y-1.5">
                   <li
@@ -392,7 +403,9 @@ export function RasterTab({
                       }}
                     />
                     <span className="flex-1">
-                      topic {selectedTopic + 1} dominant
+                      {t("pages:workspace.tabs.RasterTab.topic_n_dominant", {
+                        n: selectedTopic + 1,
+                      })}
                     </span>
                     <span
                       className="font-mono"
@@ -429,7 +442,9 @@ export function RasterTab({
                       }}
                     />
                     <span className="flex-1">
-                      topic {compareTopic + 1} dominant
+                      {t("pages:workspace.tabs.RasterTab.topic_n_dominant", {
+                        n: compareTopic + 1,
+                      })}
                     </span>
                     <span
                       className="font-mono"
@@ -459,7 +474,7 @@ export function RasterTab({
                     }}
                   >
                     <span className="flex-1">
-                      4-neighbor adjacency
+                      {t("pages:workspace.tabs.RasterTab.adjacency_4n")}
                     </span>
                     <span
                       className="font-mono"
@@ -473,8 +488,7 @@ export function RasterTab({
                   className="text-[11px] mt-2"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  Adjacency proxies spatial confusability. Higher = topics
-                  share long borders.
+                  {t("pages:workspace.tabs.RasterTab.adjacency_help")}
                 </p>
               </div>
             )}
@@ -491,7 +505,9 @@ export function RasterTab({
                   className="text-[11px] uppercase tracking-wider mb-2"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  Label mixture — topic {selectedTopic! + 1}
+                  {t("pages:workspace.tabs.RasterTab.label_mixture", {
+                    n: selectedTopic! + 1,
+                  })}
                 </div>
                 <ul className="space-y-1">
                   {[...labels]
@@ -555,6 +571,7 @@ function TopDocumentsPreview({
   labels: LabelCell[];
   perTopicLabel: LabelCell[][];
 }) {
+  const { t } = useTranslation(["pages"]);
   const [openDocId, setOpenDocId] = useState<string | null>(null);
   if (docs.length === 0) return null;
   const labelColor = (id: number) =>
@@ -573,17 +590,15 @@ function TopDocumentsPreview({
         className="text-[11px] uppercase tracking-wider mb-2"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Top documents — topic {topic + 1}
+        {t("pages:workspace.tabs.RasterTab.top_documents", { n: topic + 1 })}
       </div>
       <p
         className="text-[11.5px] mb-2 leading-snug"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Documents (labelled pixels) ranked by θ at this topic.
-        Click a row to see the per-doc topic-routed-soft prediction
-        (computed as <span className="font-mono">Σ θ_d[k]·P(L|k)</span>
-        with no extra fetch). Δ badge = top-1 prediction disagrees with
-        ground truth.
+        {t("pages:workspace.tabs.RasterTab.top_documents_help")}{" "}
+        <span className="font-mono">Σ θ_d[k]·P(L|k)</span>
+        {t("pages:workspace.tabs.RasterTab.top_documents_help_2")}
       </p>
       <ul className="space-y-1.5">
         {top.map((d) => {
@@ -615,7 +630,10 @@ function TopDocumentsPreview({
                     backgroundColor: "var(--color-panel)",
                     border: "1px solid var(--color-border)",
                   }}
-                  title={`θ at topic ${topic + 1} = ${d.theta_k.toFixed(3)}`}
+                  title={t("pages:workspace.tabs.RasterTab.theta_at_topic", {
+                    n: topic + 1,
+                    value: d.theta_k.toFixed(3),
+                  })}
                 >
                   <div
                     className="h-full rounded-sm"
@@ -651,8 +669,11 @@ function TopDocumentsPreview({
                   }}
                   title={
                     disagree
-                      ? `top-1 prediction (${top1!.name}) ≠ ground truth (${d.label_name})`
-                      : `top-1 prediction agrees with ground truth`
+                      ? t("pages:workspace.tabs.RasterTab.pred_disagree", {
+                          pred: top1!.name,
+                          truth: d.label_name,
+                        })
+                      : t("pages:workspace.tabs.RasterTab.pred_agree")
                   }
                 >
                   {disagree ? "Δ" : "✓"}
@@ -676,6 +697,7 @@ function DocPredictionPanel({
   doc: TopDocumentForTopic;
   pred: RoutedPrediction[];
 }) {
+  const { t } = useTranslation(["pages"]);
   const top5 = pred.slice(0, 5);
   return (
     <div
@@ -689,15 +711,16 @@ function DocPredictionPanel({
         className="text-[10.5px] uppercase tracking-wider mb-1.5"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Topic-routed-soft prediction · doc {doc.doc_id}
+        {t("pages:workspace.tabs.RasterTab.routed_soft_doc", {
+          docId: doc.doc_id,
+        })}
       </div>
       <p
         className="text-[11px] mb-1.5"
         style={{ color: "var(--color-fg-faint)" }}
       >
         <span className="font-mono">P(L|d) = Σ_k θ_d[k] · P(L|k)</span>
-        {" — "}computed from doc&apos;s θ and per-topic label distribution
-        (already in the topic_to_data payload).
+        {t("pages:workspace.tabs.RasterTab.routed_soft_doc_help")}
       </p>
       <ul className="space-y-1">
         {top5.map((p, idx) => {
@@ -726,7 +749,7 @@ function DocPredictionPanel({
                   <span
                     className="text-[9.5px] font-mono ml-0.5"
                     style={{ color: "var(--color-accent)" }}
-                    title="top-1 routed prediction"
+                    title={t("pages:workspace.tabs.RasterTab.tip_top1")}
                   >
                     ★
                   </span>
@@ -735,7 +758,7 @@ function DocPredictionPanel({
                   <span
                     className="text-[9.5px] font-mono ml-0.5"
                     style={{ color: "var(--color-warn)" }}
-                    title="ground-truth label"
+                    title={t("pages:workspace.tabs.RasterTab.tip_ground_truth")}
                   >
                     ●
                   </span>
@@ -774,8 +797,7 @@ function DocPredictionPanel({
         className="text-[10.5px] mt-2"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        ★ = top-1 routed prediction · ● = ground-truth label · disagreement
-        between the two is the "Δ" badge in the row above.
+        {t("pages:workspace.tabs.RasterTab.legend_footer")}
       </p>
     </div>
   );
@@ -794,6 +816,7 @@ function PixelDetailCard({
   isLoading: boolean;
   onSelectTopic: (k: number) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const K = meta.topic_count;
   const [, w] = meta.spatial_shape;
   const theta = useMemo(() => {
@@ -830,7 +853,7 @@ function PixelDetailCard({
           color: "var(--color-fg-faint)",
         }}
       >
-        Loading per-pixel θ sidecar…
+        {t("pages:workspace.tabs.RasterTab.theta_loading")}
       </div>
     );
   }
@@ -844,8 +867,10 @@ function PixelDetailCard({
           color: "var(--color-fg-faint)",
         }}
       >
-        No LDA fit at pixel ({pick.row}, {pick.col}). This pixel was not
-        in the labelled sample used to fit LDA (sentinel all-zero θ).
+        {t("pages:workspace.tabs.RasterTab.no_fit", {
+          row: pick.row,
+          col: pick.col,
+        })}
       </div>
     );
   }
@@ -863,7 +888,11 @@ function PixelDetailCard({
           className="text-[11px] uppercase tracking-wider"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          θ at ({pick.row}, {pick.col}) · dominant t{topK + 1}
+          {t("pages:workspace.tabs.RasterTab.theta_at_pixel", {
+            row: pick.row,
+            col: pick.col,
+            topic: topK + 1,
+          })}
         </div>
         <span
           className="font-mono text-[11px]"
@@ -925,14 +954,14 @@ function PixelDetailCard({
         className="text-[11px] uppercase tracking-wider mb-1.5"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Routed-soft prediction (top-3)
+        {t("pages:workspace.tabs.RasterTab.routed_soft_top3")}
       </div>
       {pred.length === 0 ? (
         <span
           className="text-[11.5px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          No per-label distribution at this pixel.
+          {t("pages:workspace.tabs.RasterTab.no_label_dist")}
         </span>
       ) : (
         <ul className="space-y-0.5">
@@ -994,8 +1023,9 @@ function PixelDetailCard({
         className="text-[10.5px] mt-2"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Per-pixel θ from <span className="font-mono">theta_grid.bin</span>
-        {" "}(cycle 121). Click a topic bar to isolate it on the raster.
+        {t("pages:workspace.tabs.RasterTab.theta_footer_pre")}{" "}
+        <span className="font-mono">theta_grid.bin</span>
+        {t("pages:workspace.tabs.RasterTab.theta_footer_post")}
       </p>
     </div>
   );

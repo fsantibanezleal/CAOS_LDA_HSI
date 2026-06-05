@@ -1,12 +1,14 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import type { TopicStability } from "@/api/client";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { StabilityHeatmap } from "@/components/plots/StabilityHeatmap";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 function KSensitivityPanel({ sceneId }: { sceneId: string }) {
+  const { t } = useTranslation(["pages"]);
   const offsets = [-2, -1, 0, 1, 2];
   const queries = useQueries({
     queries: offsets.map((o) => ({
@@ -26,7 +28,7 @@ function KSensitivityPanel({ sceneId }: { sceneId: string }) {
         }}
       >
         <p style={{ color: "var(--color-fg-faint)" }} className="text-sm">
-          Loading K-sensitivity sweep…
+          {t("pages:workspace.tabs.StabilityTab.ksens_loading")}
         </p>
       </div>
     );
@@ -59,16 +61,15 @@ function KSensitivityPanel({ sceneId }: { sceneId: string }) {
     >
       <header className="mb-3">
         <h4 className="text-base font-semibold" style={{ color: "var(--color-fg)" }}>
-          K-sensitivity · LDA off-diag at K-2..K+2 around canonical
+          {t("pages:workspace.tabs.StabilityTab.ksens_title")}
         </h4>
         <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
-          Tests whether the canonical-K choice is a brittle hyperparameter.
-          Each bar refits LDA at K = K_canonical + offset and reports the
-          off-diag matched-cosine mean across {queries[0]?.data?.seeds?.length ?? "N"} seeds.
-          Range across all 6 scenes is ≥ 0.954 — canonical-K is NOT brittle.
+          {t("pages:workspace.tabs.StabilityTab.ksens_help", {
+            seeds: queries[0]?.data?.seeds?.length ?? "N",
+          })}
         </p>
       </header>
-      <svg viewBox={`0 0 ${W} ${H + 30}`} role="img" aria-label="K-sensitivity bars">
+      <svg viewBox={`0 0 ${W} ${H + 30}`} role="img" aria-label={t("pages:workspace.tabs.StabilityTab.aria_ksens_bars")}>
         <line x1={padding} y1={H - padding} x2={W - padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
         <line x1={padding} y1={padding * 0.5} x2={padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
         {[yMin, (yMin + yMax) / 2, yMax].map((y, i) => (
@@ -174,6 +175,7 @@ function StabilityLadderPanel({
   onSelectMethod: (m: LadderMethod) => void;
   selectedKey: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   const lda = useQuery({
     queryKey: ["topic-stability", sceneId, 0],
     queryFn: () => api.topicStability(sceneId, 0),
@@ -236,12 +238,10 @@ function StabilityLadderPanel({
     >
       <header className="mb-3">
         <h4 className="text-base font-semibold" style={{ color: "var(--color-fg)" }}>
-          Stability ladder · 9 methods at K=8 (this scene, N={nSeeds} seeds)
+          {t("pages:workspace.tabs.StabilityTab.ladder_title", { seeds: nSeeds })}
         </h4>
         <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
-          Off-diagonal cluster ARI (LDA: Hungarian-matched cosine on φ) across
-          {" "}{nSeeds}{" "}initialisations. Higher = the representation is more
-          reproducible. Click a row to inspect the seed-pair matrix below.
+          {t("pages:workspace.tabs.StabilityTab.ladder_help", { seeds: nSeeds })}
         </p>
       </header>
 
@@ -289,8 +289,7 @@ function StabilityLadderPanel({
         })}
       </div>
       <p className="mt-3 text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
-        Blue = LDA (project canonical). Green = deterministic classical (PCA, ICA = 1.000).
-        Orange = stochastic classical (NMF, dense-AE). Red = deep encoders (CAE family + β-VAE).
+        {t("pages:workspace.tabs.StabilityTab.ladder_legend")}
       </p>
     </div>
   );
@@ -409,32 +408,17 @@ export function StabilityTab({
   data: TopicStability | null;
   sceneId: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading stability…
-      </p>
+      <TabLoading message={t("pages:workspace.tabs.StabilityTab.loading")} />
     );
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load topic_stability.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.StabilityTab.error")}
+        detail={error.message}
+      />
     );
   if (!data) return <TabEmpty />;
 
@@ -462,6 +446,7 @@ function StabilityTabBody({
   perTopic: TopicStability["per_topic_stability_summary"];
   sceneId: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [selected, setSelected] = useState<LadderMethod>(LADDER_METHODS[2]!);
   const [nSeeds, setNSeeds] = useState<7 | 15>(7);
 
@@ -484,8 +469,10 @@ function StabilityTabBody({
     if (selected.kind === "lda") {
       return (
         <StabilityMatrixView
-          title={`LDA · matched-cosine · ${data.seeds.length} seeds`}
-          subtitle="Hungarian-matched cosine between φ vectors across seed pairs."
+          title={t("pages:workspace.tabs.StabilityTab.matrix_lda_title", {
+            seeds: data.seeds.length,
+          })}
+          subtitle={t("pages:workspace.tabs.StabilityTab.matrix_lda_subtitle")}
           matrix={data.seed_pair_matched_cosine_mean}
           seeds={data.seeds}
         />
@@ -496,14 +483,20 @@ function StabilityTabBody({
     if (!live) {
       return (
         <p style={{ color: "var(--color-fg-faint)" }} className="text-sm">
-          Loading {selected.label} stability matrix at N={nSeeds}…
+          {t("pages:workspace.tabs.StabilityTab.matrix_loading", {
+            label: selected.label,
+            seeds: nSeeds,
+          })}
         </p>
       );
     }
     return (
       <StabilityMatrixView
-        title={`${selected.label} · pairwise cluster ARI · ${live.n_seeds} seeds`}
-        subtitle="K-means(latent) ARI between every seed pair. Diagonal = 1 (auto-match)."
+        title={t("pages:workspace.tabs.StabilityTab.matrix_method_title", {
+          label: selected.label,
+          seeds: live.n_seeds,
+        })}
+        subtitle={t("pages:workspace.tabs.StabilityTab.matrix_method_subtitle")}
         matrix={live.seed_pair_ari}
         seeds={Array.from({ length: live.n_seeds }, (_, i) => i)}
       />
@@ -520,7 +513,7 @@ function StabilityTabBody({
       />
 
       <div className="flex items-center gap-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
-        <span>Seed budget:</span>
+        <span>{t("pages:workspace.tabs.StabilityTab.seed_budget")}</span>
         {[7, 15].map((n) => (
           <button
             key={n}
@@ -537,7 +530,9 @@ function StabilityTabBody({
           </button>
         ))}
         <span style={{ color: "var(--color-fg-faint)" }}>
-          (LDA above is canonical N={data.seeds.length}; the toggle drives the deep / classical matrix below.)
+          {t("pages:workspace.tabs.StabilityTab.seed_budget_note", {
+            seeds: data.seeds.length,
+          })}
         </span>
       </div>
 
@@ -558,16 +553,17 @@ function StabilityTabBody({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            LDA detail · matched-cosine · {data.seeds.length} seeds
+            {t("pages:workspace.tabs.StabilityTab.lda_detail_title", {
+              seeds: data.seeds.length,
+            })}
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Each seed pair (i, j) reports the Hungarian-matched cosine
-            similarity between the K={data.K} topic signatures φ fitted on the
-            same corpus with different seeds. Diagonal = 1 (auto-match). Real
-            stability lives in the off-diagonal cells.
+            {t("pages:workspace.tabs.StabilityTab.lda_detail_help", {
+              k: data.K,
+            })}
           </p>
         </header>
 
@@ -576,15 +572,15 @@ function StabilityTabBody({
           style={{ color: "var(--color-fg-subtle)" }}
         >
           <SceneStabilityStat
-            label="Off-diagonal mean"
+            label={t("pages:workspace.tabs.StabilityTab.stat_offdiag_mean")}
             value={sceneSum.off_diagonal_mean.toFixed(4)}
           />
           <SceneStabilityStat
-            label="Off-diagonal min"
+            label={t("pages:workspace.tabs.StabilityTab.stat_offdiag_min")}
             value={sceneSum.off_diagonal_min.toFixed(4)}
           />
           <SceneStabilityStat
-            label="Off-diagonal std"
+            label={t("pages:workspace.tabs.StabilityTab.stat_offdiag_std")}
             value={sceneSum.off_diagonal_std.toFixed(4)}
           />
         </div>
@@ -607,24 +603,21 @@ function StabilityTabBody({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Per-topic stability · matched-cosine vs seed 0
+          {t("pages:workspace.tabs.StabilityTab.per_topic_title")}
         </h4>
         <p
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          For each topic, the median and minimum of the Hungarian-matched
-          cosine against the seed-0 fit across the remaining seeds. Topics
-          near 1.0 are robust; the lowest ones are those random initialisation
-          still manages to perturb.
+          {t("pages:workspace.tabs.StabilityTab.per_topic_help")}
         </p>
         <div className="space-y-1.5">
-          {perTopic.map((t) => {
+          {perTopic.map((pt) => {
             const color =
-              TOPIC_COLORS[(t.topic_id - 1) % TOPIC_COLORS.length] ?? "#0ea5e9";
+              TOPIC_COLORS[(pt.topic_id - 1) % TOPIC_COLORS.length] ?? "#0ea5e9";
             return (
               <div
-                key={t.topic_id}
+                key={pt.topic_id}
                 className="flex items-center gap-3 text-[13px]"
                 style={{ color: "var(--color-fg-subtle)" }}
               >
@@ -632,7 +625,9 @@ function StabilityTabBody({
                   className="shrink-0 w-20 font-mono"
                   style={{ color: "var(--color-fg)" }}
                 >
-                  topic {t.topic_id}
+                  {t("pages:workspace.tabs.StabilityTab.topic_n", {
+                    n: pt.topic_id,
+                  })}
                 </span>
                 <span
                   className="flex-1 h-4 rounded-sm relative overflow-hidden"
@@ -641,7 +636,7 @@ function StabilityTabBody({
                   <span
                     className="absolute inset-y-0 left-0 rounded-sm"
                     style={{
-                      width: `${t.median_matched_cosine_vs_seed0 * 100}%`,
+                      width: `${pt.median_matched_cosine_vs_seed0 * 100}%`,
                       backgroundColor: color,
                       opacity: 0.85,
                     }}
@@ -649,7 +644,7 @@ function StabilityTabBody({
                   <span
                     className="absolute inset-y-0 left-0 border-r-2"
                     style={{
-                      width: `${t.min_matched_cosine_vs_seed0 * 100}%`,
+                      width: `${pt.min_matched_cosine_vs_seed0 * 100}%`,
                       borderColor: "var(--color-fg)",
                       opacity: 0.55,
                     }}
@@ -659,13 +654,13 @@ function StabilityTabBody({
                   className="shrink-0 w-16 text-right font-mono text-[11.5px]"
                   style={{ color: "var(--color-fg)" }}
                 >
-                  {t.median_matched_cosine_vs_seed0.toFixed(3)}
+                  {pt.median_matched_cosine_vs_seed0.toFixed(3)}
                 </span>
                 <span
                   className="shrink-0 w-12 text-right font-mono text-[11px]"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  ±{t.std_matched_cosine_vs_seed0.toFixed(3)}
+                  ±{pt.std_matched_cosine_vs_seed0.toFixed(3)}
                 </span>
               </div>
             );
@@ -675,7 +670,7 @@ function StabilityTabBody({
           className="mt-4 text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Coloured bar = median; inner vertical line = minimum.
+          {t("pages:workspace.tabs.StabilityTab.per_topic_caption")}
         </p>
       </div>
     </div>

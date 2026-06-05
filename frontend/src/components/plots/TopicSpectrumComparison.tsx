@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 
@@ -45,6 +46,7 @@ export function TopicSpectrumComparison({
   topicDistanceCosine,
   initialSelection,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const K = bandProfiles.length;
   const [selected, setSelected] = useState<Set<number>>(
     () => new Set(initialSelection ?? [0, 1].filter((k) => k < K)),
@@ -115,9 +117,7 @@ export function TopicSpectrumComparison({
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="text-[12px] opacity-75">
-          Compare up to 4 topics. The overlay shows their basis spectra
-          φ_k(λ) on a shared axis; absorption / reflectance features
-          marked as dotted verticals.
+          {t("pages:plots.TopicSpectrumComparison.help")}
         </div>
         <label className="text-[12px] inline-flex items-center gap-1.5 select-none">
           <input
@@ -125,7 +125,7 @@ export function TopicSpectrumComparison({
             checked={showFeatures}
             onChange={(e) => setShowFeatures(e.target.checked)}
           />
-          show physical features
+          {t("pages:plots.TopicSpectrumComparison.toggle_features")}
         </label>
       </div>
 
@@ -134,7 +134,7 @@ export function TopicSpectrumComparison({
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label="Per-topic spectrum comparison"
+        aria-label={t("pages:plots.TopicSpectrumComparison.aria_chart")}
         style={{ color: "var(--color-fg)" }}
       >
         <g
@@ -246,7 +246,7 @@ export function TopicSpectrumComparison({
             opacity="0.55"
             fontSize="10.5"
           >
-            wavelength (nm)
+            {t("pages:plots.TopicSpectrumComparison.axis_x")}
           </text>
           <text
             x={14}
@@ -308,7 +308,7 @@ export function TopicSpectrumComparison({
                 className="inline-block w-2.5 h-2.5 rounded-sm"
                 style={{ backgroundColor: colour }}
               />
-              topic {k}
+              {t("pages:plots.TopicSpectrumComparison.chip_topic", { index: k })}
               <span
                 className="text-[10.5px] ml-1 opacity-70"
                 style={{ color: "var(--color-fg-faint)" }}
@@ -330,13 +330,14 @@ export function TopicSpectrumComparison({
           }}
         >
           <div className="text-[11.5px] mb-2 opacity-75">
-            Pairwise cosine distance between selected topic spectra
-            (higher = more visually distinct)
+            {t("pages:plots.TopicSpectrumComparison.pairwise_caption")}
           </div>
           <table className="text-[11px]">
             <thead>
               <tr>
-                <th className="px-2 py-1 text-left">A \ B</th>
+                <th className="px-2 py-1 text-left">
+                  {t("pages:plots.TopicSpectrumComparison.col_a_b")}
+                </th>
                 {selectedList.map((k) => (
                   <th key={k} className="px-2 py-1 text-center">
                     t{k}

@@ -10,7 +10,9 @@
  * AnomalyMetric stays as a private helper inside this module — it
  * is only used here.
  */
+import { useTranslation } from "react-i18next";
 import type { DeepAnomaly, TopicAnomaly } from "@/api/client";
+import { TabError, TabLoading } from "../components/TabStates";
 
 export function AnomalyTab({
   isLoading,
@@ -23,31 +25,19 @@ export function AnomalyTab({
   topic: TopicAnomaly | null;
   deep: DeepAnomaly | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading anomaly statistics…
-      </p>
+      <TabLoading
+        message={t("pages:workspace.tabs.AnomalyTab.loading")}
+      />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load anomaly statistics.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.AnomalyTab.error")}
+        detail={error.message}
+      />
     );
   }
 
@@ -65,68 +55,77 @@ export function AnomalyTab({
           className="text-base font-semibold mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Anomaly indicators vs misclassification — Spearman ρ
+          {t("pages:workspace.tabs.AnomalyTab.title")}
         </h4>
         <p
           className="text-[12px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Each row is one anomaly signal. High |ρ| ⇒ the indicator
-          agrees with which pixels the routed classifier gets wrong
-          (positive) or right (negative). p &lt; 0.05 ⇒ correlation
-          significant at the 5% level. K = {topic?.topic_count ?? "—"}{" "}
-          topics, {topic?.n_documents ?? "—"} documents.
+          {t("pages:workspace.tabs.AnomalyTab.help", {
+            k: topic?.topic_count ?? "—",
+            docs: topic?.n_documents ?? "—",
+          })}
         </p>
 
         <div className="grid sm:grid-cols-2 gap-5">
           {topic ? (
             <AnomalyMetric
               accent="rgba(40, 160, 80, 1)"
-              title="Topic-based — softmax peak"
+              title={t("pages:workspace.tabs.AnomalyTab.metric_softmax_title")}
               rho={
                 topic.anomaly_to_misclassification_correlation.spearman_rho_softmax
               }
               p_value={
                 topic.anomaly_to_misclassification_correlation.spearman_p_softmax
               }
-              caption="Lower softmax peak (less confident) ⇒ more likely to be wrong."
+              caption={t("pages:workspace.tabs.AnomalyTab.metric_softmax_caption")}
             />
           ) : null}
           {topic ? (
             <AnomalyMetric
               accent="rgba(40, 160, 80, 1)"
-              title="Topic-based — negative log-likelihood"
+              title={t("pages:workspace.tabs.AnomalyTab.metric_nll_title")}
               rho={
                 topic.anomaly_to_misclassification_correlation.spearman_rho_nll
               }
               p_value={
                 topic.anomaly_to_misclassification_correlation.spearman_p_nll
               }
-              caption="Higher NLL ⇒ more likely to be wrong (positive ρ expected)."
+              caption={t("pages:workspace.tabs.AnomalyTab.metric_nll_caption")}
             />
           ) : null}
           {deep?.cae_1d_8 ? (
             <AnomalyMetric
               accent="rgba(56, 189, 248, 1)"
-              title="Deep — CAE-1D-8 reconstruction"
+              title={t("pages:workspace.tabs.AnomalyTab.metric_cae_title")}
               rho={deep.cae_1d_8.spearman_rho_vs_misclass}
-              caption={`indicator: ${deep.cae_1d_8.anomaly_indicator} · RMSE p50=${deep.cae_1d_8.rmse_overall.median.toFixed(3)} · p95=${deep.cae_1d_8.rmse_overall.p95.toFixed(3)}`}
+              caption={t("pages:workspace.tabs.AnomalyTab.metric_cae_caption", {
+                indicator: deep.cae_1d_8.anomaly_indicator,
+                p50: deep.cae_1d_8.rmse_overall.median.toFixed(3),
+                p95: deep.cae_1d_8.rmse_overall.p95.toFixed(3),
+              })}
             />
           ) : null}
           {deep?.beta_vae_8 ? (
             <AnomalyMetric
               accent="rgba(170, 60, 200, 1)"
-              title="Deep — β-VAE reconstruction RMSE"
+              title={t("pages:workspace.tabs.AnomalyTab.metric_vae_rmse_title")}
               rho={deep.beta_vae_8.spearman_rho_rmse_vs_misclass}
-              caption={`RMSE p50=${deep.beta_vae_8.rmse_overall.median.toFixed(3)} · p95=${deep.beta_vae_8.rmse_overall.p95.toFixed(3)}`}
+              caption={t("pages:workspace.tabs.AnomalyTab.metric_vae_rmse_caption", {
+                p50: deep.beta_vae_8.rmse_overall.median.toFixed(3),
+                p95: deep.beta_vae_8.rmse_overall.p95.toFixed(3),
+              })}
             />
           ) : null}
           {deep?.beta_vae_8 ? (
             <AnomalyMetric
               accent="rgba(170, 60, 200, 1)"
-              title="Deep — β-VAE KL"
+              title={t("pages:workspace.tabs.AnomalyTab.metric_vae_kl_title")}
               rho={deep.beta_vae_8.spearman_rho_kl_vs_misclass}
-              caption={`KL p50=${deep.beta_vae_8.kl_overall.median.toFixed(3)} · p95=${deep.beta_vae_8.kl_overall.p95.toFixed(3)} · KL is the regularisation term (high = far from prior)`}
+              caption={t("pages:workspace.tabs.AnomalyTab.metric_vae_kl_caption", {
+                p50: deep.beta_vae_8.kl_overall.median.toFixed(3),
+                p95: deep.beta_vae_8.kl_overall.p95.toFixed(3),
+              })}
             />
           ) : null}
         </div>
@@ -157,6 +156,7 @@ function AnomalyMetric({
   p_value?: number;
   caption?: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   const abs = Math.abs(rho);
   const tone = abs >= 0.3 ? "strong" : abs >= 0.15 ? "moderate" : "weak";
   const significant = p_value !== undefined ? p_value < 0.05 : null;
@@ -180,7 +180,7 @@ function AnomalyMetric({
           className="text-[10px] uppercase tracking-widest"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          ρ · {tone}
+          ρ · {t(`pages:workspace.tabs.AnomalyTab.tone_${tone}`)}
         </span>
         {p_value !== undefined ? (
           <span

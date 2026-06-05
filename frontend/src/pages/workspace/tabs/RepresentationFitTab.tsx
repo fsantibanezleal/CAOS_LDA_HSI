@@ -1,4 +1,5 @@
 import { Suspense, lazy } from "react";
+import { useTranslation } from "react-i18next";
 import type { EmbeddingPoint3D, RepresentationPayload } from "@/api/client";
 import { TabEmpty } from "../components/TabStates";
 import { TOPIC_FAMILY_REPS } from "../topicFamilyReps";
@@ -20,6 +21,7 @@ export function RepresentationFitTab({
   error: Error | null;
   data: RepresentationPayload | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (!rep) {
     return (
       <div
@@ -27,7 +29,7 @@ export function RepresentationFitTab({
         style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
       >
         <p style={{ color: "var(--color-fg-subtle)" }}>
-          Pick a representation in Stage 3 first.
+          {t("pages:workspace.tabs.RepresentationFitTab.pick_representation")}
         </p>
       </div>
     );
@@ -42,16 +44,22 @@ export function RepresentationFitTab({
         <p style={{ color: "var(--color-fg-subtle)" }}>
           {isTopic ? (
             <>
-              <strong>{rep}</strong> is a topic-family representation — its native 3D embedding is in
-              the <em>Embed 3D</em> tab (θ-PCA-3D), and its topic profiles in <em>Topics</em>.
+              <strong>{rep}</strong>{" "}
+              {t("pages:workspace.tabs.RepresentationFitTab.is_topic_family")}{" "}
+              <em>Embed 3D</em>{" "}
+              {t("pages:workspace.tabs.RepresentationFitTab.is_topic_family_mid")}{" "}
+              <em>Topics</em>.
             </>
           ) : rep === "endmember" ? (
             <>
-              <strong>endmember</strong> is an unmixing baseline — its native panels (endmember spectra,
-              abundance simplex) ship in a dedicated Unmixing Explorer (cycle 73).
+              <strong>endmember</strong>{" "}
+              {t("pages:workspace.tabs.RepresentationFitTab.is_endmember")}
             </>
           ) : (
-            <>No representation-fit endpoint for <strong>{rep}</strong>.</>
+            <>
+              {t("pages:workspace.tabs.RepresentationFitTab.no_endpoint")}{" "}
+              <strong>{rep}</strong>.
+            </>
           )}
         </p>
       </div>
@@ -59,7 +67,9 @@ export function RepresentationFitTab({
   }
   if (isLoading) {
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Loading representation fit for {apiMethod}…</p>
+      <p style={{ color: "var(--color-fg-faint)" }}>
+        {t("pages:workspace.tabs.RepresentationFitTab.loading_named", { name: apiMethod })}
+      </p>
     );
   }
   if (error) {
@@ -68,7 +78,9 @@ export function RepresentationFitTab({
         className="rounded-lg border p-6"
         style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
       >
-        <p style={{ color: "var(--color-warn)" }}>Could not load representation fit.</p>
+        <p style={{ color: "var(--color-warn)" }}>
+          {t("pages:workspace.tabs.RepresentationFitTab.error")}
+        </p>
         <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
       </div>
     );
@@ -97,13 +109,17 @@ export function RepresentationFitTab({
         <header className="flex flex-wrap items-baseline justify-between gap-3 mb-2">
           <div>
             <h4 className="text-base font-semibold tracking-tight" style={{ color: "var(--color-fg)" }}>
-              {rep} · 3D embedding · {data.n_documents} documents
+              {rep} · {t("pages:workspace.tabs.RepresentationFitTab.embedding_3d")} ·{" "}
+              {t("pages:workspace.tabs.RepresentationFitTab.documents_count", { count: data.n_documents })}
             </h4>
             <p className="text-[12.5px]" style={{ color: "var(--color-fg-faint)" }}>
-              backend method <code>{data.method}</code> · latent dim {data.latent_dim} · scatter is PCA-3D
+              {t("pages:workspace.tabs.RepresentationFitTab.backend_method")}{" "}
+              <code>{data.method}</code> ·{" "}
+              {t("pages:workspace.tabs.RepresentationFitTab.latent_dim_label", { dim: data.latent_dim })} ·{" "}
+              {t("pages:workspace.tabs.RepresentationFitTab.scatter_pca3d")}
               {evList.length ? (
                 <>
-                  {" "}of latent space (Σ EV {(evTotal * 100).toFixed(1)}% — components{" "}
+                  {" "}{t("pages:workspace.tabs.RepresentationFitTab.of_latent_space")} (Σ EV {(evTotal * 100).toFixed(1)}% — {t("pages:workspace.tabs.RepresentationFitTab.components")}{" "}
                   {evList.map((v, i) => (
                     <span key={i} className="font-mono text-[11px]">
                       {i > 0 ? " · " : ""}{(v * 100).toFixed(1)}%
@@ -115,11 +131,11 @@ export function RepresentationFitTab({
             </p>
           </div>
         </header>
-        <Suspense fallback={<p style={{ color: "var(--color-fg-faint)" }}>Loading 3D…</p>}>
+        <Suspense fallback={<p style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.tabs.RepresentationFitTab.loading_3d")}</p>}>
           <Scatter3D points={points} colorBy="label" selectedTopic={null} />
         </Suspense>
         <p className="mt-2 text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
-          Coloured by ground-truth label. Drag to rotate, scroll to zoom, click a point to pick.
+          {t("pages:workspace.tabs.RepresentationFitTab.scatter_help")}
         </p>
       </div>
 
@@ -129,7 +145,7 @@ export function RepresentationFitTab({
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
         >
           <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "var(--color-fg-faint)" }}>
-            KMeans vs label
+            {t("pages:workspace.tabs.RepresentationFitTab.kmeans_vs_label")}
           </div>
           <div className="text-[28px] font-mono leading-tight" style={{ color: "var(--color-fg)" }}>
             {data.downstream_kmeans_vs_label.ari.toFixed(3)}
@@ -144,13 +160,13 @@ export function RepresentationFitTab({
             style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
           >
             <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "var(--color-fg-faint)" }}>
-              Silhouette (label-supervised)
+              {t("pages:workspace.tabs.RepresentationFitTab.silhouette_supervised")}
             </div>
             <div className="text-[28px] font-mono leading-tight" style={{ color: "var(--color-fg)" }}>
               {data.silhouette_label.overall.toFixed(3)}
             </div>
             <div className="text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
-              overall · negative = clusters mixed; positive = well separated
+              {t("pages:workspace.tabs.RepresentationFitTab.silhouette_overall_help")}
             </div>
           </div>
         ) : null}
@@ -159,12 +175,12 @@ export function RepresentationFitTab({
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
         >
           <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "var(--color-fg-faint)" }}>
-            Latent dim
+            {t("pages:workspace.tabs.RepresentationFitTab.latent_dim")}
           </div>
           <div className="text-[28px] font-mono leading-tight" style={{ color: "var(--color-fg)" }}>
             {data.latent_dim}
           </div>
-          <div className="text-[11px]" style={{ color: "var(--color-fg-faint)" }}>K = bottleneck size</div>
+          <div className="text-[11px]" style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.tabs.RepresentationFitTab.k_bottleneck")}</div>
         </div>
       </div>
 
@@ -174,7 +190,7 @@ export function RepresentationFitTab({
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
         >
           <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-            Fit metadata
+            {t("pages:workspace.tabs.RepresentationFitTab.fit_metadata")}
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1.5 text-[12.5px]" style={{ color: "var(--color-fg)" }}>
             {fitMetaEntries.map(([k, v]) => (
@@ -201,15 +217,15 @@ export function RepresentationFitTab({
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
         >
           <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-            Silhouette per class (sorted)
+            {t("pages:workspace.tabs.RepresentationFitTab.silhouette_per_class")}
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
               <thead>
                 <tr style={{ color: "var(--color-fg-faint)" }}>
-                  <th className="text-left font-mono text-[11px] pb-1 pr-3">class</th>
-                  <th className="text-right font-mono text-[11px] pb-1 pr-3">silhouette</th>
-                  <th className="text-left font-mono text-[11px] pb-1">bar</th>
+                  <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.RepresentationFitTab.col_class")}</th>
+                  <th className="text-right font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.RepresentationFitTab.col_silhouette")}</th>
+                  <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.RepresentationFitTab.col_bar")}</th>
                 </tr>
               </thead>
               <tbody>

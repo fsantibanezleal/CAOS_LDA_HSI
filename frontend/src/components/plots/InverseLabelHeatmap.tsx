@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   matrix: number[][];
@@ -20,6 +21,7 @@ export function InverseLabelHeatmap({
   selectedTopic,
   onSelectTopic,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const labelW = 140;
   const colW = Math.max(28, Math.floor(640 / Math.max(topicCount, 1)));
   const rowH = 28;
@@ -49,7 +51,7 @@ export function InverseLabelHeatmap({
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Label versus topic inverse heatmap"
+      aria-label={t("pages:plots.InverseLabelHeatmap.aria_heatmap")}
       style={{ color: "var(--color-fg)" }}
     >
       <g

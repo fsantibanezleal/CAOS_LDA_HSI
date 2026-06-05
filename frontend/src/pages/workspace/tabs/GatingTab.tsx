@@ -11,7 +11,9 @@
  *
  * Both helper cards are module-local since only GatingTab consumes them.
  */
+import { useTranslation } from "react-i18next";
 import type { EmbeddedBaseline, TopicRoutedDeepGate } from "@/api/client";
+import { TabError, TabLoading } from "../components/TabStates";
 
 export function GatingTab({
   isLoading,
@@ -24,31 +26,17 @@ export function GatingTab({
   embedded: EmbeddedBaseline | null;
   deepGate: TopicRoutedDeepGate | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading gating panels…
-      </p>
+      <TabLoading message={t("pages:workspace.tabs.GatingTab.loading")} />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load gating data.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.GatingTab.error")}
+        detail={error.message}
+      />
     );
   }
   return (
@@ -60,6 +48,7 @@ export function GatingTab({
 }
 
 function EmbeddedBaselineCard({ embedded }: { embedded: EmbeddedBaseline }) {
+  const { t } = useTranslation(["pages"]);
   const methods = Object.entries(embedded.method_metrics);
   const sorted = embedded.ranking_by_macro_f1_mean
     ? embedded.ranking_by_macro_f1_mean
@@ -91,19 +80,23 @@ function EmbeddedBaselineCard({ embedded }: { embedded: EmbeddedBaseline }) {
         className="text-lg font-semibold tracking-tight mt-1 mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Embedded baseline · {embedded.K}-dim concat with theta
+        {t("pages:workspace.tabs.GatingTab.embedded_title", {
+          k: embedded.K,
+        })}
       </h3>
       <p
         className="text-[12.5px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Does theta add signal beyond PCA at the same K? Trains a{" "}
-        {embedded.head} on (raw / pca_K / theta / theta⊕pca_K) features.{" "}
-        {embedded.split} on {embedded.n_documents.toLocaleString()} documents
-        × {embedded.n_classes} classes. Honest headline (cycles 53-54): the
-        concat <em>theta_concat_pca_K_logistic</em> beats pca_K alone only
-        on Indian Pines (Δ F1 = +0.018, small effect); ties on the other 5
-        scenes.
+        {t("pages:workspace.tabs.GatingTab.embedded_lead", {
+          head: embedded.head,
+          split: embedded.split,
+          docs: embedded.n_documents.toLocaleString(),
+          classes: embedded.n_classes,
+        })}{" "}
+        {t("pages:workspace.tabs.GatingTab.embedded_headline_pre")}{" "}
+        <em>theta_concat_pca_K_logistic</em>{" "}
+        {t("pages:workspace.tabs.GatingTab.embedded_headline_post")}
       </p>
       {embedded.framework_axis ? (
         <p
@@ -121,21 +114,23 @@ function EmbeddedBaselineCard({ embedded }: { embedded: EmbeddedBaseline }) {
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                rank
+                {t("pages:workspace.tabs.GatingTab.col_rank")}
               </th>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                method
+                {t("pages:workspace.tabs.GatingTab.col_method")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                macro F1
+                {t("pages:workspace.tabs.GatingTab.col_macro_f1")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                accuracy
+                {t("pages:workspace.tabs.GatingTab.col_accuracy")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                balanced acc
+                {t("pages:workspace.tabs.GatingTab.col_balanced_acc")}
               </th>
-              <th className="text-left font-mono text-[11px] pb-1">bar</th>
+              <th className="text-left font-mono text-[11px] pb-1">
+                {t("pages:workspace.tabs.GatingTab.col_bar")}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -193,6 +188,7 @@ function EmbeddedBaselineCard({ embedded }: { embedded: EmbeddedBaseline }) {
 }
 
 function DeepGateCard({ deepGate }: { deepGate: TopicRoutedDeepGate }) {
+  const { t } = useTranslation(["pages"]);
   const ranking = deepGate.ranked_by_macro_f1_mean ?? [];
   const max = ranking[0]?.macro_f1_mean ?? 1;
   return (
@@ -208,19 +204,18 @@ function DeepGateCard({ deepGate }: { deepGate: TopicRoutedDeepGate }) {
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Routed gating · theta vs deep-encoder gates (axis B-3)
+        {t("pages:workspace.tabs.GatingTab.deepgate_title")}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        The routed classifier conditions on a gate vector. We compare four
-        gates:{" "}
-        <span className="font-mono">{deepGate.gate_methods.join(" · ")}</span>.
-        The question is whether a deep latent (CAE-1D / β-VAE / PCA at the
-        same K) outperforms theta when used as the routing key.{" "}
-        {deepGate.n_documents.toLocaleString()} documents ×{" "}
-        {deepGate.n_classes} classes.
+        {t("pages:workspace.tabs.GatingTab.deepgate_lead_pre")}{" "}
+        <span className="font-mono">{deepGate.gate_methods.join(" · ")}</span>.{" "}
+        {t("pages:workspace.tabs.GatingTab.deepgate_lead_post", {
+          docs: deepGate.n_documents.toLocaleString(),
+          classes: deepGate.n_classes,
+        })}
       </p>
       <div className="overflow-x-auto">
         <table
@@ -230,18 +225,20 @@ function DeepGateCard({ deepGate }: { deepGate: TopicRoutedDeepGate }) {
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                rank
+                {t("pages:workspace.tabs.GatingTab.col_rank")}
               </th>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                method
+                {t("pages:workspace.tabs.GatingTab.col_method")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                macro F1
+                {t("pages:workspace.tabs.GatingTab.col_macro_f1")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
                 CI95
               </th>
-              <th className="text-left font-mono text-[11px] pb-1">bar</th>
+              <th className="text-left font-mono text-[11px] pb-1">
+                {t("pages:workspace.tabs.GatingTab.col_bar")}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -261,7 +258,7 @@ function DeepGateCard({ deepGate }: { deepGate: TopicRoutedDeepGate }) {
                         className="ml-1 text-[10px] uppercase tracking-widest"
                         style={{ color: "var(--color-fg-faint)" }}
                       >
-                        baseline
+                        {t("pages:workspace.tabs.GatingTab.tag_baseline")}
                       </span>
                     ) : null}
                   </td>

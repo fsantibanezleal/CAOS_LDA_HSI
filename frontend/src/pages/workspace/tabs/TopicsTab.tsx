@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import type { TopicPairLogOddsToken, TopicViews } from "@/api/client";
 import { IntertopicMap, TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { TopicGraph } from "@/components/plots/TopicGraph";
 import { TopicSpectrum } from "@/components/plots/TopicSpectrum";
 import { TopicSpectrumComparison } from "@/components/plots/TopicSpectrumComparison";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 const LAMBDA_VALUES = [0.0, 0.3, 0.5, 0.7, 1.0];
 
@@ -21,6 +22,7 @@ export function TopicsTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [lambda, setLambda] = useState<number>(0.5);
   const [simThreshold, setSimThreshold] = useState<number>(0.7);
   const [pairTopic, setPairTopic] = useState<number | null>(null);
@@ -41,27 +43,13 @@ export function TopicsTab({
   }, [data]);
 
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Loading topics…</p>;
+    return <TabLoading message={t("pages:workspace.tabs.TopicsTab.loading")} />;
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load topic_views.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.TopicsTab.error")}
+        detail={error.message}
+      />
     );
   if (!data) return <TabEmpty />;
 
@@ -86,14 +74,13 @@ export function TopicsTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Intertopic map (LDAvis · JS-MDS 2D)
+            {t("pages:workspace.tabs.TopicsTab.intertopic_title")}
           </h4>
           <p
             className="text-sm mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            The bubble area is proportional to topic prevalence
-            (mean θ across the corpus). Click a bubble to focus.
+            {t("pages:workspace.tabs.TopicsTab.intertopic_help")}
           </p>
           <IntertopicMap
             coords={data.topic_intertopic_2d_js}
@@ -116,10 +103,11 @@ export function TopicsTab({
               className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Top-30 words —{" "}
               {selectedTopic !== null
-                ? `topic ${selectedTopic + 1}`
-                : "select a topic"}
+                ? t("pages:workspace.tabs.TopicsTab.top_words_for_topic", {
+                    topic: selectedTopic + 1,
+                  })
+                : t("pages:workspace.tabs.TopicsTab.top_words_select")}
             </h4>
             <div className="flex items-center gap-2">
               <label
@@ -127,7 +115,7 @@ export function TopicsTab({
                 className="text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                relevance λ
+                {t("pages:workspace.tabs.TopicsTab.relevance_lambda")}
               </label>
               <select
                 id="topics-lambda"
@@ -152,9 +140,7 @@ export function TopicsTab({
             className="text-[12px] mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            relevance(w | k) = λ · log P(w | k) + (1 − λ) · log [ P(w | k) /
-            P(w) ]. λ=1 sorts by probability without penalising common
-            words; λ=0 sorts by pure lift.
+            {t("pages:workspace.tabs.TopicsTab.relevance_formula")}
           </p>
           {focused ? (
             <ol
@@ -169,7 +155,7 @@ export function TopicsTab({
             </ol>
           ) : (
             <p style={{ color: "var(--color-fg-faint)" }}>
-              Select a topic in the left map.
+              {t("pages:workspace.tabs.TopicsTab.select_topic_left")}
             </p>
           )}
         </div>
@@ -187,14 +173,13 @@ export function TopicsTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Per-topic spectral profiles (φ_k)
+          {t("pages:workspace.tabs.TopicsTab.spectral_profiles_title")}
         </h4>
         <p
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          One curve per topic, same colour as the map bubble. When a topic is
-          selected it is highlighted and the rest fade out.
+          {t("pages:workspace.tabs.TopicsTab.spectral_profiles_help")}
         </p>
         <TopicSpectrum
           wavelengths={data.wavelengths_nm}
@@ -204,7 +189,7 @@ export function TopicsTab({
         <div
           className="mt-3 flex flex-wrap gap-1.5"
           role="group"
-          aria-label="Topic selector"
+          aria-label={t("pages:workspace.tabs.TopicsTab.aria_topic_selector")}
         >
           {data.topic_band_profiles.map((_, k) => {
             const isSel = selectedTopic === k;
@@ -232,7 +217,7 @@ export function TopicsTab({
                   className="inline-block w-2.5 h-2.5 rounded-sm"
                   style={{ backgroundColor: color }}
                 />
-                topic {k + 1}
+                {t("pages:workspace.tabs.TopicsTab.topic_n", { n: k + 1 })}
                 <span
                   className="text-[10.5px] ml-1 opacity-70"
                   style={{ color: "var(--color-fg-faint)" }}
@@ -257,19 +242,13 @@ export function TopicsTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Multi-topic comparison with physical features
+          {t("pages:workspace.tabs.TopicsTab.comparison_title")}
         </h4>
         <p
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Pick up to four topics and compare their basis spectra side
-          by side. Absorption / reflectance features (chlorophyll,
-          red-edge, leaf-water, atmospheric water, cellulose, Al-OH /
-          kaolinite, calcite) are annotated as dotted verticals so the
-          physical interpretation can be read off the figure. A
-          pairwise cosine-distance mini-table summarises how visually
-          distinct the selected topics are.
+          {t("pages:workspace.tabs.TopicsTab.comparison_help")}
         </p>
         {selectedTopic !== null ? (
           <TopicSpectrumComparison
@@ -302,14 +281,14 @@ export function TopicsTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Topic↔topic similarity graph
+            {t("pages:workspace.tabs.TopicsTab.similarity_graph_title")}
           </h4>
           <div className="flex items-center gap-2">
             <span
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              edge threshold
+              {t("pages:workspace.tabs.TopicsTab.edge_threshold")}
             </span>
             <input
               type="range"
@@ -332,10 +311,7 @@ export function TopicsTab({
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Nodes at JS-MDS coordinates; an edge appears between every topic
-          pair whose cosine similarity (1 − topic_distance_cosine) exceeds
-          the threshold. Edge thickness encodes similarity, node area
-          encodes prevalence. Click any node to select it.
+          {t("pages:workspace.tabs.TopicsTab.similarity_graph_help")}
         </p>
         <div className="grid lg:grid-cols-[1fr_220px] gap-5 items-start">
           <TopicGraph
@@ -359,7 +335,7 @@ export function TopicsTab({
               className="text-[11px] uppercase tracking-wider mb-2"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Top similar pairs
+              {t("pages:workspace.tabs.TopicsTab.top_similar_pairs")}
             </div>
             <ul className="space-y-1.5">
               {topPairs.slice(0, 6).map((p) => {
@@ -407,7 +383,7 @@ export function TopicsTab({
               className="text-[11px] mt-2"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Pairs above the threshold render an edge in the graph.
+              {t("pages:workspace.tabs.TopicsTab.pairs_above_threshold")}
             </p>
           </div>
         </div>
@@ -427,7 +403,9 @@ export function TopicsTab({
               className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Distinguishing words — topic {selectedTopic + 1} vs ___
+              {t("pages:workspace.tabs.TopicsTab.distinguishing_words_title", {
+                topic: selectedTopic + 1,
+              })}
             </h4>
             <div className="flex items-center gap-2">
               <label
@@ -435,7 +413,7 @@ export function TopicsTab({
                 className="text-[11px] uppercase tracking-wider"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                pair with
+                {t("pages:workspace.tabs.TopicsTab.pair_with")}
               </label>
               <select
                 id="topics-pair-with"
@@ -450,12 +428,14 @@ export function TopicsTab({
                   color: "var(--color-fg)",
                 }}
               >
-                <option value="">— pick a 2nd topic —</option>
+                <option value="">
+                  {t("pages:workspace.tabs.TopicsTab.pick_second_topic")}
+                </option>
                 {Array.from({ length: data.topic_count }, (_, k) => k)
                   .filter((k) => k !== selectedTopic)
                   .map((k) => (
                     <option key={k} value={k}>
-                      topic {k + 1}
+                      {t("pages:workspace.tabs.TopicsTab.topic_n", { n: k + 1 })}
                     </option>
                   ))}
               </select>
@@ -465,17 +445,22 @@ export function TopicsTab({
             className="text-sm mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Tokens ranked by log-odds = log(P(w | k<sub>A</sub>) / P(w | k<sub>B</sub>)).
-            Left column = words more characteristic of topic {selectedTopic + 1}; right
-            column = words more characteristic of the paired topic. Pre-computed by
-            <span className="font-mono"> build_topic_views.py</span>; no API call.
+            <Trans
+              i18nKey="pages:workspace.tabs.TopicsTab.distinguishing_words_help"
+              values={{ topic: selectedTopic + 1 }}
+              components={{
+                subA: <sub />,
+                subB: <sub />,
+                code: <span className="font-mono" />,
+              }}
+            />
           </p>
           {pairTopic === null ? (
             <p
               className="text-[12px]"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Pick a second topic above to populate this panel.
+              {t("pages:workspace.tabs.TopicsTab.distinguishing_words_empty")}
             </p>
           ) : (
             <DistinguishingWordsGrid
@@ -495,6 +480,7 @@ function LdaConfigBadge({
 }: {
   data: TopicViews;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [open, setOpen] = useState(false);
   const cfg = data.lda_config;
   const pp = data.perplexity;
@@ -532,7 +518,7 @@ function LdaConfigBadge({
         {pp !== undefined && (
           <span className="font-mono ml-auto">
             <span style={{ color: "var(--color-fg-faint)" }}>
-              held-out perplexity{" "}
+              {t("pages:workspace.tabs.TopicsTab.held_out_perplexity")}{" "}
             </span>
             <span style={{ color: "var(--color-accent)" }}>
               {pp.toFixed(3)}
@@ -546,7 +532,9 @@ function LdaConfigBadge({
             className="text-[11px] underline"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            {open ? "fewer" : "more"}
+            {open
+              ? t("pages:workspace.tabs.TopicsTab.btn_fewer")
+              : t("pages:workspace.tabs.TopicsTab.btn_more")}
           </button>
         )}
       </div>
@@ -582,6 +570,7 @@ function DistinguishingWordsGrid({
   a: number;
   b: number;
 }) {
+  const { t: tr } = useTranslation(["pages"]);
   const aOverB = data[`${a}->${b}`] ?? [];
   const bOverA = data[`${b}->${a}`] ?? [];
   if (aOverB.length === 0 && bOverA.length === 0) {
@@ -590,7 +579,7 @@ function DistinguishingWordsGrid({
         className="text-[12px]"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        No log-odds shipped for this scene (older topic_views artefact).
+        {tr("pages:workspace.tabs.TopicsTab.no_log_odds")}
       </p>
     );
   }
@@ -602,7 +591,9 @@ function DistinguishingWordsGrid({
   return (
     <div className="grid sm:grid-cols-2 gap-5">
       <DistinguishingWordsColumn
-        title={`top ↑ in topic ${a + 1}`}
+        title={tr("pages:workspace.tabs.TopicsTab.top_up_in_topic", {
+          n: a + 1,
+        })}
         tokens={aOverB.slice(0, 12)}
         maxAbs={maxAbs}
         ratioLabel={(t) =>
@@ -610,7 +601,9 @@ function DistinguishingWordsGrid({
         }
       />
       <DistinguishingWordsColumn
-        title={`top ↑ in topic ${b + 1}`}
+        title={tr("pages:workspace.tabs.TopicsTab.top_up_in_topic", {
+          n: b + 1,
+        })}
         tokens={bOverA.slice(0, 12)}
         maxAbs={maxAbs}
         ratioLabel={(t) =>
@@ -632,6 +625,7 @@ function DistinguishingWordsColumn({
   maxAbs: number;
   ratioLabel: (t: TopicPairLogOddsToken) => string;
 }) {
+  const { t: tr } = useTranslation(["pages"]);
   return (
     <div>
       <div
@@ -645,7 +639,7 @@ function DistinguishingWordsColumn({
           className="text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          No tokens above significance threshold.
+          {tr("pages:workspace.tabs.TopicsTab.no_tokens_above_threshold")}
         </p>
       ) : (
         <ul className="space-y-1.5">

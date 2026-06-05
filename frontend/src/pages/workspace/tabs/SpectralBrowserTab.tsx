@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import type { SpectralBrowserMeta } from "@/api/client";
 import { SpectralBrowser } from "@/components/plots/SpectralBrowser";
@@ -13,6 +14,7 @@ export function SpectralBrowserTab({
   error: Error | null;
   meta: SpectralBrowserMeta | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [isolatedLabel, setIsolatedLabel] = useState<number | null>(null);
   const [maxLines, setMaxLines] = useState<number>(2000);
 
@@ -54,7 +56,7 @@ export function SpectralBrowserTab({
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading browser metadata…
+        {t("pages:workspace.tabs.SpectralBrowserTab.loading")}
       </p>
     );
   if (error)
@@ -68,7 +70,7 @@ export function SpectralBrowserTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load /api/spectral-browser.
+          {t("pages:workspace.tabs.SpectralBrowserTab.error")}
         </p>
         <p
           className="mt-2 text-sm"
@@ -96,18 +98,22 @@ export function SpectralBrowserTab({
               className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Spectral browser · {meta.N.toLocaleString()} sampled spectra
+              {t("pages:workspace.tabs.SpectralBrowserTab.title", {
+                n: meta.N.toLocaleString(),
+              })}
             </h4>
             <p
               className="text-sm mt-1"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Each line is a real pixel (not an average); subsample{" "}
-              {meta.sampling_strategy}. {meta.B} bands (
-              {Math.round(meta.wavelengths_nm[0]!)}–
-              {Math.round(meta.wavelengths_nm[meta.wavelengths_nm.length - 1]!)}{" "}
-              nm). Click a class to isolate it; reduce the rendered line count
-              if your machine struggles.
+              {t("pages:workspace.tabs.SpectralBrowserTab.lead", {
+                strategy: meta.sampling_strategy,
+                bands: meta.B,
+                minNm: Math.round(meta.wavelengths_nm[0]!),
+                maxNm: Math.round(
+                  meta.wavelengths_nm[meta.wavelengths_nm.length - 1]!,
+                ),
+              })}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -116,7 +122,7 @@ export function SpectralBrowserTab({
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              lines
+              {t("pages:workspace.tabs.SpectralBrowserTab.lines_label")}
             </label>
             <select
               id="spectral-browser-max-lines"
@@ -140,12 +146,16 @@ export function SpectralBrowserTab({
 
         {buf.isLoading && (
           <p style={{ color: "var(--color-fg-faint)" }}>
-            Downloading {(meta.N * meta.B * 4).toLocaleString()} binary bytes…
+            {t("pages:workspace.tabs.SpectralBrowserTab.downloading", {
+              bytes: (meta.N * meta.B * 4).toLocaleString(),
+            })}
           </p>
         )}
         {buf.error && (
           <p style={{ color: "var(--color-warn)" }}>
-            Could not load spectra.bin: {String(buf.error)}
+            {t("pages:workspace.tabs.SpectralBrowserTab.error_bin", {
+              detail: String(buf.error),
+            })}
           </p>
         )}
         {spectra && (
@@ -177,7 +187,7 @@ export function SpectralBrowserTab({
                   : "var(--color-fg-subtle)",
             }}
           >
-            All
+            {t("pages:workspace.tabs.SpectralBrowserTab.btn_all")}
           </button>
           {labels.map((l) => {
             const isSel = isolatedLabel === l.label_id;
@@ -200,7 +210,7 @@ export function SpectralBrowserTab({
                     ? "var(--color-fg)"
                     : "var(--color-fg-subtle)",
                 }}
-                title={`${l.count} spectra`}
+                title={t("pages:workspace.tabs.SpectralBrowserTab.class_title", { count: l.count })}
               >
                 <span
                   aria-hidden
@@ -234,6 +244,7 @@ function FalseColorBandPicker({
   meta: SpectralBrowserMeta;
   spectra: Float32Array;
 }) {
+  const { t } = useTranslation(["pages"]);
   const B = meta.B;
   const N = meta.N;
   const wavelengths = meta.wavelengths_nm;
@@ -328,12 +339,12 @@ function FalseColorBandPicker({
       return best;
     };
     return [
-      { label: "True colour · 660/550/450 nm", r: findBand(660), g: findBand(550), b: findBand(450) },
-      { label: "Vegetation NIR · 800/660/550 nm", r: findBand(800), g: findBand(660), b: findBand(550) },
-      { label: "SWIR mineral · 2200/1650/660 nm", r: findBand(2200), g: findBand(1650), b: findBand(660) },
-      { label: "Water absorption · 1400/1900/2200 nm", r: findBand(1400), g: findBand(1900), b: findBand(2200) },
+      { label: `${t("pages:workspace.tabs.SpectralBrowserTab.preset_true_colour")} · 660/550/450 nm`, r: findBand(660), g: findBand(550), b: findBand(450) },
+      { label: `${t("pages:workspace.tabs.SpectralBrowserTab.preset_vegetation_nir")} · 800/660/550 nm`, r: findBand(800), g: findBand(660), b: findBand(550) },
+      { label: `${t("pages:workspace.tabs.SpectralBrowserTab.preset_swir_mineral")} · 2200/1650/660 nm`, r: findBand(2200), g: findBand(1650), b: findBand(660) },
+      { label: `${t("pages:workspace.tabs.SpectralBrowserTab.preset_water_absorption")} · 1400/1900/2200 nm`, r: findBand(1400), g: findBand(1900), b: findBand(2200) },
     ];
-  }, [wavelengths]);
+  }, [wavelengths, t]);
 
   return (
     <div
@@ -351,15 +362,15 @@ function FalseColorBandPicker({
       />
       <header className="mt-1 mb-3">
         <h4 className="text-base font-semibold tracking-tight" style={{ color: "var(--color-fg)" }}>
-          False-colour band picker · choose 3 of {B} bands
+          {t("pages:workspace.tabs.SpectralBrowserTab.picker_title", { bands: B })}
         </h4>
         <p className="text-[12.5px]" style={{ color: "var(--color-fg-faint)" }}>
-          Dynamic compute on the client: each of the {N.toLocaleString()} stratified samples is
-          painted at its spatial position {`(${H}×${W})`} with R/G/B taken from the picked bands and
-          normalised per channel. Pick presets for canonical band-combos or drag the sliders for
-          arbitrary {wavelengths[0]?.toFixed(0)}–{wavelengths[wavelengths.length - 1]?.toFixed(0)} nm
-          combinations. Sample-sparse: only stratified pixels are coloured (uncovered area in dark
-          background).
+          {t("pages:workspace.tabs.SpectralBrowserTab.picker_help", {
+            samples: N.toLocaleString(),
+            shape: `${H}×${W}`,
+            minNm: wavelengths[0]?.toFixed(0),
+            maxNm: wavelengths[wavelengths.length - 1]?.toFixed(0),
+          })}
         </p>
       </header>
 
@@ -367,7 +378,7 @@ function FalseColorBandPicker({
         <div>
           <div className="flex flex-wrap items-baseline gap-2 mb-2">
             <span className="text-[10.5px] uppercase tracking-widest font-semibold" style={{ color: "var(--color-fg-faint)" }}>
-              Presets
+              {t("pages:workspace.tabs.SpectralBrowserTab.presets_label")}
             </span>
             {presetButtons.map((p) => (
               <button
@@ -401,10 +412,13 @@ function FalseColorBandPicker({
                 onChange={(e) => ch.set(parseInt(e.target.value, 10))}
                 className="flex-1"
                 style={{ accentColor: ch.accent as string }}
-                aria-label={`${ch.name} band`}
+                aria-label={t("pages:workspace.tabs.SpectralBrowserTab.aria_channel_band", { channel: ch.name })}
               />
               <span className="text-[12px] font-mono w-32 text-right" style={{ color: "var(--color-fg-subtle)" }}>
-                band {ch.value} · {wavelengths[ch.value]?.toFixed(0)} nm
+                {t("pages:workspace.tabs.SpectralBrowserTab.band_value", {
+                  band: ch.value,
+                  nm: wavelengths[ch.value]?.toFixed(0),
+                })}
               </span>
             </div>
           ))}
@@ -417,7 +431,7 @@ function FalseColorBandPicker({
             style={{ width: Math.min(420, W * cellSize), height: Math.min(480, H * cellSize), backgroundColor: "var(--color-bg)" }}
             shapeRendering="crispEdges"
             role="img"
-            aria-label="Spectral browser pixel-grid (click to pin a pixel and inspect its spectrum)"
+            aria-label={t("pages:workspace.tabs.SpectralBrowserTab.aria_pixel_grid")}
           >
             {samples.map((s, i) => (
               <rect
@@ -431,7 +445,10 @@ function FalseColorBandPicker({
             ))}
           </svg>
           <p className="text-[10.5px] mt-1" style={{ color: "var(--color-fg-faint)" }}>
-            {samples.length.toLocaleString()} stratified pixels painted on a {W}×{H} grid.
+            {t("pages:workspace.tabs.SpectralBrowserTab.painted_caption", {
+              n: samples.length.toLocaleString(),
+              shape: `${W}×${H}`,
+            })}
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import type { EndmemberBaseline, ScenePerScene } from "@/api/client";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 import { UnmixingStat } from "../components/StatCard";
 
 function asNum(x: number | Record<string, number> | undefined): number | null {
@@ -22,18 +23,18 @@ export function UnmixingTab({
   data: EndmemberBaseline | null;
   eda: ScenePerScene | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading) {
-    return <p style={{ color: "var(--color-fg-faint)" }}>Loading unmixing baseline…</p>;
+    return (
+      <TabLoading message={t("pages:workspace.tabs.UnmixingTab.loading")} />
+    );
   }
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>Could not load endmember baseline.</p>
-        <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.UnmixingTab.error")}
+        detail={error.message}
+      />
     );
   }
   if (!data) return <TabEmpty />;
@@ -60,7 +61,7 @@ export function UnmixingTab({
         <div className="flex flex-wrap items-baseline justify-between gap-3 mt-1 mb-2">
           <div>
             <h3 className="text-lg font-semibold tracking-tight" style={{ color: "var(--color-fg)" }}>
-              Linear unmixing baseline · K={data.K}
+              {t("pages:workspace.tabs.UnmixingTab.header_title", { k: data.K })}
             </h3>
             <p className="text-[12.5px]" style={{ color: "var(--color-fg-faint)" }}>
               {data.endmember_extractors.join(" + ")} · {data.unmixing_method}
@@ -71,21 +72,24 @@ export function UnmixingTab({
           </div>
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-3">
-          <UnmixingStat label="endmembers (K)" value={String(data.K)} />
-          <UnmixingStat label="pixels used" value={data.n_pixels_used.toLocaleString()} />
-          <UnmixingStat label="bands" value={String(data.n_bands)} />
-          <UnmixingStat label="rmse · normalised" value={rmseNorm != null ? rmseNorm.toFixed(4) : "—"} />
+          <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_endmembers")} value={String(data.K)} />
+          <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_pixels_used")} value={data.n_pixels_used.toLocaleString()} />
+          <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_bands")} value={String(data.n_bands)} />
+          <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_rmse_normalised")} value={rmseNorm != null ? rmseNorm.toFixed(4) : "—"} />
         </div>
         {rmseRaw != null ? (
           <p className="mt-2 text-[11.5px] font-mono" style={{ color: "var(--color-fg-faint)" }}>
-            raw reconstruction RMSE = {rmseRaw.toFixed(3)} · normalised by full-set L2 = {rmseNorm?.toFixed(4) ?? "—"}
+            {t("pages:workspace.tabs.UnmixingTab.rmse_raw_line", {
+              raw: rmseRaw.toFixed(3),
+              norm: rmseNorm?.toFixed(4) ?? "—",
+            })}
           </p>
         ) : null}
       </div>
 
       <UnmixingSpectraCard
-        title="NFINDR endmember spectra"
-        subtitle="N-FINDR (Winter 1999) seeds K random pixels, then iteratively swaps each in turn for any pixel that increases the volume of the K-simplex they span; convergence picks K pure-pixel candidates that maximise simplex volume. Each curve below is one of those K vertices."
+        title={t("pages:workspace.tabs.UnmixingTab.nfindr_title")}
+        subtitle={t("pages:workspace.tabs.UnmixingTab.nfindr_subtitle")}
         spectra={data.nfindr_endmembers ?? []}
         wavelengths={wavelengths}
         accent="rgba(56,189,248,1)"
@@ -93,8 +97,8 @@ export function UnmixingTab({
 
       {data.atgp_endmembers && data.atgp_endmembers.length > 0 ? (
         <UnmixingSpectraCard
-          title="ATGP endmember spectra"
-          subtitle="Automatic Target Generation Process (Ren & Chang 2003): pick the pixel with maximum L2 norm as endmember 1; iteratively project the residual orthogonal to the current set and pick the pixel with the largest projection norm as the next endmember. Greedy alternative to N-FINDR; usually produces a similar set."
+          title={t("pages:workspace.tabs.UnmixingTab.atgp_title")}
+          subtitle={t("pages:workspace.tabs.UnmixingTab.atgp_subtitle")}
           spectra={data.atgp_endmembers}
           wavelengths={wavelengths}
           accent="rgba(170,60,200,1)"
@@ -129,6 +133,7 @@ function UnmixingSpectraCard({
   wavelengths: number[];
   accent: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   const W = 720;
   const H = 280;
   const pad = { l: 44, r: 16, t: 12, b: 32 };
@@ -186,7 +191,7 @@ function UnmixingSpectraCard({
       </div>
       <p className="text-[12px] mb-2" style={{ color: "var(--color-fg-faint)" }}>{subtitle}</p>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 900 }} role="img" aria-label="Per-topic endmember-cosine matrix">
+        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 900 }} role="img" aria-label={t("pages:workspace.tabs.UnmixingTab.aria_spectra_plot")}>
           {/* axes */}
           <line x1={pad.l} y1={pad.t + innerH} x2={pad.l + innerW} y2={pad.t + innerH} stroke="currentColor" opacity={0.3} />
           <line x1={pad.l} y1={pad.t} x2={pad.l} y2={pad.t + innerH} stroke="currentColor" opacity={0.3} />
@@ -263,6 +268,7 @@ function UnmixingTopicHeatmap({
   matrix: number[][];
   bestByTopic: { topic_id: number; endmember_id: number; cosine: number }[];
 }) {
+  const { t } = useTranslation(["pages"]);
   const N = matrix.length;
   const labelW = 36;
   const cell = 28;
@@ -282,13 +288,16 @@ function UnmixingTopicHeatmap({
       style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
     >
       <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-        Topic × endmember cosine similarity
+        {t("pages:workspace.tabs.UnmixingTab.heatmap_title")}
       </h4>
       <p className="text-[12px] mb-2" style={{ color: "var(--color-fg-faint)" }}>
-        Rows = LDA topic profiles φ<sub>k</sub>; columns = NFINDR endmember spectra. Cell ≈ cosine. Best matches are starred.
+        <Trans
+          i18nKey="pages:workspace.tabs.UnmixingTab.heatmap_help"
+          components={{ subk: <sub /> }}
+        />
       </p>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 720 }} role="img" aria-label="Per-topic abundance map heatmap">
+        <svg viewBox={`0 0 ${W} ${H}`} className="max-w-full h-auto" style={{ maxWidth: 720 }} role="img" aria-label={t("pages:workspace.tabs.UnmixingTab.aria_heatmap")}>
           {Array.from({ length: N }).map((_, j) => (
             <text key={`c-${j}`} x={labelW + j * cell + cell / 2} y={labelW - 6} fontSize="9.5" textAnchor="middle" fill="currentColor" opacity={0.65} fontFamily="ui-monospace, monospace">
               em{j}
@@ -322,6 +331,7 @@ function UnmixingTopicHeatmap({
 }
 
 function UnmixingBestMatchTable({ rows }: { rows: { topic_id: number; endmember_id: number; cosine: number }[] }) {
+  const { t } = useTranslation(["pages"]);
   const sorted = [...rows].sort((a, b) => b.cosine - a.cosine);
   return (
     <div
@@ -329,19 +339,22 @@ function UnmixingBestMatchTable({ rows }: { rows: { topic_id: number; endmember_
       style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
     >
       <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-        Best endmember per topic (sorted by cosine)
+        {t("pages:workspace.tabs.UnmixingTab.best_match_title")}
       </h4>
       <p className="text-[12px] mb-2" style={{ color: "var(--color-fg-faint)" }}>
-        For each LDA topic, the closest NFINDR endmember by cosine of its band-profile φ<sub>k</sub>. High cosine ⇒ topic captures a pure-pixel signature.
+        <Trans
+          i18nKey="pages:workspace.tabs.UnmixingTab.best_match_help"
+          components={{ subk: <sub /> }}
+        />
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">topic</th>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">endmember</th>
-              <th className="text-right font-mono text-[11px] pb-1 pr-3">cosine</th>
-              <th className="text-left font-mono text-[11px] pb-1">bar</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.UnmixingTab.col_topic")}</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.UnmixingTab.col_endmember")}</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.UnmixingTab.col_cosine")}</th>
+              <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.UnmixingTab.col_bar")}</th>
             </tr>
           </thead>
           <tbody>

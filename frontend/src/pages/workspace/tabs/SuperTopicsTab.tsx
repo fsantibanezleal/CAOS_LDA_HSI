@@ -10,9 +10,10 @@
  * with the current scene highlighted.
  */
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { SuperTopics } from "@/api/client";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 export function SuperTopicsTab({
   sceneId,
@@ -25,31 +26,19 @@ export function SuperTopicsTab({
   error: Error | null;
   data: SuperTopics | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [cutLevel, setCutLevel] = useState<number>(8);
 
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Loading super-topics…</p>
+      <TabLoading message={t("pages:workspace.tabs.SuperTopicsTab.loading")} />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load super-topics.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.SuperTopicsTab.error")}
+        detail={error.message}
+      />
     );
   }
   if (!data) return <TabEmpty />;
@@ -102,26 +91,31 @@ export function SuperTopicsTab({
           className="text-lg font-semibold tracking-tight mt-1 mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Super-topics · cross-scene clustering of all {data.n_topics_total}{" "}
-          topics
+          {t("pages:workspace.tabs.SuperTopicsTab.title", {
+            total: data.n_topics_total,
+          })}
         </h3>
         <p
           className="text-[12.5px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Hierarchical clustering ({data.linkage_method} linkage,{" "}
-          {data.distance}) over the {data.n_topics_total} topics across{" "}
-          {data.n_scenes} scenes on the common {data.common_grid.low_nm}–
-          {data.common_grid.high_nm} nm grid ({data.common_grid.n_bands}{" "}
-          bands). Shows how this scene's topics relate to topics from the
-          other {data.n_scenes - 1} scenes at the selected cut level.
+          {t("pages:workspace.tabs.SuperTopicsTab.lead", {
+            linkage: data.linkage_method,
+            distance: data.distance,
+            total: data.n_topics_total,
+            scenes: data.n_scenes,
+            lowNm: data.common_grid.low_nm,
+            highNm: data.common_grid.high_nm,
+            bands: data.common_grid.n_bands,
+            otherScenes: data.n_scenes - 1,
+          })}
         </p>
         <div className="flex items-baseline gap-1.5 flex-wrap">
           <span
             className="text-[11px] uppercase tracking-widest font-semibold mr-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Cut level (n clusters)
+            {t("pages:workspace.tabs.SuperTopicsTab.cut_level_label")}
           </span>
           {availableCuts.map((k) => (
             <button
@@ -162,16 +156,17 @@ export function SuperTopicsTab({
           className="text-base font-semibold mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          This scene&apos;s topics at K_super = {cutLevel}
+          {t("pages:workspace.tabs.SuperTopicsTab.scene_topics_title", {
+            cut: cutLevel,
+          })}
         </h4>
         <p
           className="text-[12px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          For each topic of {sceneId}, the cluster it falls into and the
-          other scenes whose topics share that cluster. A cluster shared
-          across many scenes = a generic spectral pattern (vegetation,
-          soil, water); a singleton cluster = scene-specific signature.
+          {t("pages:workspace.tabs.SuperTopicsTab.scene_topics_help", {
+            scene: sceneId,
+          })}
         </p>
         <div className="overflow-x-auto">
           <table
@@ -181,16 +176,16 @@ export function SuperTopicsTab({
             <thead>
               <tr style={{ color: "var(--color-fg-faint)" }}>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  topic
+                  {t("pages:workspace.tabs.SuperTopicsTab.col_topic")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  cluster
+                  {t("pages:workspace.tabs.SuperTopicsTab.col_cluster")}
                 </th>
                 <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                  cluster size
+                  {t("pages:workspace.tabs.SuperTopicsTab.col_cluster_size")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1">
-                  shared with scenes
+                  {t("pages:workspace.tabs.SuperTopicsTab.col_shared_with")}
                 </th>
               </tr>
             </thead>
@@ -241,7 +236,7 @@ export function SuperTopicsTab({
                           className="text-[11px] italic"
                           style={{ color: "var(--color-fg-faint)" }}
                         >
-                          singleton (no cross-scene match)
+                          {t("pages:workspace.tabs.SuperTopicsTab.singleton")}
                         </span>
                       )}
                     </td>
@@ -265,14 +260,17 @@ export function SuperTopicsTab({
           className="text-base font-semibold mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          All clusters at K_super = {cutLevel}
+          {t("pages:workspace.tabs.SuperTopicsTab.all_clusters_title", {
+            cut: cutLevel,
+          })}
         </h4>
         <p
           className="text-[12px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Overview of every cluster at this cut level. Highlighted clusters
-          contain at least one topic from {sceneId}.
+          {t("pages:workspace.tabs.SuperTopicsTab.all_clusters_help", {
+            scene: sceneId,
+          })}
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {(selectedCut?.clusters ?? []).map((cluster) => {
@@ -308,7 +306,9 @@ export function SuperTopicsTab({
                   className="text-[10.5px] uppercase tracking-widest font-semibold mb-1"
                   style={{ color: "var(--color-fg-faint)" }}
                 >
-                  scenes ({cluster.scene_set.length})
+                  {t("pages:workspace.tabs.SuperTopicsTab.scenes_count", {
+                    count: cluster.scene_set.length,
+                  })}
                 </div>
                 <div className="flex flex-wrap gap-1 mb-1">
                   {cluster.scene_set.map((sc) => (

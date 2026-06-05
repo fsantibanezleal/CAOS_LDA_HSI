@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 
 import { UnmixingStat } from "../components/StatCard";
+import { TabError, TabLoading } from "../components/TabStates";
 
 /**
  * Apply-to-document tab (cycle 101) — Step 7 of web-app-spec.md.
@@ -28,18 +30,24 @@ export function ApplyToDocumentTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [pickedIdx, setPickedIdx] = useState<number | null>(null);
   const docCards = docs?.document_cards ?? [];
   const K = topicViews?.topic_count ?? 12;
   const marginalTheta = useMemoMarginal(docCards, K);
 
-  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>Loading document cards…</p>;
+  if (isLoading)
+    return (
+      <TabLoading
+        message={t("pages:workspace.tabs.ApplyToDocumentTab.loading")}
+      />
+    );
   if (error) {
     return (
-      <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p style={{ color: "var(--color-warn)" }}>Could not load document data.</p>
-        <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.ApplyToDocumentTab.error")}
+        detail={error.message}
+      />
     );
   }
   if (!docs || !topicViews) return null;
@@ -58,13 +66,13 @@ export function ApplyToDocumentTab({
           style={{ background: "linear-gradient(90deg, rgba(170,60,200,1) 0%, rgba(56,189,248,1) 100%)" }}
         />
         <h3 className="text-lg font-semibold tracking-tight mt-1 mb-1" style={{ color: "var(--color-fg)" }}>
-          Apply to a specific document (Step 7)
+          {t("pages:workspace.tabs.ApplyToDocumentTab.title")}
         </h3>
         <p className="text-[12.5px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-          Pick one of {docCards.length} sampled documents. The panels below show its full θ
-          vector (mixture over K = {K} topics), its dominant topic, its ground-truth label, and
-          how θ compares to the scene's marginal θ. Selecting a topic in any other tab carries
-          over here as a highlight.
+          {t("pages:workspace.tabs.ApplyToDocumentTab.lead", {
+            count: docCards.length,
+            k: K,
+          })}
         </p>
 
         <DocPicker
@@ -89,7 +97,7 @@ export function ApplyToDocumentTab({
           className="rounded-lg border p-6 text-center text-[13px]"
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", color: "var(--color-fg-subtle)" }}
         >
-          Pick a document from the table above to see its θ vector and label-vs-topic comparison.
+          {t("pages:workspace.tabs.ApplyToDocumentTab.empty_pick")}
         </div>
       )}
     </div>
@@ -124,6 +132,7 @@ function DocPicker({
   onPick: (i: number) => void;
   K: number;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [filterTopic, setFilterTopic] = useState<number | null>(null);
   const [filterLabel, setFilterLabel] = useState<number | null>(null);
 
@@ -149,8 +158,8 @@ function DocPicker({
   return (
     <div className="space-y-3 mt-3">
       <div className="flex items-baseline flex-wrap gap-3 text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
-        <span className="uppercase tracking-widest font-semibold text-[10.5px]">Filter</span>
-        <span>by topic:</span>
+        <span className="uppercase tracking-widest font-semibold text-[10.5px]">{t("pages:workspace.tabs.ApplyToDocumentTab.filter")}</span>
+        <span>{t("pages:workspace.tabs.ApplyToDocumentTab.by_topic")}</span>
         <button
           type="button"
           onClick={() => setFilterTopic(null)}
@@ -161,7 +170,7 @@ function DocPicker({
             backgroundColor: filterTopic === null ? "var(--color-accent-soft)" : "transparent",
           }}
         >
-          all
+          {t("pages:workspace.tabs.ApplyToDocumentTab.filter_all")}
         </button>
         {topicSet.slice(0, 12).map((k) => (
           <button
@@ -178,7 +187,7 @@ function DocPicker({
             t{k}
           </button>
         ))}
-        <span className="ml-3">label:</span>
+        <span className="ml-3">{t("pages:workspace.tabs.ApplyToDocumentTab.by_label")}</span>
         <button
           type="button"
           onClick={() => setFilterLabel(null)}
@@ -189,7 +198,7 @@ function DocPicker({
             backgroundColor: filterLabel === null ? "var(--color-accent-soft)" : "transparent",
           }}
         >
-          all
+          {t("pages:workspace.tabs.ApplyToDocumentTab.filter_all")}
         </button>
         {labelSet.slice(0, 16).map(([lid, lname]) => (
           <button
@@ -214,9 +223,9 @@ function DocPicker({
           <thead className="sticky top-0" style={{ backgroundColor: "var(--color-panel)" }}>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">doc_id</th>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">label</th>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">dominant</th>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">θ stack (K = {K})</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_label")}</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_dominant")}</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_theta_stack", { k: K })}</th>
               <th className="text-right font-mono text-[11px] pb-1">θ_dominant</th>
             </tr>
           </thead>
@@ -251,7 +260,7 @@ function DocPicker({
                           <span
                             key={`${d.doc_id}-${kk}`}
                             style={{ width: `${w}%`, backgroundColor: TOPIC_COLORS[kk % TOPIC_COLORS.length] }}
-                            title={`topic ${kk}: ${(p * 100).toFixed(1)}%`}
+                            title={t("pages:workspace.tabs.ApplyToDocumentTab.theta_cell_title", { topic: kk, pct: (p * 100).toFixed(1) })}
                           />
                         );
                       })}
@@ -266,7 +275,10 @@ function DocPicker({
         </table>
       </div>
       <p className="text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
-        {filtered.length} of {docCards.length} docs shown · click any row to drill in.
+        {t("pages:workspace.tabs.ApplyToDocumentTab.docs_shown", {
+          shown: filtered.length,
+          total: docCards.length,
+        })}
       </p>
     </div>
   );
@@ -287,6 +299,7 @@ function DocDetailPanel({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const ranked = useMemo(() => {
     return (doc.theta_full ?? [])
       .map((p, k) => ({ k, p, marginal: marginalTheta[k] ?? 0 }))
@@ -303,23 +316,23 @@ function DocDetailPanel({
       >
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mb-3">
           <UnmixingStat label="doc_id" value={doc.doc_id} />
-          <UnmixingStat label="label" value={doc.label_name} />
-          <UnmixingStat label="dominant topic" value={`t${doc.topic_k_dominant}`} />
-          <UnmixingStat label="θ at dominant" value={`${(doc.theta_k_at_dominant * 100).toFixed(1)}%`} />
+          <UnmixingStat label={t("pages:workspace.tabs.ApplyToDocumentTab.stat_label")} value={doc.label_name} />
+          <UnmixingStat label={t("pages:workspace.tabs.ApplyToDocumentTab.stat_dominant_topic")} value={`t${doc.topic_k_dominant}`} />
+          <UnmixingStat label={t("pages:workspace.tabs.ApplyToDocumentTab.stat_theta_at_dominant")} value={`${(doc.theta_k_at_dominant * 100).toFixed(1)}%`} />
         </div>
 
         <h5 className="text-[11px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-          θ ranked: this doc vs scene marginal · ratio (doc / marginal) highlights what the doc over-/under-weights
+          {t("pages:workspace.tabs.ApplyToDocumentTab.theta_ranked_help")}
         </h5>
         <table className="w-full text-[12px]" style={{ color: "var(--color-fg)" }}>
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">topic</th>
-              <th className="text-right font-mono text-[11px] pb-1 pr-3">doc θ</th>
-              <th className="text-right font-mono text-[11px] pb-1 pr-3">marginal θ̄</th>
-              <th className="text-right font-mono text-[11px] pb-1 pr-3">ratio</th>
-              <th className="text-left font-mono text-[11px] pb-1 pr-3">doc bar</th>
-              <th className="text-left font-mono text-[11px] pb-1">top words (λ=0.5)</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_topic")}</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_doc_theta")}</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_marginal_theta")}</th>
+              <th className="text-right font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_ratio")}</th>
+              <th className="text-left font-mono text-[11px] pb-1 pr-3">{t("pages:workspace.tabs.ApplyToDocumentTab.col_doc_bar")}</th>
+              <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.ApplyToDocumentTab.col_top_words")}</th>
             </tr>
           </thead>
           <tbody>
@@ -368,12 +381,14 @@ function DocDetailPanel({
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
         >
           <h4 className="text-base font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-            P(label | dominant topic) — does the dominant topic predict the doc's label?
+            {t("pages:workspace.tabs.ApplyToDocumentTab.plabel_title")}
           </h4>
           <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-            For docs assigned to <code>t{doc.topic_k_dominant}</code>, here is the empirical label
-            distribution. If <strong>{doc.label_name}</strong> is the largest bar, the topic
-            "correctly routes" this doc's class.
+            {t("pages:workspace.tabs.ApplyToDocumentTab.plabel_help_pre")}{" "}
+            <code>t{doc.topic_k_dominant}</code>
+            {t("pages:workspace.tabs.ApplyToDocumentTab.plabel_help_mid")}{" "}
+            <strong>{doc.label_name}</strong>
+            {t("pages:workspace.tabs.ApplyToDocumentTab.plabel_help_post")}
           </p>
           <PerTopicLabelBars
             row={topicToData.p_label_given_topic_dominant[doc.topic_k_dominant] ?? []}

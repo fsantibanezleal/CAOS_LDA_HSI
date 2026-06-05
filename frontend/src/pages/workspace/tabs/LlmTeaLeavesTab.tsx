@@ -9,9 +9,11 @@
  * No behavioural change versus the inline version; cut and paste +
  * external imports converted.
  */
+import { useTranslation } from "react-i18next";
+
 import type { LlmTeaLeaves } from "@/api/client";
 
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 import { UnmixingStat } from "../components/StatCard";
 
 export function LlmTeaLeavesTab({
@@ -23,31 +25,19 @@ export function LlmTeaLeavesTab({
   error: Error | null;
   data: LlmTeaLeaves | null;
 }) {
+  const { t: tt } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading LLM tea-leaves evaluation…
-      </p>
+      <TabLoading
+        message={tt("pages:workspace.tabs.LlmTeaLeavesTab.loading")}
+      />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load LLM tea-leaves.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={tt("pages:workspace.tabs.LlmTeaLeavesTab.error")}
+        detail={error.message}
+      />
     );
   }
   if (!data) return <TabEmpty />;
@@ -75,31 +65,31 @@ export function LlmTeaLeavesTab({
           className="text-base font-semibold mt-1 mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          LLM tea leaves · word-intrusion test
+          {tt("pages:workspace.tabs.LlmTeaLeavesTab.title")}
         </h4>
         <p
           className="text-[12px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          The <em>word-intrusion test</em> (Chang et al. 2009,
-          ‘Reading Tea Leaves’) is the gold-standard human-judgement
-          coherence probe: given a topic's top-N words, one is replaced
-          by a random word drawn from another topic; the rater (here
-          an LLM, model = {data.model}) must identify the intruder.
-          Stammbach et al. (2024, TACL) showed that capable LLMs match
-          human accuracy on this task. Correct picks ⇒ topic is
-          coherent enough to make the intruder obvious. Higher accuracy
-          ⇒ more interpretable topics; chance baseline is 1 / (top-N + 1).
+          {tt("pages:workspace.tabs.LlmTeaLeavesTab.lead", {
+            model: data.model,
+          })}
         </p>
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <UnmixingStat label="model" value={data.model} />
-          <UnmixingStat label="λ relevance" value={data.lambda_used} />
           <UnmixingStat
-            label="top-N per topic"
+            label={tt("pages:workspace.tabs.LlmTeaLeavesTab.stat_model")}
+            value={data.model}
+          />
+          <UnmixingStat
+            label={tt("pages:workspace.tabs.LlmTeaLeavesTab.stat_lambda")}
+            value={data.lambda_used}
+          />
+          <UnmixingStat
+            label={tt("pages:workspace.tabs.LlmTeaLeavesTab.stat_top_n")}
             value={String(data.top_n_per_topic)}
           />
           <UnmixingStat
-            label="intrusion accuracy"
+            label={tt("pages:workspace.tabs.LlmTeaLeavesTab.stat_accuracy")}
             value={`${(data.intrusion_accuracy * 100).toFixed(1)}% · ${data.n_correct_intrusion}/${data.n_attempted}`}
           />
         </div>
@@ -117,8 +107,10 @@ export function LlmTeaLeavesTab({
           className="text-base font-semibold mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Per-topic intrusion results · {attempted.length} attempted of{" "}
-          {data.topic_count}
+          {tt("pages:workspace.tabs.LlmTeaLeavesTab.table_title", {
+            attempted: attempted.length,
+            total: data.topic_count,
+          })}
         </h4>
         <div className="overflow-x-auto">
           <table
@@ -128,22 +120,22 @@ export function LlmTeaLeavesTab({
             <thead>
               <tr style={{ color: "var(--color-fg-faint)" }}>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  topic
+                  {tt("pages:workspace.tabs.LlmTeaLeavesTab.col_topic")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  top words
+                  {tt("pages:workspace.tabs.LlmTeaLeavesTab.col_top_words")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  intruder
+                  {tt("pages:workspace.tabs.LlmTeaLeavesTab.col_intruder")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  LLM picked
+                  {tt("pages:workspace.tabs.LlmTeaLeavesTab.col_llm_picked")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  verdict
+                  {tt("pages:workspace.tabs.LlmTeaLeavesTab.col_verdict")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1">
-                  LLM label
+                  {tt("pages:workspace.tabs.LlmTeaLeavesTab.col_llm_label")}
                 </th>
               </tr>
             </thead>
@@ -159,7 +151,9 @@ export function LlmTeaLeavesTab({
                     <td className="py-1 pr-3 font-mono text-[11px]">
                       {t.skipped ? (
                         <span style={{ color: "var(--color-fg-faint)" }}>
-                          skipped ({t.reason})
+                          {tt("pages:workspace.tabs.LlmTeaLeavesTab.skipped", {
+                            reason: t.reason,
+                          })}
                         </span>
                       ) : (
                         t.top_words?.slice(0, 5).join(", ")
@@ -187,11 +181,11 @@ export function LlmTeaLeavesTab({
                     <td className="py-1 pr-3 font-mono">
                       {correct === true ? (
                         <span style={{ color: "rgba(40,160,80,1)" }}>
-                          ✓ correct
+                          {tt("pages:workspace.tabs.LlmTeaLeavesTab.verdict_correct")}
                         </span>
                       ) : correct === false ? (
                         <span style={{ color: "rgba(214,39,40,1)" }}>
-                          ✗ wrong
+                          {tt("pages:workspace.tabs.LlmTeaLeavesTab.verdict_wrong")}
                         </span>
                       ) : (
                         <span style={{ color: "var(--color-fg-faint)" }}>

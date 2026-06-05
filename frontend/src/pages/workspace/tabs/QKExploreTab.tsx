@@ -9,6 +9,10 @@
  * of server compute per (Q, K) combo).
  */
 
+import { useTranslation } from "react-i18next";
+
+import { TabError, TabLoading } from "../components/TabStates";
+
 export function QKExploreTab({
   isLoading,
   error,
@@ -18,26 +22,17 @@ export function QKExploreTab({
   error: Error | null;
   sweep: import("@/api/client").LdaSweep | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Loading K-sweep…</p>;
+    return (
+      <TabLoading message={t("pages:workspace.tabs.QKExploreTab.loading")} />
+    );
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>Could not load lda_sweep.</p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.QKExploreTab.error")}
+        detail={error.message}
+      />
     );
   if (!sweep || sweep.grid.length === 0) return null;
 
@@ -63,21 +58,21 @@ export function QKExploreTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          K-sweep · LDA model selection
+          {t("pages:workspace.tabs.QKExploreTab.title")}
         </h4>
         <p
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Precomputed sweep of K ∈ {`{${sweep.K_grid.join(", ")}}`} on{" "}
-          <span className="font-mono">{sweep.wordification}</span>, Q=
-          {sweep.quantization_scale}, averaged over {sweep.seeds.length} seeds
-          ({Math.round(sweep.train_fraction * 100)}% train split,{" "}
-          {sweep.samples_per_class.toLocaleString()} samples per class). The
-          Workspace currently fits at canonical K={canonicalK}; this tab shows
-          what the model would look like at other K values — live refit is{" "}
-          <em>not</em> supported because each combo would require ~minutes of
-          server compute.
+          {t("pages:workspace.tabs.QKExploreTab.lead", {
+            kGrid: `{${sweep.K_grid.join(", ")}}`,
+            wordification: sweep.wordification,
+            Q: sweep.quantization_scale,
+            nSeeds: sweep.seeds.length,
+            trainPct: Math.round(sweep.train_fraction * 100),
+            samplesPerClass: sweep.samples_per_class.toLocaleString(),
+            canonicalK,
+          })}
         </p>
         {recommendedK !== null && (
           <div
@@ -88,13 +83,15 @@ export function QKExploreTab({
               color: "var(--color-accent)",
             }}
           >
-            <span className="font-semibold">Builder recommendation:</span>
+            <span className="font-semibold">
+              {t("pages:workspace.tabs.QKExploreTab.builder_recommendation")}
+            </span>
             <span className="font-mono">K={recommendedK}</span>
             {sweep.recommendation_method && (
               <span
                 className="font-mono text-[11px]"
                 style={{ color: "var(--color-fg-faint)" }}
-                title="Composite score: perplexity is rescaled to [0,1] across the K grid before being negated, then summed unweighted with npmi_mean and matched_cosine_mean (both already in their natural [0,1] range)."
+                title={t("pages:workspace.tabs.QKExploreTab.composite_score_title")}
               >
                 ({sweep.recommendation_method})
               </span>
@@ -104,7 +101,9 @@ export function QKExploreTab({
                 className="text-[11px] italic"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                — differs from canonical K={canonicalK}
+                {t("pages:workspace.tabs.QKExploreTab.differs_from_canonical", {
+                  canonicalK,
+                })}
               </span>
             )}
           </div>
@@ -114,32 +113,30 @@ export function QKExploreTab({
             className="text-[11.5px] mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            <em>Note:</em> the canonical Workspace fit retains K={canonicalK}{" "}
-            for cross-scene comparability. The composite score above is a
-            model-selection observation, not a mandate — the rest of the
-            app (topics, raster, applydoc, etc.) keeps reading the K=
-            {canonicalK} canonical fit.
+            {t("pages:workspace.tabs.QKExploreTab.canonical_note", {
+              canonicalK,
+            })}
           </p>
         )}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <SweepCurveCard
-            title="Perplexity (test)"
-            subtitle="lower is better; ↓ shows the model captures the held-out word distribution"
+            title={t("pages:workspace.tabs.QKExploreTab.curve_perplexity_title")}
+            subtitle={t("pages:workspace.tabs.QKExploreTab.curve_perplexity_subtitle")}
             xs={Ks}
             ys={perpMean}
             stds={perpStd}
             highlightX={canonicalK}
           />
           <SweepCurveCard
-            title="Topic diversity"
-            subtitle="fraction of unique top-words across topics; ↓ as K grows = topics overlap more"
+            title={t("pages:workspace.tabs.QKExploreTab.curve_diversity_title")}
+            subtitle={t("pages:workspace.tabs.QKExploreTab.curve_diversity_subtitle")}
             xs={Ks}
             ys={div}
             highlightX={canonicalK}
           />
           <SweepCurveCard
-            title="Matched cosine"
-            subtitle="seed-to-seed mean cosine of best-matched topics; ↑ = more stable fit"
+            title={t("pages:workspace.tabs.QKExploreTab.curve_cosine_title")}
+            subtitle={t("pages:workspace.tabs.QKExploreTab.curve_cosine_subtitle")}
             xs={Ks}
             ys={cos}
             highlightX={canonicalK}
@@ -159,26 +156,26 @@ export function QKExploreTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Per-K detail
+          {t("pages:workspace.tabs.QKExploreTab.detail_title")}
         </h4>
         <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">K</th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                perplexity mean
+                {t("pages:workspace.tabs.QKExploreTab.col_perplexity_mean")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                perplexity std
+                {t("pages:workspace.tabs.QKExploreTab.col_perplexity_std")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                topic diversity
+                {t("pages:workspace.tabs.QKExploreTab.col_topic_diversity")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                matched cosine mean
+                {t("pages:workspace.tabs.QKExploreTab.col_matched_cosine_mean")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1">
-                matched cosine min
+                {t("pages:workspace.tabs.QKExploreTab.col_matched_cosine_min")}
               </th>
             </tr>
           </thead>
@@ -233,13 +230,14 @@ export function QKExploreTab({
           className="text-[11.5px] mt-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          ★ = canonical K used everywhere else in the Workspace.{" "}
+          {t("pages:workspace.tabs.QKExploreTab.footer_canonical_legend")}{" "}
           {recommendedK !== null && recommendedK !== canonicalK
-            ? "● = builder-recommended K from sweep aggregation. "
+            ? t("pages:workspace.tabs.QKExploreTab.footer_recommended_legend") +
+              " "
             : ""}
-          For Q
-          sensitivity (vocabulary granularity), see the{" "}
-          <span className="font-mono">robust</span> tab.
+          {t("pages:workspace.tabs.QKExploreTab.footer_q_sensitivity_pre")}{" "}
+          <span className="font-mono">robust</span>{" "}
+          {t("pages:workspace.tabs.QKExploreTab.footer_q_sensitivity_post")}
         </p>
       </div>
     </div>

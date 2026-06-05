@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { LabelCell } from "@/api/client";
 
@@ -22,6 +23,7 @@ export function TopicLabelHeatmap({
   selectedTopic,
   onSelectTopic,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const labels = matrix[0] ?? [];
   const labelW = 110; // left gutter for topic labels
   const colW = Math.max(28, Math.floor(640 / Math.max(labels.length, 1)));
@@ -52,7 +54,7 @@ export function TopicLabelHeatmap({
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Topic versus label heatmap"
+      aria-label={t("pages:plots.TopicLabelHeatmap.aria_heatmap")}
       style={{ color: "var(--color-fg)" }}
     >
       <g
@@ -114,7 +116,7 @@ export function TopicLabelHeatmap({
                 fontWeight={isSel ? "600" : "400"}
                 fill={isSel ? "var(--color-accent)" : "currentColor"}
               >
-                topic {i + 1}
+                {t("pages:plots.TopicLabelHeatmap.row_topic", { index: i + 1 })}
               </text>
 
               {/* Cells */}

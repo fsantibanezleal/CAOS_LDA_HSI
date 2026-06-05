@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   coords: [number, number][];
@@ -33,6 +34,7 @@ export function IntertopicMap({
   selectedTopic,
   onSelect,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const w = 480;
   const h = 360;
   const pad = 36;
@@ -73,7 +75,7 @@ export function IntertopicMap({
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Intertopic distance map"
+      aria-label={t("pages:plots.IntertopicMap.aria_map")}
       style={{ color: "var(--color-fg)" }}
     >
       <g
@@ -114,7 +116,17 @@ export function IntertopicMap({
               onClick={() => onSelect(k)}
               role="button"
               tabIndex={0}
-              aria-label={`topic ${k + 1}, prevalence ${prevPct} percent${isSel ? ", selected" : ""}`}
+              aria-label={
+                isSel
+                  ? t("pages:plots.IntertopicMap.aria_topic_selected", {
+                      topic: k + 1,
+                      prevalence: prevPct,
+                    })
+                  : t("pages:plots.IntertopicMap.aria_topic", {
+                      topic: k + 1,
+                      prevalence: prevPct,
+                    })
+              }
               aria-pressed={isSel}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {

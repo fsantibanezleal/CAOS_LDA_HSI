@@ -6,9 +6,11 @@
  * accuracy + balanced accuracy + a side-by-side bar chart. Source data:
  * `/api/linear-probe-panel/{scene}`.
  */
+import { useTranslation } from "react-i18next";
+
 import type { LinearProbePanel } from "@/api/client";
 
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 export function LinearProbeTab({
   isLoading,
@@ -19,31 +21,19 @@ export function LinearProbeTab({
   error: Error | null;
   data: LinearProbePanel | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading linear probe panel…
-      </p>
+      <TabLoading
+        message={t("pages:workspace.tabs.LinearProbeTab.loading")}
+      />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load linear probe panel.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.LinearProbeTab.error")}
+        detail={error.message}
+      />
     );
   }
   if (!data) return <TabEmpty />;
@@ -81,17 +71,17 @@ export function LinearProbeTab({
           className="text-base font-semibold mt-1 mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Linear probe panel · {data.n_classes ?? "?"}-class macro F1
+          {t("pages:workspace.tabs.LinearProbeTab.title", {
+            nClasses: data.n_classes ?? "?",
+          })}
         </h4>
         <p
           className="text-[12px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Trains a linear classifier on each method&apos;s latent (K ={" "}
-          {data.K ?? "?"}) and reports macro-F1, accuracy, and balanced
-          accuracy with 95% CI. Linear probing isolates the
-          representation&apos;s separability — a strong probe means the latent
-          already arranges classes in linear half-spaces.
+          {t("pages:workspace.tabs.LinearProbeTab.lead", {
+            K: data.K ?? "?",
+          })}
         </p>
       </div>
 
@@ -107,7 +97,7 @@ export function LinearProbeTab({
           className="text-base font-semibold mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Method ranking · macro F1
+          {t("pages:workspace.tabs.LinearProbeTab.ranking_title")}
         </h4>
         <div className="overflow-x-auto">
           <table
@@ -117,21 +107,23 @@ export function LinearProbeTab({
             <thead>
               <tr style={{ color: "var(--color-fg-faint)" }}>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  rank
+                  {t("pages:workspace.tabs.LinearProbeTab.col_rank")}
                 </th>
                 <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                  method
+                  {t("pages:workspace.tabs.LinearProbeTab.col_method")}
                 </th>
                 <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                  macro F1
+                  {t("pages:workspace.tabs.LinearProbeTab.col_macro_f1")}
                 </th>
                 <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                  accuracy
+                  {t("pages:workspace.tabs.LinearProbeTab.col_accuracy")}
                 </th>
                 <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                  balanced acc
+                  {t("pages:workspace.tabs.LinearProbeTab.col_balanced_acc")}
                 </th>
-                <th className="text-left font-mono text-[11px] pb-1">bar</th>
+                <th className="text-left font-mono text-[11px] pb-1">
+                  {t("pages:workspace.tabs.LinearProbeTab.col_bar")}
+                </th>
               </tr>
             </thead>
             <tbody>
