@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 
@@ -18,6 +19,7 @@ export function TopicSpectrum({
   bandProfiles,
   selectedTopic,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const w = 720;
   const h = 260;
   const padL = 50;
@@ -65,7 +67,7 @@ export function TopicSpectrum({
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Per-topic spectral profiles"
+      aria-label={t("pages:plots.TopicSpectrum.aria_chart")}
       style={{ color: "var(--color-fg)" }}
     >
       <g
@@ -131,7 +133,7 @@ export function TopicSpectrum({
           opacity="0.55"
           fontSize="10.5"
         >
-          longitud de onda (nm)
+          {t("pages:plots.TopicSpectrum.axis_x")}
         </text>
         <text
           x={12}
@@ -141,7 +143,7 @@ export function TopicSpectrum({
           opacity="0.55"
           fontSize="10.5"
         >
-          φ_k(banda)
+          {t("pages:plots.TopicSpectrum.axis_y")}
         </text>
 
         {bandProfiles.map((profile, k) => {

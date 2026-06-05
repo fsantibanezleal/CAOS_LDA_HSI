@@ -10,10 +10,12 @@
  * Both helpers are module-local; only this tab consumes them.
  */
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type {
   CrossMethodAgreement,
   MethodNarratives,
 } from "@/api/client";
+import { TabError, TabLoading } from "../components/TabStates";
 
 export function CrossMethodAgreementTab({
   isLoading,
@@ -26,32 +28,20 @@ export function CrossMethodAgreementTab({
   agreement: CrossMethodAgreement | null;
   narratives: MethodNarratives | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [metric, setMetric] = useState<"ari" | "nmi" | "v_measure">("ari");
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading cross-method agreement…
-      </p>
+      <TabLoading
+        message={t("pages:workspace.tabs.CrossMethodAgreementTab.loading")}
+      />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load cross-method agreement.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.CrossMethodAgreementTab.error")}
+        detail={error.message}
+      />
     );
   }
   return (
@@ -77,6 +67,7 @@ function AgreementMatrixCard({
   metric: "ari" | "nmi" | "v_measure";
   setMetric: (m: "ari" | "nmi" | "v_measure") => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const N = agreement.method_names.length;
   const labelW = 110;
   const cell = 60;
@@ -110,7 +101,10 @@ function AgreementMatrixCard({
           className="text-base font-semibold"
           style={{ color: "var(--color-fg)" }}
         >
-          Cross-method agreement · {N}×{N} {metric.toUpperCase()} matrix
+          {t("pages:workspace.tabs.CrossMethodAgreementTab.matrix_title", {
+            n: N,
+            metric: metric.toUpperCase(),
+          })}
         </h4>
         <div className="flex items-baseline gap-1.5">
           {(["ari", "nmi", "v_measure"] as const).map((m) => (
@@ -143,11 +137,12 @@ function AgreementMatrixCard({
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Compares dominant-cluster assignments across {N} segmentation/topic
-        methods on the same {agreement.n_compared_pixels.toLocaleString()}{" "}
-        pixels (grid {agreement.spatial_shape[0]}×
-        {agreement.spatial_shape[1]}). High off-diagonal ⇒ methods agree on
-        partition; low ⇒ they disagree.
+        {t("pages:workspace.tabs.CrossMethodAgreementTab.matrix_help", {
+          n: N,
+          pixels: agreement.n_compared_pixels.toLocaleString(),
+          rows: agreement.spatial_shape[0],
+          cols: agreement.spatial_shape[1],
+        })}
       </p>
       <div className="overflow-x-auto">
         <svg
@@ -155,7 +150,7 @@ function AgreementMatrixCard({
           className="max-w-full h-auto"
           style={{ maxWidth: 1080 }}
           role="img"
-          aria-label="Cross-method agreement matrix (ARI between each pair of partition methods)"
+          aria-label={t("pages:workspace.tabs.CrossMethodAgreementTab.aria_matrix")}
         >
           {agreement.method_names.map((m, j) => (
             <text
@@ -217,6 +212,7 @@ function AgreementMatrixCard({
 }
 
 function NarrativesGrid({ narratives }: { narratives: MethodNarratives }) {
+  const { t } = useTranslation(["pages"]);
   const entries = Object.entries(narratives.method_narratives);
   return (
     <div>
@@ -224,17 +220,13 @@ function NarrativesGrid({ narratives }: { narratives: MethodNarratives }) {
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Method narratives · what each method captures
+        {t("pages:workspace.tabs.CrossMethodAgreementTab.narratives_title")}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Per-method summary of what the segmentation/topic method captures:
-        spectral silhouette (via label-as-cluster), agreement vs label
-        (ARI / NMI / V), spatial Moran&apos;s I and max-IoU against
-        topic-dominant. &quot;separates / unites / enables&quot; are reserved
-        for narrative text when populated by the builder.
+        {t("pages:workspace.tabs.CrossMethodAgreementTab.narratives_help")}
       </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {entries.map(([method, e]) => {
@@ -300,7 +292,7 @@ function NarrativesGrid({ narratives }: { narratives: MethodNarratives }) {
                   {e.separates ? (
                     <div>
                       <span style={{ color: "var(--color-fg-faint)" }}>
-                        separates:{" "}
+                        {t("pages:workspace.tabs.CrossMethodAgreementTab.label_separates")}{" "}
                       </span>
                       {e.separates}
                     </div>
@@ -308,7 +300,7 @@ function NarrativesGrid({ narratives }: { narratives: MethodNarratives }) {
                   {e.unites ? (
                     <div>
                       <span style={{ color: "var(--color-fg-faint)" }}>
-                        unites:{" "}
+                        {t("pages:workspace.tabs.CrossMethodAgreementTab.label_unites")}{" "}
                       </span>
                       {e.unites}
                     </div>
@@ -316,7 +308,7 @@ function NarrativesGrid({ narratives }: { narratives: MethodNarratives }) {
                   {e.enables ? (
                     <div>
                       <span style={{ color: "var(--color-fg-faint)" }}>
-                        enables:{" "}
+                        {t("pages:workspace.tabs.CrossMethodAgreementTab.label_enables")}{" "}
                       </span>
                       {e.enables}
                     </div>

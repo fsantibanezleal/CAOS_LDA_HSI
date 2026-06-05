@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import type {
   MutualInformation,
   RateDistortionCurve,
@@ -32,6 +34,7 @@ export function MetricsTab({
   miError: Error | null;
   miLoading: boolean;
 }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div className="space-y-6">
       <div
@@ -47,22 +50,22 @@ export function MetricsTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Rate–distortion curve · LDA / NMF / PCA
+            {t("pages:workspace.tabs.MetricsTab.rate_dist_title")}
           </h4>
           <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
-            Held-out reconstruction RMSE on the doc-term matrix for K ∈{" "}
-            {`{4, 6, 8, 10, 12, 16}`}. PCA wins because it is the L2-optimal
-            compressor; LDA optimises a multinomial likelihood (not L2). The
-            argument is not "LDA reconstructs better" — it is "LDA delivers an
-            interpretable basis at the cost of RMSE".
+            {t("pages:workspace.tabs.MetricsTab.rate_dist_lead", {
+              kGrid: "{4, 6, 8, 10, 12, 16}",
+            })}
           </p>
         </header>
         {rateDistLoading && (
-          <p style={{ color: "var(--color-fg-faint)" }}>Loading curves…</p>
+          <p style={{ color: "var(--color-fg-faint)" }}>
+            {t("pages:workspace.tabs.MetricsTab.rate_dist_loading")}
+          </p>
         )}
         {rateDistError && (
           <p style={{ color: "var(--color-warn)" }}>
-            Could not load /api/rate-distortion-curve.
+            {t("pages:workspace.tabs.MetricsTab.rate_dist_error")}
           </p>
         )}
         {rateDist && <RateDistortionCurveSvg data={rateDist} />}
@@ -81,30 +84,25 @@ export function MetricsTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Mutual information · MI(latent ; label)
+            {t("pages:workspace.tabs.MetricsTab.mi_title")}
           </h4>
           <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
-            How much information about the label each K-dim representation
-            retains (theta vs PCA-K vs NMF-K vs ICA-K vs dense-AE-K). Reported
-            as joint MI clipped to label entropy and as the fraction of entropy
-            recovered.{" "}
+            {t("pages:workspace.tabs.MetricsTab.mi_lead")}{" "}
             <em>
-              MI is estimated with the Kraskov–Stögbauer–Grassberger
-              k-NN estimator (k = 3) for continuous–discrete pairs
-              (Ross 2014 extension of Kraskov et al. 2004), the same
-              estimator scikit-learn ships behind{" "}
-              <code>mutual_info_classif</code>. Values are bias-corrected
-              and shown alongside the label-entropy upper bound so the
-              ratio MI / H(L) reflects the actual recoverable fraction.
+              {t("pages:workspace.tabs.MetricsTab.mi_estimator_pre")}{" "}
+              <code>mutual_info_classif</code>
+              {t("pages:workspace.tabs.MetricsTab.mi_estimator_post")}
             </em>
           </p>
         </header>
         {miLoading && (
-          <p style={{ color: "var(--color-fg-faint)" }}>Loading MI…</p>
+          <p style={{ color: "var(--color-fg-faint)" }}>
+            {t("pages:workspace.tabs.MetricsTab.mi_loading")}
+          </p>
         )}
         {miError && (
           <p style={{ color: "var(--color-warn)" }}>
-            Could not load /api/mutual-information.
+            {t("pages:workspace.tabs.MetricsTab.mi_error")}
           </p>
         )}
         {mi && <MutualInfoTable data={mi} />}
@@ -114,6 +112,7 @@ export function MetricsTab({
 }
 
 function RateDistortionCurveSvg({ data }: { data: RateDistortionCurve }) {
+  const { t } = useTranslation(["pages"]);
   const w = 720;
   const h = 320;
   const padL = 60;
@@ -153,7 +152,7 @@ function RateDistortionCurveSvg({ data }: { data: RateDistortionCurve }) {
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Rate distortion curves"
+      aria-label={t("pages:workspace.tabs.MetricsTab.rate_dist_aria")}
       style={{ color: "var(--color-fg)" }}
     >
       <g
@@ -214,7 +213,7 @@ function RateDistortionCurveSvg({ data }: { data: RateDistortionCurve }) {
           opacity="0.55"
           fontSize="10"
         >
-          K (latent dimension)
+          {t("pages:workspace.tabs.MetricsTab.rate_dist_axis_x")}
         </text>
         <text
           x={12}
@@ -224,7 +223,7 @@ function RateDistortionCurveSvg({ data }: { data: RateDistortionCurve }) {
           opacity="0.55"
           fontSize="10"
         >
-          RMSE held-out
+          {t("pages:workspace.tabs.MetricsTab.rate_dist_axis_y")}
         </text>
 
         {methods.map((m) => {
@@ -287,6 +286,7 @@ function RateDistortionCurveSvg({ data }: { data: RateDistortionCurve }) {
 }
 
 function MutualInfoTable({ data }: { data: MutualInformation }) {
+  const { t } = useTranslation(["pages"]);
   const ranking = data.ranking_by_joint_mi;
   return (
     <div>
@@ -294,9 +294,11 @@ function MutualInfoTable({ data }: { data: MutualInformation }) {
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Label entropy H(y) = {data.label_entropy_nats.toFixed(3)} nats (
-        {data.label_entropy_bits.toFixed(3)} bits) ·{" "}
-        {data.n_documents.toLocaleString()} documents.
+        {t("pages:workspace.tabs.MetricsTab.mi_entropy_line", {
+          nats: data.label_entropy_nats.toFixed(3),
+          bits: data.label_entropy_bits.toFixed(3),
+          nDocuments: data.n_documents.toLocaleString(),
+        })}
       </p>
       <table
         className="w-full text-[13.5px]"
@@ -309,10 +311,18 @@ function MutualInfoTable({ data }: { data: MutualInformation }) {
               color: "var(--color-fg)",
             }}
           >
-            <th className="text-left py-2 pr-4 font-semibold">Method</th>
-            <th className="text-right py-2 pr-4 font-semibold">Latent dim</th>
-            <th className="text-right py-2 pr-4 font-semibold">Joint MI</th>
-            <th className="text-right py-2 font-semibold">% H(y) recovered</th>
+            <th className="text-left py-2 pr-4 font-semibold">
+              {t("pages:workspace.tabs.MetricsTab.col_method")}
+            </th>
+            <th className="text-right py-2 pr-4 font-semibold">
+              {t("pages:workspace.tabs.MetricsTab.col_latent_dim")}
+            </th>
+            <th className="text-right py-2 pr-4 font-semibold">
+              {t("pages:workspace.tabs.MetricsTab.col_joint_mi")}
+            </th>
+            <th className="text-right py-2 font-semibold">
+              {t("pages:workspace.tabs.MetricsTab.col_pct_recovered")}
+            </th>
           </tr>
         </thead>
         <tbody>

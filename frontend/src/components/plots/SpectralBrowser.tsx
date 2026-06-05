@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { SpectralBrowserMeta } from "@/api/client";
 
@@ -24,6 +25,7 @@ export function SpectralBrowser({
   isolatedLabel,
   maxLines,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const yRange = useMemo(() => {
@@ -153,7 +155,7 @@ export function SpectralBrowser({
         borderRadius: 4,
         maxWidth: "100%",
       }}
-      aria-label="Spectral browser canvas"
+      aria-label={t("pages:plots.SpectralBrowser.aria_canvas")}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 
@@ -42,6 +43,7 @@ export function DominantTopicRaster({
   compareTopic,
   onPick,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const compare =
     compareTopic !== undefined && compareTopic !== null && compareTopic !== selectedTopic
       ? compareTopic
@@ -139,7 +141,7 @@ export function DominantTopicRaster({
           cursor: "crosshair",
           maxWidth: "100%",
         }}
-        aria-label="Dominant topic raster"
+        aria-label={t("pages:plots.DominantTopicRaster.aria_raster")}
       />
       <div
         className="mt-2 text-[12px] font-mono"
@@ -149,10 +151,12 @@ export function DominantTopicRaster({
         }}
       >
         {hover
-          ? `(${hover.row}, ${hover.col})  · topic ${
-              hover.topic === null ? "—" : hover.topic + 1
-            }`
-          : "Move the cursor to inspect; click to pin."}
+          ? t("pages:plots.DominantTopicRaster.hover", {
+              row: hover.row,
+              col: hover.col,
+              topic: hover.topic === null ? "—" : hover.topic + 1,
+            })
+          : t("pages:plots.DominantTopicRaster.hint")}
       </div>
     </div>
   );

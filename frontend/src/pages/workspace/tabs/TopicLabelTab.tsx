@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import type { TopicToData } from "@/api/client";
 import { TopicLabelHeatmap } from "@/components/plots/TopicLabelHeatmap";
 import { InverseLabelHeatmap } from "@/components/plots/InverseLabelHeatmap";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 import { DocsPerTopicBar } from "../components/DocsPerTopicBar";
 
 export function TopicLabelTab({
@@ -18,6 +19,7 @@ export function TopicLabelTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [direction, setDirection] = useState<"forward" | "inverse">(
     "forward",
   );
@@ -56,27 +58,15 @@ export function TopicLabelTab({
   }, [data]);
 
   if (isLoading)
-    return <p style={{ color: "var(--color-fg-faint)" }}>Loading topic–label matrix…</p>;
+    return (
+      <TabLoading message={t("pages:workspace.tabs.TopicLabelTab.loading")} />
+    );
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load topic_to_data.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.TopicLabelTab.error")}
+        detail={error.message}
+      />
     );
   if (!data) return <TabEmpty />;
 
@@ -98,12 +88,12 @@ export function TopicLabelTab({
             style={{ color: "var(--color-fg)" }}
           >
             {direction === "forward"
-              ? "P(label | topic) · dominant assignment"
-              : "P(topic | label) · dominant assignment"}
+              ? t("pages:workspace.tabs.TopicLabelTab.title_forward")
+              : t("pages:workspace.tabs.TopicLabelTab.title_inverse")}
           </h4>
           <div
             role="tablist"
-            aria-label="Heatmap direction"
+            aria-label={t("pages:workspace.tabs.TopicLabelTab.aria_direction")}
             className="inline-flex rounded-md border"
             style={{
               borderColor: "var(--color-border)",
@@ -155,20 +145,23 @@ export function TopicLabelTab({
           className="text-sm mb-2"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          <em>Dominant topic</em> for a pixel d means
-          <code> arg max<sub>k</sub> θ<sub>d,k</sub></code> — the
-          single topic with the largest posterior weight on that
-          pixel. Both heatmaps below are computed on the per-pixel
-          dominant-topic assignment (not on the full continuous θ
-          mixture).
+          <Trans
+            i18nKey="pages:workspace.tabs.TopicLabelTab.dominant_help"
+            components={{
+              em: <em />,
+              code: <code />,
+              subk: <sub />,
+              subdk: <sub />,
+            }}
+          />
         </p>
         <p
           className="text-sm mb-4"
           style={{ color: "var(--color-fg-faint)" }}
         >
           {direction === "forward"
-            ? "Each row is one topic; cells show the fraction of pixels assigned to that topic (by dominant θ) that carry each label. The bordered cell is the dominant per row. Click a row to highlight it and see the detail below."
-            : "Each row is one label; cells show the fraction of pixels carrying that label whose dominant topic is k. Computed as P(t|L) = N_t · P(L|t) / Σ_t' N_t' · P(L|t'). Click a column to select that topic."}
+            ? t("pages:workspace.tabs.TopicLabelTab.forward_help")
+            : t("pages:workspace.tabs.TopicLabelTab.inverse_help")}
         </p>
         <div className="overflow-x-auto">
           {direction === "forward" ? (
@@ -191,7 +184,7 @@ export function TopicLabelTab({
             />
           ) : (
             <p style={{ color: "var(--color-fg-faint)" }}>
-              No inverse matrix to render.
+              {t("pages:workspace.tabs.TopicLabelTab.no_inverse_matrix")}
             </p>
           )}
         </div>
@@ -213,14 +206,13 @@ export function TopicLabelTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Documents per topic (dominant assignment)
+            {t("pages:workspace.tabs.TopicLabelTab.docs_per_topic_title")}
           </h4>
           <p
             className="text-[12.5px] mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            How many pixels fall into each topic when we apply arg-max over θ.
-            The bar shows the absolute count.
+            {t("pages:workspace.tabs.TopicLabelTab.docs_per_topic_help")}
           </p>
           <DocsPerTopicBar
             counts={data.docs_per_topic_dominant}
@@ -248,9 +240,7 @@ export function TopicLabelTab({
             className="text-[12.5px] mb-3"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            KL divergence of P(label | topic) against the global label prior.
-            Topics with high KL are informative about labels; with KL ≈ 0 they
-            are unspecific.
+            {t("pages:workspace.tabs.TopicLabelTab.kl_help")}
           </p>
           <DocsPerTopicBar
             counts={data.kl_to_label_prior_per_topic}
@@ -276,7 +266,9 @@ export function TopicLabelTab({
             className="text-base font-semibold mb-2"
             style={{ color: "var(--color-fg)" }}
           >
-            Topic {selectedTopic + 1} · detail
+            {t("pages:workspace.tabs.TopicLabelTab.topic_detail", {
+              n: selectedTopic + 1,
+            })}
           </h4>
           <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[13px]">
             {[...matrix[selectedTopic]!]

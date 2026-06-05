@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 type Props = {
   matrix: number[][];
   seeds: number[];
@@ -10,6 +12,7 @@ type Props = {
  * actual stability metric.
  */
 export function StabilityHeatmap({ matrix, seeds }: Props) {
+  const { t } = useTranslation(["pages"]);
   const n = matrix.length;
   if (n === 0) return null;
   const w = 460;
@@ -29,7 +32,7 @@ export function StabilityHeatmap({ matrix, seeds }: Props) {
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Stability heatmap"
+      aria-label={t("pages:plots.StabilityHeatmap.aria_heatmap")}
       style={{ color: "var(--color-fg)" }}
     >
       <g

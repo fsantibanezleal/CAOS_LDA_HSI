@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import type { TopicToUsgsV7 } from "@/api/client";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 const USGS_CHAPTER_COLOR: Record<string, string> = {
   artificial: "#a855f7",
@@ -25,32 +26,15 @@ export function UsgsTab({
   selectedTopic: number | null;
   setSelectedTopic: (k: number | null) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
-    return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading topic-to-USGS-v7…
-      </p>
-    );
+    return <TabLoading message={t("pages:workspace.tabs.UsgsTab.loading")} />;
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load topic_to_usgs_v7.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.UsgsTab.error")}
+        detail={error.message}
+      />
     );
   if (!data) return <TabEmpty />;
 
@@ -76,15 +60,16 @@ export function UsgsTab({
             className="text-base font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Topic ↔ USGS Spectral Library v7
+            {t("pages:workspace.tabs.UsgsTab.title")}
           </h4>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            {data.library_subset} · {data.library_sample_count} spectra across 7
-            chapters. Each topic is matched by cosine + SAM against the full
-            library; click a topic below to see its top matches.
+            {data.library_subset} ·{" "}
+            {t("pages:workspace.tabs.UsgsTab.lead", {
+              count: data.library_sample_count,
+            })}
           </p>
         </header>
 
@@ -115,7 +100,7 @@ export function UsgsTab({
                   className="inline-block w-2.5 h-2.5 rounded-sm"
                   style={{ backgroundColor: color }}
                 />
-                topic {k + 1}
+                {t("pages:workspace.tabs.UsgsTab.topic_n", { n: k + 1 })}
               </button>
             );
           })}
@@ -128,7 +113,9 @@ export function UsgsTab({
                 className="text-sm font-semibold mb-2"
                 style={{ color: "var(--color-fg)" }}
               >
-                Top 20 — topic {selectedTopic! + 1}
+                {t("pages:workspace.tabs.UsgsTab.top20_for_topic", {
+                  n: selectedTopic! + 1,
+                })}
               </h5>
               <ol
                 className="text-[12.5px] space-y-1.5"
@@ -170,7 +157,7 @@ export function UsgsTab({
                 className="text-sm font-semibold mb-2"
                 style={{ color: "var(--color-fg)" }}
               >
-                Chapters in the top-50
+                {t("pages:workspace.tabs.UsgsTab.chapters_in_top50")}
               </h5>
               {chapterHist && Object.keys(chapterHist).length > 0 && (
                 <div className="space-y-1.5">
@@ -219,13 +206,14 @@ export function UsgsTab({
                 className="mt-3 text-[12px]"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Chapter count among the 50 spectra most similar to the topic.{" "}
-                {data.library_subset}: {data.library_sample_count} muestras
-                totales en biblioteca, distribuidas como{" "}
-                {Object.entries(data.library_chapter_counts)
-                  .map(([c, n]) => `${c} ${n}`)
-                  .join(", ")}
-                .
+                {t("pages:workspace.tabs.UsgsTab.chapter_count_help")}{" "}
+                {t("pages:workspace.tabs.UsgsTab.library_distribution", {
+                  subset: data.library_subset,
+                  count: data.library_sample_count,
+                  distribution: Object.entries(data.library_chapter_counts)
+                    .map(([c, n]) => `${c} ${n}`)
+                    .join(", "),
+                })}
               </p>
             </div>
           </div>

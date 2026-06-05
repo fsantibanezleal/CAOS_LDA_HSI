@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import type { ClassEntry } from "@/api/client";
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
  * legend underneath with raw counts.
  */
 export function ClassDistributionBar({ classes }: Props) {
+  const { t } = useTranslation(["pages"]);
   // Order by relative frequency descending so the visual lead is
   // dominated by the dominant classes.
   const sorted = [...classes].sort((a, b) => b.rel_freq - a.rel_freq);
@@ -24,7 +27,7 @@ export function ClassDistributionBar({ classes }: Props) {
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label="Class frequency distribution"
+        aria-label={t("pages:plots.ClassDistributionBar.aria_chart")}
       >
         {sorted.map((c) => {
           const segW = c.rel_freq * w;
@@ -60,7 +63,10 @@ export function ClassDistributionBar({ classes }: Props) {
         className="mt-1 text-[12px]"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        {total.toLocaleString()} labelled pixels · {classes.length} classes
+        {t("pages:plots.ClassDistributionBar.caption", {
+          pixels: total.toLocaleString(),
+          classes: classes.length,
+        })}
       </p>
     </div>
   );

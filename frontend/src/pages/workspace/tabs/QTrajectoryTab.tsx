@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   Q_TRAJECTORY_AXES,
@@ -42,13 +43,13 @@ const SCENE_COLORS = [
   "rgba(20, 184, 166, 1)",
 ];
 
-const AXIS_HELP: Record<QTrajectoryAxis, string> = {
-  "F-1": "classification macro-F1 (topic-routed soft, per-fold mean) — higher is better",
-  "F-2": "topic-word coherence c_v — higher is better",
-  "F-7": "topic-to-label normalised mutual information — higher is better",
-  "F-14": "mean pairwise top-token Jaccard (repetitiveness) — lower is better",
-  "F-18": "mean seed-matched topic cosine (reliability) — higher is better",
-  "F-22": "counterfactual median L1 to flip argmax topic (robustness) — higher is better",
+const AXIS_HELP_KEYS: Record<QTrajectoryAxis, string> = {
+  "F-1": "workspace.tabs.QTrajectoryTab.axis_help_f1",
+  "F-2": "workspace.tabs.QTrajectoryTab.axis_help_f2",
+  "F-7": "workspace.tabs.QTrajectoryTab.axis_help_f7",
+  "F-14": "workspace.tabs.QTrajectoryTab.axis_help_f14",
+  "F-18": "workspace.tabs.QTrajectoryTab.axis_help_f18",
+  "F-22": "workspace.tabs.QTrajectoryTab.axis_help_f22",
 };
 
 function shortScene(sceneId: string): string {
@@ -56,6 +57,7 @@ function shortScene(sceneId: string): string {
 }
 
 export function QTrajectoryTab() {
+  const { t } = useTranslation(["pages"]);
   const [recipe, setRecipe] = useState<string>("V20");
   const [axis, setAxis] = useState<QTrajectoryAxis>("F-7");
 
@@ -87,29 +89,23 @@ export function QTrajectoryTab() {
           className="text-lg font-semibold tracking-tight mt-1 mb-1"
           style={{ color: "var(--color-fg)" }}
         >
-          Q-trajectory · how quantisation refines a representation
+          {t("pages:workspace.tabs.QTrajectoryTab.title")}
         </h3>
         <p
           className="text-[12.5px] mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Hold the wordification recipe fixed and refine the quantisation
-          granularity Q ∈ {"{8, 16, 32}"}. The chart shows how this
-          representation's score on the chosen axis moves — the bold line
-          is the mean across the six labelled scenes, faint lines are
-          per-scene. This makes <em>the representation</em> the independent
-          variable: e.g. V20 / F-7 climbs across Q, while V8 / F-18 stays
-          flat. All cells are precomputed sweep shards (no live refit).
+          {t("pages:workspace.tabs.QTrajectoryTab.lead")}
         </p>
 
         <AxisPicker
-          label="recipe"
+          label={t("pages:workspace.tabs.QTrajectoryTab.picker_recipe")}
           options={RECIPE_IDS}
           value={recipe}
           onChange={setRecipe}
         />
         <AxisPicker
-          label="axis"
+          label={t("pages:workspace.tabs.QTrajectoryTab.picker_axis")}
           options={Q_TRAJECTORY_AXES as unknown as string[]}
           value={axis}
           onChange={(v) => setAxis(v as QTrajectoryAxis)}
@@ -118,13 +114,16 @@ export function QTrajectoryTab() {
           className="mt-2 text-[11.5px] italic"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          {axis}: {AXIS_HELP[axis]}
+          {axis}: {t(`pages:${AXIS_HELP_KEYS[axis]}`)}
         </p>
       </div>
 
       {traj.isLoading ? (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Loading {recipe} · {axis} trajectory…
+          {t("pages:workspace.tabs.QTrajectoryTab.loading", {
+            recipe,
+            axis,
+          })}
         </p>
       ) : traj.error ? (
         <div
@@ -135,7 +134,7 @@ export function QTrajectoryTab() {
           }}
         >
           <p style={{ color: "var(--color-warn)" }}>
-            Could not load the Q-trajectory.
+            {t("pages:workspace.tabs.QTrajectoryTab.error")}
           </p>
           <p
             className="mt-2 text-sm"
@@ -213,6 +212,7 @@ function QTrajectoryChartCard({
   recipe: string;
   axis: QTrajectoryAxis;
 }) {
+  const { t } = useTranslation(["pages"]);
   // Levels actually present, in Q order.
   const levels = useMemo(
     () =>
@@ -267,8 +267,7 @@ function QTrajectoryChartCard({
         }}
       >
         <p style={{ color: "var(--color-fg-faint)" }}>
-          No Q-trajectory shards exist for {recipe} on {axis} yet. Try
-          another recipe or axis.
+          {t("pages:workspace.tabs.QTrajectoryTab.empty", { recipe, axis })}
         </p>
       </div>
     );
@@ -332,19 +331,23 @@ function QTrajectoryChartCard({
         style={{ color: "var(--color-fg)" }}
       >
         {recipe} · {axis}
-        {data.lower_is_better ? " (lower is better)" : " (higher is better)"}
+        {data.lower_is_better
+          ? ` ${t("pages:workspace.tabs.QTrajectoryTab.lower_is_better")}`
+          : ` ${t("pages:workspace.tabs.QTrajectoryTab.higher_is_better")}`}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Shows how refining quantisation Q changes this representation's
-        score. {hover ? (
+        {t("pages:workspace.tabs.QTrajectoryTab.chart_help")}{" "}
+        {hover ? (
           <span className="font-mono" style={{ color: "var(--color-fg)" }}>
             {hover.label} @ Q={hover.q}: {hover.value.toFixed(4)}
           </span>
         ) : (
-          <span>Hover a point to read its value; click a legend entry to toggle a scene.</span>
+          <span>
+            {t("pages:workspace.tabs.QTrajectoryTab.chart_hover_hint")}
+          </span>
         )}
       </p>
 
@@ -354,7 +357,10 @@ function QTrajectoryChartCard({
           width="100%"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          aria-label={`${recipe} ${axis} Q-trajectory`}
+          aria-label={t("pages:workspace.tabs.QTrajectoryTab.aria_chart", {
+            recipe,
+            axis,
+          })}
           style={{ color: "var(--color-fg)", maxWidth: W }}
         >
           {/* axes */}
@@ -417,7 +423,7 @@ function QTrajectoryChartCard({
             fontSize="10"
             fill="var(--color-fg-faint)"
           >
-            quantisation level
+            {t("pages:workspace.tabs.QTrajectoryTab.axis_x")}
           </text>
 
           {/* faint per-scene lines */}
@@ -508,7 +514,11 @@ function QTrajectoryChartCard({
                 backgroundColor: "var(--color-fg)",
               }}
             />
-            <span className="font-semibold">mean ({meanPoints.length} Q)</span>
+            <span className="font-semibold">
+              {t("pages:workspace.tabs.QTrajectoryTab.legend_mean", {
+                count: meanPoints.length,
+              })}
+            </span>
           </div>
           {sceneSeries.map((s) => {
             const off = hidden.has(s.sceneId);
@@ -548,9 +558,11 @@ function QTrajectoryChartCard({
           <tr style={{ color: "var(--color-fg-faint)" }}>
             <th className="text-left font-mono text-[11px] pb-1 pr-3">Q</th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              mean
+              {t("pages:workspace.tabs.QTrajectoryTab.col_mean")}
             </th>
-            <th className="text-right font-mono text-[11px] pb-1">scenes</th>
+            <th className="text-right font-mono text-[11px] pb-1">
+              {t("pages:workspace.tabs.QTrajectoryTab.col_scenes")}
+            </th>
           </tr>
         </thead>
         <tbody>

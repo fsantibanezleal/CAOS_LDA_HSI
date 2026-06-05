@@ -12,10 +12,14 @@
  * NEURAL_METHOD_COLOR is module-local — only the cards in this file
  * use it.
  */
+import { useTranslation } from "react-i18next";
+
 import type {
   NeuralTopicComparison,
   NeuralTopicSeedStability,
 } from "@/api/client";
+
+import { TabError, TabLoading } from "../components/TabStates";
 
 const NEURAL_METHOD_COLOR: Record<string, string> = {
   lda: "rgba(40, 160, 80, 1)",
@@ -34,31 +38,19 @@ export function NeuralTopicComparisonTab({
   comparison: NeuralTopicComparison | null;
   seedStability: NeuralTopicSeedStability | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading neural topic comparison…
-      </p>
+      <TabLoading
+        message={t("pages:workspace.tabs.NeuralTopicComparisonTab.loading")}
+      />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load neural topic comparison.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.NeuralTopicComparisonTab.error")}
+        detail={error.message}
+      />
     );
   }
   if (!comparison) return null;
@@ -80,6 +72,7 @@ function NeuralHeaderCard({
 }: {
   comparison: NeuralTopicComparison;
 }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div
       className="rounded-xl border p-5 relative overflow-hidden"
@@ -101,18 +94,17 @@ function NeuralHeaderCard({
         className="text-lg font-semibold tracking-tight mt-1 mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Head-to-head · LDA vs ProdLDA vs ETM
+        {t("pages:workspace.tabs.NeuralTopicComparisonTab.title")}
       </h3>
       <p
         className="text-[12.5px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Three topic models on the same canonical band-frequency corpus (
-        {comparison.n_documents.toLocaleString()} documents ·{" "}
-        {comparison.n_classes} classes · K ={" "}
-        {Object.values(comparison.methods)[0]?.K ?? "?"}). Compares
-        clustering quality (KMeans-vs-label ARI/NMI/silhouette), document
-        θ entropy, and topic coherence (c_v, c_npmi, u_mass).
+        {t("pages:workspace.tabs.NeuralTopicComparisonTab.lead", {
+          nDocuments: comparison.n_documents.toLocaleString(),
+          nClasses: comparison.n_classes,
+          K: Object.values(comparison.methods)[0]?.K ?? "?",
+        })}
       </p>
       {comparison.framework_axis ? (
         <p
@@ -131,6 +123,7 @@ function NeuralComparisonGrid({
 }: {
   comparison: NeuralTopicComparison;
 }) {
+  const { t } = useTranslation(["pages"]);
   const methods = Object.entries(comparison.methods);
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -183,7 +176,7 @@ function NeuralComparisonGrid({
                     className="text-[10.5px] uppercase tracking-widest font-semibold mb-0.5"
                     style={{ color: "var(--color-fg-faint)" }}
                   >
-                    KMeans vs label
+                    {t("pages:workspace.tabs.NeuralTopicComparisonTab.section_kmeans")}
                   </div>
                   <div
                     className="flex items-baseline gap-3 text-[12.5px] font-mono"
@@ -212,7 +205,9 @@ function NeuralComparisonGrid({
                       className="text-[10.5px] uppercase tracking-widest font-semibold mb-0.5"
                       style={{ color: "var(--color-fg-faint)" }}
                     >
-                      Topic coherence (top-{m.coherence.top_n})
+                      {t("pages:workspace.tabs.NeuralTopicComparisonTab.section_coherence", {
+                        topN: m.coherence.top_n,
+                      })}
                     </div>
                     <div
                       className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-[12.5px] font-mono"
@@ -241,7 +236,7 @@ function NeuralComparisonGrid({
                     className="text-[10.5px] uppercase tracking-widest font-semibold mb-0.5"
                     style={{ color: "var(--color-fg-faint)" }}
                   >
-                    Document θ entropy
+                    {t("pages:workspace.tabs.NeuralTopicComparisonTab.section_theta_entropy")}
                   </div>
                   <div
                     className="flex items-baseline gap-3 text-[12.5px] font-mono"
@@ -255,7 +250,9 @@ function NeuralComparisonGrid({
                     </span>
                     <span
                       style={{ color: "var(--color-fg-faint)" }}
-                      title={`relative to log(K)=${m.theta_entropy.max_entropy_uniform.toFixed(3)}`}
+                      title={t("pages:workspace.tabs.NeuralTopicComparisonTab.theta_norm_title", {
+                        value: m.theta_entropy.max_entropy_uniform.toFixed(3),
+                      })}
                     >
                       norm{" "}
                       {(
@@ -279,6 +276,7 @@ function NeuralRankingBar({
 }: {
   comparison: NeuralTopicComparison;
 }) {
+  const { t } = useTranslation(["pages"]);
   const ranking = comparison.ranking_by_ari ?? [];
   const max = ranking[0]?.ari ?? 1;
   return (
@@ -294,7 +292,7 @@ function NeuralRankingBar({
         className="text-base font-semibold mb-2"
         style={{ color: "var(--color-fg)" }}
       >
-        ARI ranking on this scene
+        {t("pages:workspace.tabs.NeuralTopicComparisonTab.ranking_title")}
       </h4>
       <table
         className="w-full text-[12.5px]"
@@ -303,15 +301,17 @@ function NeuralRankingBar({
         <thead>
           <tr style={{ color: "var(--color-fg-faint)" }}>
             <th className="text-left font-mono text-[11px] pb-1 pr-3">
-              rank
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_rank")}
             </th>
             <th className="text-left font-mono text-[11px] pb-1 pr-3">
-              method
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_method")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              ARI
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_ari")}
             </th>
-            <th className="text-left font-mono text-[11px] pb-1">bar</th>
+            <th className="text-left font-mono text-[11px] pb-1">
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_bar")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -363,6 +363,7 @@ function NeuralSeedStabilityCard({
 }: {
   seedStability: NeuralTopicSeedStability;
 }) {
+  const { t } = useTranslation(["pages"]);
   const methods = Object.entries(seedStability.methods);
   return (
     <div
@@ -377,15 +378,17 @@ function NeuralSeedStabilityCard({
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Seed stability · {seedStability.n_seeds}-seed ARI mean ± std
+        {t("pages:workspace.tabs.NeuralTopicComparisonTab.seed_title", {
+          nSeeds: seedStability.n_seeds,
+        })}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Each method is re-fitted with {seedStability.n_seeds} different
-        random seeds. The summary reports the mean and std of
-        KMeans-vs-label ARI across seeds. Lower std ⇒ more stable method.
+        {t("pages:workspace.tabs.NeuralTopicComparisonTab.seed_help", {
+          nSeeds: seedStability.n_seeds,
+        })}
       </p>
       <table
         className="w-full text-[12.5px]"
@@ -394,24 +397,26 @@ function NeuralSeedStabilityCard({
         <thead>
           <tr style={{ color: "var(--color-fg-faint)" }}>
             <th className="text-left font-mono text-[11px] pb-1 pr-3">
-              method
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_method")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              ARI mean
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_ari_mean")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              ARI std
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_ari_std")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              min
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_min")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              max
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_max")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              c_v mean
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_cv_mean")}
             </th>
-            <th className="text-right font-mono text-[11px] pb-1">c_v std</th>
+            <th className="text-right font-mono text-[11px] pb-1">
+              {t("pages:workspace.tabs.NeuralTopicComparisonTab.col_cv_std")}
+            </th>
           </tr>
         </thead>
         <tbody>

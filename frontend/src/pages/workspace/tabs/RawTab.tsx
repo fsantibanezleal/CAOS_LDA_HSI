@@ -5,7 +5,7 @@ import { api } from "@/api/client";
 import type { FelzenszwalbGroupings, ScenePerScene } from "@/api/client";
 import { ClassDistributionBar } from "@/components/plots/ClassDistributionBar";
 import { SpectralByClass } from "@/components/plots/SpectralByClass";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 export function RawTab({
   isLoading,
@@ -20,27 +20,13 @@ export function RawTab({
 }) {
   const { t } = useTranslation(["pages"]);
   if (isLoading)
-    return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Loading EDA…</p>
-    );
+    return <TabLoading message={t("pages:workspace.tabs.RawTab.loading")} />;
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>Could not load EDA.</p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.RawTab.error_title")}
+        detail={error.message}
+      />
     );
   if (!data) return <TabEmpty />;
 
@@ -60,7 +46,7 @@ export function RawTab({
           className="text-base font-semibold mb-3"
           style={{ color: "var(--color-fg)" }}
         >
-          Class distribution
+          {t("pages:workspace.tabs.RawTab.class_distribution")}
         </h4>
         <ClassDistributionBar classes={data.class_distribution} />
       </div>
@@ -77,7 +63,7 @@ export function RawTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Per-class spectral envelopes
+          {t("pages:workspace.tabs.RawTab.spectral_envelopes")}
         </h4>
         <p
           className="text-sm mb-3"
@@ -106,6 +92,7 @@ const SEGMENTATION_METHODS: { id: string; label: string; description: string }[]
 ];
 
 function SegmentationOverlayPanel({ sceneId }: { sceneId: string }) {
+  const { t } = useTranslation(["pages"]);
   const [method, setMethod] = useState<string | null>(null);
   const summary = useQuery({
     queryKey: ["seg-summary", method, sceneId],
@@ -139,7 +126,7 @@ function SegmentationOverlayPanel({ sceneId }: { sceneId: string }) {
           className="text-base font-semibold"
           style={{ color: "var(--color-fg)" }}
         >
-          Spatial segmentation overlay
+          {t("pages:workspace.tabs.RawTab.seg_overlay_title")}
         </h4>
         <div className="flex items-center gap-2">
           <label
@@ -147,7 +134,7 @@ function SegmentationOverlayPanel({ sceneId }: { sceneId: string }) {
             className="text-[11px] uppercase tracking-wider"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            method
+            {t("pages:workspace.tabs.RawTab.method")}
           </label>
           <select
             id="raw-segmentation-method"
@@ -160,7 +147,7 @@ function SegmentationOverlayPanel({ sceneId }: { sceneId: string }) {
               color: "var(--color-fg)",
             }}
           >
-            <option value="">— off —</option>
+            <option value="">{t("pages:workspace.tabs.RawTab.off")}</option>
             {SEGMENTATION_METHODS.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.label}
@@ -173,33 +160,28 @@ function SegmentationOverlayPanel({ sceneId }: { sceneId: string }) {
         className="text-sm mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Precomputed spatial groupings from <span className="font-mono">build_groupings</span>:
-        Felzenszwalb graph-based, SLIC superpixels at 500 / 2000 targets, and fixed-size patch
-        grids. The colour map below renders each segment with a deterministic hue so
-        boundaries are visible at a glance; the per-segment-id assignment is the same one
-        used as the alternative document constructor in cycles 76–77 and is what the
-        <span className="font-mono"> agreement</span> tab compares against ground-truth labels.
+        {t("pages:workspace.tabs.RawTab.seg_help")}
       </p>
       {method === null ? (
         <p
           className="text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Pick a segmentation method above to render the overlay.
+          {t("pages:workspace.tabs.RawTab.pick_method")}
         </p>
       ) : assignment.isLoading || summary.isLoading ? (
         <p
           className="text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Loading {method} segmentation…
+          {t("pages:workspace.tabs.RawTab.loading_seg", { method })}
         </p>
       ) : assignment.error || summary.error ? (
         <p
           className="text-[12px]"
           style={{ color: "var(--color-warn)" }}
         >
-          Could not load {method} segmentation for {sceneId}.
+          {t("pages:workspace.tabs.RawTab.seg_error", { method, scene: sceneId })}
         </p>
       ) : assignment.data && summary.data ? (
         <SegmentationOverlayRaster
@@ -221,6 +203,7 @@ function SegmentationOverlayRaster({
   summary: FelzenszwalbGroupings;
   buffer: ArrayBuffer;
 }) {
+  const { t } = useTranslation(["pages"]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const shape = summary.spatial_shape ?? [0, 0];
   const [h, w] = shape;
@@ -272,7 +255,7 @@ function SegmentationOverlayRaster({
             border: "1px solid var(--color-border)",
             borderRadius: 4,
           }}
-          aria-label={`${method} segmentation overlay`}
+          aria-label={t("pages:workspace.tabs.RawTab.aria_overlay", { method })}
         />
         <p
           className="mt-2 text-[11px] font-mono"
@@ -292,7 +275,7 @@ function SegmentationOverlayRaster({
           className="text-[11px] uppercase tracking-wider mb-2"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Segment statistics
+          {t("pages:workspace.tabs.RawTab.segment_statistics")}
         </div>
         <ul className="space-y-1 font-mono text-[12px]" style={{ color: "var(--color-fg-subtle)" }}>
           <li>
@@ -347,31 +330,32 @@ function SceneStats({
     wavelengths_nm: number[];
   };
 }) {
+  const { t } = useTranslation(["pages"]);
   const stats = [
     {
-      label: "Sensor",
+      label: t("pages:workspace.tabs.RawTab.stat_sensor"),
       value: data.sensor,
     },
     {
-      label: "Shape",
+      label: t("pages:workspace.tabs.RawTab.stat_shape"),
       value: `${data.spatial_shape[0]} × ${data.spatial_shape[1]}`,
     },
     {
-      label: "Bands",
+      label: t("pages:workspace.tabs.RawTab.stat_bands"),
       value: `${data.wavelengths_nm.length} (${Math.round(
         data.wavelengths_nm[0]!,
       )}–${Math.round(data.wavelengths_nm.at(-1)!)} nm)`,
     },
     {
-      label: "Labelled pixels",
+      label: t("pages:workspace.tabs.RawTab.stat_labelled_pixels"),
       value: `${data.n_labelled_pixels.toLocaleString()} / ${data.n_pixels.toLocaleString()}`,
     },
     {
-      label: "Classes",
+      label: t("pages:workspace.tabs.RawTab.stat_classes"),
       value: String(data.n_classes),
     },
     {
-      label: "Gini imbalance",
+      label: t("pages:workspace.tabs.RawTab.stat_gini"),
       value: data.imbalance_gini.toFixed(3),
     },
   ];

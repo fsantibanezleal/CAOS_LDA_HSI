@@ -14,6 +14,7 @@
  * The three card components are module-local — only SpatialStructureTab
  * consumes them.
  */
+import { useTranslation } from "react-i18next";
 import type {
   FelzenszwalbGroupings,
   ScenePerScene,
@@ -38,10 +39,11 @@ export function SpatialStructureTab({
   groupings: FelzenszwalbGroupings | null;
   eda: ScenePerScene | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading spatial structure…
+        {t("pages:workspace.tabs.SpatialStructureTab.loading")}
       </p>
     );
   if (error) {
@@ -54,7 +56,7 @@ export function SpatialStructureTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load spatial data.
+          {t("pages:workspace.tabs.SpatialStructureTab.error")}
         </p>
         <p
           className="mt-2 text-sm"
@@ -81,6 +83,7 @@ function SpatialFullCard({
 }: {
   spatialFull: TopicSpatialFull;
 }) {
+  const { t } = useTranslation(["pages"]);
   const ts = spatialFull.per_topic_continuous_spatial_full;
   const maxI = Math.max(
     ...ts.map((t) => Math.abs(t.morans_I_continuous_full ?? 0)),
@@ -103,25 +106,24 @@ function SpatialFullCard({
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Spatial autocorrelation · full labelled set (
-        {spatialFull.n_labelled_pixels.toLocaleString()} pixels)
+        {t("pages:workspace.tabs.SpatialStructureTab.full_title", {
+          pixels: spatialFull.n_labelled_pixels.toLocaleString(),
+        })}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Same Moran&apos;s I and Geary&apos;s C as the previous card, but
-        computed on the LDA refit over the full labelled pixel set
-        (max_iter=40, batch_size=1024) rather than the 220-per-class
-        sub-sample. Values are spatially faithful — useful for honest
-        reporting of cluster compactness. Aggregated Moran&apos;s I (mean
-        over topics) ={" "}
-        {spatialFull.aggregated_morans_I_mean_over_topics.toFixed(3)}.
+        {t("pages:workspace.tabs.SpatialStructureTab.full_help", {
+          moransI: spatialFull.aggregated_morans_I_mean_over_topics.toFixed(3),
+        })}
         {spatialFull.aggregated_gearys_C_mean_over_topics != null ? (
           <>
             {" "}
-            · Aggregated Geary&apos;s C ={" "}
-            {spatialFull.aggregated_gearys_C_mean_over_topics.toFixed(3)}.
+            · {t("pages:workspace.tabs.SpatialStructureTab.full_gearys", {
+              gearysC:
+                spatialFull.aggregated_gearys_C_mean_over_topics.toFixed(3),
+            })}
           </>
         ) : null}
         {spatialFull.boundary_displacement_error != null ? (
@@ -144,19 +146,19 @@ function SpatialFullCard({
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                topic
+                {t("pages:workspace.tabs.SpatialStructureTab.col_topic")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                Moran&apos;s I (full)
+                {t("pages:workspace.tabs.SpatialStructureTab.col_morans_i_full")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                Geary&apos;s C (full)
+                {t("pages:workspace.tabs.SpatialStructureTab.col_gearys_c_full")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                mean θ in mask
+                {t("pages:workspace.tabs.SpatialStructureTab.col_mean_theta_mask")}
               </th>
-              <th className="text-left font-mono text-[11px] pb-1">I bar</th>
-              <th className="text-left font-mono text-[11px] pb-1">C bar</th>
+              <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.SpatialStructureTab.col_i_bar")}</th>
+              <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.SpatialStructureTab.col_c_bar")}</th>
             </tr>
           </thead>
           <tbody>
@@ -234,6 +236,7 @@ function SpatialAutocorrelationCard({
 }: {
   spatial: TopicSpatialContinuous;
 }) {
+  const { t } = useTranslation(["pages"]);
   const ts = spatial.per_topic_continuous_spatial;
   const maxI = Math.max(
     ...ts.map((t) => Math.abs(t.morans_I_continuous ?? 0)),
@@ -253,18 +256,20 @@ function SpatialAutocorrelationCard({
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Spatial autocorrelation per topic · {spatial.spatial_shape[0]}×
-        {spatial.spatial_shape[1]} grid
+        {t("pages:workspace.tabs.SpatialStructureTab.auto_title", {
+          h: spatial.spatial_shape[0],
+          w: spatial.spatial_shape[1],
+        })}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Moran&apos;s I {">"} 0 ⇒ topic clusters spatially (high values cluster
-        with high). Geary&apos;s C {"<"} 1 ⇒ similar. n_sampled_pixels ={" "}
-        {spatial.n_sampled_pixels} on the topic-θ mask. Aggregated Moran&apos;s
-        I (mean over topics) ={" "}
-        {spatial.aggregated_morans_I_mean_over_topics?.toFixed(3) ?? "—"}.
+        {t("pages:workspace.tabs.SpatialStructureTab.auto_help", {
+          sampled: spatial.n_sampled_pixels,
+          moransI:
+            spatial.aggregated_morans_I_mean_over_topics?.toFixed(3) ?? "—",
+        })}
       </p>
       <div className="overflow-x-auto">
         <table
@@ -274,19 +279,19 @@ function SpatialAutocorrelationCard({
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
               <th className="text-left font-mono text-[11px] pb-1 pr-3">
-                topic
+                {t("pages:workspace.tabs.SpatialStructureTab.col_topic")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                Moran&apos;s I
+                {t("pages:workspace.tabs.SpatialStructureTab.col_morans_i")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                Geary&apos;s C
+                {t("pages:workspace.tabs.SpatialStructureTab.col_gearys_c")}
               </th>
               <th className="text-right font-mono text-[11px] pb-1 pr-3">
-                mean θ in mask
+                {t("pages:workspace.tabs.SpatialStructureTab.col_mean_theta_mask")}
               </th>
-              <th className="text-left font-mono text-[11px] pb-1">I bar</th>
-              <th className="text-left font-mono text-[11px] pb-1">C bar</th>
+              <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.SpatialStructureTab.col_i_bar")}</th>
+              <th className="text-left font-mono text-[11px] pb-1">{t("pages:workspace.tabs.SpatialStructureTab.col_c_bar")}</th>
             </tr>
           </thead>
           <tbody>
@@ -366,6 +371,7 @@ function FelzenszwalbCard({
   groupings: FelzenszwalbGroupings;
   eda: ScenePerScene | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const palette = [
     "#0072B2",
     "#D55E00",
@@ -415,26 +421,30 @@ function FelzenszwalbCard({
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Felzenszwalb groupings · {groupings.n_groups} segments
+        {t("pages:workspace.tabs.SpatialStructureTab.felz_title", {
+          segments: groupings.n_groups,
+        })}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Spatial segmentation produces {groupings.n_groups} groups.
-        Between/within variance ratio ={" "}
-        {groupings.between_within_variance_ratio.toFixed(3)} (higher = groups
-        are well-separated compared to their internal scatter). Agreement vs
-        label ARI = {groupings.agreement_vs_label.ari.toFixed(3)} · NMI ={" "}
-        {groupings.agreement_vs_label.nmi.toFixed(3)} on{" "}
-        {groupings.agreement_vs_label.n_labelled_pixels.toLocaleString()}{" "}
-        labelled pixels.
+        {t("pages:workspace.tabs.SpatialStructureTab.felz_help", {
+          groups: groupings.n_groups,
+          bwvr: groupings.between_within_variance_ratio.toFixed(3),
+          ari: groupings.agreement_vs_label.ari.toFixed(3),
+          nmi: groupings.agreement_vs_label.nmi.toFixed(3),
+          pixels: groupings.agreement_vs_label.n_labelled_pixels.toLocaleString(),
+        })}
       </p>
 
       <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-        <UnmixingStat label="n groups" value={String(groupings.n_groups)} />
         <UnmixingStat
-          label="size · min / p50 / max"
+          label={t("pages:workspace.tabs.SpatialStructureTab.stat_n_groups")}
+          value={String(groupings.n_groups)}
+        />
+        <UnmixingStat
+          label={t("pages:workspace.tabs.SpatialStructureTab.stat_size_minmax")}
           value={`${groupings.group_size_distribution.min} / ${groupings.group_size_distribution.p50} / ${groupings.group_size_distribution.max}`}
         />
         <UnmixingStat
@@ -442,11 +452,11 @@ function FelzenszwalbCard({
           value={groupings.between_within_variance_ratio.toFixed(3)}
         />
         <UnmixingStat
-          label="ARI vs label"
+          label={t("pages:workspace.tabs.SpatialStructureTab.stat_ari_vs_label")}
           value={groupings.agreement_vs_label.ari.toFixed(3)}
         />
         <UnmixingStat
-          label="NMI vs label"
+          label={t("pages:workspace.tabs.SpatialStructureTab.stat_nmi_vs_label")}
           value={groupings.agreement_vs_label.nmi.toFixed(3)}
         />
       </div>
@@ -457,7 +467,7 @@ function FelzenszwalbCard({
           className="max-w-full h-auto"
           style={{ maxWidth: 900 }}
           role="img"
-          aria-label="Spatial structure per-method comparison plot"
+          aria-label={t("pages:workspace.tabs.SpatialStructureTab.aria_felz_plot")}
         >
           <line
             x1={pad.l}
@@ -535,7 +545,10 @@ function FelzenszwalbCard({
               className="inline-block rounded-full w-2 h-2"
               style={{ backgroundColor: palette[idx % palette.length] }}
             />
-            group {g.group_id} (n={g.size})
+            {t("pages:workspace.tabs.SpatialStructureTab.legend_group", {
+              id: g.group_id,
+              n: g.size,
+            })}
           </span>
         ))}
         {groupings.mean_spectrum_per_group.length > showGroups.length ? (
@@ -543,7 +556,9 @@ function FelzenszwalbCard({
             className="text-[10.5px] font-mono"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            +{groupings.mean_spectrum_per_group.length - showGroups.length} more
+            {t("pages:workspace.tabs.SpatialStructureTab.legend_more", {
+              count: groupings.mean_spectrum_per_group.length - showGroups.length,
+            })}
           </span>
         ) : null}
       </div>

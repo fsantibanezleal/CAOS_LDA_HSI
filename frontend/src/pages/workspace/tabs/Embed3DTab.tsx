@@ -2,7 +2,7 @@ import { Suspense, lazy, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TopicToData } from "@/api/client";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
-import { TabEmpty } from "../components/TabStates";
+import { TabEmpty, TabError, TabLoading } from "../components/TabStates";
 
 const Scatter3D = lazy(() =>
   import("@/components/plots/Scatter3D").then((m) => ({ default: m.Scatter3D })),
@@ -30,28 +30,16 @@ export function Embed3DTab({
 
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Loading embedding…</p>
+      <TabLoading
+        message={t("pages:workspace.tabs.Embed3DTab.loading")}
+      />
     );
   if (error)
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-          boxShadow: "var(--color-shadow)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load the 3D embedding.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.Embed3DTab.error")}
+        detail={error.message}
+      />
     );
   if (!data) return <TabEmpty />;
 
@@ -75,22 +63,27 @@ export function Embed3DTab({
               className="text-base font-semibold"
               style={{ color: "var(--color-fg)" }}
             >
-              Embedding 3D · θ-PCA
+              {t("pages:workspace.tabs.Embed3DTab.title")}
             </h4>
             <p
               className="text-sm mt-1"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Each point is a document from the sample (n={points.length}).
-              Coordinates: PCA(θ) in 3D.{" "}
+              {t("pages:workspace.tabs.Embed3DTab.lead_points", {
+                count: points.length,
+              })}{" "}
               {ev.length >= 3 && (
                 <>
                   EV<sub>1..3</sub> = {ev[0]!.toFixed(3)} /{" "}
-                  {ev[1]!.toFixed(3)} / {ev[2]!.toFixed(3)} (total{" "}
-                  {(totalEv * 100).toFixed(1)}%).
+                  {ev[1]!.toFixed(3)} / {ev[2]!.toFixed(3)} (
+                  {t("pages:workspace.tabs.Embed3DTab.lead_total", {
+                    pct: (totalEv * 100).toFixed(1),
+                  })}
+                  ).
                 </>
               )}{" "}
-              Click a point to pin its <code>doc_id</code>.
+              {t("pages:workspace.tabs.Embed3DTab.lead_pin")}{" "}
+              <code>doc_id</code>.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -99,7 +92,7 @@ export function Embed3DTab({
               className="text-[11px] uppercase tracking-wider"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              coloured by
+              {t("pages:workspace.tabs.Embed3DTab.coloured_by")}
             </label>
             <select
               id="embed3d-color-by"
@@ -127,7 +120,7 @@ export function Embed3DTab({
         <Suspense
           fallback={
             <p style={{ color: "var(--color-fg-faint)" }}>
-              Loading 3D renderer…
+              {t("pages:workspace.tabs.Embed3DTab.loading_renderer")}
             </p>
           }
         >
@@ -167,7 +160,7 @@ export function Embed3DTab({
                       : "var(--color-fg-subtle)",
                 }}
               >
-                All
+                {t("pages:workspace.tabs.Embed3DTab.btn_all")}
               </button>
               {Array.from({ length: data.topic_count }, (_, k) => {
                 const isSel = selectedTopic === k;
@@ -195,7 +188,9 @@ export function Embed3DTab({
                       className="inline-block w-2.5 h-2.5 rounded-sm"
                       style={{ backgroundColor: color }}
                     />
-                    topic {k + 1}
+                    {t("pages:workspace.tabs.Embed3DTab.topic_n", {
+                      n: k + 1,
+                    })}
                   </button>
                 );
               })}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import { api } from "@/api/client";
 
@@ -35,6 +36,7 @@ export function RecipesTab({
   error: Error | null;
   index: import("@/api/client").WordificationsIndex | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [recipe, setRecipe] = useState<string>("V1");
   const [scheme, setScheme] = useState<typeof SCHEMES[number]>("uniform");
   const [q, setQ] = useState<typeof Q_VALUES[number]>(8);
@@ -45,11 +47,11 @@ export function RecipesTab({
     staleTime: 5 * 60_000,
   });
 
-  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>Loading wordifications index…</p>;
+  if (isLoading) return <p style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.tabs.RecipesTab.loading")}</p>;
   if (error) {
     return (
       <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p style={{ color: "var(--color-warn)" }}>Could not load wordifications index.</p>
+        <p style={{ color: "var(--color-warn)" }}>{t("pages:workspace.tabs.RecipesTab.error")}</p>
         <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{error.message}</p>
       </div>
     );
@@ -78,36 +80,33 @@ export function RecipesTab({
           style={{ background: "linear-gradient(90deg, rgba(40,160,80,1) 0%, rgba(56,189,248,1) 100%)" }}
         />
         <h3 className="text-lg font-semibold tracking-tight mt-1 mb-1" style={{ color: "var(--color-fg)" }}>
-          Corpus inspection · V1..V12 vocab artefacts × scheme × Q
+          {t("pages:workspace.tabs.RecipesTab.title")}
         </h3>
         <p className="text-[12.5px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-          {sceneId} has <strong>{sceneAvailable}</strong> precomputed wordification combos out of
-          the 12 × 3 × 3 = 108 corpus grid. Topic-model artefacts (LDA φ, θ) are precomputed on the
-          canonical V1 / uniform / Q=8 recipe; other combos expose vocabulary statistics
-          (V_actual, doc-length distribution, top tokens) for inspection but not full LDA refits.
+          {t("pages:workspace.tabs.RecipesTab.lead_pre", { scene: sceneId })}{" "}
+          <strong>{sceneAvailable}</strong>{" "}
+          {t("pages:workspace.tabs.RecipesTab.lead_post")}
         </p>
         <p className="text-[12px] mb-3 rounded border px-3 py-2" style={{ color: "var(--color-fg-subtle)", borderColor: "var(--color-border)", backgroundColor: "var(--color-accent-soft)" }}>
-          This is the corpus-statistics view (V1-V12). The full <strong>V1-V20</strong> representation
-          sweep across every F-axis — and the optimal recipes (V8 cross-backbone F-7 leader, V20
-          MI-weighted LDA/ETM peak) — lives in <strong>Recipe Lab</strong> and the <strong>Methods</strong> deep-dives.
+          {t("pages:workspace.tabs.RecipesTab.banner")}
         </p>
 
         <div className="space-y-2">
-          <RecipeAxisPicker label="recipe" options={RECIPE_IDS_CORPUS} value={recipe} onChange={(v) => setRecipe(v)} />
-          <RecipeAxisPicker label="scheme" options={SCHEMES as unknown as string[]} value={scheme} onChange={(v) => setScheme(v as typeof SCHEMES[number])} />
+          <RecipeAxisPicker label={t("pages:workspace.tabs.RecipesTab.picker_recipe")} options={RECIPE_IDS_CORPUS} value={recipe} onChange={(v) => setRecipe(v)} />
+          <RecipeAxisPicker label={t("pages:workspace.tabs.RecipesTab.picker_scheme")} options={SCHEMES as unknown as string[]} value={scheme} onChange={(v) => setScheme(v as typeof SCHEMES[number])} />
           <RecipeAxisPicker label="Q" options={Q_VALUES.map(String)} value={String(q)} onChange={(v) => setQ(parseInt(v, 10) as typeof Q_VALUES[number])} />
         </div>
 
         <div className="mt-3 text-[11.5px] font-mono" style={{ color: available.has(`${recipe}_${scheme}_Q${q}`) ? "rgba(40,160,80,1)" : "var(--color-warn)" }}>
-          {available.has(`${recipe}_${scheme}_Q${q}`) ? "✓ this combo is available" : "✗ this combo not precomputed for this scene"}
+          {available.has(`${recipe}_${scheme}_Q${q}`) ? t("pages:workspace.tabs.RecipesTab.combo_available") : t("pages:workspace.tabs.RecipesTab.combo_unavailable")}
         </div>
       </div>
 
       {detail.isLoading ? (
-        <p style={{ color: "var(--color-fg-faint)" }}>Loading {recipe}/{scheme}/Q{q}…</p>
+        <p style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.tabs.RecipesTab.loading_combo", { recipe, scheme, q })}</p>
       ) : detail.error ? (
         <div className="rounded-lg border p-6" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-          <p style={{ color: "var(--color-warn)" }}>Could not load this combo.</p>
+          <p style={{ color: "var(--color-warn)" }}>{t("pages:workspace.tabs.RecipesTab.combo_error")}</p>
           <p className="mt-2 text-sm" style={{ color: "var(--color-fg-faint)" }}>{(detail.error as Error).message}</p>
         </div>
       ) : detail.data ? (
@@ -159,6 +158,7 @@ function RecipeAxisPicker({
 }
 
 function RecipeDetailCard({ payload }: { payload: import("@/api/client").WordificationPayload }) {
+  const { t } = useTranslation(["pages"]);
   const dl = payload.doc_length_distribution;
   const top = payload.top_tokens_by_count ?? [];
   return (
@@ -170,33 +170,33 @@ function RecipeDetailCard({ payload }: { payload: import("@/api/client").Wordifi
         {payload.recipe} · {payload.scheme} · Q={payload.Q}
       </h4>
       <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-3 mb-4">
-        <UnmixingStat label="docs (D)" value={payload.D.toLocaleString()} />
-        <UnmixingStat label="bands (B)" value={String(payload.B)} />
-        <UnmixingStat label="vocab full / actual" value={`${payload.V_full} / ${payload.V_actual}`} />
-        <UnmixingStat label="corpus entropy" value={payload.corpus_marginal_entropy_bits != null ? `${payload.corpus_marginal_entropy_bits.toFixed(3)} bits` : "—"} />
+        <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_docs")} value={payload.D.toLocaleString()} />
+        <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_bands")} value={String(payload.B)} />
+        <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_vocab")} value={`${payload.V_full} / ${payload.V_actual}`} />
+        <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_entropy")} value={payload.corpus_marginal_entropy_bits != null ? t("pages:workspace.tabs.RecipesTab.entropy_bits", { value: payload.corpus_marginal_entropy_bits.toFixed(3) }) : "—"} />
       </div>
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
           <h5 className="text-[11px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-            Document length distribution
+            {t("pages:workspace.tabs.RecipesTab.doc_length_dist")}
           </h5>
           <div className="space-y-1 text-[12.5px] font-mono" style={{ color: "var(--color-fg)" }}>
-            <div>min/max: {dl.min} / {dl.max}</div>
+            <div>{t("pages:workspace.tabs.RecipesTab.dl_minmax")}: {dl.min} / {dl.max}</div>
             <div>p25 / p50 / p75: {dl.p25.toFixed(0)} / {dl.p50.toFixed(0)} / {dl.p75.toFixed(0)}</div>
-            <div>mean ± std: {dl.mean.toFixed(2)} ± {dl.std.toFixed(2)}</div>
-            <div style={{ color: "var(--color-fg-faint)" }}>zero-token doc rate: {((payload.zero_token_doc_rate ?? 0) * 100).toFixed(2)}%</div>
+            <div>{t("pages:workspace.tabs.RecipesTab.dl_mean_std")}: {dl.mean.toFixed(2)} ± {dl.std.toFixed(2)}</div>
+            <div style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.tabs.RecipesTab.dl_zero_rate")}: {((payload.zero_token_doc_rate ?? 0) * 100).toFixed(2)}%</div>
           </div>
         </div>
         {top.length > 0 ? (
           <div>
             <h5 className="text-[11px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-              Top tokens by count
+              {t("pages:workspace.tabs.RecipesTab.top_tokens")}
             </h5>
             <table className="w-full text-[12px]" style={{ color: "var(--color-fg)" }}>
               <thead>
                 <tr style={{ color: "var(--color-fg-faint)" }}>
-                  <th className="text-left font-mono text-[10.5px] pb-1 pr-3">token</th>
-                  <th className="text-right font-mono text-[10.5px] pb-1 pr-3">count</th>
+                  <th className="text-left font-mono text-[10.5px] pb-1 pr-3">{t("pages:workspace.tabs.RecipesTab.col_token")}</th>
+                  <th className="text-right font-mono text-[10.5px] pb-1 pr-3">{t("pages:workspace.tabs.RecipesTab.col_count")}</th>
                   <th className="text-right font-mono text-[10.5px] pb-1">p_global</th>
                 </tr>
               </thead>

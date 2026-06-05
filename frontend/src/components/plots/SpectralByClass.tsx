@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { ClassEntry, ClassMeanSpectrum } from "@/api/client";
 
@@ -24,6 +25,7 @@ export function SpectralByClass({
   classDistribution,
   height = 320,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const [isolated, setIsolated] = useState<number | null>(null);
 
   const visible = useMemo(
@@ -110,7 +112,7 @@ export function SpectralByClass({
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label="Per-class spectral envelopes"
+        aria-label={t("pages:plots.SpectralByClass.aria_chart")}
         style={{ color: "var(--color-fg)" }}
       >
         <g
@@ -170,7 +172,7 @@ export function SpectralByClass({
             opacity="0.55"
             fontSize="10.5"
           >
-            longitud de onda (nm)
+            {t("pages:plots.SpectralByClass.axis_x")}
           </text>
           <text
             x={12}
@@ -180,7 +182,7 @@ export function SpectralByClass({
             opacity="0.55"
             fontSize="10.5"
           >
-            reflectancia
+            {t("pages:plots.SpectralByClass.axis_y")}
           </text>
 
           {/* Per-class envelopes (drawn first so lines sit on top) */}
@@ -220,7 +222,7 @@ export function SpectralByClass({
       <div
         className="mt-3 flex flex-wrap gap-1.5"
         role="group"
-        aria-label="Class filter"
+        aria-label={t("pages:plots.SpectralByClass.aria_class_filter")}
       >
         <button
           type="button"
@@ -241,7 +243,7 @@ export function SpectralByClass({
                 : "var(--color-fg-subtle)",
           }}
         >
-          All
+          {t("pages:plots.SpectralByClass.btn_all")}
         </button>
         {classDistribution.map((c) => {
           const isIso = isolated === c.label_id;

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 
@@ -25,6 +26,7 @@ export function TopicGraph({
   selectedTopic,
   onSelect,
 }: Props) {
+  const { t } = useTranslation(["pages"]);
   const w = 540;
   const h = 380;
   const pad = 40;
@@ -86,7 +88,7 @@ export function TopicGraph({
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Topic-topic similarity graph"
+      aria-label={t("pages:plots.TopicGraph.aria_graph")}
       style={{ color: "var(--color-fg)", display: "block" }}
     >
       {/* Edges first so nodes draw on top */}
@@ -163,7 +165,10 @@ export function TopicGraph({
         fontSize="11"
         fill="var(--color-fg-faint)"
       >
-        {edges.length} edges at sim ≥ {threshold.toFixed(2)}
+        {t("pages:plots.TopicGraph.caption_edges", {
+          count: edges.length,
+          threshold: threshold.toFixed(2),
+        })}
       </text>
     </svg>
   );

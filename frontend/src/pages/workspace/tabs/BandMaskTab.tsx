@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   api,
@@ -9,6 +10,7 @@ import {
   type BandMaskSummary,
 } from "@/api/client";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
+import { TabLoading } from "../components/TabStates";
 
 /**
  * Step 8 band-mask sweep tab (cycles 126 + 127).
@@ -31,6 +33,7 @@ export function BandMaskTab({
   error: Error | null;
   index: BandMaskIndex | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [maskId, setMaskId] = useState<string | null>(null);
   const summaryQ = useQuery({
     queryKey: ["band-mask-summary", sceneId, maskId],
@@ -52,9 +55,9 @@ export function BandMaskTab({
 
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading band-mask index…
-      </p>
+      <TabLoading
+        message={t("pages:workspace.tabs.BandMaskTab.loading")}
+      />
     );
   if (error)
     return (
@@ -67,17 +70,17 @@ export function BandMaskTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load /api/band-masks: {error.message}
+          {t("pages:workspace.tabs.BandMaskTab.error", { message: error.message })}
         </p>
         <p
           className="mt-2 text-sm"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Run{" "}
+          {t("pages:workspace.tabs.BandMaskTab.error_run_pre")}{" "}
           <span className="font-mono">
             scripts/local.* build-band-masked-topic-models
           </span>{" "}
-          to generate the index locally.
+          {t("pages:workspace.tabs.BandMaskTab.error_run_post")}
         </p>
       </div>
     );
@@ -100,20 +103,13 @@ export function BandMaskTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          Step 8 · band-mask sweep
+          {t("pages:workspace.tabs.BandMaskTab.title")}
         </h4>
         <p
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Four band-restricted LDA fits per labelled scene, each one a
-          fresh canonical-K refit on a band-restricted corpus. The user
-          can ask: "what would the topics look like if we only saw the
-          VNIR / SWIR / non-water-corrupted / top-50-discriminative
-          bands?". Hyperparameters mirror the canonical fit (V1
-          band-frequency, online VB, α=0.45, η=0.20, seed=42) so only
-          the band-selection axis differs. The summary below ships
-          precomputed; click any mask to drill into the per-topic detail.
+          {t("pages:workspace.tabs.BandMaskTab.lead")}
         </p>
         <ul className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {Object.entries(maskDefs).map(([id, def]) => {
@@ -159,7 +155,7 @@ export function BandMaskTab({
                       className="text-[11px] font-mono"
                       style={{ color: "var(--color-warn)" }}
                     >
-                      skipped: {entry?.reason}
+                      {t("pages:workspace.tabs.BandMaskTab.skipped", { reason: entry?.reason })}
                     </div>
                   ) : entry ? (
                     <div
@@ -204,7 +200,7 @@ export function BandMaskTab({
                       className="text-[11px]"
                       style={{ color: "var(--color-fg-faint)" }}
                     >
-                      not built for this scene
+                      {t("pages:workspace.tabs.BandMaskTab.not_built")}
                     </div>
                   )}
                 </button>
@@ -216,12 +212,12 @@ export function BandMaskTab({
           className="text-[11px] mt-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          ARI = adjusted-Rand-index of{" "}
-          <span className="font-mono">argmax θ_d</span> vs ground-truth
-          label. Lower perplexity is better; higher ARI is better.
-          Compare to the canonical (no-mask) fit on the{" "}
+          {t("pages:workspace.tabs.BandMaskTab.ari_help_pre")}{" "}
+          <span className="font-mono">argmax θ_d</span>
+          {t("pages:workspace.tabs.BandMaskTab.ari_help_mid")}{" "}
           <span className="font-mono">topics</span> /{" "}
-          <span className="font-mono">topiclabel</span> tabs.
+          <span className="font-mono">topiclabel</span>
+          {t("pages:workspace.tabs.BandMaskTab.ari_help_post")}
         </p>
       </div>
 
@@ -245,13 +241,15 @@ export function BandMaskTab({
       )}
       {maskId && summaryQ.isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Loading {maskId} summary…
+          {t("pages:workspace.tabs.BandMaskTab.loading_summary", { mask: maskId })}
         </p>
       )}
       {maskId && summaryQ.error && (
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load {maskId} summary:{" "}
-          {(summaryQ.error as Error).message}
+          {t("pages:workspace.tabs.BandMaskTab.error_summary", {
+            mask: maskId,
+            message: (summaryQ.error as Error).message,
+          })}
         </p>
       )}
     </div>
@@ -265,6 +263,7 @@ function BandMaskDetailCard({
   summary: BandMaskSummary;
   comparison: BandMaskComparisonEntry | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const K = summary.topic_count;
   return (
     <div
@@ -291,7 +290,7 @@ function BandMaskDetailCard({
       </header>
       <div className="grid sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
         <BandMaskStat
-          label="bands kept"
+          label={t("pages:workspace.tabs.BandMaskTab.stat_bands_kept")}
           value={`${summary.n_bands_kept}/${summary.n_bands_full}`}
         />
         <BandMaskStat label="K" value={String(K)} />
@@ -304,11 +303,11 @@ function BandMaskDetailCard({
           value={summary.vocabulary_size.toLocaleString()}
         />
         <BandMaskStat
-          label="perplexity (train)"
+          label={t("pages:workspace.tabs.BandMaskTab.stat_perplexity_train")}
           value={summary.perplexity_train.toFixed(3)}
         />
         <BandMaskStat
-          label="ARI vs label"
+          label={t("pages:workspace.tabs.BandMaskTab.stat_ari_vs_label")}
           value={summary.ari_dominant_vs_label.toFixed(4)}
         />
       </div>
@@ -320,11 +319,11 @@ function BandMaskDetailCard({
           color: "var(--color-fg-faint)",
         }}
       >
-        Wavelength range kept:{" "}
+        {t("pages:workspace.tabs.BandMaskTab.wavelength_range_kept")}{" "}
         {summary.wavelengths_nm_kept_first_last[0].toFixed(1)} –{" "}
         {summary.wavelengths_nm_kept_first_last[1].toFixed(1)} nm
         {" · "}
-        first ten bands kept:{" "}
+        {t("pages:workspace.tabs.BandMaskTab.first_ten_bands_kept")}{" "}
         <span className="font-mono">
           {summary.kept_band_indices.slice(0, 10).join(", ")}
         </span>
@@ -336,7 +335,7 @@ function BandMaskDetailCard({
             className="text-[12px] uppercase tracking-widest font-semibold mb-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Top words per topic (λ=0.5)
+            {t("pages:workspace.tabs.BandMaskTab.top_words_heading")}
           </h5>
           <ul className="space-y-1.5 text-[12px]">
             {summary.top_words_per_topic_lambda_05.map((words, k) => {
@@ -372,7 +371,7 @@ function BandMaskDetailCard({
             className="text-[12px] uppercase tracking-widest font-semibold mb-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            P(label | topic dominant)
+            {t("pages:workspace.tabs.BandMaskTab.plabel_heading")}
           </h5>
           <ul className="space-y-1.5 text-[12px]">
             {summary.p_label_given_topic_dominant.map((labels, k) => {
@@ -425,11 +424,11 @@ function BandMaskDetailCard({
             className="text-[11px] uppercase tracking-wider mb-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            vs canonical fit (cycle 127 post-processor)
+            {t("pages:workspace.tabs.BandMaskTab.vs_canonical_heading")}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
             <BandMaskStat
-              label="paired ARI dominant"
+              label={t("pages:workspace.tabs.BandMaskTab.stat_paired_ari_dominant")}
               value={
                 comparison.paired_ari_dominant_topics != null
                   ? comparison.paired_ari_dominant_topics.toFixed(4)
@@ -437,7 +436,7 @@ function BandMaskDetailCard({
               }
             />
             <BandMaskStat
-              label="swap rate (Hungarian)"
+              label={t("pages:workspace.tabs.BandMaskTab.stat_swap_rate")}
               value={
                 comparison.swap_rate_under_hungarian_alignment != null
                   ? `${(
@@ -468,14 +467,7 @@ function BandMaskDetailCard({
             className="text-[11.5px] mb-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Paired ARI measures how much the dominant-topic assignments
-            shift under the mask (1.0 = identical; 0.0 = unrelated).
-            Swap rate counts, under a Hungarian alignment of topic ids,
-            the fraction of pixels whose dominant topic changed. KL is
-            the mean / max KL divergence between canonical P(L|t) and
-            masked P(L|t) for the Hungarian-aligned topic pairs (higher
-            = the masked fit assigns labels very differently to its
-            matched topics).
+            {t("pages:workspace.tabs.BandMaskTab.comparison_help")}
           </p>
           {comparison.hungarian_assignment && (
             <div className="text-[11.5px]">
@@ -483,7 +475,7 @@ function BandMaskDetailCard({
                 className="text-[10.5px] uppercase tracking-wider mb-1"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Hungarian topic-id alignment (canonical → masked)
+                {t("pages:workspace.tabs.BandMaskTab.hungarian_heading")}
               </div>
               <div className="flex flex-wrap gap-2 font-mono">
                 {Object.entries(comparison.hungarian_assignment)
@@ -516,6 +508,7 @@ function BandMaskComparisonOverview({
   sceneId: string;
   comparison: BandMaskCanonicalComparison;
 }) {
+  const { t } = useTranslation(["pages"]);
   const sceneEntries = comparison.entries.filter(
     (e) => e.scene_id === sceneId && !e.skipped,
   );
@@ -533,19 +526,13 @@ function BandMaskComparisonOverview({
         className="text-base font-semibold mb-2"
         style={{ color: "var(--color-fg)" }}
       >
-        Canonical-vs-masked comparison (all masks for this scene)
+        {t("pages:workspace.tabs.BandMaskTab.overview_title")}
       </h4>
       <p
         className="text-[12.5px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Cycle-127 read-only post-processor. Paired ARI =
-        adjusted-Rand-index of the dominant-topic map under the mask vs
-        the canonical fit on pixels labelled in both. Swap rate =
-        fraction of pixels whose Hungarian-aligned dominant topic
-        differs. Lower paired ARI / higher swap rate ⇒ the masked fit
-        yields a substantially different topic assignment than the
-        canonical fit.
+        {t("pages:workspace.tabs.BandMaskTab.overview_help")}
       </p>
       <table
         className="w-full text-[12px]"
@@ -554,13 +541,13 @@ function BandMaskComparisonOverview({
         <thead>
           <tr style={{ color: "var(--color-fg-faint)" }}>
             <th className="text-left font-mono text-[11px] pb-1 pr-3">
-              mask
+              {t("pages:workspace.tabs.BandMaskTab.col_mask")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              paired ARI
+              {t("pages:workspace.tabs.BandMaskTab.col_paired_ari")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              swap rate
+              {t("pages:workspace.tabs.BandMaskTab.col_swap_rate")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
               KL mean
@@ -569,7 +556,7 @@ function BandMaskComparisonOverview({
               KL max
             </th>
             <th className="text-right font-mono text-[11px] pb-1 pr-3">
-              ARI vs label
+              {t("pages:workspace.tabs.BandMaskTab.col_ari_vs_label")}
             </th>
             <th className="text-right font-mono text-[11px] pb-1">ppl</th>
           </tr>

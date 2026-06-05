@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   api,
@@ -38,6 +39,7 @@ export function HidsagBandMaskTab({
   error: Error | null;
   index: BandMaskHidsagIndex | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [maskId, setMaskId] = useState<string | null>(null);
   const summaryQ = useQuery({
     queryKey: ["band-mask-hidsag-summary", subsetCode, maskId],
@@ -49,7 +51,7 @@ export function HidsagBandMaskTab({
   if (isLoading)
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading HIDSAG band-mask index…
+        {t("pages:workspace.tabs.HidsagBandMaskTab.loading")}
       </p>
     );
   if (error)
@@ -63,17 +65,19 @@ export function HidsagBandMaskTab({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load /api/band-masks-hidsag: {error.message}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.error", {
+            message: error.message,
+          })}
         </p>
         <p
           className="mt-2 text-sm"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Run{" "}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.error_hint_pre")}{" "}
           <span className="font-mono">
             scripts/local.* build-band-masked-topic-models-hidsag
           </span>{" "}
-          to generate locally.
+          {t("pages:workspace.tabs.HidsagBandMaskTab.error_hint_post")}
         </p>
       </div>
     );
@@ -98,23 +102,23 @@ export function HidsagBandMaskTab({
           className="text-base font-semibold mb-2"
           style={{ color: "var(--color-fg)" }}
         >
-          HIDSAG band-mask sweep · subset {subsetCode}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.title", {
+            subset: subsetCode,
+          })}
         </h4>
         <p
           className="text-sm mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Four band-restricted canonical-K LDA refits on the{" "}
-          <span className="font-mono">{index.modality}</span> modality
-          (cycle 138). Same masks as the labelled-scene sweep on{" "}
-          <span className="font-mono">bandmask</span> tab, but with two
-          HIDSAG-specific adaptations: (1) no spatial overlay — outputs
-          are per-document (D = ~tens to hundreds), not per-pixel; (2){" "}
-          <span className="font-mono">top_50_fisher</span> selects the
-          50 bands with the largest{" "}
-          <em>between-covariate variance share</em> rather than Fisher
-          discriminant on labels (HIDSAG has no per-pixel label —{" "}
-          covariates are sample-level tags like lithology / mineralogy).
+          {t("pages:workspace.tabs.HidsagBandMaskTab.lead_1")}{" "}
+          <span className="font-mono">{index.modality}</span>{" "}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.lead_2")}{" "}
+          <span className="font-mono">bandmask</span>{" "}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.lead_3")}{" "}
+          <span className="font-mono">top_50_fisher</span>{" "}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.lead_4")}{" "}
+          <em>{t("pages:workspace.tabs.HidsagBandMaskTab.lead_variance_share")}</em>{" "}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.lead_5")}
         </p>
         <ul className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {Object.entries(maskDefs).map(([id, def]) => {
@@ -160,7 +164,9 @@ export function HidsagBandMaskTab({
                       className="text-[11px] font-mono"
                       style={{ color: "var(--color-warn)" }}
                     >
-                      skipped: {entry?.reason}
+                      {t("pages:workspace.tabs.HidsagBandMaskTab.skipped", {
+                        reason: entry?.reason,
+                      })}
                     </div>
                   ) : entry ? (
                     <div
@@ -205,7 +211,7 @@ export function HidsagBandMaskTab({
                       className="text-[11px]"
                       style={{ color: "var(--color-fg-faint)" }}
                     >
-                      not built for this subset
+                      {t("pages:workspace.tabs.HidsagBandMaskTab.not_built")}
                     </div>
                   )}
                 </button>
@@ -220,13 +226,17 @@ export function HidsagBandMaskTab({
       )}
       {maskId && summaryQ.isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Loading {maskId} summary…
+          {t("pages:workspace.tabs.HidsagBandMaskTab.summary_loading", {
+            mask: maskId,
+          })}
         </p>
       )}
       {maskId && summaryQ.error && (
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load {maskId} summary:{" "}
-          {(summaryQ.error as Error).message}
+          {t("pages:workspace.tabs.HidsagBandMaskTab.summary_error", {
+            mask: maskId,
+            message: (summaryQ.error as Error).message,
+          })}
         </p>
       )}
     </div>
@@ -238,6 +248,7 @@ function HidsagBandMaskDetailCard({
 }: {
   summary: BandMaskHidsagSummary;
 }) {
+  const { t } = useTranslation(["pages"]);
   const K = summary.topic_count;
   return (
     <div
@@ -265,24 +276,24 @@ function HidsagBandMaskDetailCard({
 
       <div className="grid sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
         <UnmixingStat
-          label="bands kept"
+          label={t("pages:workspace.tabs.HidsagBandMaskTab.stat_bands_kept")}
           value={`${summary.n_bands_kept}/${summary.n_bands_full}`}
         />
         <UnmixingStat label="K" value={String(K)} />
         <UnmixingStat
-          label="D (docs)"
+          label={t("pages:workspace.tabs.HidsagBandMaskTab.stat_docs")}
           value={summary.document_count.toLocaleString()}
         />
         <UnmixingStat
-          label="V (vocab)"
+          label={t("pages:workspace.tabs.HidsagBandMaskTab.stat_vocab")}
           value={summary.vocabulary_size.toLocaleString()}
         />
         <UnmixingStat
-          label="perplexity (train)"
+          label={t("pages:workspace.tabs.HidsagBandMaskTab.stat_perplexity")}
           value={summary.perplexity_train.toFixed(3)}
         />
         <UnmixingStat
-          label="mean confidence"
+          label={t("pages:workspace.tabs.HidsagBandMaskTab.stat_mean_confidence")}
           value={summary.mean_confidence.toFixed(3)}
         />
       </div>
@@ -295,13 +306,14 @@ function HidsagBandMaskDetailCard({
           color: "var(--color-fg-faint)",
         }}
       >
-        Modality: <span className="font-mono">{summary.modality}</span>
+        {t("pages:workspace.tabs.HidsagBandMaskTab.info_modality")}{" "}
+        <span className="font-mono">{summary.modality}</span>
         {" · "}
-        wavelength range kept:{" "}
+        {t("pages:workspace.tabs.HidsagBandMaskTab.info_wavelength_range")}{" "}
         {summary.wavelengths_nm_kept_first_last[0].toFixed(1)} –{" "}
         {summary.wavelengths_nm_kept_first_last[1].toFixed(1)} nm
         {" · "}
-        first ten bands kept:{" "}
+        {t("pages:workspace.tabs.HidsagBandMaskTab.info_first_ten")}{" "}
         <span className="font-mono">
           {summary.kept_band_indices.slice(0, 10).join(", ")}
         </span>
@@ -314,7 +326,7 @@ function HidsagBandMaskDetailCard({
             className="text-[12px] uppercase tracking-widest font-semibold mb-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Top words per topic (λ=0.5)
+            {t("pages:workspace.tabs.HidsagBandMaskTab.heading_top_words")}
           </h5>
           <ul className="space-y-1.5 text-[12px]">
             {summary.top_words_per_topic_lambda_05.map((words, k) => {
@@ -350,7 +362,7 @@ function HidsagBandMaskDetailCard({
             className="text-[12px] uppercase tracking-widest font-semibold mb-2"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            P(covariate | topic dominant)
+            {t("pages:workspace.tabs.HidsagBandMaskTab.heading_p_covariate")}
           </h5>
           <ul className="space-y-1.5 text-[12px]">
             {summary.p_covariate_given_topic_dominant.map((covs, k) => {
@@ -378,7 +390,7 @@ function HidsagBandMaskDetailCard({
                   </span>
                   <span className="font-mono text-[11.5px]">
                     {sorted.length === 0
-                      ? "(no docs dominant)"
+                      ? t("pages:workspace.tabs.HidsagBandMaskTab.no_docs_dominant")
                       : sorted
                           .map(
                             (c) =>
@@ -398,15 +410,16 @@ function HidsagBandMaskDetailCard({
           className="text-[12px] uppercase tracking-widest font-semibold mb-2"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Per-document θ stack ({summary.document_count} docs · K = {K})
+          {t("pages:workspace.tabs.HidsagBandMaskTab.heading_theta_stack", {
+            docs: summary.document_count,
+            k: K,
+          })}
         </h5>
         <p
           className="text-[11px] mb-2"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Each column is one document; the vertical stripes show its
-          θ_d simplex. Documents are ordered by dominant topic so blocks
-          of the same colour cluster together.
+          {t("pages:workspace.tabs.HidsagBandMaskTab.theta_stack_help")}
         </p>
         <ThetaPerDocStack
           theta={summary.theta_per_doc}
@@ -427,6 +440,7 @@ function ThetaPerDocStack({
   K: number;
   covariates: string[];
 }) {
+  const { t } = useTranslation(["pages"]);
   // Order docs by argmax θ for visual grouping
   const ordered = theta
     .map((row, idx) => ({ row, idx, dom: row.indexOf(Math.max(...row)) }))
@@ -445,7 +459,7 @@ function ThetaPerDocStack({
         borderRadius: 4,
         display: "block",
       }}
-      aria-label="Per-document θ stack"
+      aria-label={t("pages:workspace.tabs.HidsagBandMaskTab.aria_theta_stack")}
     >
       {ordered.map((o, x) => {
         let y = H;

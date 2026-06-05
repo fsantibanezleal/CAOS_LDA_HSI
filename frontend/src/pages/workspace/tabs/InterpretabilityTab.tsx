@@ -13,12 +13,14 @@
  * InterpretBandImportance.
  */
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type {
   BandCardsFile,
   DocumentCardsFile,
   TopicCardsFile,
 } from "@/api/client";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
+import { TabError, TabLoading } from "../components/TabStates";
 
 export function InterpretabilityTab({
   isLoading,
@@ -33,31 +35,19 @@ export function InterpretabilityTab({
   bands: BandCardsFile | null;
   docs: DocumentCardsFile | null;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading interpretability cards…
-      </p>
+      <TabLoading
+        message={t("pages:workspace.tabs.InterpretabilityTab.loading")}
+      />
     );
   if (error) {
     return (
-      <div
-        className="rounded-lg border p-6"
-        style={{
-          borderColor: "var(--color-border)",
-          backgroundColor: "var(--color-panel)",
-        }}
-      >
-        <p style={{ color: "var(--color-warn)" }}>
-          Could not load interpretability cards.
-        </p>
-        <p
-          className="mt-2 text-sm"
-          style={{ color: "var(--color-fg-faint)" }}
-        >
-          {error.message}
-        </p>
-      </div>
+      <TabError
+        message={t("pages:workspace.tabs.InterpretabilityTab.error")}
+        detail={error.message}
+      />
     );
   }
   return (
@@ -72,22 +62,24 @@ export function InterpretabilityTab({
 }
 
 function InterpretTopicCardsGrid({ topics }: { topics: TopicCardsFile }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div>
       <h4
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Topic cards · K = {topics.K}
+        {t("pages:workspace.tabs.InterpretabilityTab.topics_title", {
+          k: topics.K,
+        })}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        One card per LDA topic. Peak wavelength = argmax of φ
-        <sub>k</sub>; FWHM = full width at half-max (sharpness of the
-        spectral signature). p(label | topic) shows the top-3 classes
-        whose documents land on this topic dominantly.
+        {t("pages:workspace.tabs.InterpretabilityTab.topics_lead_pre")} φ
+        <sub>k</sub>
+        {t("pages:workspace.tabs.InterpretabilityTab.topics_lead_post")}
       </p>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {topics.topic_cards.map((c) => {
@@ -118,7 +110,9 @@ function InterpretTopicCardsGrid({ topics }: { topics: TopicCardsFile }) {
                     className="text-[13px] font-semibold font-mono"
                     style={{ color: "var(--color-fg)" }}
                   >
-                    topic {c.topic_k}
+                    {t("pages:workspace.tabs.InterpretabilityTab.topic_n", {
+                      n: c.topic_k,
+                    })}
                   </span>
                 </div>
                 <span
@@ -139,7 +133,7 @@ function InterpretTopicCardsGrid({ topics }: { topics: TopicCardsFile }) {
                 className="text-[10.5px] uppercase tracking-widest font-semibold mb-1"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                Top labels
+                {t("pages:workspace.tabs.InterpretabilityTab.top_labels")}
               </div>
               <div className="space-y-1">
                 {c.p_label_given_topic_top3.map((lab) => {
@@ -193,6 +187,7 @@ function InterpretTopicCardsGrid({ topics }: { topics: TopicCardsFile }) {
 }
 
 function InterpretBandImportance({ bands }: { bands: BandCardsFile }) {
+  const { t } = useTranslation(["pages"]);
   const TOP = 24;
   const sortedFisher = [...bands.band_cards]
     .sort((a, b) => b.fisher_ratio - a.fisher_ratio)
@@ -216,20 +211,20 @@ function InterpretBandImportance({ bands }: { bands: BandCardsFile }) {
         className="text-base font-semibold mb-1"
         style={{ color: "var(--color-fg)" }}
       >
-        Band importance · top {TOP} of {bands.n_bands}
+        {t("pages:workspace.tabs.InterpretabilityTab.bands_title", {
+          top: TOP,
+          total: bands.n_bands,
+        })}
       </h4>
       <p
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Fisher ratio (between-class / within-class variance) ranks bands by
-        class separability. Mutual information against label is a
-        non-parametric counterpart. Bands at 1100, 1400 and 1900 nm are
-        usually water-absorption features.
+        {t("pages:workspace.tabs.InterpretabilityTab.bands_lead")}
       </p>
       <div className="grid md:grid-cols-2 gap-5">
         <BandRankingList
-          title="Fisher ratio"
+          title={t("pages:workspace.tabs.InterpretabilityTab.fisher_ratio")}
           accent="rgba(40, 160, 80, 1)"
           rows={sortedFisher.map((b) => ({
             label: `band ${b.band_index} · ${b.wavelength_nm.toFixed(0)} nm`,
@@ -239,7 +234,7 @@ function InterpretBandImportance({ bands }: { bands: BandCardsFile }) {
           }))}
         />
         <BandRankingList
-          title="Mutual information"
+          title={t("pages:workspace.tabs.InterpretabilityTab.mutual_information")}
           accent="rgba(170, 60, 200, 1)"
           rows={sortedMI.map((b) => ({
             label: `band ${b.band_index} · ${b.wavelength_nm.toFixed(0)} nm`,
@@ -323,6 +318,7 @@ function InterpretDocumentSample({
   docs: DocumentCardsFile;
   K: number;
 }) {
+  const { t } = useTranslation(["pages"]);
   const [showN, setShowN] = useState(24);
   const sample = docs.document_cards.slice(0, showN);
 
@@ -340,7 +336,10 @@ function InterpretDocumentSample({
           className="text-base font-semibold"
           style={{ color: "var(--color-fg)" }}
         >
-          Document cards · {showN} of {docs.n_documents}
+          {t("pages:workspace.tabs.InterpretabilityTab.docs_title", {
+            shown: showN,
+            total: docs.n_documents,
+          })}
         </h4>
         <div className="flex items-baseline gap-1.5">
           {[12, 24, 48, docs.n_documents].map((n) => (
@@ -362,7 +361,9 @@ function InterpretDocumentSample({
                   showN === n ? "var(--color-accent-soft)" : "transparent",
               }}
             >
-              {n === docs.n_documents ? "all" : n}
+              {n === docs.n_documents
+                ? t("pages:workspace.tabs.InterpretabilityTab.btn_all")
+                : n}
             </button>
           ))}
         </div>
@@ -371,9 +372,7 @@ function InterpretDocumentSample({
         className="text-[12px] mb-3"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Each row is one document (pixel-as-document). Bar shows θ stacked
-        across K = {K} topics coloured by topic. Right columns = dominant
-        topic and ground-truth label.
+        {t("pages:workspace.tabs.InterpretabilityTab.docs_help", { k: K })}
       </p>
       <div className="space-y-1">
         {sample.map((doc) => {
