@@ -8,14 +8,19 @@ import { UnmixingStat } from "../components/StatCard";
 /**
  * Recipes tab (cycle 102) — Step 4 corpus exploration.
  *
- * Three axis pickers (recipe V1..V12, scheme ∈ {U, Q, L}, Q ∈ {8,16,32})
- * with an availability chip per combo. On selection, queries
+ * Three axis pickers (recipe, scheme ∈ {U, Q, L}, Q ∈ {8,16,32}) with an
+ * availability chip per combo. On selection, queries
  * /api/wordifications/<scene>/<recipe>/<scheme>/<q> and renders D, B,
  * V_full, V_actual, corpus entropy, doc-length distribution, and the
  * top-10 tokens with p_global.
+ *
+ * Recipe list: this corpus-inspection view covers the recipes that ship full
+ * vocab-statistics artefacts (V1-V12). The complete V1-V20 representation
+ * sweep, the F-axis evidence, and the optimal recipes (V8, V20) live in
+ * Recipe Lab and the Methods deep-dives — see the banner below.
  */
 
-const RECIPE_IDS_V112 = ["V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12"];
+const RECIPE_IDS_CORPUS = ["V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12"];
 const SCHEMES = ["uniform", "quantile", "lloyd_max"] as const;
 const Q_VALUES = [8, 16, 32] as const;
 
@@ -73,17 +78,22 @@ export function RecipesTab({
           style={{ background: "linear-gradient(90deg, rgba(40,160,80,1) 0%, rgba(56,189,248,1) 100%)" }}
         />
         <h3 className="text-lg font-semibold tracking-tight mt-1 mb-1" style={{ color: "var(--color-fg)" }}>
-          Wordification recipes · V1..V12 × scheme × Q
+          Corpus inspection · V1..V12 vocab artefacts × scheme × Q
         </h3>
         <p className="text-[12.5px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
           {sceneId} has <strong>{sceneAvailable}</strong> precomputed wordification combos out of
-          the 12 × 3 × 3 = 108 grid. Topic-model artefacts (LDA φ, θ) are precomputed on the
-          canonical V1 / uniform / Q=8 recipe only. Other combos expose vocabulary statistics
+          the 12 × 3 × 3 = 108 corpus grid. Topic-model artefacts (LDA φ, θ) are precomputed on the
+          canonical V1 / uniform / Q=8 recipe; other combos expose vocabulary statistics
           (V_actual, doc-length distribution, top tokens) for inspection but not full LDA refits.
+        </p>
+        <p className="text-[12px] mb-3 rounded border px-3 py-2" style={{ color: "var(--color-fg-subtle)", borderColor: "var(--color-border)", backgroundColor: "var(--color-accent-soft)" }}>
+          This is the corpus-statistics view (V1-V12). The full <strong>V1-V20</strong> representation
+          sweep across every F-axis — and the optimal recipes (V8 cross-backbone F-7 leader, V20
+          MI-weighted LDA/ETM peak) — lives in <strong>Recipe Lab</strong> and the <strong>Methods</strong> deep-dives.
         </p>
 
         <div className="space-y-2">
-          <RecipeAxisPicker label="recipe" options={RECIPE_IDS_V112} value={recipe} onChange={(v) => setRecipe(v)} />
+          <RecipeAxisPicker label="recipe" options={RECIPE_IDS_CORPUS} value={recipe} onChange={(v) => setRecipe(v)} />
           <RecipeAxisPicker label="scheme" options={SCHEMES as unknown as string[]} value={scheme} onChange={(v) => setScheme(v as typeof SCHEMES[number])} />
           <RecipeAxisPicker label="Q" options={Q_VALUES.map(String)} value={String(q)} onChange={(v) => setQ(parseInt(v, 10) as typeof Q_VALUES[number])} />
         </div>

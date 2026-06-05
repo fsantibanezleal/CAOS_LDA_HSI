@@ -146,9 +146,9 @@
       "stage1_note": "x ∈ ℝᴮ por píxel · región · muestra",
       "stage1_pixel": "pixel",
       "stage2_title": "2 · Discretización",
-      "stage2_sub": "build_wordifications · V1..V12",
+      "stage2_sub": "build_wordifications · V1..V20",
       "stage2_note1": "band-frequency · band-magnitude · …",
-      "stage2_note2": "12 recetas × 3 esquemas × Q ∈ {8, 16, 32}",
+      "stage2_note2": "19 recetas construidas × 3 esquemas × Q ∈ {8, 16, 32}",
       "stage2_note3": "vocab V ∈ [103, 220]",
       "stage3_title": "3 · Modelo de tópicos",
       "stage3_sub": "LDA · ProdLDA · ETM · CAE-{1D,2D,3D} · β-VAE",
@@ -178,7 +178,7 @@
       "documents_title": "Documentos",
       "documents_body": "Cómo construir un documento: por píxel, por región (SLIC, Felzenszwalb), por parche o por muestra completa. Cuatro alternativas materializadas en build_groupings; cambian la unidad estadística aguas arriba.",
       "discretisation_title": "Discretización",
-      "discretisation_body": "Cómo el espectro continuo se vuelve token discreto: doce recetas V1..V12, tres esquemas de cuantización (uniform, quantile, equalised), tres niveles Q ∈ {8, 16, 32}.",
+      "discretisation_body": "Cómo el espectro continuo se vuelve token discreto: diecinueve recetas construidas (V1..V15, V17..V20), tres esquemas de cuantización (uniform, quantile, equalised), tres niveles Q ∈ {8, 16, 32}.",
       "model_title": "Modelo",
       "model_body": "LDA canónico (collapsed Gibbs, variational Bayes, online), HDP, CTM, ProdLDA, ETM, NMF, PCA, ICA, dense-AE, CAE-1D/2D/3D, β-VAE — todos a la misma K para comparación justa."
     },
@@ -199,7 +199,7 @@
       "step1_body": "El modelo PTM/LDA y por qué un píxel HSI puede tratarse como documento.",
       "step2_tag": "Metodología",
       "step2_title": "Representaciones",
-      "step2_body": "La grilla V1..V12 × esquemas × Q + 5 deep encoders.",
+      "step2_body": "La grilla V1..V20 × esquemas × Q + 5 deep encoders.",
       "step3_tag": "Metodología",
       "step3_title": "Pipeline",
       "step3_body": "Qué scripts corren localmente para producir el material que la app sirve.",
@@ -225,9 +225,9 @@
       "theory_tag": "PTM · LDA",
       "theory_title": "Teoría",
       "theory_body": "El modelo probabilístico de tópicos (PTM) y por qué un píxel hiperespectral puede tratarse como documento. LDA en notación de placas, inferencia variacional, generalización a HDP y CTM.",
-      "repr_tag": "V1..V12 + Deep",
+      "repr_tag": "V1..V20 + Deep",
       "repr_title": "Representaciones",
-      "repr_body": "Doce recetas de wordificación (V1 banda → V12 GMM-token), tres esquemas (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Más cinco encoders profundos: CAE-1D / CAE-2D / CAE-3D anchor & full-patch / β-VAE. PCA, NMF, ICA como baselines K-dim de comparación justa.",
+      "repr_body": "Diecinueve recetas de wordificación construidas (V1 banda → V20 ponderada-por-IM; V16 es un scaffold de modelo fundacional), tres esquemas (uniform/quantile/equalised), Q ∈ {8, 16, 32}. Más cinco encoders profundos: CAE-1D / CAE-2D / CAE-3D anchor & full-patch / β-VAE. PCA, NMF, ICA como baselines K-dim de comparación justa.",
       "pipe_tag": "69 builders",
       "pipe_title": "Pipeline",
       "pipe_body": "Diagrama de las 12 etapas del data-pipeline: fetch_* (acquire) → research_core (paths/loaders) → build_* (offline compute) → curate_for_web → manifest. Seis builders torch detectan GPU automáticamente con fallback CPU.",
@@ -280,9 +280,9 @@
     "section_principles": "Principios de diseño",
     "section_hypothesis": "Hipótesis de partida",
     "section_findings": "Hallazgos contra las 6 escenas etiquetadas",
-    "recipes_title": "Background · recetas de wordification V1..V12",
-    "recipes_lead": "Las representaciones topic-family operan sobre un alfabeto discreto. Hay 12 recetas (V1..V12) × 3 esquemas de cuantización × Q ∈ {8, 16, 32} = 108 configs por escena. La grilla siguiente bosqueja el espacio. La recipe canónica es V1 (band-frequency) con uniform Q=8.",
-    "recipes_figure_caption": "12 recetas × 9 (3 esquemas × 3 Q) = 108 configs por escena.",
+    "recipes_title": "Background · recetas de wordification V1..V20",
+    "recipes_lead": "Las representaciones topic-family operan sobre un alfabeto discreto. Hay 19 recetas construidas (V1..V15, V17..V20; V16 es un scaffold fundacional) × 3 esquemas de cuantización × Q ∈ {8, 16, 32} = 171 vocabularios candidatos por escena. La grilla siguiente bosqueja el espacio. La recipe canónica de ajuste es V1 (band-frequency) con uniform Q=8, pero el sweep evalúa las 19.",
+    "recipes_figure_caption": "19 recetas × 9 (3 esquemas × 3 Q) = 171 configs por escena.",
     "recipes_deepdive_lead": "Cada receta tiene una página de análisis detallado con sus resultados del barrido de ejes F en las seis escenas etiquetadas — la base de evidencia completa V1..V20.",
     "recipes_deepdive_cta": "Abrir los análisis por receta",
     "families": {
@@ -680,7 +680,7 @@
       "topiclabel": "Tópico vs etiqueta",
       "routed": "Routed · ranking",
       "interpret": "Cards de interpretabilidad",
-      "recipes": "Recetas · V1..V12 · Q",
+      "recipes": "Recetas · V1..V20 · Q",
       "recipelab": "Lab de recetas · V1..V20 lado a lado",
       "qkexplore": "Barrido de K · selección",
       "qtraj": "Trayectoria Q · refinar cuantización",
@@ -731,7 +731,7 @@
   "workspace_methods": {
     "index": {
       "title": "Workspace por métodos",
-      "lead": "Explora cada método de topic modelling en su propia página: cómo se construyen los tokens, la hipótesis teórica, el sweep F-eje, y comparadores lado a lado. Doce recetas de wordification (V1..V12) más cuatro baselines neuronales.",
+      "lead": "Explora cada método de topic modelling en su propia página: cómo se construyen los tokens, la hipótesis teórica, el sweep F-eje, y comparadores lado a lado. Diecinueve recetas de wordification construidas (V1..V20; V16 scaffold) más cuatro baselines neuronales.",
       "wordifications_heading": "Recetas de wordification",
       "neural_heading": "Baselines neuronales",
       "matrix_heading": "Matriz de resultados (F-1 / F-2 / F-7)"
@@ -893,7 +893,7 @@
       }
     },
     "matrix": {
-      "lead": "Doce recetas evaluadas en tres F-ejes (F-1 macro-F1, F-2 c_v, F-7 NMI normalizada). Celdas resaltadas = ganadora por escena por eje. La matriz es el headline del V-sweep: V12 gana F-2 en la mayoría de escenas y F-7 en 2; V3 gana F-7 en 3; V1 (canónica actual) gana F-2 en 2 y F-7 en 0."
+      "lead": "Todas las recetas construidas (V1..V20; V16 scaffold) evaluadas en tres F-ejes (F-1 macro-F1, F-2 c_v, F-7 NMI normalizada). Celdas resaltadas = ganadora por escena por eje. La matriz es el headline del V-sweep y se lee en vivo desde los shards por escena, así que las ganadoras mostradas siempre están al día (p. ej. F-2 c_v en uniform Q=8: V12 y V1 lideran 2 escenas cada una, V3 y V20 una cada una)."
     }
   },
   "not_found": {

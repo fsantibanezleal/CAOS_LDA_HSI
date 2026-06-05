@@ -1020,8 +1020,9 @@ def cross_scene_transfer() -> CrossSceneTransfer:
 
 
 # ---------------------------------------------------------------------------
-# V-sweep (issue #606) — V1..V12 wordification recipes evaluated across the
-# 12-axis framework. Reads small per-(scene, recipe, scheme, Q) JSON shards.
+# V-sweep (issue #606) — the 19 built wordification recipes (V1-V15, V17-V20;
+# V16 is a foundation-model scaffold) evaluated across the multi-axis framework.
+# Reads small per-(scene, recipe, scheme, Q) JSON shards.
 # ---------------------------------------------------------------------------
 import json as _json  # noqa: E402
 
