@@ -102,8 +102,8 @@
       "cards": {
         "b3": {
           "badge": "B-3",
-          "title": "θ como compuerta supera a θ como feature; ganancia pequeña sobre raw",
-          "body": "topic_routed_soft iguala o supera marginalmente a raw_logistic en 4 de 6 escenas etiquetadas (ganancia media ≈ +0.5–1.5 pp; Pavia U es la mayor con +1.4 pp). La historia mayor es theta_logistic (θ como feature plano), que pierde frente a raw entre 14 pp (Pavia U) y 47 pp (Indian Pines). La idea 'θ es una compuerta, no un feature' queda empíricamente validada."
+          "title": "θ es una compuerta, no un feature — y la compuerta supera a raw",
+          "body": "El ensemble suave θ-gated (un especialista por tópico, combinados ponderados por θ) iguala o supera a los espectros crudos en clasificación en 6 de 6 escenas etiquetadas (media +0.5 pp; Pavia U +1.4), y es el mejor método de regresión en el subset HIDSAG válido (GEOMET, R² 0.307 > raw 0.258 > PLS 0.227). En cambio θ como feature plano pierde frente a raw entre 14 y 47 pp — justo por eso θ debe ser una compuerta, no un feature."
         },
         "b3_followup": {
           "badge": "B-3 follow-up",

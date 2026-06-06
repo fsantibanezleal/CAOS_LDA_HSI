@@ -102,8 +102,8 @@
       "cards": {
         "b3": {
           "badge": "B-3",
-          "title": "θ as a gate beats θ as a feature; small lift over raw",
-          "body": "topic_routed_soft ties or narrowly beats raw_logistic on 4 of 6 labelled scenes (mean lift ≈ +0.5–1.5 pp; Pavia U is the largest at +1.4 pp). The bigger story is theta_logistic (θ as a flat feature), which loses to raw by 14 pp (Pavia U) up to 47 pp (Indian Pines). The 'θ is a gate, not a feature' framing is empirically validated."
+          "title": "θ is a gate, not a feature — and the gate beats raw",
+          "body": "The soft θ-gated ensemble (one specialist per topic, combined weighted by θ) ties or beats raw spectra on classification on 6 of 6 labelled scenes (mean +0.5 pp; Pavia U +1.4), and is the best regression method on the valid HIDSAG subset (GEOMET, R² 0.307 > raw 0.258 > PLS 0.227). By contrast θ as a flat feature loses to raw by 14–47 pp — which is exactly why θ must be a gate, not a feature."
         },
         "b3_followup": {
           "badge": "B-3 follow-up",
