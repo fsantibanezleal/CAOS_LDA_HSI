@@ -5,6 +5,7 @@ import { useMachine } from "@xstate/react";
 import { useQuery } from "@tanstack/react-query";
 
 import { api, type DatasetEntry } from "@/api/client";
+import { SpectralLibraryExplorer } from "./workspace/components/SpectralLibraryExplorer";
 import { PageShell } from "@/components/PageShell";
 import { TOPIC_COLORS } from "@/components/plots/IntertopicMap";
 import { workspaceMachine } from "@/state/workspaceMachine";
@@ -2413,9 +2414,11 @@ function DatasetOverviewExplorer({ subsetId }: { subsetId: string }) {
 
   const totalSize = entry.raw_total_size_gb;
   const fileCount = entry.raw_file_count;
+  const isSpectralLibrary = entry.family_id === "individual-spectra";
 
   return (
     <div className="space-y-5">
+      {isSpectralLibrary && <SpectralLibraryExplorer datasetId={subsetId} />}
       <div
         className="rounded-xl border p-5 relative overflow-hidden"
         style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
