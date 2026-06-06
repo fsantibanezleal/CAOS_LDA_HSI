@@ -841,6 +841,48 @@ def crossval_hidsag_classification(
     return protocol, {key: np.asarray(values) for key, values in predictions.items()}, fold_rows
 
 
+def topic_routed_soft_regression(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    theta_train: np.ndarray,
+    x_test: np.ndarray,
+    theta_test: np.ndarray,
+    alpha: float = 10.0,
+) -> np.ndarray:
+    """Soft theta-gated per-topic specialist regression ensemble.
+
+    The central A39 contribution for regression, mirroring
+    ``topic_routed_soft`` for classification (and the user's 2026-05-03
+    correction: "no se modela sobre theta — se hace per-topic specialists con
+    soft gating"). For each topic k, fit a *regularised* Ridge on the spectra
+    with ``sample_weight = theta_train[:, k]``; at test time predict
+    ``sum_k theta_test[:, k] * f_k(x_test)`` normalised by the gate sum. Unlike
+    the naive hard-argmax route, every specialist contributes (weighted by the
+    document's topic mixture) and Ridge keeps each specialist stable at small n.
+    """
+    K = theta_train.shape[1]
+    num = np.zeros(x_test.shape[0], dtype=np.float64)
+    den = np.zeros(x_test.shape[0], dtype=np.float64)
+    for k in range(K):
+        w = theta_train[:, k].astype(np.float64)
+        if w.sum() < 1.0:
+            continue
+        specialist = Pipeline([("scale", StandardScaler()), ("reg", Ridge(alpha=alpha))])
+        try:
+            specialist.fit(x_train, y_train, reg__sample_weight=w)
+        except Exception:  # noqa: BLE001 — a degenerate specialist is skipped
+            continue
+        gate = theta_test[:, k].astype(np.float64)
+        num += gate * specialist.predict(x_test)
+        den += gate
+    pred = num / np.clip(den, 1e-9, None)
+    fallback = den < 1e-9
+    if np.any(fallback):
+        glob = Pipeline([("scale", StandardScaler()), ("reg", Ridge(alpha=alpha))]).fit(x_train, y_train)
+        pred[fallback] = glob.predict(x_test[fallback])
+    return pred.astype(np.float32)
+
+
 def crossval_hidsag_regression(
     subset_code: str,
     features: np.ndarray,
@@ -863,6 +905,7 @@ def crossval_hidsag_regression(
         "cube_topic_mixture_linear_regression": np.zeros(sample_count, dtype=np.float32),
         "region_topic_mixture_linear_regression": np.zeros(sample_count, dtype=np.float32),
         "topic_routed_linear_regression": np.zeros(sample_count, dtype=np.float32),
+        "topic_routed_hard_linear_regression": np.zeros(sample_count, dtype=np.float32),
     }
     fold_rows = []
 
@@ -911,8 +954,19 @@ def crossval_hidsag_regression(
         region_topic_test = aggregate_doc_mixtures(region_topic_test_docs, region_doc_owners[test_region_mask], test_idx)
         region_topic_pred = LinearRegression().fit(region_topic_train, y_train).predict(region_topic_test).astype(np.float32)
 
-        train_dominant = np.argmax(topic_train, axis=1)
-        test_dominant = np.argmax(topic_test, axis=1)
+        # Central A39 contribution: soft theta-gated per-topic Ridge ensemble,
+        # gated by the REGION-document topic mixture (the spatio-spectral
+        # representation Felipe's design relies on). Every specialist
+        # contributes, weighted by theta; Ridge keeps each stable at small n.
+        routed_soft_pred = topic_routed_soft_regression(
+            x_train, y_train, region_topic_train, x_test, region_topic_test, alpha=10.0
+        )
+
+        # Ablation baseline: the naive hard-argmax route (one LinearRegression
+        # per dominant region-topic on the raw-spectra subset). Shatters the
+        # data and overfits — kept only to show why the soft ensemble is needed.
+        train_dominant = np.argmax(region_topic_train, axis=1)
+        test_dominant = np.argmax(region_topic_test, axis=1)
         routed_values = []
         local_counts = []
         routed_scopes = []
@@ -928,14 +982,15 @@ def crossval_hidsag_regression(
             routed_values.append(float(routed_model.predict(x_test[local_index : local_index + 1])[0]))
             local_counts.append(local_count)
             routed_scopes.append(routed_scope)
-        routed_pred = np.asarray(routed_values, dtype=np.float32)
+        routed_hard_pred = np.asarray(routed_values, dtype=np.float32)
 
         predictions["raw_ridge_regression"][test_idx] = raw_pred
         predictions["pls_regression"][test_idx] = pls_pred
         predictions["topic_mixture_linear_regression"][test_idx] = topic_pred
         predictions["cube_topic_mixture_linear_regression"][test_idx] = cube_topic_pred
         predictions["region_topic_mixture_linear_regression"][test_idx] = region_topic_pred
-        predictions["topic_routed_linear_regression"][test_idx] = routed_pred
+        predictions["topic_routed_linear_regression"][test_idx] = routed_soft_pred
+        predictions["topic_routed_hard_linear_regression"][test_idx] = routed_hard_pred
 
         for local_index, sample_index in enumerate(test_idx):
             fold_rows.append(
@@ -952,7 +1007,8 @@ def crossval_hidsag_regression(
                         "topic_mixture_linear_regression": round(float(topic_pred[local_index]), 4),
                         "cube_topic_mixture_linear_regression": round(float(cube_topic_pred[local_index]), 4),
                         "region_topic_mixture_linear_regression": round(float(region_topic_pred[local_index]), 4),
-                        "topic_routed_linear_regression": round(float(routed_pred[local_index]), 4),
+                        "topic_routed_linear_regression": round(float(routed_soft_pred[local_index]), 4),
+                        "topic_routed_hard_linear_regression": round(float(routed_hard_pred[local_index]), 4),
                     },
                 }
             )
