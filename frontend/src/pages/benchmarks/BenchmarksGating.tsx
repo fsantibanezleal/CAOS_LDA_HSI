@@ -532,9 +532,9 @@ function BayesianHdiSection() {
         "B-3 follow-up: gates are raw_logistic vs. θ_routed vs. PCA-8 / CAE-1D-8 / β-VAE-8 routed (deep latents softmaxed to a simplex). raw_logistic dominates θ_routed and all deep gates with P≥0.999; θ_routed dominates every deep gate with P≥0.999. Decisive Bayesian evidence that softmaxed deep latents do NOT recover θ's gating advantage — θ's edge comes from the natural Dirichlet simplex.",
       )}
       {renderForest(
-        "Regression (HIDSAG, 168 obs)",
+        "Regression (HIDSAG, n≥50 subsets: GEOMET + MINERAL1)",
         reg.data,
-        "Region-aware and topic-routed methods carry positive μ; raw_ridge worst point estimate. HDIs wide because HIDSAG targets are heterogeneous; per-target Friedman tests are tighter (GEOCHEM Friedman p=0.007).",
+        "Pool restricted to n≥50 subsets — the three small-n subsets (PORPHYRY R²≈−12500, MINERAL2, GEOCHEM) are excluded because their exploding R² poisoned the earlier pooled posterior. Honest read: pooled across the two valid subsets no method clears zero (raw_ridge highest point estimate, the proposed soft θ-gated ensemble second, statistically indistinguishable). But the soft gate beats its own hard-routing ablation by ~0.44 R² units, and per-subset on GEOMET (n=146) the soft ensemble is the best method (R²=0.307 > raw 0.258). The win is subset-specific, not universal.",
       )}
     </Section>
   );
