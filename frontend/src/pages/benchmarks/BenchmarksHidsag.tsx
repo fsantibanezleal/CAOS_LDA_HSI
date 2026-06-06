@@ -451,6 +451,24 @@ function HidsagBenchmarks() {
   );
 }
 
+// Readable labels + role for each regression method, so the forest plot
+// reads as "what is compared" rather than raw identifiers. The proposed
+// method (soft theta-gated ensemble) is highlighted; the naive hard route is
+// marked as an ablation.
+const METHOD_INFO: Record<string, { label: string; role: "proposed" | "ablation" | "baseline" | "feature" }> = {
+  topic_routed_linear_regression: { label: "soft θ-gated ensemble  ★ proposed", role: "proposed" },
+  topic_routed_hard_linear_regression: { label: "hard route (ablation)", role: "ablation" },
+  raw_ridge_regression: { label: "raw spectra · Ridge", role: "baseline" },
+  pls_regression: { label: "raw spectra · PLS", role: "baseline" },
+  region_topic_mixture_linear_regression: { label: "θ feature · region", role: "feature" },
+  cube_topic_mixture_linear_regression: { label: "θ feature · cube", role: "feature" },
+  topic_mixture_linear_regression: { label: "θ feature · pixel", role: "feature" },
+};
+
+function methodInfo(method: string): { label: string; role: "proposed" | "ablation" | "baseline" | "feature" } {
+  return METHOD_INFO[method] ?? { label: method, role: "baseline" };
+}
+
 function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
   const block = stats.regression;
   if (!block || !block.method_aggregates) {
@@ -583,19 +601,26 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
           ))}
           {entries.map((e, i) => {
             const yMid = i * rowH + 18;
-            const isRouted = e.method.includes("routed");
-            const color = isRouted ? "#22c55e" : "#0ea5e9";
+            const info = methodInfo(e.method);
+            const color =
+              info.role === "proposed"
+                ? "#22c55e"
+                : info.role === "ablation"
+                  ? "var(--color-warn)"
+                  : info.role === "baseline"
+                    ? "#0ea5e9"
+                    : "var(--color-fg-faint)";
             return (
               <g key={e.method}>
                 <text
                   x={labelW - 8}
                   y={yMid + 4}
                   textAnchor="end"
-                  fontFamily="ui-monospace, monospace"
                   fontSize="10.5"
-                  fontWeight={isRouted ? 700 : 400}
+                  fontWeight={info.role === "proposed" ? 700 : 400}
+                  fill={info.role === "proposed" ? "#22c55e" : "currentColor"}
                 >
-                  {e.method}
+                  {info.label}
                 </text>
                 {e.ci95_lo !== null && e.ci95_hi !== null && (
                   <line
