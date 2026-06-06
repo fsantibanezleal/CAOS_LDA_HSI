@@ -51,15 +51,20 @@ OUTPUT_DIR = DERIVED_DIR / "eda" / "hidsag"
 
 
 def collect_variable_values(subset: dict, var_name: str) -> np.ndarray:
-    """Walk subset['samples'] -> measurements -> variable, collect numeric values."""
+    """Collect numeric values for `var_name` from each sample's `targets` map.
+
+    The curated subset stores numeric geochemistry values per sample under
+    `sample['targets']` (a {variable_name: value} dict), one observation per
+    sample. (Earlier this walked measurement.variables, which the curated
+    schema no longer carries — that produced empty/degenerate stats.)"""
     out: list[float] = []
     for sample in subset.get("samples", []):
-        for meas in sample.get("measurements", []) or []:
-            for variable in meas.get("variables", []) or []:
-                if variable.get("name") == var_name:
-                    val = variable.get("value")
-                    if isinstance(val, (int, float)) and not (isinstance(val, bool)):
-                        out.append(float(val))
+        targets = sample.get("targets") or {}
+        if not isinstance(targets, dict):
+            continue
+        val = targets.get(var_name)
+        if isinstance(val, (int, float)) and not isinstance(val, bool):
+            out.append(float(val))
     return np.asarray(out, dtype=np.float64)
 
 
@@ -250,20 +255,20 @@ def build_for_subset(subset: dict) -> dict:
     }
     numeric_variables = {v: variable_stats(arr) for v, arr in var_values.items()}
 
-    # For correlation, we need a paired observations matrix. Walk
-    # measurements and emit a row per measurement with the available
-    # numeric vars (NaN where missing), then do pairwise complete-cases.
+    # For correlation, we need a paired observations matrix. Emit one row per
+    # sample from its `targets` map (NaN where a variable is missing), then do
+    # pairwise complete-cases.
     rows: list[dict[str, float]] = []
     for sample in subset.get("samples", []):
-        for meas in sample.get("measurements", []) or []:
-            entry: dict[str, float] = {}
-            for variable in meas.get("variables", []) or []:
-                name = variable.get("name")
-                val = variable.get("value")
-                if name in var_names and isinstance(val, (int, float)) and not isinstance(val, bool):
-                    entry[name] = float(val)
-            if entry:
-                rows.append(entry)
+        targets = sample.get("targets") or {}
+        if not isinstance(targets, dict):
+            continue
+        entry: dict[str, float] = {}
+        for name, val in targets.items():
+            if name in var_names and isinstance(val, (int, float)) and not isinstance(val, bool):
+                entry[name] = float(val)
+        if entry:
+            rows.append(entry)
 
     if rows and var_names:
         matrix = np.full((len(rows), len(var_names)), fill_value=np.nan, dtype=np.float64)
@@ -298,6 +303,19 @@ def build_for_subset(subset: dict) -> dict:
         corr_pearson = []
         corr_spearman = []
 
+    # Enrich the curated dominant_targets_by_mean (which carries only
+    # {name, mean, max, nonzero_samples}) with the std/min we just computed,
+    # so the UI can show a real mean ± std without a second lookup.
+    dominant = []
+    for tt in subset.get("dominant_targets_by_mean", []) or []:
+        name = tt.get("name")
+        stats = numeric_variables.get(name, {})
+        dominant.append({
+            **tt,
+            "std": stats.get("std"),
+            "min": stats.get("min"),
+        })
+
     # Cycle 0b extension: per-measurement and per-stratum mean spectra,
     # derived from the patch-level region documents.
     mean_by_measurement, mean_by_stratum, spectrum_axis = per_measurement_spectra(
@@ -310,7 +328,7 @@ def build_for_subset(subset: dict) -> dict:
         "measurement_count_total": int(subset.get("measurement_count_total", 0)),
         "numeric_variable_names": var_names,
         "numeric_variables": numeric_variables,
-        "dominant_targets_by_mean": subset.get("dominant_targets_by_mean", []),
+        "dominant_targets_by_mean": dominant,
         "correlation_pearson": {
             "variables": var_names,
             "matrix": corr_pearson,
@@ -328,7 +346,7 @@ def build_for_subset(subset: dict) -> dict:
         "mean_spectrum_by_measurement": mean_by_measurement,
         "mean_spectrum_by_measurement_stratum": mean_by_stratum,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "builder_version": "build_eda_hidsag v0.2",
+        "builder_version": "build_eda_hidsag v0.3",
     }
 
 
