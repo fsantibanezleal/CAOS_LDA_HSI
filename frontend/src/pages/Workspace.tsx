@@ -2128,7 +2128,10 @@ function HidsagBriefingCard({
                 style={{ backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" }}
               >
                 {tt.name}
-                <span className="opacity-70 text-[10px]">μ={tt.mean.toFixed(2)} ± {tt.std.toFixed(2)}</span>
+                <span className="opacity-70 text-[10px]">
+                  μ={tt.mean.toFixed(2)}
+                  {tt.std != null ? ` ± ${tt.std.toFixed(2)}` : ""}
+                </span>
               </span>
             ))}
           </div>
@@ -2180,14 +2183,16 @@ function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagEda | nu
           <tbody>
             {rows.slice(0, 15).map((row) => {
               const s = row.stats;
+              const has = s && s.n > 0 && s.mean != null;
+              const fmt = (v: number | undefined) => (v != null ? v.toFixed(3) : "—");
               return (
                 <tr key={row.name} style={{ borderTop: "1px solid var(--color-border)" }}>
                   <td className="py-1.5 pr-3 font-mono">{row.name}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.mean.toFixed(3) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.std.toFixed(3) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.min.toFixed(3) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.max.toFixed(3) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.n_finite : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.mean) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.std) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.min) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.max) : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.n : "—"}</td>
                 </tr>
               );
             })}
@@ -2211,9 +2216,26 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
       </div>
     );
   }
-  const wl = eda.spectrum_axis?.wavelength_nm ?? [];
-  const meanByMeas = eda.mean_spectrum_by_measurement ?? {};
-  const entries = Object.entries(meanByMeas).slice(0, 6);
+  const axis = eda.spectrum_axis ?? [];
+  const nBands = axis.length;
+
+  // Prefer per-stratum mean spectra (more meaningful); fall back to a sample
+  // of individual region-document measurement spectra.
+  const strata = eda.mean_spectrum_by_measurement_stratum ?? [];
+  type Series = { label: string; n: number; spectrum: number[] };
+  const series: Series[] = strata.length
+    ? strata.slice(0, 6).map((s) => ({
+        label: s.stratum,
+        n: s.measurement_count,
+        spectrum: s.mean_spectrum_round4 ?? [],
+      }))
+    : (eda.mean_spectrum_by_measurement ?? []).slice(0, 6).map((m) => ({
+        label: m.measurement_name,
+        n: m.patch_count,
+        spectrum: m.mean_spectrum_round4 ?? [],
+      }));
+  const byStratum = strata.length > 0;
+  const totalMeas = (eda.mean_spectrum_by_measurement ?? []).length;
 
   const W = 520;
   const H = 200;
@@ -2226,16 +2248,25 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
 
   let lo = Infinity;
   let hi = -Infinity;
-  for (const [, v] of entries) {
-    for (const y of v.mean ?? []) {
+  for (const s of series) {
+    for (const y of s.spectrum) {
       if (y < lo) lo = y;
       if (y > hi) hi = y;
     }
   }
-  const wlLo = wl[0] ?? 400;
-  const wlHi = wl[wl.length - 1] ?? 2500;
+
+  // Modality spans (for x-axis annotation): group consecutive bands by modality.
+  const spans: { modality: string; start: number; end: number }[] = [];
+  for (let i = 0; i < axis.length; i++) {
+    const m = axis[i]!.modality;
+    const last = spans[spans.length - 1];
+    if (last && last.modality === m) last.end = i;
+    else spans.push({ modality: m, start: i, end: i });
+  }
 
   const palette = ["#0ea5e9", "#22c55e", "#a855f7", "#f59e0b", "#ef4444", "#06b6d4"];
+  const xAt = (j: number) => padL + (nBands > 1 ? (j / (nBands - 1)) * innerW : 0);
+  const renderable = series.filter((s) => s.spectrum.length === nBands && nBands > 0);
 
   return (
     <div
@@ -2247,51 +2278,57 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
       }}
     >
       <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
-        Mean spectra per measurement type
+        Mean region-document spectra
       </h4>
       <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Average spectral signature per HIDSAG measurement modality (typical VNIR low/high, SWIR low). Used to validate stratification + bad-band heuristics.
+        {byStratum
+          ? `Average region-document spectrum per tag stratum (the unit LDA tokenises). Modalities (VNIR/SWIR) are concatenated along the x-axis.`
+          : `Example region-document mean spectra — ${Math.min(6, totalMeas)} of ${totalMeas} measurements. Each is the mean over its patch grid; this is the spectral unit LDA tokenises. Modalities are concatenated along the x-axis.`}
       </p>
-      {entries.length ? (
+      {renderable.length && Number.isFinite(lo) ? (
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="w-full h-auto"
           role="img"
-          aria-label="Mean spectra per HIDSAG measurement type (modality)"
+          aria-label="Mean region-document spectra"
         >
           {[0, 0.25, 0.5, 0.75, 1].map((g) => (
             <line key={g} x1={padL} y1={padT + g * innerH} x2={padL + innerW} y2={padT + g * innerH} stroke="currentColor" strokeOpacity={g === 0 || g === 1 ? 0.25 : 0.07} strokeWidth="0.6" />
           ))}
-          {[wlLo, (wlLo + wlHi) / 2, wlHi].map((wlv) => {
-            const x = padL + ((wlv - wlLo) / (wlHi - wlLo)) * innerW;
+          {/* modality span markers + labels */}
+          {spans.map((sp) => {
+            const x0 = xAt(sp.start);
+            const x1 = xAt(sp.end);
             return (
-              <text key={wlv} x={x} y={H - 8} fontSize="10" textAnchor="middle" fill="currentColor" opacity={0.55} fontFamily="ui-monospace, monospace">
-                {wlv.toFixed(0)} nm
-              </text>
+              <g key={`${sp.modality}-${sp.start}`}>
+                <line x1={x0} y1={padT} x2={x0} y2={padT + innerH} stroke="currentColor" strokeOpacity={0.12} strokeWidth="0.6" />
+                <text x={(x0 + x1) / 2} y={H - 8} fontSize="9.5" textAnchor="middle" fill="currentColor" opacity={0.55} fontFamily="ui-monospace, monospace">
+                  {sp.modality}
+                </text>
+              </g>
             );
           })}
-          {entries.map(([name, v], i) => {
-            if (!v.mean?.length || v.mean.length !== wl.length) return null;
-            const path = v.mean
+          {renderable.map((s, i) => {
+            const path = s.spectrum
               .map((y, j) => {
-                const x = padL + ((wl[j]! - wlLo) / (wlHi - wlLo)) * innerW;
+                const x = xAt(j);
                 const yy = padT + innerH - ((y - lo) / (hi - lo || 1)) * innerH;
                 return `${j === 0 ? "M" : "L"}${x.toFixed(1)},${yy.toFixed(1)}`;
               })
               .join(" ");
-            return <path key={name} d={path} fill="none" stroke={palette[i % palette.length]} strokeWidth="1.4" strokeOpacity="0.95" />;
+            return <path key={s.label} d={path} fill="none" stroke={palette[i % palette.length]} strokeWidth="1.4" strokeOpacity="0.95" />;
           })}
         </svg>
       ) : (
         <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>No mean-spectra available.</p>
       )}
-      {entries.length ? (
+      {renderable.length ? (
         <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
-          {entries.map(([name, v], i) => (
-            <span key={name} className="inline-flex items-center gap-1.5" style={{ color: "var(--color-fg-faint)" }}>
+          {renderable.map((s, i) => (
+            <span key={s.label} className="inline-flex items-center gap-1.5" style={{ color: "var(--color-fg-faint)" }}>
               <span aria-hidden className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: palette[i % palette.length] }} />
-              {name}
-              <span className="opacity-65">(n={v.n})</span>
+              {s.label}
+              <span className="opacity-65">({byStratum ? "n_meas" : "patches"}={s.n})</span>
             </span>
           ))}
         </div>
@@ -2301,11 +2338,11 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
 }
 
 function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
-  if (!eda || !eda.correlation_pearson) {
+  if (!eda || !eda.correlation_pearson || !eda.correlation_pearson.matrix?.length) {
     return null;
   }
-  const names = eda.numeric_variable_names.slice(0, 12);
-  const mat = eda.correlation_pearson;
+  const mat = eda.correlation_pearson.matrix;
+  const names = (eda.correlation_pearson.variables ?? eda.numeric_variable_names).slice(0, 12);
   const N = Math.min(names.length, 12);
   const cell = 26;
   const labelW = 100;
