@@ -2070,7 +2070,7 @@ function HidsagExploreStep({ subsetCode }: { subsetCode: string }) {
   );
 }
 
-function HidsagBriefingCard({
+export function HidsagBriefingCard({
   eda,
   methods,
   subsetCode,
@@ -2141,7 +2141,7 @@ function HidsagBriefingCard({
   );
 }
 
-function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+export function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
   if (!eda) {
     return (
       <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
@@ -2208,7 +2208,7 @@ function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagEda | nu
   );
 }
 
-function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+export function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
   if (!eda) {
     return (
       <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
@@ -2337,7 +2337,7 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
   );
 }
 
-function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+export function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
   if (!eda || !eda.correlation_pearson || !eda.correlation_pearson.matrix?.length) {
     return null;
   }
