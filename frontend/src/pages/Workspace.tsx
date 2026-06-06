@@ -201,7 +201,12 @@ const HIDSAG_SUBSETS = new Set([
   "hidsag-mineral2",
   "hidsag-geochem",
   "hidsag-porphyry",
+  // The live inventory exposes the HIDSAG family as one dataset id; the five
+  // subsets are picked inside the explorer (see HidsagFamilyExplorer).
+  "hidsag-geometallurgy",
 ]);
+
+const HIDSAG_SUBSET_CODES = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"] as const;
 
 function toHidsagSubsetCode(id: string): string {
   if (id.startsWith("hidsag-")) {
@@ -1140,7 +1145,7 @@ function ExploreStep({
       )}
 
       {isHidsag && !isLabelled && subsetId && (
-        <HidsagExploreStep subsetCode={toHidsagSubsetCode(subsetId)} />
+        <HidsagFamilyExplorer datasetId={subsetId} />
       )}
 
       {isLabelled && (
@@ -2000,6 +2005,46 @@ function BriefingStat({ label, value }: { label: string; value: string }) {
      - correlation heatmap between targets
    =======================================================================*/
 
+// The HIDSAG family is one dataset with five mineral subsets. Let the user
+// pick the subset, then explore its data (spectra, targets, correlations) —
+// the supervised benchmarks live in /benchmarks, not here.
+function HidsagFamilyExplorer({ datasetId }: { datasetId: string }) {
+  const initial = (() => {
+    const code = toHidsagSubsetCode(datasetId);
+    return (HIDSAG_SUBSET_CODES as readonly string[]).includes(code) ? code : "GEOMET";
+  })();
+  const [subset, setSubset] = useState<string>(initial);
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center gap-2 flex-wrap">
+        <span
+          className="text-[10.5px] uppercase tracking-widest font-semibold"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          subset
+        </span>
+        {HIDSAG_SUBSET_CODES.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => setSubset(c)}
+            className="rounded border px-2.5 py-1 text-[12px] font-mono"
+            style={{
+              borderColor: c === subset ? "var(--color-accent)" : "var(--color-border)",
+              color: c === subset ? "var(--color-accent)" : "var(--color-fg-subtle)",
+              backgroundColor: c === subset ? "var(--color-accent-soft)" : "transparent",
+              fontWeight: c === subset ? 600 : 400,
+            }}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+      <HidsagExploreStep subsetCode={subset} />
+    </div>
+  );
+}
+
 function HidsagExploreStep({ subsetCode }: { subsetCode: string }) {
   const eda = useQuery({
     queryKey: ["hidsag-eda", subsetCode],
@@ -2019,7 +2064,6 @@ function HidsagExploreStep({ subsetCode }: { subsetCode: string }) {
         <HidsagTargetsCard eda={eda.data ?? null} />
         <HidsagModalitySpectraCard eda={eda.data ?? null} />
       </div>
-      <HidsagMethodRankingCard methods={methods.data ?? null} />
       <HidsagCorrelationCard eda={eda.data ?? null} />
     </div>
   );
@@ -2251,72 +2295,6 @@ function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").Hidsag
           ))}
         </div>
       ) : null}
-    </div>
-  );
-}
-
-function HidsagMethodRankingCard({
-  methods,
-}: {
-  methods: import("@/api/client").HidsagMethodStatistics | null;
-}) {
-  if (!methods?.regression) {
-    return (
-      <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>Loading regression methods…</p>
-      </div>
-    );
-  }
-  const reg = methods.regression;
-  const ranking = reg.ranking ?? Object.entries(reg.method_aggregates).map(([method, agg], i) => ({ method, mean: agg.r2_distribution?.mean ?? 0, rank: i + 1 }));
-  return (
-    <div
-      className="rounded-lg border p-4"
-      style={{
-        borderColor: "var(--color-border)",
-        backgroundColor: "var(--color-panel)",
-        boxShadow: "var(--color-shadow)",
-      }}
-    >
-      <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
-        Regression methods — macro R² ranking
-      </h4>
-      <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Five methods compared on 5-fold per-target R²: raw_ridge_regression, pca_ridge_regression, pls_regression, region_topic_mixture_linear_regression, topic_routed_linear_regression. Higher is better.
-      </p>
-      <div className="overflow-x-auto">
-        <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
-          <thead>
-            <tr style={{ color: "var(--color-fg-faint)" }}>
-              <th className="text-left font-mono text-[11px] pb-2 pr-3">rank</th>
-              <th className="text-left font-mono text-[11px] pb-2 pr-3">method</th>
-              <th className="text-right font-mono text-[11px] pb-2 pr-3">mean R²</th>
-              <th className="text-left font-mono text-[11px] pb-2 pr-3">bar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ranking.map((row) => {
-              const agg = reg.method_aggregates[row.method];
-              const norm = Math.max(0, Math.min(1, (row.mean + 0.5) / 1.5));
-              return (
-                <tr key={row.method} style={{ borderTop: "1px solid var(--color-border)" }}>
-                  <td className="py-1.5 pr-3 font-mono">{row.rank}</td>
-                  <td className="py-1.5 pr-3 font-mono">{row.method}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">
-                    {row.mean.toFixed(3)}
-                    {agg ? <span className="opacity-70 ml-1 text-[10.5px]">±{(agg.r2_distribution?.std ?? 0).toFixed(3)}</span> : null}
-                  </td>
-                  <td className="py-1.5 pr-3 w-[180px]">
-                    <div className="w-full h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>
-                      <div className="h-2 rounded" style={{ width: `${norm * 100}%`, backgroundColor: "var(--color-accent)" }} />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 }
