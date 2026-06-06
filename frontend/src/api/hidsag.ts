@@ -98,27 +98,67 @@ export type HidsagMethodStatistics = {
   classification: HidsagBlock | null;
 };
 
+// Per-variable distribution stats. `n` is always present; the rest are
+// present only when n > 0 (build_eda_hidsag emits {n: 0} for empty variables).
+export type HidsagVariableStats = {
+  n: number;
+  n_nonzero?: number;
+  mean?: number;
+  std?: number;
+  min?: number;
+  p5?: number;
+  p25?: number;
+  p50?: number;
+  p75?: number;
+  p95?: number;
+  max?: number;
+};
+
+// One mean spectrum per measurement (average of the patch grid).
+export type HidsagMeanSpectrum = {
+  measurement_name: string;
+  sample_name: string;
+  patch_count: number;
+  tags: string[];
+  mean_spectrum_round4: number[];
+};
+
+export type HidsagSpectrumAxisBand = {
+  modality: string;
+  band_index_within_modality: number;
+  wavelength_nm: number;
+};
+
+export type HidsagCorrelation = {
+  variables: string[];
+  matrix: number[][];
+};
+
 export type HidsagEda = {
   subset_code: string;
   sample_count: number;
   measurement_count_total: number;
   numeric_variable_names: string[];
-  numeric_variables: Record<
-    string,
-    { mean: number; std: number; min: number; max: number; n_finite: number }
-  >;
+  numeric_variables: Record<string, HidsagVariableStats>;
   modality_band_counts: Record<string, number>;
-  spectrum_axis: { wavelength_nm: number[] };
-  mean_spectrum_by_measurement: Record<string, { mean: number[]; n: number }>;
-  mean_spectrum_by_measurement_stratum?: Record<
-    string,
-    Record<
-      string,
-      { mean: number[]; n: number; stratum_value: number | string | null }
-    >
-  >;
-  correlation_pearson?: number[][] | null;
-  correlation_spearman?: number[][] | null;
+  spectrum_axis: HidsagSpectrumAxisBand[];
+  mean_spectrum_by_measurement: HidsagMeanSpectrum[];
+  mean_spectrum_by_measurement_stratum?: {
+    stratum: string;
+    measurement_count: number;
+    mean_spectrum_round4: number[];
+  }[];
+  correlation_pearson?: HidsagCorrelation | null;
+  correlation_spearman?: HidsagCorrelation | null;
   measurement_tags_top?: string[];
-  dominant_targets_by_mean?: { name: string; mean: number; std: number }[];
+  dominant_targets_by_mean?: {
+    name: string;
+    mean: number;
+    max?: number;
+    nonzero_samples?: number;
+    std?: number | null;
+    min?: number | null;
+  }[];
+  generated_at?: string;
+  builder_version?: string;
 };
