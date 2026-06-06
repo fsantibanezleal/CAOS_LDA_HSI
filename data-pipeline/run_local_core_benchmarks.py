@@ -1889,6 +1889,7 @@ def main() -> None:
                     "cube_topic_mixture_linear_regression",
                     "region_topic_mixture_linear_regression",
                     "topic_routed_linear_regression",
+                    "topic_routed_hard_linear_regression",
                 ],
             },
             "stability_protocol": {

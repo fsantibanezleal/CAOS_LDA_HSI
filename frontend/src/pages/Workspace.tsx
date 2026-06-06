@@ -1114,8 +1114,11 @@ function ExploreStep({
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            28 panels across raw data, topic model output, spatial geometry, and diagnostics.
-            Loaded on demand — pick a tab below to fetch its dedicated backend artefact.
+            {isLabelled
+              ? "Topic-model panels across raw data, topic output, spatial geometry, and diagnostics. Loaded on demand — pick a tab below to fetch its dedicated backend artefact."
+              : isHidsag
+                ? "A region-document mineral subset: spectra are grouped into region documents with per-sample geochemical / mineralogical targets. It carries supervised benchmarks (classification, regression, sample-owner clustering) — not the per-scene topic-explorer panels. See what is available below."
+                : "Dataset inventory and provenance. Topic-explorer panels open automatically once this dataset has derived LDA artefacts."}
           </p>
         </div>
         <button
