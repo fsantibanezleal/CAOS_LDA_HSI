@@ -87,6 +87,15 @@ def load_subset_metric_matrix(task_type: str) -> dict:
     return {"method_names": sorted(method_set)}
 
 
+# Regression R² is only statistically estimable on subsets with enough
+# samples; below this the per-target R² explodes (PORPHYRY reaches
+# R² ≈ -12500, MINERAL2 ≈ -9.7) and poisons the cross-subset pool, which is
+# what produced the earlier "no method beats zero" artefact. Match the
+# benchmark-display policy and exclude n < 50 subsets from the regression
+# pool. (Classification uses bounded macro-F1 and is left unfiltered.)
+MIN_N_REGRESSION = 50
+
+
 def collect_per_target_scores(task_type: str) -> dict:
     """Walk each subset's method_statistics_hidsag JSON and the source
     local_core_benchmarks measured_target_runs to gather per-target
@@ -99,8 +108,13 @@ def collect_per_target_scores(task_type: str) -> dict:
     primary_metric = "r2" if task_type == "regression" else "macro_f1"
     task_key = "regression_tasks" if task_type == "regression" else "classification_tasks"
     observations: list[dict] = []
+    excluded_subsets: list[str] = []
     for run in runs:
         subset_code = run.get("subset_code")
+        n_samples = run.get("sample_count") or run.get("n_samples") or 0
+        if task_type == "regression" and n_samples < MIN_N_REGRESSION:
+            excluded_subsets.append(f"{subset_code}(n={n_samples})")
+            continue
         for task in run.get(task_key, []) or []:
             target = task.get("target")
             metrics = task.get("metrics") or {}
@@ -114,7 +128,7 @@ def collect_per_target_scores(task_type: str) -> dict:
                     "method": method,
                     "score": float(val),
                 })
-    return {"observations": observations}
+    return {"observations": observations, "excluded_subsets": excluded_subsets}
 
 
 def fit_hierarchical(
@@ -199,7 +213,11 @@ def main() -> int:
     written = 0
     for task_type in ("regression", "classification"):
         print(f"[bayesian_compare] {task_type} ...", flush=True)
-        obs = collect_per_target_scores(task_type)["observations"]
+        collected = collect_per_target_scores(task_type)
+        obs = collected["observations"]
+        excluded = collected.get("excluded_subsets", [])
+        if excluded:
+            print(f"  excluded (n<{MIN_N_REGRESSION}): {', '.join(excluded)}", flush=True)
         if not obs:
             print("  skipped (no observations)", flush=True)
             continue
@@ -212,8 +230,9 @@ def main() -> int:
             continue
         if not payload:
             continue
+        payload["excluded_subsets"] = excluded
         payload["generated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-        payload["builder_version"] = "build_bayesian_method_comparison v0.1"
+        payload["builder_version"] = "build_bayesian_method_comparison v0.2"
         out_path = DERIVED_OUT_DIR / f"cross_{task_type}_bayesian.json"
         with out_path.open("w", encoding="utf-8") as h:
             json.dump(payload, h, separators=(",", ":"))
