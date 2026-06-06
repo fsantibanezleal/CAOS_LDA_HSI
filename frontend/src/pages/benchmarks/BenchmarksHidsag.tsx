@@ -410,11 +410,18 @@ function HidsagBenchmarks() {
       x.data !== undefined,
     );
 
+  // Cross-validated regression R² is only estimable when the sample is large
+  // enough; at n≈20–28 the test folds explode (PORPHYRY reaches R²≈-4801) and
+  // the metric is noise. Show regression only for n ≥ 50 (#782).
+  const MIN_N = 50;
+  const validReg = successes.filter((s) => (s.data.sample_count ?? 0) >= MIN_N);
+  const excludedReg = successes.filter((s) => (s.data.sample_count ?? 0) < MIN_N);
+
   return (
     <Section
       id="hidsag"
       title="HIDSAG — regression over measurements"
-      lead="Five HIDSAG subsets with continuous targets (Cu %, Au g/t, mineralogy, geochemistry). Each compares the routed family against raw_ridge, PLS and topic mixtures. The primary metric is mean R² over the subset's numeric targets."
+      lead="A hard cross-domain probe: can the topic representations linearly predict continuous geo-assays (Cu %, Au g/t, mineralogy)? R² < 0 means worse than predicting the target's mean. This is separate from — and much harder than — the labelled-scene topic results; treat it as a stress test, not the headline."
     >
       {loading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
@@ -422,12 +429,44 @@ function HidsagBenchmarks() {
         </p>
       )}
       <div className="space-y-6 mt-2">
-        {successes.map((s) => (
+        {validReg.map((s) => (
           <HidsagSubsetCard key={s.code} stats={s.data} />
         ))}
       </div>
+      {excludedReg.length > 0 && (
+        <p
+          className="mt-4 text-[12px]"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          <strong>Excluded (n &lt; {MIN_N}):</strong>{" "}
+          {excludedReg
+            .map((s) => `${s.code} (n=${s.data.sample_count ?? "?"})`)
+            .join(", ")}
+          . Cross-validated regression R² is not estimable at these sample
+          sizes — the folds are too small for the band/feature dimension, so the
+          values are statistical noise rather than results.
+        </p>
+      )}
     </Section>
   );
+}
+
+// Readable labels + role for each regression method, so the forest plot
+// reads as "what is compared" rather than raw identifiers. The proposed
+// method (soft theta-gated ensemble) is highlighted; the naive hard route is
+// marked as an ablation.
+const METHOD_INFO: Record<string, { label: string; role: "proposed" | "ablation" | "baseline" | "feature" }> = {
+  topic_routed_linear_regression: { label: "soft θ-gated ensemble  ★ proposed", role: "proposed" },
+  topic_routed_hard_linear_regression: { label: "hard route (ablation)", role: "ablation" },
+  raw_ridge_regression: { label: "raw spectra · Ridge", role: "baseline" },
+  pls_regression: { label: "raw spectra · PLS", role: "baseline" },
+  region_topic_mixture_linear_regression: { label: "θ feature · region", role: "feature" },
+  cube_topic_mixture_linear_regression: { label: "θ feature · cube", role: "feature" },
+  topic_mixture_linear_regression: { label: "θ feature · pixel", role: "feature" },
+};
+
+function methodInfo(method: string): { label: string; role: "proposed" | "ablation" | "baseline" | "feature" } {
+  return METHOD_INFO[method] ?? { label: method, role: "baseline" };
 }
 
 function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
@@ -478,10 +517,20 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
   const plotW = w - labelW - 40;
   const rowH = 30;
   const h = entries.length * rowH + 60;
-  const xLo = Math.min(...entries.map((e) => e.ci95_lo ?? e.mean), 0) - 0.05;
+  // R² is unbounded below: a single catastrophic small-sample value (e.g.
+  // cube_topic on PORPHYRY n=28 reaches R²≈-4801, CI lower ≈-9458) otherwise
+  // auto-scales the whole axis and squashes every readable method into a sliver
+  // at x≈1. Clamp the visible domain to a floor and mark off-scale methods with
+  // their true value, so the chart stays readable and honest.
+  const FLOOR = -3;
+  const rawLo = Math.min(...entries.map((e) => e.ci95_lo ?? e.mean), 0);
+  const clampedLo = Math.max(rawLo, FLOOR);
+  const xLo = clampedLo - 0.05;
   const xHi = Math.max(...entries.map((e) => e.ci95_hi ?? e.mean), 1) + 0.05;
+  const clampX = (v: number) => Math.min(Math.max(v, xLo), xHi);
   const xScale = (v: number) =>
-    labelW + ((v - xLo) / (xHi - xLo)) * plotW;
+    labelW + ((clampX(v) - xLo) / (xHi - xLo)) * plotW;
+  const anyOffScale = entries.some((e) => (e.mean ?? 0) < clampedLo);
   const ticks = Array.from({ length: 5 }, (_, i) => xLo + ((xHi - xLo) * i) / 4);
 
   return (
@@ -552,19 +601,26 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
           ))}
           {entries.map((e, i) => {
             const yMid = i * rowH + 18;
-            const isRouted = e.method.includes("routed");
-            const color = isRouted ? "#22c55e" : "#0ea5e9";
+            const info = methodInfo(e.method);
+            const color =
+              info.role === "proposed"
+                ? "#22c55e"
+                : info.role === "ablation"
+                  ? "var(--color-warn)"
+                  : info.role === "baseline"
+                    ? "#0ea5e9"
+                    : "var(--color-fg-faint)";
             return (
               <g key={e.method}>
                 <text
                   x={labelW - 8}
                   y={yMid + 4}
                   textAnchor="end"
-                  fontFamily="ui-monospace, monospace"
                   fontSize="10.5"
-                  fontWeight={isRouted ? 700 : 400}
+                  fontWeight={info.role === "proposed" ? 700 : 400}
+                  fill={info.role === "proposed" ? "#22c55e" : "currentColor"}
                 >
-                  {e.method}
+                  {info.label}
                 </text>
                 {e.ci95_lo !== null && e.ci95_hi !== null && (
                   <line
@@ -592,14 +648,30 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
                   y={yMid + 4}
                   fontSize="10.5"
                   opacity="0.85"
+                  fill={e.mean < clampedLo ? "var(--color-warn)" : "currentColor"}
                 >
-                  {e.mean.toFixed(3)}
+                  {e.mean < clampedLo
+                    ? `◀ ${e.mean.toFixed(1)} (off-scale)`
+                    : e.mean.toFixed(3)}
                 </text>
               </g>
             );
           })}
         </g>
       </svg>
+      <p
+        className="mt-1 text-[11.5px]"
+        style={{ color: "var(--color-fg-faint)" }}
+      >
+        R² &lt; 0 means the model predicts the numeric target worse than its
+        own mean — expected for assay regression (Cu %, Au g/t) on these small
+        mineral subsets (n = tens to low hundreds). This is a deliberately hard
+        cross-domain probe and is <em>separate</em> from the labelled-scene
+        topic results, where the representations do separate classes.
+        {anyOffScale
+          ? ` Methods with R² ≪ 0 (catastrophic small-sample fits) are clamped to the axis edge at ${FLOOR} and labelled with their true value.`
+          : ""}
+      </p>
     </div>
   );
 }

@@ -12,10 +12,10 @@
       "spectral_signature": "Firma espectral en vivo",
       "indian_pines_caption": "Indian Pines · 16 clases · {{bands}} bandas · 400–2500 nm",
       "indian_pines_caption_loading": "Indian Pines · cargando datos en vivo…",
-      "title": "Tratamos cada píxel hiperespectral como un documento.",
-      "caption": "Cada curva es la firma media de una clase agronómica del cubo Indian Pines. La diversidad inter-clase a 1100 / 1400 / 1900 nm — absorciones de agua y feldespatos — es lo que el corpus textual tiene que recuperar discretamente. Esa firma es un documento; la pregunta del proyecto es qué tópicos (estructura latente compartida) viven en él.",
+      "title": "Convertimos la variabilidad espectro–espacial en documentos para LDA.",
+      "caption": "Cada curva es la firma media de una clase agronómica del cubo Indian Pines. La diversidad inter-clase a 1100 / 1400 / 1900 nm — absorciones de agua y feldespatos — es lo que el corpus tiene que recuperar discretamente. LDA necesita documentos, pero un cubo hiperespectral no los tiene a priori: los construimos a partir de su variabilidad espectro–espacial — por píxel, por región, por parche o por muestra completa — y preguntamos qué construcción, junto con qué wordification, recupera mejor la estructura latente.",
       "datacube_anatomy": "Anatomía del datacube",
-      "datacube_caption": "Un cubo HSI es (H × W × B). Cada píxel x[i, j] es un vector espectral de B bandas. El proyecto lo recorre como un corpus, lo discretiza en tokens, ajusta tópicos θ ∈ Δ^(K-1) y los compara contra baselines K-dim."
+      "datacube_caption": "Un cubo HSI es (H × W × B); cada píxel x[i, j] es un vector espectral de B bandas. No hay documento a priori — el proyecto construye un corpus a partir de la variabilidad espectro–espacial del cubo (la unidad-documento misma es una elección de representación), lo discretiza en tokens, ajusta tópicos θ ∈ Δ^(K-1) y los compara contra baselines K-dim."
     },
     "headlines": {
       "datasets_label": "Datasets",

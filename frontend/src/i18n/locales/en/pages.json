@@ -12,10 +12,10 @@
       "spectral_signature": "Live spectral signature",
       "indian_pines_caption": "Indian Pines · 16 classes · {{bands}} bands · 400–2500 nm",
       "indian_pines_caption_loading": "Indian Pines · live data loading…",
-      "title": "We treat every hyperspectral pixel as a document.",
-      "caption": "Each curve is the mean signature of one agronomic class in the Indian Pines cube. The inter-class diversity at 1100 / 1400 / 1900 nm — water and feldspar absorptions — is what the textual corpus has to recover discretely. That signature is a document; the project's question is which topics (shared latent structure) live in it.",
+      "title": "We turn spectral–spatial variability into documents for LDA.",
+      "caption": "Each curve is the mean signature of one agronomic class in the Indian Pines cube. The inter-class diversity at 1100 / 1400 / 1900 nm — water and feldspar absorptions — is what the corpus has to recover discretely. LDA needs documents, but a hyperspectral cube has none a priori: we construct them from its spectral–spatial variability — by pixel, by region, by patch or by full sample — and ask which construction, paired with which wordification, best recovers the latent structure.",
       "datacube_anatomy": "Datacube anatomy",
-      "datacube_caption": "An HSI cube is (H × W × B). Each pixel x[i, j] is a B-band spectral vector. The project walks it as a corpus, discretises it into tokens, fits topics θ ∈ Δ^(K-1) and compares them against K-dim baselines."
+      "datacube_caption": "An HSI cube is (H × W × B); each pixel x[i, j] is a B-band spectral vector. There is no document a priori — the project builds a corpus from the cube's spectral–spatial variability (the document unit itself is a representation choice), discretises it into tokens, fits topics θ ∈ Δ^(K-1) and compares them against K-dim baselines."
     },
     "headlines": {
       "datasets_label": "Datasets",
