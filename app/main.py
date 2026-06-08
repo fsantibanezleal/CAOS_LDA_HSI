@@ -37,6 +37,25 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def _revalidate_mutable_data(request, call_next):
+    """Force revalidation on the mutable derived-data surfaces.
+
+    `/generated/*` (StaticFiles) and the JSON `/api/*` routes are regenerated
+    whenever the pipeline reruns, but StaticFiles emits only ETag/Last-Modified
+    with no Cache-Control — so browsers apply heuristic freshness and can serve
+    a stale payload (e.g. a pre-fix HIDSAG EDA with n=0) long after a deploy.
+    `no-cache` means "revalidate before reuse": with the ETag already present
+    this is a cheap 304 when unchanged and a 200 with fresh data when not.
+    Content-hashed `/assets/*` are left alone (immutable, safe to cache hard).
+    """
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/generated/") or path.startswith("/api/"):
+        response.headers.setdefault("Cache-Control", "no-cache")
+    return response
+
+
 @app.get("/health", response_class=PlainTextResponse)
 def health() -> str:
     return "ok"
