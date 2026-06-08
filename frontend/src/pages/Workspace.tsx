@@ -216,15 +216,18 @@ function toHidsagSubsetCode(id: string): string {
   return id.toUpperCase();
 }
 
+// Keyed by the inventory `family_id`. Previously two keys ("hidsag-mineral",
+// "unmixing-roi") did not match any real family_id, so the HIDSAG and the
+// unlabeled families silently fell back to the generic `default` blurb.
 const FAMILY_DESCRIPTIONS: Record<string, string> = {
   "labeled-spectral-image":
     "Hyperspectral cubes with per-pixel labels — the canonical UPV/EHU benchmarks. Natural starting point for classification.",
   "individual-spectra":
-    "Individual spectra with material identity or reference (USGS splib07, MicaSense). No spatial geometry.",
-  "hidsag-mineral":
-    "HIDSAG subsets with per-sample geochemical and mineralogical measurements. Continuous targets, not classes.",
-  "unmixing-roi":
-    "Borsoi Samson / Jasper Ridge / Urban — scenes with endmembers and reference abundances for unmixing.",
+    "Individual reference spectra with material identity (USGS splib07, ECOSTRESS). No spatial geometry — spectral libraries.",
+  "regions-with-measurements":
+    "HIDSAG mineral subsets — spectra grouped into region documents with per-sample geochemical / mineralogical targets. Continuous targets, not classes.",
+  "unlabeled-spectral-image":
+    "Unlabeled hyperspectral / multispectral cubes (Cuprite, unmixing-ROI suite, MicaSense, HySpecNet) — no per-pixel labels; for unmixing and unsupervised exploration.",
   default:
     "Dataset family available for the lab workflow.",
 };
