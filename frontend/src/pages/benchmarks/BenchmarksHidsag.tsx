@@ -301,15 +301,32 @@ function PreprocessingSubsetCard({
           }))}
           good="green"
         />
-        <PolicyBars
-          title="Regression · R²"
-          rows={subset.regression_policy_ranking.map((r) => ({
-            policy_id: r.policy_id,
-            best_model: r.best_model,
-            value: r.best_r2,
-          }))}
-          good="amber"
-        />
+        {(subset.sample_count ?? 0) >= 50 ? (
+          <PolicyBars
+            title="Regression · R²"
+            rows={subset.regression_policy_ranking.map((r) => ({
+              policy_id: r.policy_id,
+              best_model: r.best_model,
+              value: r.best_r2,
+            }))}
+            good="amber"
+          />
+        ) : (
+          <div>
+            <div
+              className="text-[11px] uppercase tracking-widest font-semibold mb-2"
+              style={{ color: "var(--color-fg-faint)" }}
+            >
+              Regression · R²
+            </div>
+            <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
+              Not shown — cross-validated R² is not estimable at n&lt;50
+              (here n={subset.sample_count}); the test folds explode to
+              R²≪0 and the metric is noise, not a result. See the regression
+              panel below for the n≥50 subsets.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

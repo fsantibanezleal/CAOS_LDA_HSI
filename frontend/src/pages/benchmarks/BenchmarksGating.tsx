@@ -27,7 +27,7 @@ function DeepGateSection() {
     return (
       <Section
         title="B-3 follow-up — any encoder as gate? raw vs θ-routed vs deep gates"
-        lead="Loading deep-gate payloads from /api/topic-routed-deep-gate/{scene}…"
+        lead="Loading deep-gate payloads…"
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
       </Section>
@@ -73,7 +73,7 @@ function DeepGateSection() {
   return (
     <Section
       title="B-3 follow-up — any encoder as gate? raw vs θ-routed vs deep gates"
-      lead="Five candidate gates compete on per-fold macro F1 across labelled scenes: raw_logistic (no gating), θ_routed (LDA topic mixture, natural Dirichlet simplex), and three deep gates (PCA-8, CAE-1D-8, β-VAE-8) projected onto the simplex via softmax. Tests whether any deep encoder recovers θ's gating advantage. Source: /api/topic-routed-deep-gate/{scene}."
+      lead="Five candidate gates compete on per-fold macro F1 across labelled scenes: raw_logistic (no gating), θ_routed (LDA topic mixture, natural Dirichlet simplex), and three deep gates (PCA-8, CAE-1D-8, β-VAE-8) projected onto the simplex via softmax. Tests whether any deep encoder recovers θ's gating advantage."
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
@@ -169,7 +169,7 @@ function NeuralTopicComparisonSection() {
     return (
       <Section
         title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM"
-        lead="Loading per-scene neural-topic comparison from /api/neural-topic-comparison/{scene}…"
+        lead="Loading per-scene neural-topic comparison…"
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
       </Section>
@@ -236,8 +236,8 @@ function NeuralTopicComparisonSection() {
 
   return (
     <Section
-      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM (cycles 61–63)"
-      lead="Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics: (1) K-means(theta) ARI vs ground-truth label — clustering quality. (2) c_v topic coherence (Röder 2015 sliding-window, top-15 words) — semantic quality. ProdLDA + ETM cells show mean ± std across N=5 seeds (cycle 63 multi-seed sweep). LDA cell uses the canonical fit (single seed; per-seed LDA stability is in the separate Workspace stability tab). The two metrics tell different stories — coherence ≠ class discriminability on band-frequency vocabularies."
+      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM"
+      lead="Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics: (1) K-means(theta) ARI vs ground-truth label — clustering quality. (2) c_v topic coherence (Röder 2015 sliding-window, top-15 words) — semantic quality. ProdLDA + ETM cells show mean ± std across N=5 seeds. LDA cell uses the canonical fit (single seed; per-seed LDA stability is in the separate Workspace stability tab). The two metrics tell different stories — coherence ≠ class discriminability on band-frequency vocabularies."
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>

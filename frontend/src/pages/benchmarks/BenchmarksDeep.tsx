@@ -317,7 +317,7 @@ function Cae3dAnchorVsFullSection() {
   return (
     <Section
       title="CAE-3D — anchor decoder vs full-patch decoder (K-curve {4, 8})"
-      lead="Two decoders share the same 3-D conv encoder. Anchor reconstructs only the centre-pixel spectrum (Linear K→B); full-patch reconstructs the entire P×P patch (Linear K→B·P·P). Cycle 52 ran K=8; cycle 55 added K=4. The decoder target is itself a hyperparameter — direction is broadly stable across capacity, with one inversion (Pavia U)."
+      lead="Two decoders share the same 3-D conv encoder. Anchor reconstructs only the centre-pixel spectrum (Linear K→B); full-patch reconstructs the entire P×P patch (Linear K→B·P·P). Both K=8 and K=4 capacities are swept. The decoder target is itself a hyperparameter — direction is broadly stable across capacity, with one inversion (Pavia U)."
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
