@@ -2,6 +2,11 @@
   "overview": {
     "title": "Overview",
     "lead": "CAOS LDA HSI explores what probabilistic topic models can capture when documents are pixels, regions, or measurements drawn from hyperspectral imagery.",
+    "acknowledgements": {
+      "title": "Funding & acknowledgements",
+      "funding": "This work was partially funded by the Advanced Mining Technology Center (AMTC) Basal project (ANID/PIA AFB220002) and ANID FONDECYT Postdoctorado 3220094.",
+      "data": "Hyperspectral scenes are courtesy of the Computational Intelligence Group, UPV/EHU. The HIDSAG mineralogical database arises from a collaboration on machine-learning applications to geosciences. Built on the open-source scientific Python stack (scikit-learn, NumPy, SciPy, Gensim, tomotopy, Pyro)."
+    },
     "landing_cta": {
       "lead": "Probabilistic topic models on hyperspectral imagery — a multi-axis evaluation framework that asks whether LDA basis spectra add interpretable value over deep encoders for HSI scene classification.",
       "open_workspace": "Open the Workspace →",
