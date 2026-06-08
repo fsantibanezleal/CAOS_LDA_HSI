@@ -408,7 +408,7 @@ function MultiAxisBatterySection() {
     return (
       <Section
         title="Multi-Axis Addendum B — battery summary"
-        lead="One row per labelled scene, one column per axis (B-1 fair-baseline F1, B-3 topic-routed F1, B-6 LDA off-diag stability). Loads in parallel from /api/linear-probe-panel/, /api/topic-routed-classifier/, /api/topic-stability/. See the wiki for the full framework."
+        lead="One row per labelled scene, one column per axis (B-1 fair-baseline F1, B-3 topic-routed F1, B-6 LDA off-diag stability). The three axes load in parallel. See the wiki for the full framework."
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
           Loading multi-axis battery payloads…

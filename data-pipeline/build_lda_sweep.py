@@ -126,9 +126,18 @@ def npmi_coherence(phi: np.ndarray, doc_term: np.ndarray, top_n: int = TOP_N_FOR
                 p_ij = float((bin_dt[:, wi] * bin_dt[:, wj]).sum() / D)
                 if p_i < eps or p_j < eps or p_ij < eps:
                     continue
+                if p_ij >= 1.0 - eps:
+                    # Both words occur in (almost) every document: perfect
+                    # co-occurrence. The NPMI limit as p_ij -> 1 is +1.
+                    # Computing it directly gives 0/0 = NaN (the bug that
+                    # made npmi_mean NaN for dense scenes and turned
+                    # recommended_K into a max-of-NaN fall-through).
+                    pairs.append(1.0)
+                    continue
                 pmi = np.log(p_ij / (p_i * p_j))
                 npmi = pmi / (-np.log(p_ij))
-                pairs.append(float(npmi))
+                if np.isfinite(npmi):
+                    pairs.append(float(npmi))
         if pairs:
             npmi_per_topic.append(float(np.mean(pairs)))
     return float(np.mean(npmi_per_topic)) if npmi_per_topic else 0.0
@@ -204,7 +213,7 @@ def build_for_scene(scene_id: str) -> dict | None:
         stab_min = float(np.min(matched_cos_pairs)) if matched_cos_pairs else 0.0
 
         valid_test = [m["perplexity_test"] for m in seed_metrics if not np.isnan(m["perplexity_test"])]
-        valid_npmi = [m["npmi"] for m in seed_metrics]
+        valid_npmi = [m["npmi"] for m in seed_metrics if np.isfinite(m["npmi"])]
         grid_results.append({
             "K": K,
             "n_seeds": len(SEEDS),
