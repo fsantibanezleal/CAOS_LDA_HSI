@@ -293,7 +293,13 @@ export default function Workspace() {
     const ctx = state.context;
     const urlFam = fam ?? null;
     const urlSub = sub ?? null;
-    const urlRep = rp ?? (sub ? "lda" : null);
+    // Default rep to "lda" ONLY for the ?scene= shortcut (land on Explore in
+    // one click). For the canonical ?family&subset[&rep] shape, respect the
+    // exact rep — an ABSENT rep means the user backed out to the rep picker
+    // (the machine's pickRep state). Defaulting it here would re-dispatch
+    // PICK_REP and slam the user back into Explore, making "Change
+    // representation" / "Change subset" appear to do nothing.
+    const urlRep = rp ?? (sceneShortcut ? "lda" : null);
     if (
       ctx.family === urlFam &&
       ctx.subset === urlSub &&
@@ -307,10 +313,16 @@ export default function Workspace() {
       send({ type: "PICK_FAMILY", family: fam as DatasetFamily });
       if (sub) {
         send({ type: "PICK_SUBSET", subset: sub });
-        // Default rep to canonical LDA when none is supplied, so Explore
-        // is reachable in one click from the scene shortcut.
-        const resolvedRep = (rp ?? "lda") as RepresentationKind;
-        send({ type: "PICK_REP", rep: resolvedRep });
+        // Advance to Explore only when a rep is actually present — either
+        // explicit in the URL, or defaulted for the ?scene= shortcut. An
+        // absent rep on the canonical shape leaves the machine at pickRep
+        // (the representation picker) so BACK navigation is not undone.
+        const resolvedRep = (rp ?? (sceneShortcut ? "lda" : null)) as
+          | RepresentationKind
+          | null;
+        if (resolvedRep) {
+          send({ type: "PICK_REP", rep: resolvedRep });
+        }
       }
     }
     restoredRef.current = true;
