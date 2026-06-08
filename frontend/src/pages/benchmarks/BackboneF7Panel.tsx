@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { request } from "@/api/_http";
 import { Section } from "@/components/Section";
 
@@ -28,6 +29,7 @@ function cellColour(v: number): string {
 }
 
 export function BackboneF7Panel() {
+  const { t } = useTranslation(["pages"]);
   const { data, isLoading, isError } = useQuery<BackbonesF7Payload>({
     queryKey: ["backbones-f7"],
     queryFn: () => request<BackbonesF7Payload>("/api/v-sweep/backbones-f7"),
@@ -68,15 +70,15 @@ export function BackboneF7Panel() {
   return (
     <Section
       id="backbone-f7"
-      title="F-7 NMI under each topic-model backbone (HDP / ProdLDA / ETM extension)"
-      lead="The c397 backbone factorial reported F-2 c_v only. c432–c434 added F-7 NMI for V1/V3/V12/V14/V18/V20, then extended in c435 to every recipe with available wordifications. Each cell is the per-(scene, recipe) F-7 NMI mean across 6 labelled scenes. Bold accent = per-backbone winner."
+      title={t("pages:benchmarks.backbone_f7.title")}
+      lead={t("pages:benchmarks.backbone_f7.lead")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-[12px] border-collapse" style={{ borderColor: "var(--color-border)" }}>
           <thead>
             <tr>
               <th className="text-left px-2 py-1 border font-mono" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-                backbone \ recipe
+                {t("pages:benchmarks.backbone_f7.table.backboneRecipe")}
               </th>
               {sortedRecipes.map((r) => (
                 <th
@@ -88,7 +90,7 @@ export function BackboneF7Panel() {
                 </th>
               ))}
               <th className="text-right px-2 py-1 border font-mono" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-                mean
+                {t("pages:benchmarks.backbone_f7.table.mean")}
               </th>
             </tr>
           </thead>
@@ -130,7 +132,7 @@ export function BackboneF7Panel() {
             })}
             <tr style={{ borderTop: "2px solid var(--color-border)" }}>
               <td className="px-2 py-1 border font-mono" style={{ borderColor: "var(--color-border)", fontWeight: 700 }}>
-                mean (4 backbones)
+                {t("pages:benchmarks.backbone_f7.table.meanFourBackbones")}
               </td>
               {sortedRecipes.map((r) => {
                 const v = meanAcrossBackbones[r];
@@ -156,11 +158,7 @@ export function BackboneF7Panel() {
         </table>
       </div>
       <p className="mt-2 text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
-        Recipes ordered by mean F-7 NMI across the four backbones. V8 (NFINDR
-        endmember-fraction) leads the cross-backbone mean (0.431 at Q=8). V20
-        (MI-weighted) is top-3 under LDA and ETM but slips to 4th under ProdLDA and 6th
-        under HDP — no single recipe is top-3 under all four backbones, which is itself the
-        finding: cross-prior portability is recipe-specific, not universal.
+        {t("pages:benchmarks.backbone_f7.footnote")}
       </p>
     </Section>
   );

@@ -1,4 +1,5 @@
 import { useQueries } from "@tanstack/react-query";
+import { Trans, useTranslation } from "react-i18next";
 import {
   api,
   type MethodStatistics,
@@ -23,6 +24,7 @@ import { VSweepCoverageMatrix } from "./VSweepCoverageMatrix";
 import { BackboneF7Panel } from "./BackboneF7Panel";
 
 export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div className="space-y-8">
       <ProtocolBox stats={data} />
@@ -30,8 +32,8 @@ export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
       <BackboneF7Panel />
       <Section
         id="forest"
-        title="Forest plot — macro-F1 with CI95 per scene"
-        lead="Each bar is a scene × method; the dot is the mean, the whiskers are the 2.5 and 97.5 percentiles of the bootstrap over the 25 evaluations."
+        title={t("pages:benchmarks.summary.forest_title")}
+        lead={t("pages:benchmarks.summary.forest_lead")}
       >
         <div className="space-y-8 mt-2">
           {data.labeled_scenes.map((s) => (
@@ -41,8 +43,8 @@ export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
       </Section>
       <Section
         id="paired"
-        title="Paired comparisons (Δ macro-F1)"
-        lead="Each pair shows the difference between methods per evaluation; summarised as mean ± std of Δ. Negative = the second method loses."
+        title={t("pages:benchmarks.summary.paired_title")}
+        lead={t("pages:benchmarks.summary.paired_lead")}
       >
         <div className="space-y-6 mt-2">
           {data.labeled_scenes.map((s) => (
@@ -51,7 +53,10 @@ export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
         </div>
       </Section>
       <MultiAxisBatterySection />
-      <Section id="method-defs" title="Method definitions">
+      <Section
+        id="method-defs"
+        title={t("pages:benchmarks.summary.method_defs_title")}
+      >
         <dl
           className="text-[14px] leading-relaxed space-y-3 mt-2"
           style={{ color: "var(--color-fg-subtle)" }}
@@ -81,6 +86,7 @@ export function BenchmarksSummary({ data }: { data: MethodStatistics }) {
 }
 
 function ProtocolBox({ stats }: { stats: MethodStatistics }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div
       className="rounded-lg border p-5 grid sm:grid-cols-3 gap-4 mt-2"
@@ -91,11 +97,11 @@ function ProtocolBox({ stats }: { stats: MethodStatistics }) {
       }}
     >
       <Stat
-        label="Scenes evaluated"
+        label={t("pages:benchmarks.summary.stat_scenes_evaluated")}
         value={String(stats.labeled_scenes.length)}
       />
       <Stat
-        label="Evaluations per method"
+        label={t("pages:benchmarks.summary.stat_evaluations_per_method")}
         value={
           stats.labeled_scenes.length > 0
             ? String(
@@ -106,7 +112,7 @@ function ProtocolBox({ stats }: { stats: MethodStatistics }) {
         }
       />
       <Stat
-        label="α significance"
+        label={t("pages:benchmarks.summary.stat_alpha_significance")}
         value={stats.alpha_significance.toFixed(2)}
       />
     </div>
@@ -133,6 +139,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function SceneForest({ scene }: { scene: SceneMethodStats }) {
+  const { t } = useTranslation(["pages"]);
   const methodNames = Object.keys(scene.methods);
   const axisMin = 0;
   const axisMax = 1;
@@ -169,7 +176,8 @@ function SceneForest({ scene }: { scene: SceneMethodStats }) {
         >
           K={scene.scene_summary.topic_count} · D=
           {scene.scene_summary.sampled_documents} ·{" "}
-          {scene.scene_summary.class_count} classes
+          {scene.scene_summary.class_count}{" "}
+          {t("pages:benchmarks.summary.classes_suffix")}
         </span>
       </header>
       <svg
@@ -177,7 +185,9 @@ function SceneForest({ scene }: { scene: SceneMethodStats }) {
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label={`Forest plot for ${scene.dataset_name}`}
+        aria-label={t("pages:benchmarks.summary.forest_aria", {
+          scene: scene.dataset_name,
+        })}
         style={{ color: "var(--color-fg)" }}
       >
         <g
@@ -293,6 +303,7 @@ function SceneForest({ scene }: { scene: SceneMethodStats }) {
 }
 
 function PairedTable({ scene }: { scene: SceneMethodStats }) {
+  const { t } = useTranslation(["pages"]);
   const groups = scene.paired_comparisons;
   const macroGroup = Array.isArray(groups[2])
     ? groups[2]
@@ -328,11 +339,21 @@ function PairedTable({ scene }: { scene: SceneMethodStats }) {
               color: "var(--color-fg)",
             }}
           >
-            <th className="text-left py-2 pr-4 font-semibold">A</th>
-            <th className="text-left py-2 pr-4 font-semibold">B</th>
-            <th className="text-right py-2 pr-4 font-semibold">Δ mean</th>
-            <th className="text-right py-2 pr-4 font-semibold">Δ std</th>
-            <th className="text-right py-2 font-semibold">[Δ min, Δ max]</th>
+            <th className="text-left py-2 pr-4 font-semibold">
+              {t("pages:benchmarks.summary.paired_col_a")}
+            </th>
+            <th className="text-left py-2 pr-4 font-semibold">
+              {t("pages:benchmarks.summary.paired_col_b")}
+            </th>
+            <th className="text-right py-2 pr-4 font-semibold">
+              {t("pages:benchmarks.summary.paired_col_delta_mean")}
+            </th>
+            <th className="text-right py-2 pr-4 font-semibold">
+              {t("pages:benchmarks.summary.paired_col_delta_std")}
+            </th>
+            <th className="text-right py-2 font-semibold">
+              {t("pages:benchmarks.summary.paired_col_delta_range")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -377,6 +398,7 @@ function PairedTable({ scene }: { scene: SceneMethodStats }) {
 }
 
 function MultiAxisBatterySection() {
+  const { t } = useTranslation(["pages"]);
   const probes = useQueries({
     queries: LABELLED_SCENES.map((sc) => ({
       queryKey: ["linear-probe-panel", sc],
@@ -407,11 +429,11 @@ function MultiAxisBatterySection() {
   if (!ready) {
     return (
       <Section
-        title="Multi-Axis Addendum B — battery summary"
-        lead="One row per labelled scene, one column per axis (B-1 fair-baseline F1, B-3 topic-routed F1, B-6 LDA off-diag stability). The three axes load in parallel. See the wiki for the full framework."
+        title={t("pages:benchmarks.summary.battery_title")}
+        lead={t("pages:benchmarks.summary.battery_lead_loading")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading multi-axis battery payloads…
+          {t("pages:benchmarks.summary.battery_loading")}
         </p>
       </Section>
     );
@@ -465,8 +487,8 @@ function MultiAxisBatterySection() {
 
   return (
     <Section
-      title="Multi-Axis Addendum B — battery summary"
-      lead="One row per labelled scene. Columns: theta-as-feature F1 (B-1, naive), ICA-10 F1 (B-1, fair-baseline winner), best CAE-1D F1 across K∈{4..32} (B-1 deep ladder), topic_routed_soft F1 (B-3 the master-plan thesis), raw_logistic F1 (B-3 strong baseline), and LDA off-diagonal stability (B-6, N=7 seeds). The framework is on the wiki Multi-Axis-Addendum-B page."
+      title={t("pages:benchmarks.summary.battery_title")}
+      lead={t("pages:benchmarks.summary.battery_lead")}
     >
       <div className="overflow-x-auto">
         <table
@@ -476,28 +498,28 @@ function MultiAxisBatterySection() {
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
               <th className="text-left font-mono text-[12px] pb-2 pr-3">
-                scene
+                {t("pages:benchmarks.summary.battery_col_scene")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                θ flat (B-1)
+                {t("pages:benchmarks.summary.battery_col_theta_flat")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                ICA-10 (B-1)
+                {t("pages:benchmarks.summary.battery_col_ica10")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                CAE-1D best (B-1)
+                {t("pages:benchmarks.summary.battery_col_cae_best")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                θ_logistic (B-3)
+                {t("pages:benchmarks.summary.battery_col_theta_logistic")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                routed_soft (B-3)
+                {t("pages:benchmarks.summary.battery_col_routed_soft")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                raw_logistic (B-3)
+                {t("pages:benchmarks.summary.battery_col_raw_logistic")}
               </th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">
-                LDA stability (B-6)
+                {t("pages:benchmarks.summary.battery_col_lda_stability")}
               </th>
             </tr>
           </thead>
@@ -548,13 +570,10 @@ function MultiAxisBatterySection() {
         className="mt-3 text-[12.5px]"
         style={{ color: "var(--color-text-muted)" }}
       >
-        Headlines: ICA-10 wins B-1 fair-baseline on every scene. CAE-1D K=32
-        closes much of the gap (KSC θ=0.021 → CAE-1D K=32=0.710, a 33×
-        recovery). topic_routed_soft matches or beats raw_logistic on every
-        scene; θ_logistic loses by 30-50 points everywhere — the master-plan
-        thesis "θ as a gate, never as a feature" is empirically validated. LDA
-        off-diag stability ≥ 0.954 across all 6 scenes vs CAE-1D 0.74-0.97 and
-        β-VAE 0.18-0.89.
+        <Trans
+          i18nKey="pages:benchmarks.summary.battery_headlines"
+          components={{ strong: <strong /> }}
+        />
       </p>
     </Section>
   );

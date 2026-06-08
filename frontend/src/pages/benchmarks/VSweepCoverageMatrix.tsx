@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { request } from "@/api/_http";
 import { Section } from "@/components/Section";
 
@@ -63,6 +64,7 @@ function valueColor(
 }
 
 export function VSweepCoverageMatrix() {
+  const { t } = useTranslation(["pages"]);
   const [mode, setMode] = useState<ViewMode>("values");
   const { data, isLoading, isError } = useQuery<CoverageMatrix>({
     queryKey: ["v-sweep-coverage"],
@@ -76,8 +78,8 @@ export function VSweepCoverageMatrix() {
   return (
     <Section
       id="v-sweep-coverage"
-      title="V-sweep coverage matrix (10 axes × 19 recipes × 6 scenes)"
-      lead="1140 numeric cells in total — all populated. Toggle between boolean (cells filled?) and value (per-cell numeric, viridis colormap). F-13 SHAP has no scalar value so it stays boolean."
+      title={t("pages:benchmarks.vsweep_coverage.title")}
+      lead={t("pages:benchmarks.vsweep_coverage.lead")}
     >
       <div className="flex gap-2 mb-3">
         <button
@@ -89,7 +91,7 @@ export function VSweepCoverageMatrix() {
             border: "1px solid var(--color-border)",
           }}
         >
-          values
+          {t("pages:benchmarks.vsweep_coverage.toggle.values")}
         </button>
         <button
           onClick={() => setMode("boolean")}
@@ -100,7 +102,7 @@ export function VSweepCoverageMatrix() {
             border: "1px solid var(--color-border)",
           }}
         >
-          boolean
+          {t("pages:benchmarks.vsweep_coverage.toggle.boolean")}
         </button>
       </div>
       <div className="overflow-x-auto">
@@ -111,7 +113,7 @@ export function VSweepCoverageMatrix() {
                 className="text-left px-2 py-1 border font-mono"
                 style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
               >
-                axis \ scene·recipe
+                {t("pages:benchmarks.vsweep_coverage.table.axisSceneRecipe")}
               </th>
               {data.scenes.map((sc) =>
                 data.recipes.map((r) => (
@@ -197,10 +199,9 @@ export function VSweepCoverageMatrix() {
         </table>
       </div>
       <p className="mt-2 text-[11.5px]" style={{ color: "var(--color-fg-faint)" }}>
-        Generated {new Date(data.generated_at).toISOString().slice(0, 10)}. F-14 jaccard uses
-        inverted colour (lower = better, mapped to "high" colour band). F-17 cross-scene
-        (portable only) and B-12 / F-15 per-scene LLM-judge records are reported in their
-        dedicated panels.
+        {t("pages:benchmarks.vsweep_coverage.footnote", {
+          date: new Date(data.generated_at).toISOString().slice(0, 10),
+        })}
       </p>
       <RecipeMeansTable axes={data.axes} recipes={data.recipes} />
     </Section>
@@ -208,6 +209,7 @@ export function VSweepCoverageMatrix() {
 }
 
 function RecipeMeansTable({ axes, recipes }: { axes: CoverageAxis[]; recipes: string[] }) {
+  const { t } = useTranslation(["pages"]);
   const axesWithMeans = axes.filter((a) => a.recipe_means && Object.keys(a.recipe_means).length > 0);
   if (axesWithMeans.length === 0) return null;
 
@@ -227,13 +229,13 @@ function RecipeMeansTable({ axes, recipes }: { axes: CoverageAxis[]; recipes: st
   return (
     <div className="mt-4 overflow-x-auto">
       <h3 className="text-[12.5px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-        Per-axis recipe-mean ranking
+        {t("pages:benchmarks.vsweep_coverage.recipeMeans.heading")}
       </h3>
       <table className="text-[11.5px] border-collapse w-full" style={{ borderColor: "var(--color-border)" }}>
         <thead>
           <tr>
             <th className="text-left px-2 py-1 border font-mono" style={{ borderColor: "var(--color-border)" }}>
-              axis
+              {t("pages:benchmarks.vsweep_coverage.recipeMeans.axis")}
             </th>
             {recipes.map((r) => (
               <th

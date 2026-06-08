@@ -1,4 +1,5 @@
 import { useQueries } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { Section } from "@/components/Section";
 import { LABELLED_SCENES } from "./shared";
@@ -15,6 +16,7 @@ export function BenchmarksDeep() {
 }
 
 function AnomalyComparisonSection() {
+  const { t } = useTranslation(["pages"]);
   const ldaQs = useQueries({
     queries: LABELLED_SCENES.map((sc) => ({
       queryKey: ["topic-anomaly", sc],
@@ -36,11 +38,11 @@ function AnomalyComparisonSection() {
   if (!ready) {
     return (
       <Section
-        title="B-9 anomaly indicators — LDA vs deep ρ comparison"
-        lead="Loading anomaly correlations…"
+        title={t("pages:benchmarks.deep.anomaly.title")}
+        lead={t("pages:benchmarks.deep.anomaly.loadingLead")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading…
+          {t("pages:benchmarks.deep.anomaly.loading")}
         </p>
       </Section>
     );
@@ -71,19 +73,19 @@ function AnomalyComparisonSection() {
 
   return (
     <Section
-      title="B-9 anomaly indicators — LDA vs deep ρ comparison"
-      lead="Spearman ρ between per-document anomaly score and theta-logistic misclassification. Positive ρ (green) = the indicator flags hard examples (works as anomaly); negative (red) = the indicator anti-correlates (deep encoders concentrate capacity on rare informative spectra). LDA's recon NLL works as anomaly; deep methods invert the heuristic."
+      title={t("pages:benchmarks.deep.anomaly.title")}
+      lead={t("pages:benchmarks.deep.anomaly.lead")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
-              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">LDA recon NLL ρ</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">LDA softmax ρ</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">CAE-1D recon RMSE ρ</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">β-VAE recon RMSE ρ</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">β-VAE KL ρ</th>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.anomaly.col.scene")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.anomaly.col.ldaNll")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.anomaly.col.ldaSoftmax")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.anomaly.col.caeRmse")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.anomaly.col.bvRmse")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.anomaly.col.bvKl")}</th>
             </tr>
           </thead>
           <tbody>
@@ -104,11 +106,7 @@ function AnomalyComparisonSection() {
         className="mt-3 text-[12.5px]"
         style={{ color: "var(--color-text-muted)" }}
       >
-        Headline: LDA recon NLL is positive ρ on every scene (Pavia U +0.306,
-        Salinas-A +0.298, KSC +0.226, IP +0.214) — it works as an anomaly indicator.
-        Deep methods produce mostly negative ρ — the "high recon = unfamiliar" heuristic
-        does NOT transfer to deep nonlinear encoders. Deep encoders concentrate capacity
-        on rare informative spectra, which the latent then discriminates well.
+        {t("pages:benchmarks.deep.anomaly.note")}
       </p>
     </Section>
   );
@@ -117,6 +115,7 @@ function AnomalyComparisonSection() {
 const CAE_1D_KS = [4, 6, 8, 10, 12, 16, 32];
 
 function DeepKCurveSection() {
+  const { t } = useTranslation(["pages"]);
   // For each scene × K, fetch the CAE-1D representation and read ARI
   const queries = useQueries({
     queries: LABELLED_SCENES.flatMap((sc) =>
@@ -133,11 +132,11 @@ function DeepKCurveSection() {
   if (!ready) {
     return (
       <Section
-        title="CAE-1D capacity-driven scaling — ARI vs K"
-        lead="Per-scene CAE-1D K-curve (K∈{4,6,8,10,12,16,32}). Each line is one labelled scene; each point is the K-means(latent) ARI vs ground-truth label."
+        title={t("pages:benchmarks.deep.kcurve.title")}
+        lead={t("pages:benchmarks.deep.kcurve.loadingLead")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading deep K-curve payloads (42 cells)…
+          {t("pages:benchmarks.deep.kcurve.loading")}
         </p>
       </Section>
     );
@@ -175,10 +174,10 @@ function DeepKCurveSection() {
 
   return (
     <Section
-      title="CAE-1D capacity-driven scaling — ARI vs K"
-      lead="K-means(latent) ARI vs ground-truth label, per scene. Almost-monotonic on every scene (Salinas 0.547 → 0.561, KSC 0.250 → 0.314 from K=4 to K=32). x-axis is log K."
+      title={t("pages:benchmarks.deep.kcurve.title")}
+      lead={t("pages:benchmarks.deep.kcurve.lead")}
     >
-      <svg viewBox={`0 0 ${W + 60} ${H + 40}`} role="img" aria-label="CAE-1D K curve">
+      <svg viewBox={`0 0 ${W + 60} ${H + 40}`} role="img" aria-label={t("pages:benchmarks.deep.kcurve.aria")}>
         <line x1={40} y1={H} x2={40 + W} y2={H} stroke="currentColor" strokeWidth="1" />
         <line x1={40} y1={0} x2={40} y2={H} stroke="currentColor" strokeWidth="1" />
         {[0, 0.2, 0.4, 0.6, 0.8, 1.0].map((y) => (
@@ -254,7 +253,7 @@ function DeepKCurveSection() {
           );
         })}
         <text x={40 + W / 2} y={H + 32} fontSize="11" textAnchor="middle" fill="currentColor" opacity="0.7">
-          latent dimension K (log scale)
+          {t("pages:benchmarks.deep.kcurve.xAxis")}
         </text>
         <text
           x={10}
@@ -265,19 +264,18 @@ function DeepKCurveSection() {
           opacity="0.7"
           transform={`rotate(-90, 10, ${H / 2})`}
         >
-          K-means(latent) ARI vs label
+          {t("pages:benchmarks.deep.kcurve.yAxis")}
         </text>
       </svg>
       <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-        Capacity-driven scaling: every scene improves with K; no overfitting at K=32. KSC's
-        canonical fit (LDA θ-logistic F1=0.021 on B-3) recovers to F1=0.710 at CAE-1D K=32 on
-        the linear-probe panel, a 33× gain attributable to deep encoder capacity.
+        {t("pages:benchmarks.deep.kcurve.note")}
       </p>
     </Section>
   );
 }
 
 function Cae3dAnchorVsFullSection() {
+  const { t } = useTranslation(["pages"]);
   const KS = [4, 8] as const;
   const queries = useQueries({
     queries: LABELLED_SCENES.flatMap((sc) =>
@@ -291,10 +289,10 @@ function Cae3dAnchorVsFullSection() {
   if (!ready) {
     return (
       <Section
-        title="CAE-3D — anchor decoder vs full-patch decoder (K-curve {4, 8})"
-        lead="Loading anchor + full-patch payloads at K∈{4, 8} across 6 labelled scenes…"
+        title={t("pages:benchmarks.deep.cae3d.title")}
+        lead={t("pages:benchmarks.deep.cae3d.loadingLead")}
       >
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.deep.cae3d.loading")}</p>
       </Section>
     );
   }
@@ -316,19 +314,19 @@ function Cae3dAnchorVsFullSection() {
   });
   return (
     <Section
-      title="CAE-3D — anchor decoder vs full-patch decoder (K-curve {4, 8})"
-      lead="Two decoders share the same 3-D conv encoder. Anchor reconstructs only the centre-pixel spectrum (Linear K→B); full-patch reconstructs the entire P×P patch (Linear K→B·P·P). Both K=8 and K=4 capacities are swept. The decoder target is itself a hyperparameter — direction is broadly stable across capacity, with one inversion (Pavia U)."
+      title={t("pages:benchmarks.deep.cae3d.title")}
+      lead={t("pages:benchmarks.deep.cae3d.lead")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
-              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">full K=4</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">anchor K=4</th>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.cae3d.col.scene")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.cae3d.col.full")} K=4</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.cae3d.col.anchor")} K=4</th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">ΔK=4</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">full K=8</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">anchor K=8</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.cae3d.col.full")} K=8</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.deep.cae3d.col.anchor")} K=8</th>
               <th className="text-right font-mono text-[12px] pb-2 pr-3">ΔK=8</th>
             </tr>
           </thead>
@@ -355,7 +353,7 @@ function Cae3dAnchorVsFullSection() {
               </tr>
             ))}
             <tr style={{ borderTop: "2px solid var(--color-border)" }}>
-              <td className="py-1.5 pr-3 font-mono text-[11px]" style={{ color: "var(--color-text-muted)" }}>net mean ΔARI</td>
+              <td className="py-1.5 pr-3 font-mono text-[11px]" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.deep.cae3d.netMean")}</td>
               <td className="py-1.5 pr-3" />
               <td className="py-1.5 pr-3" />
               <td
@@ -383,10 +381,7 @@ function Cae3dAnchorVsFullSection() {
         </table>
       </div>
       <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-        Honest read: net mean ΔARI is essentially neutral at both K (+0.011 K=4, +0.003 K=8). Direction matches across K on
-        5/6 scenes — IP and Botswana persistently benefit; Salinas family persistently harmed (magnitude grows with K). Pavia U
-        is the single capacity-dependent inversion: full-patch helps at K=4 (+0.026), hurts at K=8 (-0.023). The decoder target
-        is itself a hyperparameter worth surfacing per scene, not a default to flip globally.
+        {t("pages:benchmarks.deep.cae3d.note")}
       </p>
     </Section>
   );
@@ -401,6 +396,7 @@ const BETA_VAE_BS = [
 ];
 
 function BetaVaeCollapseSection() {
+  const { t } = useTranslation(["pages"]);
   const queries = useQueries({
     queries: LABELLED_SCENES.flatMap((sc) =>
       BETA_VAE_BS.map((b) => ({
@@ -414,11 +410,11 @@ function BetaVaeCollapseSection() {
   if (!ready) {
     return (
       <Section
-        title="β-VAE β-sweep — disentanglement vs posterior collapse"
-        lead="Loading β-sweep payloads…"
+        title={t("pages:benchmarks.deep.betaVae.title")}
+        lead={t("pages:benchmarks.deep.betaVae.loadingLead")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading…
+          {t("pages:benchmarks.deep.betaVae.loading")}
         </p>
       </Section>
     );
@@ -443,14 +439,14 @@ function BetaVaeCollapseSection() {
 
   return (
     <Section
-      title="β-VAE β-sweep — disentanglement vs posterior collapse"
-      lead="K-means(latent) ARI per scene at K=8 across β∈{1, 2, 4, 8, 16}. Bright = high ARI; black cells = posterior collapse (β-VAE encoder converges to q(z|x)≈p(z), latent is uninformative)."
+      title={t("pages:benchmarks.deep.betaVae.title")}
+      lead={t("pages:benchmarks.deep.betaVae.lead")}
     >
       <div className="overflow-x-auto">
         <svg
           viewBox={`0 0 ${BETA_VAE_BS.length * cell + 200} ${LABELLED_SCENES.length * rowH + headerH + 30}`}
           role="img"
-          aria-label="β-VAE β-sweep ARI grid"
+          aria-label={t("pages:benchmarks.deep.betaVae.aria")}
           style={{ maxWidth: "640px" }}
         >
           {BETA_VAE_BS.map((b, j) => (
@@ -513,10 +509,7 @@ function BetaVaeCollapseSection() {
         </svg>
       </div>
       <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-        Salinas posterior collapse at β≥8 (ARI=0.000 — KL term overwhelms the reconstruction
-        signal; encoder maps every input to N(0, I)). Salinas-A resists collapse and even gains
-        with β (compact 6-class signal dominates the regulariser). Pavia U degrades monotonically
-        with β. The β=4 default sits at the inflection point.
+        {t("pages:benchmarks.deep.betaVae.note")}
       </p>
     </Section>
   );
