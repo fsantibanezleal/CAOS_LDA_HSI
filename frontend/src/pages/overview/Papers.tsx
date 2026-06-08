@@ -1,14 +1,14 @@
 /**
- * Papers section — direct PDF downloads + repo links.
+ * Papers section — links to the canonical manuscript PDFs.
  *
- * PDFs are shipped from `frontend/public/papers/` and served at
- * `/papers/*` by the same nginx/static layer as the rest of `dist/`.
- * Both manuscripts are **preprints** — not yet submitted to a
- * peer-reviewed venue. Don't add venue/journal claims here until
- * acceptance.
+ * The single source of truth for all five manuscript PDFs is the
+ * `pdfs/` folder in the CAOS_LDA_HSI_Paper repo; the cards + the
+ * "all manuscripts" link point there (not the repo root, and not a
+ * stale local copy). All manuscripts are **preprints** — target venues
+ * are redacted; don't add venue/journal claims here until acceptance.
  *
  * All card copy + section headings + link labels live under
- * `pages:overview.papers.*`. Only file paths and numeric facts
+ * `pages:overview.papers.*`. Only the canonical URLs and numeric facts
  * (size, build stamp) stay here.
  */
 
@@ -23,18 +23,26 @@ type PaperCard = {
   buildStamp: string;
 };
 
+// Canonical PDFs live in the manuscripts repo's shared pdfs/ folder
+// (one place for all five manuscripts) — link there, don't ship stale
+// local copies.
+const PDFS_FOLDER =
+  "https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper/tree/main/pdfs";
+const PDF_BASE =
+  "https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper/blob/main/pdfs";
+
 const PAPERS: PaperCard[] = [
   {
     variant: "journal",
-    pdfHref: "/papers/caos-lda-hsi-journal.pdf",
-    pdfSizeKb: 510,
-    buildStamp: "2026-05-26",
+    pdfHref: `${PDF_BASE}/journal-multi-axis-framework.pdf`,
+    pdfSizeKb: 514,
+    buildStamp: "2026-06-08",
   },
   {
     variant: "conference",
-    pdfHref: "/papers/caos-lda-hsi-conference.pdf",
+    pdfHref: `${PDF_BASE}/conference-band-mask-robustness.pdf`,
     pdfSizeKb: 333,
-    buildStamp: "2026-05-26",
+    buildStamp: "2026-06-08",
   },
 ];
 
@@ -78,13 +86,14 @@ export function Papers() {
           <a
             key={p.variant}
             href={p.pdfHref}
+            target="_blank"
+            rel="noreferrer"
             className="rounded-lg border p-4 flex flex-col gap-2 transition-all hover:-translate-y-0.5 hover:border-current"
             style={{
               borderColor: "var(--color-border)",
               backgroundColor: "var(--color-bg)",
               color: "var(--color-fg)",
             }}
-            download
           >
             <div
               className="text-[10.5px] uppercase tracking-widest font-semibold"
@@ -142,7 +151,7 @@ export function Papers() {
           {t("pages:overview.papers.links.app_source")}
         </a>
         <a
-          href="https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper"
+          href={PDFS_FOLDER}
           target="_blank"
           rel="noreferrer"
           className="underline hover:no-underline"

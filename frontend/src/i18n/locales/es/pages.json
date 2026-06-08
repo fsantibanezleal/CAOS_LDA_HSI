@@ -76,7 +76,7 @@
     "papers": {
       "section_kicker": "Papers",
       "section_title": "Manuscritos en preparación",
-      "section_lead": "Ambos PDFs a continuación son <strong>preprints</strong> — la compilación actual de los manuscritos al último deploy. Aún no se han enviado a una revista revisada por pares; tratar como work-in-progress.",
+      "section_lead": "Los dos manuscritos principales a continuación son <strong>preprints</strong>; el conjunto completo de <strong>cinco</strong> manuscritos está en la carpeta compartida de PDFs. Aún no se han enviado a una revista revisada por pares; tratar como work-in-progress.",
       "build_prefix": "build",
       "size_suffix": "KB · PDF",
       "cards": {
@@ -95,7 +95,7 @@
       },
       "links": {
         "app_source": "Código de la app (GitHub)",
-        "paper_source": "Código del paper (GitHub)",
+        "paper_source": "Todos los manuscritos (PDFs) →",
         "wiki": "Wiki del proyecto"
       }
     },

@@ -76,7 +76,7 @@
     "papers": {
       "section_kicker": "Papers",
       "section_title": "Manuscripts in preparation",
-      "section_lead": "Both PDFs below are <strong>preprints</strong> — current build of the manuscripts as of the most recent deploy. They have not been submitted to a peer-reviewed venue yet; treat them as work-in-progress.",
+      "section_lead": "The two flagship manuscripts below are <strong>preprints</strong>; the full set of <strong>five</strong> manuscripts is in the shared PDFs folder. They have not been submitted to a peer-reviewed venue yet; treat them as work-in-progress.",
       "build_prefix": "build",
       "size_suffix": "KB · PDF",
       "cards": {
@@ -95,7 +95,7 @@
       },
       "links": {
         "app_source": "App source (GitHub)",
-        "paper_source": "Paper source (GitHub)",
+        "paper_source": "All manuscripts (PDFs) →",
         "wiki": "Project wiki"
       }
     },
