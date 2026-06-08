@@ -68,7 +68,15 @@ if _dist.is_dir():
     _dist_resolved = _dist.resolve()
 
     @app.get("/{path:path}", include_in_schema=False)
-    def spa_fallback(path: str) -> FileResponse:
+    def spa_fallback(path: str):
+        # Unmatched API/static paths must NOT fall through to the SPA shell.
+        # Returning index.html (200 text/html) where the client expects JSON
+        # makes fetch().json() throw an opaque SyntaxError instead of a clean
+        # 404; surface a real 404 for these prefixes.
+        if path.startswith("api/") or path.startswith("generated/"):
+            return ORJSONResponse(
+                {"detail": "Not Found", "path": f"/{path}"}, status_code=404
+            )
         # Guard against path traversal: a request like
         # "/../app/config.py" would otherwise resolve to a file outside
         # _dist. nginx normalises in prod, but the FastAPI route is
