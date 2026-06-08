@@ -25,6 +25,8 @@ export function Footer() {
         <span>{t("common:site_title")}</span>
         <span>·</span>
         <span>{t("common:site_tagline")}</span>
+        <span aria-hidden style={{ opacity: 0.5 }}>·</span>
+        <span className="text-[12px]">{t("common:funding_short")}</span>
         <span className="ml-auto inline-flex items-baseline gap-x-3 font-mono text-[11.5px]">
           <span title="App version (manual, bumped per cycle)">
             <span style={{ color: "var(--color-fg-faint)" }}>v</span>

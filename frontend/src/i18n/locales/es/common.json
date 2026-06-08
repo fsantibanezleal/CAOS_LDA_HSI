@@ -1,6 +1,7 @@
 {
   "site_title": "CAOS LDA HSI",
   "site_tagline": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales",
+  "funding_short": "Financiado por AMTC Basal (ANID/PIA AFB220002) · ANID FONDECYT Postdoctorado 3220094",
   "actions": {
     "toggle_theme": "Alternar tema",
     "toggle_language": "Cambiar idioma"

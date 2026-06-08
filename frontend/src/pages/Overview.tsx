@@ -44,6 +44,23 @@ export default function Overview() {
       <MethodCoverage />
       <Papers />
       <ReadingPath />
+      <section
+        className="mt-10 rounded-lg border p-5"
+        style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
+      >
+        <h3
+          className="text-sm font-semibold uppercase tracking-wider mb-2"
+          style={{ color: "var(--color-fg-faint)" }}
+        >
+          {t("pages:overview.acknowledgements.title")}
+        </h3>
+        <p className="text-[13px] leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+          {t("pages:overview.acknowledgements.funding")}
+        </p>
+        <p className="text-[12px] leading-relaxed mt-2" style={{ color: "var(--color-fg-faint)" }}>
+          {t("pages:overview.acknowledgements.data")}
+        </p>
+      </section>
     </PageShell>
   );
 }
