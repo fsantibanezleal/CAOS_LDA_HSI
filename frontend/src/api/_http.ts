@@ -7,7 +7,23 @@
  * extracted as part of the c261 api-client split (#441 P1 item 2.4).
  */
 
+import { APP_COMMIT_SHA } from "@/lib/version";
+
 const BASE = (import.meta.env.VITE_API_BASE ?? "").replace(/\/$/, "");
+
+// Per-deploy cache-buster. /api and /generated responses carry
+// `Cache-Control: no-cache` (revalidate via ETag), but a client whose cache
+// was poisoned BEFORE that header existed can keep serving a stale body under
+// heuristic freshness. Stamping the build SHA into the query string changes
+// the URL on every deploy, so a new build can never read a previous build's
+// cached payload (this is why a regenerated EDA could still render n=0).
+const CACHE_BUST =
+  APP_COMMIT_SHA && APP_COMMIT_SHA !== "dev" ? APP_COMMIT_SHA.slice(0, 8) : "";
+
+function withVersion(path: string): string {
+  if (!CACHE_BUST) return path;
+  return `${path}${path.includes("?") ? "&" : "?"}v=${CACHE_BUST}`;
+}
 
 export class ApiError extends Error {
   status: number;
@@ -21,7 +37,7 @@ export class ApiError extends Error {
 }
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const url = `${BASE}${path}`;
+  const url = `${BASE}${withVersion(path)}`;
   const res = await fetch(url, init);
   if (!res.ok) {
     throw new ApiError(
@@ -37,7 +53,7 @@ export async function requestBuffer(
   path: string,
   init?: RequestInit,
 ): Promise<ArrayBuffer> {
-  const url = `${BASE}${path}`;
+  const url = `${BASE}${withVersion(path)}`;
   const res = await fetch(url, init);
   if (!res.ok) {
     throw new ApiError(
