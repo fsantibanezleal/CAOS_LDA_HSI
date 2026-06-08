@@ -502,6 +502,37 @@
         "hypothesis": "Si los píxeles HSI son combinaciones lineales de pocos materiales puros, los tópicos LDA deberían alinearse con endmembers.",
         "findings": "Mejor coseno por tópico vs endmembers NFINDR/ATGP en las seis escenas públicas etiquetadas se sitúa en el rango 0.94–1.00 en cinco de seis (Indian Pines, Salinas, Salinas-A, Pavia U, Botswana); KSC baja a un rango 0.58–1.00, sugiriendo un tópico sin contraparte lineal limpia. La comparación dedicada para subsets mineralógicos HIDSAG es parte de la profundización F-12 planificada y aún no se publica."
       }
+    },
+    "schematics": {
+      "grid_label": "Esquemas de las recetas V1-V12",
+      "frame_label": {
+        "V1": "Esquema de V1 band-frequency",
+        "V2": "Esquema de V2 intensity-as-word",
+        "V3": "Esquema de V3 joint (band, bin)",
+        "V4": "Esquema de V4 derivative-bin",
+        "V5": "Esquema de V5 2nd-derivative",
+        "V6": "Esquema de V6 wavelet",
+        "V7": "Esquema de V7 absorption-triplet",
+        "V8": "Esquema de V8 endmember-fraction",
+        "V9": "Esquema de V9 region-token",
+        "V10": "Esquema de V10 band-group",
+        "V11": "Esquema de V11 codebook-VQ",
+        "V12": "Esquema de V12 GMM-token"
+      },
+      "caption": {
+        "V1": "Histograma de intensidad por banda → un conteo por bin (banda, nivel).",
+        "V2": "El píxel se reduce a un único token (banda, nivel cuantizado).",
+        "V3": "Cada banda emite un token conjunto (band, q-bin); vocabulario B·Q.",
+        "V4": "El espectro de 1ª derivada se discretiza en bins y se tokeniza.",
+        "V5": "El espectro de curvatura se discretiza en bins — sensible a los puntos de inflexión.",
+        "V6": "Los coeficientes wavelet a múltiples escalas se convierten en tokens.",
+        "V7": "Cada valle de absorción más marcado → token triplete (bucket de banda centroide, bin de profundidad, bin de área).",
+        "V8": "El píxel como suma ponderada de espectros endmember; los coeficientes α se tokenizan.",
+        "V9": "Los segmentos espaciales aportan sus propios tokens de region-id.",
+        "V10": "Tres regiones espectrales gruesas (VNIR / SWIR-1 / SWIR-2) → un token de bin medio por región.",
+        "V11": "Cada píxel se cuantiza al centroide del codebook más cercano (VQ duro).",
+        "V12": "El píxel como posterior suave sobre un GMM; los posteriors se cuantizan."
+      }
     }
   },
   "methodology_pipeline": {
@@ -1368,6 +1399,176 @@
         "stat_classes": "Clases",
         "stat_gini": "Desbalance de Gini"
       }
+    },
+    "stepper": {
+      "family": "Familia de datos",
+      "subset": "Subconjunto",
+      "representation": "Representación",
+      "explore": "Explorar"
+    },
+    "family_picker": {
+      "loading": "Cargando inventario…",
+      "load_error": "No se pudo cargar el inventario.",
+      "datasets_badge": "{{count}} conjuntos",
+      "more": "+ {{count}} más",
+      "pick": "Elegir esta familia →"
+    },
+    "family_descriptions": {
+      "labeled-spectral-image": "Cubos hiperespectrales con etiquetas por píxel — los benchmarks canónicos de la UPV/EHU. Punto de partida natural para clasificación.",
+      "individual-spectra": "Espectros de referencia individuales con identidad de material (USGS splib07, ECOSTRESS). Sin geometría espacial — bibliotecas espectrales.",
+      "regions-with-measurements": "Subconjuntos minerales HIDSAG — espectros agrupados en documentos de región con objetivos geoquímicos / mineralógicos por muestra. Objetivos continuos, no clases.",
+      "unlabeled-spectral-image": "Cubos hiperespectrales / multiespectrales sin etiquetar (Cuprite, suite unmixing-ROI, MicaSense, HySpecNet) — sin etiquetas por píxel; para desmezcla y exploración no supervisada.",
+      "default": "Familia de datos disponible para el flujo de trabajo del laboratorio."
+    },
+    "subset_picker": {
+      "heading": "Subconjunto en {{family}}",
+      "count_line": "{{count}} conjuntos en esta familia · {{localRaw}} con datos crudos locales",
+      "change_family": "← Cambiar familia"
+    },
+    "rep_picker": {
+      "representation_for": "Representación para <accent>{{subset}}</accent>",
+      "change_subset": "← Cambiar subconjunto",
+      "fixed_heading_hidsag": "Mezcla de tópicos LDA sobre documentos de región",
+      "fixed_heading_default": "Mezcla de tópicos (LDA)",
+      "fixed_blurb_hidsag": "HIDSAG se modela con una única representación fija: mezclas de tópicos LDA sobre los espectros medios por región, alimentando el ensamble de regresión con compuerta blanda θ. No hay otro codificador que elegir aquí.",
+      "fixed_blurb_default": "Este conjunto usa una única representación fija en Explorar; no hay codificador que elegir.",
+      "fixed_lead": "Este conjunto tiene una sola representación fija — continúa a su análisis.",
+      "fixed_badge": "fija",
+      "continue_to_analysis": "Continuar al análisis →",
+      "families_lead": "Tres familias: tópicos (LDA y variantes), líneas base de compresión de dimensión K (PCA / NMF / AE / ICA / CAE-1D/2D/3D / β-VAE) y desmezcla física. Operan sobre la misma matriz documento-término de la receta canónica V1 de frecuencia de bandas.",
+      "options": "{{count}} opciones",
+      "picking_unlocks": "Elegir desbloquea: {{supports}}",
+      "precomputed_fit": "Ajuste precalculado disponible →"
+    },
+    "rep_families": {
+      "topic": {
+        "label": "Modelos de tópicos",
+        "supports": "Topics · TopicLabel · Routed · USGS · Embed3D · Stability · Interpret · SuperTopics · Spatial · Unmixing · Gating · Neural · LLM · Probe · Robust · Anomaly · Agreement"
+      },
+      "compression": {
+        "label": "Líneas base de compresión de dimensión K",
+        "supports": "Ajuste de representación (dispersión 3D + ARI/NMI/silueta + metadatos de ajuste) · Compare 3D (multi-método)"
+      },
+      "unmixing": {
+        "label": "Líneas base físicas (desmezcla)",
+        "supports": "Pestaña de desmezcla (endmembers NFINDR + ATGP + coseno tópico×endmember)"
+      }
+    },
+    "representations": {
+      "lda": {
+        "label": "LDA — sklearn online",
+        "short": "Latent Dirichlet Allocation",
+        "description": "Bayes variacional en línea (sklearn). Receta canónica V1 de frecuencia de bandas, K=12 (o n_classes), priors α=0.45 / η=0.2. Base por defecto del Workspace."
+      },
+      "lda_sparse": {
+        "label": "LDA — sklearn sparse",
+        "short": "VB esparsa",
+        "description": "Variante VB con priors esparsos (α=0.05). Tópicos más esparsos pero peor perplejidad."
+      },
+      "lda_tomo": {
+        "label": "LDA — tomotopy (Gibbs colapsado)",
+        "short": "tomotopy_lda",
+        "description": "LDA canónico vía Gibbs colapsado en C++. Gana en c_v en 4/6 escenas."
+      },
+      "hdp": {
+        "label": "HDP — tomotopy",
+        "short": "Proceso de Dirichlet jerárquico",
+        "description": "K se aprende — el modelo decide cuántos tópicos activos existen. Útil cuando K no debe fijarse."
+      },
+      "ctm": {
+        "label": "CTM — tomotopy",
+        "short": "Modelo de tópicos correlacionados",
+        "description": "Permite correlaciones entre tópicos vía logística-normal sobre θ. Más lento pero captura co-ocurrencias."
+      },
+      "prodlda": {
+        "label": "ProdLDA — Pyro",
+        "short": "Modelo de tópicos neuronal",
+        "description": "Codificador amortizado + decodificador multinomial. Implementación neuronal, comparable a LDA Gibbs en NPMI."
+      },
+      "nmf": {
+        "label": "NMF",
+        "short": "Factorización matricial no negativa",
+        "description": "Descomposición no negativa con β-divergencia=KL. Línea base canónica de dimensión K frente a LDA."
+      },
+      "pca": {
+        "label": "PCA",
+        "short": "Componentes principales",
+        "description": "Compresión lineal óptima en L2. Gana en RMSE de reconstrucción en todo K (su único título garantizado)."
+      },
+      "ae": {
+        "label": "Autoencoder denso",
+        "short": "MLP AE",
+        "description": "Codificador → cuello de botella K → decodificador. Línea base neuronal al mismo K."
+      },
+      "endmember": {
+        "label": "Endmembers (NFINDR + NNLS)",
+        "short": "Desmezcla lineal",
+        "description": "K endmembers vía NFINDR (Winter 1999) + abundancia NNLS con suma uno. Línea base física frente a LDA."
+      },
+      "ica": {
+        "label": "ICA — FastICA",
+        "short": "Componentes independientes",
+        "description": "Componentes estadísticamente independientes (FastICA). K=8. Línea base complementaria a PCA en compresión lineal."
+      },
+      "cae_1d": {
+        "label": "CAE-1D · K=8",
+        "short": "Autoencoder conv. 1D",
+        "description": "Autoencoder convolucional 1D sobre el espectro. Codificador Conv1D → cuello de botella K=8 → decodificador. Entrenado en GPU."
+      },
+      "cae_2d": {
+        "label": "CAE-2D · K=8",
+        "short": "Autoencoder conv. 2D ancla",
+        "description": "CAE 2D sobre parches espacio-espectrales. Ancla K=8. Captura textura espacial + perfil espectral."
+      },
+      "cae_3d": {
+        "label": "CAE-3D ancla · K=8",
+        "short": "Autoencoder conv. 3D ancla",
+        "description": "CAE 3D sobre cubos (espacial × espectral). Versión ancla (centro del parche). K=8 entrenado en GPU."
+      },
+      "cae_3d_full": {
+        "label": "CAE-3D completo · K=8",
+        "short": "Autoencoder conv. 3D parche completo",
+        "description": "Variante de parche completo de CAE-3D — cada píxel del parche contribuye a la pérdida. K=8 entrenado en GPU."
+      },
+      "beta_vae": {
+        "label": "β-VAE · K=8",
+        "short": "Autoencoder variacional",
+        "description": "VAE con β=2 regularizando la divergencia KL. Latente probabilístico desenredado. K=8 entrenado en GPU."
+      }
+    },
+    "explore": {
+      "heading": "Explorar <accent>{{subset}}</accent>",
+      "representation_suffix": "· representación: {{rep}}",
+      "lead_labelled": "Paneles de modelo de tópicos sobre datos crudos, salida de tópicos, geometría espacial y diagnósticos. Se cargan bajo demanda — elige una pestaña abajo para obtener su artefacto de backend dedicado.",
+      "lead_hidsag": "Un subconjunto mineral de documentos de región: los espectros se agrupan en documentos de región con objetivos geoquímicos / mineralógicos por muestra. Trae benchmarks supervisados (clasificación, regresión, agrupamiento por dueño de muestra) — no los paneles del explorador de tópicos por escena. Mira lo disponible abajo.",
+      "lead_default": "Inventario y procedencia del conjunto. Los paneles del explorador de tópicos se abren automáticamente cuando este conjunto tiene artefactos LDA derivados.",
+      "change_representation": "← Cambiar representación",
+      "back": "← Volver"
+    },
+    "hidsag": {
+      "subset_label": "subconjunto",
+      "briefing_subtitle": "Familia D · regresión geoquímica",
+      "stat_samples": "muestras",
+      "stat_measurements": "mediciones",
+      "stat_targets": "objetivos",
+      "stat_methods": "métodos",
+      "stat_bands": "bandas",
+      "top_targets": "Principales objetivos geoquímicos",
+      "targets_loading": "Cargando objetivos…",
+      "targets_title": "Objetivos geoquímicos — media ± desv. est.",
+      "targets_lead": "Variables geoquímicas continuas medidas por muestra HIDSAG. Se muestran {{count}} objetivos con su rango y cobertura muestral.",
+      "col_target": "objetivo",
+      "more_targets": "+{{count}} objetivos más",
+      "spectra_loading": "Cargando espectros medios…",
+      "spectra_title": "Espectros medios de documentos de región",
+      "spectra_lead_stratum": "Espectro medio de documento de región por estrato de etiqueta (la unidad que LDA tokeniza). Las modalidades (VNIR/SWIR) se concatenan a lo largo del eje x.",
+      "spectra_lead_sample": "Espectros medios de ejemplo de documentos de región — {{shown}} de {{total}} mediciones. Cada uno es la media sobre su grilla de parches; esta es la unidad espectral que LDA tokeniza. Las modalidades se concatenan a lo largo del eje x.",
+      "spectra_unavailable": "No hay espectros medios disponibles.",
+      "legend_n_meas": "n_meas",
+      "legend_patches": "parches",
+      "corr_title": "Correlación de Pearson entre objetivos geoquímicos",
+      "corr_lead": "Azul = correlación positiva, rojo = negativa. Se muestran los primeros {{count}} objetivos. Pares fuertes fuera de la diagonal (|ρ| ≥ 0.5) indican redundancia / mineralización co-localizada.",
+      "corr_aria": "Matriz de correlación de Pearson de objetivos geoquímicos HIDSAG"
     }
   },
   "benchmarks": {

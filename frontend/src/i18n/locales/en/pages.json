@@ -502,6 +502,37 @@
         "hypothesis": "If HSI pixels are linear combinations of few pure materials, LDA topics should align with endmembers.",
         "findings": "Best per-topic cosine vs NFINDR/ATGP endmembers on the six public labelled scenes sits in the 0.94–1.00 range on five of six (Indian Pines, Salinas, Salinas-A, Pavia U, Botswana); KSC drops to a 0.58–1.00 spread, suggesting one topic without a clean linear endmember match. The HIDSAG-mineral endmember comparison is part of the planned F-12 deepening and is not yet shipped."
       }
+    },
+    "schematics": {
+      "grid_label": "Recipe V1-V12 schematics",
+      "frame_label": {
+        "V1": "V1 band-frequency schematic",
+        "V2": "V2 intensity-as-word schematic",
+        "V3": "V3 joint (band, bin) schematic",
+        "V4": "V4 derivative-bin schematic",
+        "V5": "V5 2nd-derivative schematic",
+        "V6": "V6 wavelet schematic",
+        "V7": "V7 absorption-triplet schematic",
+        "V8": "V8 endmember-fraction schematic",
+        "V9": "V9 region-token schematic",
+        "V10": "V10 band-group schematic",
+        "V11": "V11 codebook-VQ schematic",
+        "V12": "V12 GMM-token schematic"
+      },
+      "caption": {
+        "V1": "Per-band intensity histogram → one count per (band, level) bin.",
+        "V2": "Pixel reduces to a single (band, quantized-level) token.",
+        "V3": "Each band emits one (band, q-bin) joint token; vocabulary B·Q.",
+        "V4": "1st-derivative spectrum is binned and tokenized.",
+        "V5": "Curvature spectrum is binned — sensitive to inflection points.",
+        "V6": "Wavelet coefficients at multiple scales become tokens.",
+        "V7": "Each strongest absorption valley → triplet token (centroid-band bucket, depth bin, area bin).",
+        "V8": "Pixel as weighted sum of endmember spectra; α-coefficients tokenize.",
+        "V9": "Spatial segments contribute their own region-id tokens.",
+        "V10": "Three coarse spectral regions (VNIR / SWIR-1 / SWIR-2) → one mean-bin token per region.",
+        "V11": "Each pixel quantized to the nearest codebook centroid (hard VQ).",
+        "V12": "Pixel as soft posterior over a GMM; posteriors quantized."
+      }
     }
   },
   "methodology_pipeline": {
@@ -1368,6 +1399,176 @@
         "stat_classes": "Classes",
         "stat_gini": "Gini imbalance"
       }
+    },
+    "stepper": {
+      "family": "Dataset family",
+      "subset": "Subset",
+      "representation": "Representation",
+      "explore": "Explore"
+    },
+    "family_picker": {
+      "loading": "Loading inventory…",
+      "load_error": "Could not load the inventory.",
+      "datasets_badge": "{{count}} datasets",
+      "more": "+ {{count}} more",
+      "pick": "Pick this family →"
+    },
+    "family_descriptions": {
+      "labeled-spectral-image": "Hyperspectral cubes with per-pixel labels — the canonical UPV/EHU benchmarks. Natural starting point for classification.",
+      "individual-spectra": "Individual reference spectra with material identity (USGS splib07, ECOSTRESS). No spatial geometry — spectral libraries.",
+      "regions-with-measurements": "HIDSAG mineral subsets — spectra grouped into region documents with per-sample geochemical / mineralogical targets. Continuous targets, not classes.",
+      "unlabeled-spectral-image": "Unlabeled hyperspectral / multispectral cubes (Cuprite, unmixing-ROI suite, MicaSense, HySpecNet) — no per-pixel labels; for unmixing and unsupervised exploration.",
+      "default": "Dataset family available for the lab workflow."
+    },
+    "subset_picker": {
+      "heading": "Subset in {{family}}",
+      "count_line": "{{count}} datasets in this family · {{localRaw}} with local raw",
+      "change_family": "← Change family"
+    },
+    "rep_picker": {
+      "representation_for": "Representation for <accent>{{subset}}</accent>",
+      "change_subset": "← Change subset",
+      "fixed_heading_hidsag": "LDA topic mixture over region-documents",
+      "fixed_heading_default": "Topic mixture (LDA)",
+      "fixed_blurb_hidsag": "HIDSAG is modelled with a single fixed representation: LDA topic mixtures over the per-region mean spectra, fed to the soft θ-gated regression ensemble. There is no alternative encoder to choose here.",
+      "fixed_blurb_default": "This dataset uses a single fixed representation in Explore; there is no encoder choice to make.",
+      "fixed_lead": "This dataset has one fixed representation — continue to its analysis.",
+      "fixed_badge": "fixed",
+      "continue_to_analysis": "Continue to analysis →",
+      "families_lead": "Three families: topics (LDA and variants), K-dim compression baselines (PCA / NMF / AE / ICA / CAE-1D/2D/3D / β-VAE) and physical unmixing. They operate on the same doc-term matrix from the canonical V1 band-frequency recipe.",
+      "options": "{{count}} options",
+      "picking_unlocks": "Picking unlocks: {{supports}}",
+      "precomputed_fit": "Precomputed fit available →"
+    },
+    "rep_families": {
+      "topic": {
+        "label": "Topic models",
+        "supports": "Topics · TopicLabel · Routed · USGS · Embed3D · Stability · Interpret · SuperTopics · Spatial · Unmixing · Gating · Neural · LLM · Probe · Robust · Anomaly · Agreement"
+      },
+      "compression": {
+        "label": "K-dim compression baselines",
+        "supports": "Representation fit (3D scatter + ARI/NMI/silhouette + fit metadata) · Compare 3D (multi-method)"
+      },
+      "unmixing": {
+        "label": "Physical baselines (unmixing)",
+        "supports": "Unmixing tab (NFINDR + ATGP endmembers + topic×endmember cosine)"
+      }
+    },
+    "representations": {
+      "lda": {
+        "label": "LDA — sklearn online",
+        "short": "Latent Dirichlet Allocation",
+        "description": "Online variational Bayes (sklearn). Canonical V1 band-frequency recipe, K=12 (or n_classes), priors α=0.45 / η=0.2. Default base for the Workspace."
+      },
+      "lda_sparse": {
+        "label": "LDA — sklearn sparse",
+        "short": "Sparse VB",
+        "description": "VB variant with sparse priors (α=0.05). Sparser topics but worse perplexity."
+      },
+      "lda_tomo": {
+        "label": "LDA — tomotopy (collapsed Gibbs)",
+        "short": "tomotopy_lda",
+        "description": "Canonical LDA via collapsed Gibbs in C++. Wins c_v on 4/6 scenes."
+      },
+      "hdp": {
+        "label": "HDP — tomotopy",
+        "short": "Hierarchical Dirichlet Process",
+        "description": "K is learned — the model decides how many active topics exist. Useful when K should not be fixed."
+      },
+      "ctm": {
+        "label": "CTM — tomotopy",
+        "short": "Correlated Topic Model",
+        "description": "Allows topic correlations via logistic-normal over θ. Slower but captures co-occurrences."
+      },
+      "prodlda": {
+        "label": "ProdLDA — Pyro",
+        "short": "Neural topic model",
+        "description": "Amortised encoder + multinomial decoder. Neural implementation, comparable to LDA Gibbs in NPMI."
+      },
+      "nmf": {
+        "label": "NMF",
+        "short": "Non-negative matrix factorisation",
+        "description": "Non-negative decomposition with β-divergence=KL. Canonical K-dim baseline against LDA."
+      },
+      "pca": {
+        "label": "PCA",
+        "short": "Principal components",
+        "description": "Linear L2-optimal compression. Wins reconstruction RMSE at every K (its only guaranteed title)."
+      },
+      "ae": {
+        "label": "Dense autoencoder",
+        "short": "MLP AE",
+        "description": "Encoder → bottleneck K → decoder. Neural baseline at the same K."
+      },
+      "endmember": {
+        "label": "Endmembers (NFINDR + NNLS)",
+        "short": "Linear unmixing",
+        "description": "K endmembers via NFINDR (Winter 1999) + NNLS abundance with sum-to-one. Physical baseline against LDA."
+      },
+      "ica": {
+        "label": "ICA — FastICA",
+        "short": "Independent components",
+        "description": "Statistically independent components (FastICA). K=8. Complementary baseline to PCA in linear compression."
+      },
+      "cae_1d": {
+        "label": "CAE-1D · K=8",
+        "short": "Conv autoencoder 1D",
+        "description": "1D convolutional autoencoder over the spectrum. Conv1D encoder → bottleneck K=8 → decoder. GPU-trained."
+      },
+      "cae_2d": {
+        "label": "CAE-2D · K=8",
+        "short": "Conv autoencoder 2D anchor",
+        "description": "2D CAE over spatial-spectral patches. K=8 anchor. Captures spatial texture + spectral profile."
+      },
+      "cae_3d": {
+        "label": "CAE-3D anchor · K=8",
+        "short": "Conv autoencoder 3D anchor",
+        "description": "3D CAE over cubes (spatial × spectral). Anchor version (patch centre). K=8 GPU-trained."
+      },
+      "cae_3d_full": {
+        "label": "CAE-3D full · K=8",
+        "short": "Conv autoencoder 3D full-patch",
+        "description": "Full-patch variant of CAE-3D — every patch pixel contributes to the loss. K=8 GPU-trained."
+      },
+      "beta_vae": {
+        "label": "β-VAE · K=8",
+        "short": "Variational autoencoder",
+        "description": "VAE with β=2 regularising the KL divergence. Disentangled probabilistic latent. K=8 GPU-trained."
+      }
+    },
+    "explore": {
+      "heading": "Explore <accent>{{subset}}</accent>",
+      "representation_suffix": "· representation: {{rep}}",
+      "lead_labelled": "Topic-model panels across raw data, topic output, spatial geometry, and diagnostics. Loaded on demand — pick a tab below to fetch its dedicated backend artefact.",
+      "lead_hidsag": "A region-document mineral subset: spectra are grouped into region documents with per-sample geochemical / mineralogical targets. It carries supervised benchmarks (classification, regression, sample-owner clustering) — not the per-scene topic-explorer panels. See what is available below.",
+      "lead_default": "Dataset inventory and provenance. Topic-explorer panels open automatically once this dataset has derived LDA artefacts.",
+      "change_representation": "← Change representation",
+      "back": "← Back"
+    },
+    "hidsag": {
+      "subset_label": "subset",
+      "briefing_subtitle": "Family D · geochemistry regression",
+      "stat_samples": "samples",
+      "stat_measurements": "measurements",
+      "stat_targets": "targets",
+      "stat_methods": "methods",
+      "stat_bands": "bands",
+      "top_targets": "Top geochemistry targets",
+      "targets_loading": "Loading targets…",
+      "targets_title": "Geochemistry targets — mean ± std",
+      "targets_lead": "Continuous geochemistry variables measured per HIDSAG sample. {{count}} targets shown with their range and sample coverage.",
+      "col_target": "target",
+      "more_targets": "+{{count}} more targets",
+      "spectra_loading": "Loading mean spectra…",
+      "spectra_title": "Mean region-document spectra",
+      "spectra_lead_stratum": "Average region-document spectrum per tag stratum (the unit LDA tokenises). Modalities (VNIR/SWIR) are concatenated along the x-axis.",
+      "spectra_lead_sample": "Example region-document mean spectra — {{shown}} of {{total}} measurements. Each is the mean over its patch grid; this is the spectral unit LDA tokenises. Modalities are concatenated along the x-axis.",
+      "spectra_unavailable": "No mean-spectra available.",
+      "legend_n_meas": "n_meas",
+      "legend_patches": "patches",
+      "corr_title": "Pearson correlation between geochemistry targets",
+      "corr_lead": "Blue = positive correlation, red = negative. First {{count}} targets shown. Strong off-diagonal pairs (|ρ| ≥ 0.5) indicate redundancy / co-located mineralisation.",
+      "corr_aria": "Pearson correlation matrix of HIDSAG geochemistry targets"
     }
   },
   "benchmarks": {

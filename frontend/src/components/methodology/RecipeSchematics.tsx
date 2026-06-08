@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 const W = 130;
 const H = 78;
 const PAD = 6;
@@ -58,11 +60,12 @@ function spectrum(): string {
 }
 
 export function RecipeV1Svg() {
+  const { t } = useTranslation(["pages"]);
   // band-frequency: small histogram bars
   const bars = [12, 22, 30, 26, 18, 28, 38, 32, 20, 10];
   const bw = (W - 2 * PAD) / bars.length;
   return (
-    <Frame label="V1 band-frequency schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V1")}>
       <line
         x1={PAD}
         y1={H - PAD}
@@ -86,9 +89,10 @@ export function RecipeV1Svg() {
 }
 
 export function RecipeV2Svg() {
+  const { t } = useTranslation(["pages"]);
   // intensity-as-word: single (band, level) capsule
   return (
-    <Frame label="V2 intensity-as-word schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V2")}>
       <polyline
         points={spectrum()}
         fill="none"
@@ -131,8 +135,9 @@ export function RecipeV3Svg() {
   const cw = gw / cols;
   const ch = gh / rows;
   const binOf = [3, 2, 4, 1, 2, 0, 3, 4, 2, 1, 3, 2];
+  const { t } = useTranslation(["pages"]);
   return (
-    <Frame label="V3 joint (band, bin) schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V3")}>
       {Array.from({ length: rows + 1 }, (_, r) => (
         <line
           key={`h${r}`}
@@ -179,8 +184,9 @@ export function RecipeV4Svg() {
       H / 2 + 4 + 12 * Math.cos(i * 0.5) * Math.exp(-Math.abs(i - 20) / 14);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
+  const { t } = useTranslation(["pages"]);
   return (
-    <Frame label="V4 derivative-bin schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V4")}>
       <line
         x1={PAD}
         y1={H / 2 + 4}
@@ -209,8 +215,9 @@ export function RecipeV5Svg() {
       14 * Math.sin(i * 0.9) * Math.exp(-Math.abs(i - 25) / 18);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
+  const { t } = useTranslation(["pages"]);
   return (
-    <Frame label="V5 2nd-derivative schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V5")}>
       <line
         x1={PAD}
         y1={H / 2 + 4}
@@ -241,8 +248,9 @@ export function RecipeV6Svg() {
       const y = yMid - 10 * mexicanHat(i, scale);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
+  const { t } = useTranslation(["pages"]);
   return (
-    <Frame label="V6 wavelet schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V6")}>
       <polyline
         points={wave(3, H / 2 - 12)}
         fill="none"
@@ -271,8 +279,9 @@ export function RecipeV7Svg() {
     const y = PAD + 16 + 22 * (valleys[0]! + valleys[1]! + valleys[2]!);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
+  const { t } = useTranslation(["pages"]);
   return (
-    <Frame label="V7 absorption-triplet schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V7")}>
       <polyline
         points={pts}
         fill="none"
@@ -303,8 +312,9 @@ export function RecipeV8Svg() {
       const y = offset + amp * Math.sin(i * 0.4);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(" ");
+  const { t } = useTranslation(["pages"]);
   return (
-    <Frame label="V8 endmember-fraction schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V8")}>
       <polyline
         points={lineY(H / 2 - 18, 4)}
         fill="none"
@@ -341,9 +351,10 @@ export function RecipeV8Svg() {
 }
 
 export function RecipeV9Svg() {
+  const { t } = useTranslation(["pages"]);
   // region-token: spatial segments
   return (
-    <Frame label="V9 region-token schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V9")}>
       <rect
         x={PAD + 6}
         y={PAD + 6}
@@ -393,9 +404,10 @@ export function RecipeV9Svg() {
 }
 
 export function RecipeV10Svg() {
+  const { t } = useTranslation(["pages"]);
   // band-group: contiguous band groups under spectrum
   return (
-    <Frame label="V10 band-group schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V10")}>
       <polyline
         points={spectrum()}
         fill="none"
@@ -423,9 +435,10 @@ export function RecipeV10Svg() {
 }
 
 export function RecipeV11Svg() {
+  const { t } = useTranslation(["pages"]);
   // codebook-VQ: spectrum to centroid
   return (
-    <Frame label="V11 codebook-VQ schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V11")}>
       <polyline
         points={spectrum()}
         fill="none"
@@ -478,9 +491,10 @@ export function RecipeV11Svg() {
 }
 
 export function RecipeV12Svg() {
+  const { t } = useTranslation(["pages"]);
   // GMM-token: probabilistic ellipses
   return (
-    <Frame label="V12 GMM-token schematic">
+    <Frame label={t("pages:methodology_representations.schematics.frame_label.V12")}>
       <ellipse
         cx={PAD + 30}
         cy={H / 2 + 4}
@@ -520,89 +534,29 @@ export function RecipeV12Svg() {
 const SCHEMATICS: {
   id: string;
   title: string;
-  caption: string;
   Component: () => React.ReactElement;
 }[] = [
-  {
-    id: "V1",
-    title: "V1 band-frequency",
-    caption: "Per-band intensity histogram → one count per (band, level) bin.",
-    Component: RecipeV1Svg,
-  },
-  {
-    id: "V2",
-    title: "V2 intensity-as-word",
-    caption: "Pixel reduces to a single (band, quantized-level) token.",
-    Component: RecipeV2Svg,
-  },
-  {
-    id: "V3",
-    title: "V3 joint (band, bin)",
-    caption: "Each band emits one (band, q-bin) joint token; vocabulary B·Q.",
-    Component: RecipeV3Svg,
-  },
-  {
-    id: "V4",
-    title: "V4 derivative-bin",
-    caption: "1st-derivative spectrum is binned and tokenized.",
-    Component: RecipeV4Svg,
-  },
-  {
-    id: "V5",
-    title: "V5 2nd-derivative",
-    caption: "Curvature spectrum is binned — sensitive to inflection points.",
-    Component: RecipeV5Svg,
-  },
-  {
-    id: "V6",
-    title: "V6 wavelet",
-    caption: "Wavelet coefficients at multiple scales become tokens.",
-    Component: RecipeV6Svg,
-  },
-  {
-    id: "V7",
-    title: "V7 absorption-triplet",
-    caption: "Each strongest absorption valley → triplet token (centroid-band bucket, depth bin, area bin).",
-    Component: RecipeV7Svg,
-  },
-  {
-    id: "V8",
-    title: "V8 endmember-fraction",
-    caption: "Pixel as weighted sum of endmember spectra; α-coefficients tokenize.",
-    Component: RecipeV8Svg,
-  },
-  {
-    id: "V9",
-    title: "V9 region-token",
-    caption: "Spatial segments contribute their own region-id tokens.",
-    Component: RecipeV9Svg,
-  },
-  {
-    id: "V10",
-    title: "V10 band-group",
-    caption: "Three coarse spectral regions (VNIR / SWIR-1 / SWIR-2) → one mean-bin token per region.",
-    Component: RecipeV10Svg,
-  },
-  {
-    id: "V11",
-    title: "V11 codebook-VQ",
-    caption: "Each pixel quantized to the nearest codebook centroid (hard VQ).",
-    Component: RecipeV11Svg,
-  },
-  {
-    id: "V12",
-    title: "V12 GMM-token",
-    caption: "Pixel as soft posterior over a GMM; posteriors quantized.",
-    Component: RecipeV12Svg,
-  },
+  { id: "V1", title: "V1 band-frequency", Component: RecipeV1Svg },
+  { id: "V2", title: "V2 intensity-as-word", Component: RecipeV2Svg },
+  { id: "V3", title: "V3 joint (band, bin)", Component: RecipeV3Svg },
+  { id: "V4", title: "V4 derivative-bin", Component: RecipeV4Svg },
+  { id: "V5", title: "V5 2nd-derivative", Component: RecipeV5Svg },
+  { id: "V6", title: "V6 wavelet", Component: RecipeV6Svg },
+  { id: "V7", title: "V7 absorption-triplet", Component: RecipeV7Svg },
+  { id: "V8", title: "V8 endmember-fraction", Component: RecipeV8Svg },
+  { id: "V9", title: "V9 region-token", Component: RecipeV9Svg },
+  { id: "V10", title: "V10 band-group", Component: RecipeV10Svg },
+  { id: "V11", title: "V11 codebook-VQ", Component: RecipeV11Svg },
+  { id: "V12", title: "V12 GMM-token", Component: RecipeV12Svg },
 ];
 
 export function RecipeSchematicsGrid() {
+  const { t } = useTranslation(["pages"]);
   return (
     <div
       className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
       role="list"
-      aria-label="Recipe V1-V12 schematics"
+      aria-label={t("pages:methodology_representations.schematics.grid_label")}
     >
       {SCHEMATICS.map((s) => {
         const C = s.Component;
@@ -628,7 +582,9 @@ export function RecipeSchematicsGrid() {
                 className="text-[12px] mt-0.5 leading-snug"
                 style={{ color: "var(--color-fg-subtle)" }}
               >
-                {s.caption}
+                {t(
+                  `pages:methodology_representations.schematics.caption.${s.id}`,
+                )}
               </div>
             </figcaption>
           </figure>

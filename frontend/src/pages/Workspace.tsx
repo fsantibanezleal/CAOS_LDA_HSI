@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { useMachine } from "@xstate/react";
 import { useQuery } from "@tanstack/react-query";
@@ -219,24 +219,23 @@ function toHidsagSubsetCode(id: string): string {
 // Keyed by the inventory `family_id`. Previously two keys ("hidsag-mineral",
 // "unmixing-roi") did not match any real family_id, so the HIDSAG and the
 // unlabeled families silently fell back to the generic `default` blurb.
-const FAMILY_DESCRIPTIONS: Record<string, string> = {
-  "labeled-spectral-image":
-    "Hyperspectral cubes with per-pixel labels — the canonical UPV/EHU benchmarks. Natural starting point for classification.",
-  "individual-spectra":
-    "Individual reference spectra with material identity (USGS splib07, ECOSTRESS). No spatial geometry — spectral libraries.",
-  "regions-with-measurements":
-    "HIDSAG mineral subsets — spectra grouped into region documents with per-sample geochemical / mineralogical targets. Continuous targets, not classes.",
-  "unlabeled-spectral-image":
-    "Unlabeled hyperspectral / multispectral cubes (Cuprite, unmixing-ROI suite, MicaSense, HySpecNet) — no per-pixel labels; for unmixing and unsupervised exploration.",
-  default:
-    "Dataset family available for the lab workflow.",
+// Values are i18n key suffixes resolved at render via
+// t(`pages:workspace.family_descriptions.${family_id}`).
+const FAMILY_DESCRIPTION_KEYS: Record<string, string> = {
+  "labeled-spectral-image": "labeled-spectral-image",
+  "individual-spectra": "individual-spectra",
+  "regions-with-measurements": "regions-with-measurements",
+  "unlabeled-spectral-image": "unlabeled-spectral-image",
+  default: "default",
 };
 
-const STEPS: { id: string; key: keyof Steps; label: string }[] = [
-  { id: "family", key: "family", label: "Dataset family" },
-  { id: "subset", key: "subset", label: "Subset" },
-  { id: "representation", key: "representation", label: "Representation" },
-  { id: "explore", key: "explore", label: "Explore"},
+// STEPS holds i18n key suffixes resolved at render via
+// t(`pages:workspace.stepper.${key}`).
+const STEPS: { id: string; key: keyof Steps }[] = [
+  { id: "family", key: "family" },
+  { id: "subset", key: "subset" },
+  { id: "representation", key: "representation" },
+  { id: "explore", key: "explore" },
 ];
 
 type Steps = {
@@ -441,6 +440,7 @@ function SubsetPickerStep({
   onBack: () => void;
   onPick: (subsetId: string) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (!family) return null;
 
   return (
@@ -451,14 +451,16 @@ function SubsetPickerStep({
             className="text-lg font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Subset in {family}
+            {t("pages:workspace.subset_picker.heading", { family })}
           </h3>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            {entries.length} datasets in this family ·{" "}
-            {entries.filter((e) => e.local_raw_available).length} with local raw
+            {t("pages:workspace.subset_picker.count_line", {
+              count: entries.length,
+              localRaw: entries.filter((e) => e.local_raw_available).length,
+            })}
           </p>
         </div>
         <button
@@ -471,7 +473,7 @@ function SubsetPickerStep({
             backgroundColor: "transparent",
           }}
         >
-          ← Change family
+          {t("pages:workspace.subset_picker.change_family")}
         </button>
       </header>
 
@@ -487,157 +489,28 @@ function SubsetPickerStep({
 type Representation = {
   id: string;
   family: "topic" | "compression" | "unmixing";
-  label: string;
-  short: string;
-  description: string;
   status: "shipped" | "partial" | "preview";
 };
 
+// label / short / description are resolved at render via
+// t(`pages:workspace.representations.${id}.{label,short,description}`).
 const REPRESENTATIONS: Representation[] = [
-  {
-    id: "lda",
-    family: "topic",
-    label: "LDA — sklearn online",
-    short: "Latent Dirichlet Allocation",
-    description:
-      "Online variational Bayes (sklearn). Canonical V1 band-frequency recipe, K=12 (or n_classes), priors α=0.45 / η=0.2. Default base for the Workspace.",
-    status: "shipped",
-  },
-  {
-    id: "lda_sparse",
-    family: "topic",
-    label: "LDA — sklearn sparse",
-    short: "Sparse VB",
-    description:
-      "VB variant with sparse priors (α=0.05). Sparser topics but worse perplexity.",
-    status: "shipped",
-  },
-  {
-    id: "lda_tomo",
-    family: "topic",
-    label: "LDA — tomotopy (collapsed Gibbs)",
-    short: "tomotopy_lda",
-    description:
-      "Canonical LDA via collapsed Gibbs in C++. Wins c_v on 4/6 scenes.",
-    status: "shipped",
-  },
-  {
-    id: "hdp",
-    family: "topic",
-    label: "HDP — tomotopy",
-    short: "Hierarchical Dirichlet Process",
-    description:
-      "K is learned — the model decides how many active topics exist. Useful when K should not be fixed.",
-    status: "shipped",
-  },
-  {
-    id: "ctm",
-    family: "topic",
-    label: "CTM — tomotopy",
-    short: "Correlated Topic Model",
-    description:
-      "Allows topic correlations via logistic-normal over θ. Slower but captures co-occurrences.",
-    status: "shipped",
-  },
-  {
-    id: "prodlda",
-    family: "topic",
-    label: "ProdLDA — Pyro",
-    short: "Neural topic model",
-    description:
-      "Amortised encoder + multinomial decoder. Neural implementation, comparable to LDA Gibbs in NPMI.",
-    status: "shipped",
-  },
-  {
-    id: "nmf",
-    family: "compression",
-    label: "NMF",
-    short: "Non-negative matrix factorisation",
-    description:
-      "Non-negative decomposition with β-divergence=KL. Canonical K-dim baseline against LDA.",
-    status: "shipped",
-  },
-  {
-    id: "pca",
-    family: "compression",
-    label: "PCA",
-    short: "Principal components",
-    description:
-      "Linear L2-optimal compression. Wins reconstruction RMSE at every K (its only guaranteed title).",
-    status: "shipped",
-  },
-  {
-    id: "ae",
-    family: "compression",
-    label: "Dense autoencoder",
-    short: "MLP AE",
-    description:
-      "Encoder → bottleneck K → decoder. Neural baseline at the same K.",
-    status: "shipped",
-  },
-  {
-    id: "endmember",
-    family: "unmixing",
-    label: "Endmembers (NFINDR + NNLS)",
-    short: "Linear unmixing",
-    description:
-      "K endmembers via NFINDR (Winter 1999) + NNLS abundance with sum-to-one. Physical baseline against LDA.",
-    status: "shipped",
-  },
-  {
-    id: "ica",
-    family: "compression",
-    label: "ICA — FastICA",
-    short: "Independent components",
-    description:
-      "Statistically independent components (FastICA). K=8. Complementary baseline to PCA in linear compression.",
-    status: "shipped",
-  },
-  {
-    id: "cae_1d",
-    family: "compression",
-    label: "CAE-1D · K=8",
-    short: "Conv autoencoder 1D",
-    description:
-      "1D convolutional autoencoder over the spectrum. Conv1D encoder → bottleneck K=8 → decoder. GPU-trained.",
-    status: "shipped",
-  },
-  {
-    id: "cae_2d",
-    family: "compression",
-    label: "CAE-2D · K=8",
-    short: "Conv autoencoder 2D anchor",
-    description:
-      "2D CAE over spatial-spectral patches. K=8 anchor. Captures spatial texture + spectral profile.",
-    status: "shipped",
-  },
-  {
-    id: "cae_3d",
-    family: "compression",
-    label: "CAE-3D anchor · K=8",
-    short: "Conv autoencoder 3D anchor",
-    description:
-      "3D CAE over cubes (spatial × spectral). Anchor version (patch centre). K=8 GPU-trained.",
-    status: "shipped",
-  },
-  {
-    id: "cae_3d_full",
-    family: "compression",
-    label: "CAE-3D full · K=8",
-    short: "Conv autoencoder 3D full-patch",
-    description:
-      "Full-patch variant of CAE-3D — every patch pixel contributes to the loss. K=8 GPU-trained.",
-    status: "shipped",
-  },
-  {
-    id: "beta_vae",
-    family: "compression",
-    label: "β-VAE · K=8",
-    short: "Variational autoencoder",
-    description:
-      "VAE with β=2 regularising the KL divergence. Disentangled probabilistic latent. K=8 GPU-trained.",
-    status: "shipped",
-  },
+  { id: "lda", family: "topic", status: "shipped" },
+  { id: "lda_sparse", family: "topic", status: "shipped" },
+  { id: "lda_tomo", family: "topic", status: "shipped" },
+  { id: "hdp", family: "topic", status: "shipped" },
+  { id: "ctm", family: "topic", status: "shipped" },
+  { id: "prodlda", family: "topic", status: "shipped" },
+  { id: "nmf", family: "compression", status: "shipped" },
+  { id: "pca", family: "compression", status: "shipped" },
+  { id: "ae", family: "compression", status: "shipped" },
+  { id: "endmember", family: "unmixing", status: "shipped" },
+  { id: "ica", family: "compression", status: "shipped" },
+  { id: "cae_1d", family: "compression", status: "shipped" },
+  { id: "cae_2d", family: "compression", status: "shipped" },
+  { id: "cae_3d", family: "compression", status: "shipped" },
+  { id: "cae_3d_full", family: "compression", status: "shipped" },
+  { id: "beta_vae", family: "compression", status: "shipped" },
 ];
 
 function RepresentationPickerStep({
@@ -649,6 +522,7 @@ function RepresentationPickerStep({
   onBack: () => void;
   onPick: (rep: string) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
   const isHidsag = subsetId !== null && HIDSAG_SUBSETS.has(subsetId);
 
@@ -661,21 +535,24 @@ function RepresentationPickerStep({
   // Offer a single honest "continue" card instead.
   if (!isLabelled) {
     const heading = isHidsag
-      ? "LDA topic mixture over region-documents"
-      : "Topic mixture (LDA)";
+      ? t("pages:workspace.rep_picker.fixed_heading_hidsag")
+      : t("pages:workspace.rep_picker.fixed_heading_default");
     const blurb = isHidsag
-      ? "HIDSAG is modelled with a single fixed representation: LDA topic mixtures over the per-region mean spectra, fed to the soft θ-gated regression ensemble. There is no alternative encoder to choose here."
-      : "This dataset uses a single fixed representation in Explore; there is no encoder choice to make.";
+      ? t("pages:workspace.rep_picker.fixed_blurb_hidsag")
+      : t("pages:workspace.rep_picker.fixed_blurb_default");
     return (
       <section>
         <header className="flex items-baseline justify-between mb-4 gap-3">
           <div>
             <h3 className="text-lg font-semibold" style={{ color: "var(--color-fg)" }}>
-              Representation for{" "}
-              <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
+              <Trans
+                i18nKey="pages:workspace.rep_picker.representation_for"
+                values={{ subset: subsetId }}
+                components={{ accent: <span style={{ color: "var(--color-accent)" }} /> }}
+              />
             </h3>
             <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
-              This dataset has one fixed representation — continue to its analysis.
+              {t("pages:workspace.rep_picker.fixed_lead")}
             </p>
           </div>
           <button
@@ -684,7 +561,7 @@ function RepresentationPickerStep({
             className="rounded-md px-3 py-1.5 text-sm border"
             style={{ borderColor: "var(--color-border)", color: "var(--color-fg)", backgroundColor: "transparent" }}
           >
-            ← Change subset
+            {t("pages:workspace.rep_picker.change_subset")}
           </button>
         </header>
         <button
@@ -696,24 +573,24 @@ function RepresentationPickerStep({
           <header className="flex items-baseline justify-between gap-2 mb-1">
             <h5 className="text-base font-semibold">{heading}</h5>
             <span className="rounded-md px-2 py-0.5 text-[11px] font-mono" style={{ backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" }}>
-              fixed
+              {t("pages:workspace.rep_picker.fixed_badge")}
             </span>
           </header>
           <p className="text-sm leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
             {blurb}
           </p>
           <div className="mt-3 text-sm font-medium" style={{ color: "var(--color-accent)" }}>
-            Continue to analysis →
+            {t("pages:workspace.rep_picker.continue_to_analysis")}
           </div>
         </button>
       </section>
     );
   }
 
-  const families: { id: Representation["family"]; label: string; color: string; supports: string }[] = [
-    { id: "topic", label: "Topic models", color: "rgba(40, 160, 80, 1)", supports: "Topics · TopicLabel · Routed · USGS · Embed3D · Stability · Interpret · SuperTopics · Spatial · Unmixing · Gating · Neural · LLM · Probe · Robust · Anomaly · Agreement" },
-    { id: "compression", label: "K-dim compression baselines", color: "rgba(56, 189, 248, 1)", supports: "Representation fit (3D scatter + ARI/NMI/silhouette + fit metadata) · Compare 3D (multi-method)" },
-    { id: "unmixing", label: "Physical baselines (unmixing)", color: "rgba(214, 140, 40, 1)", supports: "Unmixing tab (NFINDR + ATGP endmembers + topic×endmember cosine)" },
+  const families: { id: Representation["family"]; color: string }[] = [
+    { id: "topic", color: "rgba(40, 160, 80, 1)" },
+    { id: "compression", color: "rgba(56, 189, 248, 1)" },
+    { id: "unmixing", color: "rgba(214, 140, 40, 1)" },
   ];
 
   return (
@@ -724,17 +601,17 @@ function RepresentationPickerStep({
             className="text-lg font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Representation for{" "}
-            <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
+            <Trans
+              i18nKey="pages:workspace.rep_picker.representation_for"
+              values={{ subset: subsetId }}
+              components={{ accent: <span style={{ color: "var(--color-accent)" }} /> }}
+            />
           </h3>
           <p
             className="text-sm mt-1"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            Three families: topics (LDA and variants), K-dim compression
-            baselines (PCA / NMF / AE / ICA / CAE-1D/2D/3D / β-VAE) and physical
-            unmixing. They operate on the same doc-term matrix from the canonical
-            V1 band-frequency recipe.
+            {t("pages:workspace.rep_picker.families_lead")}
           </p>
         </div>
         <button
@@ -747,7 +624,7 @@ function RepresentationPickerStep({
             backgroundColor: "transparent",
           }}
         >
-          ← Change subset
+          {t("pages:workspace.rep_picker.change_subset")}
         </button>
       </header>
 
@@ -759,14 +636,18 @@ function RepresentationPickerStep({
                 className="text-sm font-semibold uppercase tracking-wider"
                 style={{ color: fam.color }}
               >
-                {fam.label}
+                {t(`pages:workspace.rep_families.${fam.id}.label`)}
               </h4>
               <span className="text-[10.5px] uppercase tracking-widest font-medium" style={{ color: "var(--color-fg-faint)" }}>
-                {REPRESENTATIONS.filter((r) => r.family === fam.id).length} options
+                {t("pages:workspace.rep_picker.options", {
+                  count: REPRESENTATIONS.filter((r) => r.family === fam.id).length,
+                })}
               </span>
             </div>
             <p className="text-[11.5px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-              Picking unlocks: {fam.supports}
+              {t("pages:workspace.rep_picker.picking_unlocks", {
+                supports: t(`pages:workspace.rep_families.${fam.id}.supports`),
+              })}
             </p>
             <div className="grid sm:grid-cols-2 gap-3">
               {REPRESENTATIONS.filter((r) => r.family === fam.id).map((r) => (
@@ -783,7 +664,9 @@ function RepresentationPickerStep({
                   }}
                 >
                   <header className="flex items-baseline justify-between gap-2 mb-1">
-                    <h5 className="text-base font-semibold">{r.label}</h5>
+                    <h5 className="text-base font-semibold">
+                      {t(`pages:workspace.representations.${r.id}.label`)}
+                    </h5>
                     <span
                       className="rounded-md px-2 py-0.5 text-[11px] font-mono"
                       style={{
@@ -791,20 +674,20 @@ function RepresentationPickerStep({
                         color: "var(--color-accent)",
                       }}
                     >
-                      {r.short}
+                      {t(`pages:workspace.representations.${r.id}.short`)}
                     </span>
                   </header>
                   <p
                     className="text-sm leading-relaxed"
                     style={{ color: "var(--color-fg-subtle)" }}
                   >
-                    {r.description}
+                    {t(`pages:workspace.representations.${r.id}.description`)}
                   </p>
                   <div
                     className="mt-3 text-sm font-medium"
                     style={{ color: "var(--color-accent)" }}
                   >
-                    Precomputed fit available →
+                    {t("pages:workspace.rep_picker.precomputed_fit")}
                   </div>
                 </button>
               ))}
@@ -1181,14 +1064,17 @@ function ExploreStep({
             className="text-lg font-semibold"
             style={{ color: "var(--color-fg)" }}
           >
-            Explore{" "}
-            <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
+            <Trans
+              i18nKey="pages:workspace.explore.heading"
+              values={{ subset: subsetId }}
+              components={{ accent: <span style={{ color: "var(--color-accent)" }} /> }}
+            />
             {rep && (
               <span
                 className="ml-2 text-sm font-normal"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                · representation: {rep}
+                {t("pages:workspace.explore.representation_suffix", { rep })}
               </span>
             )}
           </h3>
@@ -1197,10 +1083,10 @@ function ExploreStep({
             style={{ color: "var(--color-fg-faint)" }}
           >
             {isLabelled
-              ? "Topic-model panels across raw data, topic output, spatial geometry, and diagnostics. Loaded on demand — pick a tab below to fetch its dedicated backend artefact."
+              ? t("pages:workspace.explore.lead_labelled")
               : isHidsag
-                ? "A region-document mineral subset: spectra are grouped into region documents with per-sample geochemical / mineralogical targets. It carries supervised benchmarks (classification, regression, sample-owner clustering) — not the per-scene topic-explorer panels. See what is available below."
-                : "Dataset inventory and provenance. Topic-explorer panels open automatically once this dataset has derived LDA artefacts."}
+                ? t("pages:workspace.explore.lead_hidsag")
+                : t("pages:workspace.explore.lead_default")}
           </p>
         </div>
         <button
@@ -1213,7 +1099,9 @@ function ExploreStep({
             backgroundColor: "transparent",
           }}
         >
-          {isLabelled ? "← Change representation" : "← Back"}
+          {isLabelled
+            ? t("pages:workspace.explore.change_representation")
+            : t("pages:workspace.explore.back")}
         </button>
       </header>
 
@@ -1734,7 +1622,7 @@ function Stepper({
             >
               {i + 1}
             </span>
-            <span>{t(`workspace.step.${s.key}` as never, s.label) as string}</span>
+            <span>{t(`pages:workspace.stepper.${s.key}`)}</span>
             {isDone && i === 0 && ctx.family && (
               <span
                 className="text-xs font-mono opacity-70"
@@ -1761,10 +1649,11 @@ function FamilyPickerStep({
   groups: { family_id: string; family_title: string; entries: DatasetEntry[] }[];
   onPick: (familyId: string) => void;
 }) {
+  const { t } = useTranslation(["pages"]);
   if (isLoading) {
     return (
       <p style={{ color: "var(--color-fg-faint)" }}>
-        Loading inventory…
+        {t("pages:workspace.family_picker.loading")}
       </p>
     );
   }
@@ -1780,7 +1669,7 @@ function FamilyPickerStep({
         }}
       >
         <p style={{ color: "var(--color-warn)" }}>
-          Could not load the inventory.
+          {t("pages:workspace.family_picker.load_error")}
         </p>
         <p
           className="mt-2 text-sm"
@@ -1816,14 +1705,14 @@ function FamilyPickerStep({
                 color: "var(--color-accent)",
               }}
             >
-              {g.entries.length} datasets
+              {t("pages:workspace.family_picker.datasets_badge", { count: g.entries.length })}
             </span>
           </div>
           <p
             className="text-sm leading-relaxed"
             style={{ color: "var(--color-fg-subtle)" }}
           >
-            {FAMILY_DESCRIPTIONS[g.family_id] ?? FAMILY_DESCRIPTIONS["default"]}
+            {t(`pages:workspace.family_descriptions.${FAMILY_DESCRIPTION_KEYS[g.family_id] ?? FAMILY_DESCRIPTION_KEYS["default"]}`)}
           </p>
           <ul
             className="mt-3 flex flex-wrap gap-1.5 text-[11px] font-mono"
@@ -1846,7 +1735,7 @@ function FamilyPickerStep({
                 className="inline-block px-2 py-0.5"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                + {g.entries.length - 6} more
+                {t("pages:workspace.family_picker.more", { count: g.entries.length - 6 })}
               </li>
             )}
           </ul>
@@ -1854,7 +1743,7 @@ function FamilyPickerStep({
             className="mt-4 text-sm font-medium"
             style={{ color: "var(--color-accent)" }}
           >
-            Pick this family →
+            {t("pages:workspace.family_picker.pick")}
           </div>
         </button>
       ))}
@@ -2086,6 +1975,7 @@ function BriefingStat({ label, value }: { label: string; value: string }) {
 // pick the subset, then explore its data (spectra, targets, correlations) —
 // the supervised benchmarks live in /benchmarks, not here.
 function HidsagFamilyExplorer({ datasetId }: { datasetId: string }) {
+  const { t } = useTranslation(["pages"]);
   const initial = (() => {
     const code = toHidsagSubsetCode(datasetId);
     return (HIDSAG_SUBSET_CODES as readonly string[]).includes(code) ? code : "GEOMET";
@@ -2098,7 +1988,7 @@ function HidsagFamilyExplorer({ datasetId }: { datasetId: string }) {
           className="text-[10.5px] uppercase tracking-widest font-semibold"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          subset
+          {t("pages:workspace.hidsag.subset_label")}
         </span>
         {HIDSAG_SUBSET_CODES.map((c) => (
           <button
@@ -2155,6 +2045,7 @@ export function HidsagBriefingCard({
   methods: import("@/api/client").HidsagMethodStatistics | null;
   subsetCode: string;
 }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div
       className="rounded-xl border p-4 relative overflow-hidden"
@@ -2174,17 +2065,17 @@ export function HidsagBriefingCard({
           HIDSAG · {subsetCode}
         </h3>
         <span className="text-[10.5px] uppercase tracking-widest font-medium" style={{ color: "var(--color-fg-faint)" }}>
-          Family D · geochemistry regression
+          {t("pages:workspace.hidsag.briefing_subtitle")}
         </span>
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12.5px]" style={{ color: "var(--color-fg-subtle)" }}>
-        <BriefingStat label="samples" value={eda ? String(eda.sample_count) : "…"} />
-        <BriefingStat label="measurements" value={eda ? String(eda.measurement_count_total) : "…"} />
-        <BriefingStat label="targets" value={eda ? String(eda.numeric_variable_names.length) : "…"} />
-        <BriefingStat label="methods" value={methods?.regression ? String(Object.keys(methods.regression.method_aggregates).length) : "…"} />
+        <BriefingStat label={t("pages:workspace.hidsag.stat_samples")} value={eda ? String(eda.sample_count) : "…"} />
+        <BriefingStat label={t("pages:workspace.hidsag.stat_measurements")} value={eda ? String(eda.measurement_count_total) : "…"} />
+        <BriefingStat label={t("pages:workspace.hidsag.stat_targets")} value={eda ? String(eda.numeric_variable_names.length) : "…"} />
+        <BriefingStat label={t("pages:workspace.hidsag.stat_methods")} value={methods?.regression ? String(Object.keys(methods.regression.method_aggregates).length) : "…"} />
         {eda?.modality_band_counts ? (
           <BriefingStat
-            label="bands"
+            label={t("pages:workspace.hidsag.stat_bands")}
             value={Object.entries(eda.modality_band_counts)
               .map(([k, v]) => `${k}=${v}`)
               .join(" · ")}
@@ -2194,7 +2085,7 @@ export function HidsagBriefingCard({
       {eda?.dominant_targets_by_mean?.length ? (
         <div className="mt-3">
           <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: "var(--color-fg-faint)" }}>
-            Top geochemistry targets
+            {t("pages:workspace.hidsag.top_targets")}
           </div>
           <div className="flex flex-wrap gap-1.5">
             {eda.dominant_targets_by_mean.slice(0, 8).map((tt) => (
@@ -2218,10 +2109,11 @@ export function HidsagBriefingCard({
 }
 
 export function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+  const { t } = useTranslation(["pages"]);
   if (!eda) {
     return (
       <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>Loading targets…</p>
+        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.hidsag.targets_loading")}</p>
       </div>
     );
   }
@@ -2239,16 +2131,16 @@ export function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagE
       }}
     >
       <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
-        Geochemistry targets — mean ± std
+        {t("pages:workspace.hidsag.targets_title")}
       </h4>
       <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Continuous geochemistry variables measured per HIDSAG sample. {eda.numeric_variable_names.length} targets shown with their range and sample coverage.
+        {t("pages:workspace.hidsag.targets_lead", { count: eda.numeric_variable_names.length })}
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-[12.5px]" style={{ color: "var(--color-fg)" }}>
           <thead>
             <tr style={{ color: "var(--color-fg-faint)" }}>
-              <th className="text-left font-mono text-[11px] pb-2 pr-3">target</th>
+              <th className="text-left font-mono text-[11px] pb-2 pr-3">{t("pages:workspace.hidsag.col_target")}</th>
               <th className="text-right font-mono text-[11px] pb-2 pr-3">mean</th>
               <th className="text-right font-mono text-[11px] pb-2 pr-3">std</th>
               <th className="text-right font-mono text-[11px] pb-2 pr-3">min</th>
@@ -2276,7 +2168,7 @@ export function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagE
         </table>
         {rows.length > 15 ? (
           <p className="mt-2 text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
-            +{rows.length - 15} more targets
+            {t("pages:workspace.hidsag.more_targets", { count: rows.length - 15 })}
           </p>
         ) : null}
       </div>
@@ -2285,10 +2177,11 @@ export function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagE
 }
 
 export function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+  const { t } = useTranslation(["pages"]);
   if (!eda) {
     return (
       <div className="rounded-lg border p-4" style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}>
-        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>Loading mean spectra…</p>
+        <p className="text-sm" style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.hidsag.spectra_loading")}</p>
       </div>
     );
   }
@@ -2354,19 +2247,22 @@ export function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client")
       }}
     >
       <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
-        Mean region-document spectra
+        {t("pages:workspace.hidsag.spectra_title")}
       </h4>
       <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
         {byStratum
-          ? `Average region-document spectrum per tag stratum (the unit LDA tokenises). Modalities (VNIR/SWIR) are concatenated along the x-axis.`
-          : `Example region-document mean spectra — ${Math.min(6, totalMeas)} of ${totalMeas} measurements. Each is the mean over its patch grid; this is the spectral unit LDA tokenises. Modalities are concatenated along the x-axis.`}
+          ? t("pages:workspace.hidsag.spectra_lead_stratum")
+          : t("pages:workspace.hidsag.spectra_lead_sample", {
+              shown: Math.min(6, totalMeas),
+              total: totalMeas,
+            })}
       </p>
       {renderable.length && Number.isFinite(lo) ? (
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="w-full h-auto"
           role="img"
-          aria-label="Mean region-document spectra"
+          aria-label={t("pages:workspace.hidsag.spectra_title")}
         >
           {[0, 0.25, 0.5, 0.75, 1].map((g) => (
             <line key={g} x1={padL} y1={padT + g * innerH} x2={padL + innerW} y2={padT + g * innerH} stroke="currentColor" strokeOpacity={g === 0 || g === 1 ? 0.25 : 0.07} strokeWidth="0.6" />
@@ -2396,7 +2292,7 @@ export function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client")
           })}
         </svg>
       ) : (
-        <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>No mean-spectra available.</p>
+        <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.hidsag.spectra_unavailable")}</p>
       )}
       {renderable.length ? (
         <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
@@ -2404,7 +2300,7 @@ export function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client")
             <span key={s.label} className="inline-flex items-center gap-1.5" style={{ color: "var(--color-fg-faint)" }}>
               <span aria-hidden className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: palette[i % palette.length] }} />
               {s.label}
-              <span className="opacity-65">({byStratum ? "n_meas" : "patches"}={s.n})</span>
+              <span className="opacity-65">({byStratum ? t("pages:workspace.hidsag.legend_n_meas") : t("pages:workspace.hidsag.legend_patches")}={s.n})</span>
             </span>
           ))}
         </div>
@@ -2414,6 +2310,7 @@ export function HidsagModalitySpectraCard({ eda }: { eda: import("@/api/client")
 }
 
 export function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").HidsagEda | null }) {
+  const { t } = useTranslation(["pages"]);
   if (!eda || !eda.correlation_pearson || !eda.correlation_pearson.matrix?.length) {
     return null;
   }
@@ -2445,10 +2342,10 @@ export function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").Hid
       }}
     >
       <h4 className="text-base font-semibold mb-2" style={{ color: "var(--color-fg)" }}>
-        Pearson correlation between geochemistry targets
+        {t("pages:workspace.hidsag.corr_title")}
       </h4>
       <p className="text-[12px] mb-3" style={{ color: "var(--color-fg-faint)" }}>
-        Blue = positive correlation, red = negative. First {N} targets shown. Strong off-diagonal pairs (|ρ| ≥ 0.5) indicate redundancy / co-located mineralisation.
+        {t("pages:workspace.hidsag.corr_lead", { count: N })}
       </p>
       <div className="overflow-x-auto">
         <svg
@@ -2456,7 +2353,7 @@ export function HidsagCorrelationCard({ eda }: { eda: import("@/api/client").Hid
           className="max-w-full h-auto"
           style={{ maxWidth: 720 }}
           role="img"
-          aria-label="Pearson correlation matrix of HIDSAG geochemistry targets"
+          aria-label={t("pages:workspace.hidsag.corr_aria")}
         >
           {names.map((n, j) => (
             <text key={`col-${n}`} x={labelW + j * cell + cell / 2} y={labelW - 4} fontSize="9.5" textAnchor="end" transform={`rotate(-50 ${labelW + j * cell + cell / 2} ${labelW - 4})`} fill="currentColor" opacity={0.7} fontFamily="ui-monospace, monospace">
