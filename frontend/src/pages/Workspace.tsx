@@ -646,6 +646,67 @@ function RepresentationPickerStep({
   onBack: () => void;
   onPick: (rep: string) => void;
 }) {
+  const isLabelled = subsetId !== null && LABELLED_SCENES.has(subsetId);
+  const isHidsag = subsetId !== null && HIDSAG_SUBSETS.has(subsetId);
+
+  // Non-labelled datasets (HIDSAG region-documents, individual spectral
+  // libraries, unlabeled image cubes) don't expose the labelled-scene encoder
+  // menu — their Explore view uses ONE fixed representation and ignores `rep`.
+  // Showing the topic/compression/unmixing picker here was wrong (e.g. NFINDR
+  // unmixing or PCA make no sense for HIDSAG geochemistry region-documents)
+  // and made "Change representation" land on a confusing, irrelevant page.
+  // Offer a single honest "continue" card instead.
+  if (!isLabelled) {
+    const heading = isHidsag
+      ? "LDA topic mixture over region-documents"
+      : "Topic mixture (LDA)";
+    const blurb = isHidsag
+      ? "HIDSAG is modelled with a single fixed representation: LDA topic mixtures over the per-region mean spectra, fed to the soft θ-gated regression ensemble. There is no alternative encoder to choose here."
+      : "This dataset uses a single fixed representation in Explore; there is no encoder choice to make.";
+    return (
+      <section>
+        <header className="flex items-baseline justify-between mb-4 gap-3">
+          <div>
+            <h3 className="text-lg font-semibold" style={{ color: "var(--color-fg)" }}>
+              Representation for{" "}
+              <span style={{ color: "var(--color-accent)" }}>{subsetId}</span>
+            </h3>
+            <p className="text-sm mt-1" style={{ color: "var(--color-fg-faint)" }}>
+              This dataset has one fixed representation — continue to its analysis.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-md px-3 py-1.5 text-sm border"
+            style={{ borderColor: "var(--color-border)", color: "var(--color-fg)", backgroundColor: "transparent" }}
+          >
+            ← Change subset
+          </button>
+        </header>
+        <button
+          type="button"
+          onClick={() => onPick("lda")}
+          className="text-left rounded-lg border p-5 transition-all hover:shadow-md w-full"
+          style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)", color: "var(--color-fg)" }}
+        >
+          <header className="flex items-baseline justify-between gap-2 mb-1">
+            <h5 className="text-base font-semibold">{heading}</h5>
+            <span className="rounded-md px-2 py-0.5 text-[11px] font-mono" style={{ backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" }}>
+              fixed
+            </span>
+          </header>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-fg-subtle)" }}>
+            {blurb}
+          </p>
+          <div className="mt-3 text-sm font-medium" style={{ color: "var(--color-accent)" }}>
+            Continue to analysis →
+          </div>
+        </button>
+      </section>
+    );
+  }
+
   const families: { id: Representation["family"]; label: string; color: string; supports: string }[] = [
     { id: "topic", label: "Topic models", color: "rgba(40, 160, 80, 1)", supports: "Topics · TopicLabel · Routed · USGS · Embed3D · Stability · Interpret · SuperTopics · Spatial · Unmixing · Gating · Neural · LLM · Probe · Robust · Anomaly · Agreement" },
     { id: "compression", label: "K-dim compression baselines", color: "rgba(56, 189, 248, 1)", supports: "Representation fit (3D scatter + ARI/NMI/silhouette + fit metadata) · Compare 3D (multi-method)" },
@@ -1149,7 +1210,7 @@ function ExploreStep({
             backgroundColor: "transparent",
           }}
         >
-          ← Change representation
+          {isLabelled ? "← Change representation" : "← Back"}
         </button>
       </header>
 
