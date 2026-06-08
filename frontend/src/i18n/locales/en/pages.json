@@ -1386,6 +1386,271 @@
       "hidsag_tag": "Family-D geochemistry regression",
       "llm": "B-12 LLM",
       "llm_tag": "Tea-leaves word intrusion (gated)"
+    },
+    "axes": {
+      "loading": "Loading…",
+      "scene_label": "Scene:",
+      "col_scene": "scene",
+      "cross_scene_title": "B-8 cross-scene transfer — fit on A, infer on B",
+      "cross_scene_loading": "Loading transfer matrix…",
+      "cross_scene_lead": "5 AVIRIS-class scenes resampled to a common {{nBands}}-band {{minNm}}-{{maxNm}} nm grid. Each cell is the macro-F1 of a 5-fold logistic on θ (LDA fit on row scene, inferred on column scene). Diagonal = within-scene baseline. Pavia U excluded (ROSIS).",
+      "cross_scene_aria": "Cross-scene transfer matrix",
+      "cross_scene_axis_target": "target scene (column)",
+      "cross_scene_axis_source": "source scene (row)",
+      "cross_scene_finding": "Diagonal cells (white border) are within-scene F1 — they match the native-grid B-3 numbers within ±0.025, so the resampling is honest. Salinas → Salinas-A = 0.747 is the strongest off-diagonal (same campaign, overlapping fields). KSC's collapsed topics neither transfer well (KSC → others ≤ 0.405) nor receive well (others → KSC ≤ 0.405). Salinas-A is the easiest target (0.65-0.75 from any source — compact 6-class).",
+      "rate_distortion_title": "B-2 rate-distortion curve — reconstruction RMSE vs K",
+      "rate_distortion_loading": "Loading rate-distortion curves…",
+      "rate_distortion_lead": "LDA / NMF / PCA reconstruction RMSE on a 20% held-out test split, across K∈{4, 6, 8, 10, 12, 16}. PCA is the L2-optimal compressor (wins everywhere). NMF a close second. LDA last because it optimises a multinomial likelihood, not L2 RMSE — this is the expected picture and is documented as Axis G.",
+      "rate_distortion_aria": "rate-distortion curve",
+      "mi_title": "B-4 mutual information — per-feature MI(z; y)",
+      "mi_loading": "Loading mutual information…",
+      "mi_lead": "For each method, MI between every latent feature z_k and the label y. Bright = high MI = informative feature. Per-feature distribution is the right discriminative signal — joint MI clips to label entropy once K is non-degenerate.",
+      "mi_entropy_note": "Label entropy H(Y) = {{nats}} nats ({{bits}} bits) — the upper bound for joint MI. Top {{count}} methods sorted by per-feature MI sum.",
+      "mi_heatmap_aria": "MI heatmap",
+      "mi_feature_axis": "feature index k → (capped at {{maxCols}} for readability)",
+      "endmember_title": "B-11 endmember baseline — NFINDR / ATGP vs LDA topics",
+      "endmember_loading": "Loading endmember baseline…",
+      "endmember_lead": "At K={{K}}, NFINDR + ATGP endmembers extracted from the canonical labelled-pixel subset ({{nPixels}} px, {{nBands}} bands). Cosine similarity between LDA topics and NFINDR endmembers — at the same K, both methods land on the same spectral primitives (typical cosine 0.92-1.00).",
+      "endmember_rmse_label": "{{method}} RMSE (normalised)",
+      "endmember_matrix_label": "Topic × NFINDR endmember cosine matrix:",
+      "endmember_matrix_aria": "topic × endmember cosine matrix",
+      "endmember_finding": "Bright cells = high cosine (topic and endmember spectrally aligned). Diagonal-like pattern = the two methods recover the same spectral primitives. Master-plan position: at the same K, NMF, NFINDR, and LDA all recover comparable spectral structure; what separates them is interpretability and downstream gating utility (B-3, B-7).",
+      "spatial_title": "B-10 spatial coherence — Moran's I + Geary's C",
+      "spatial_loading": "Loading spatial coherence…",
+      "spatial_lead": "Per-topic θ_k abundance maps Moran's I + Geary's C with 4-neighbour rook contiguity, mean across topics. Two readings: subsampled (220-per-class basis) and full (full-pixel mask LDA refit). KSC's collapse on the subsampled basis is a pipeline artifact — full-pixel refit recovers spatial coherence.",
+      "spatial_col_sub_moran": "subsampled mean Moran I",
+      "spatial_col_sub_geary": "subsampled mean Geary C",
+      "spatial_col_full_moran": "full-pixel mean Moran I",
+      "spatial_col_full_geary": "full-pixel mean Geary C",
+      "spatial_finding": "Headline: 5/6 scenes show high spatial coherence (mean Moran I ≥ 0.80) on the subsampled basis. KSC drops to 0.064 (red) — but the <strong>full-pixel refit</strong> recovers I = 0.837, demonstrating that KSC's \"collapse\" is an artifact of stratified 220-per-class sampling on a sparse-class scene, not a fundamental data problem.",
+      "super_topics_title": "Cross-scene super-topics (master plan §12)",
+      "super_topics_lead_loading": "Hierarchical clustering of every topic across all six labelled scenes on the common 400–2500 nm grid (average linkage on cosine). Reveals which topics group across scenes vs. stay scene-local.",
+      "super_topics_unavailable": "super_topics payload not available yet.",
+      "super_topics_lead": "Hierarchical clustering of all {{nTopics}} topics across {{nScenes}} labelled scenes on the common 400–2500 nm grid (average linkage on cosine). Cut level shown: {{cutLevel}} → {{nClusters}} super-topic clusters. Multi-scene clusters identify topics that recur across data sets — what \"unites\" the scenes.",
+      "super_topics_col_cluster": "cluster",
+      "super_topics_col_members": "members",
+      "super_topics_col_scenes": "scenes",
+      "super_topics_col_topic_ids": "topic ids"
+    },
+    "backbone_f7": {
+      "title": "F-7 NMI under each topic-model backbone (HDP / ProdLDA / ETM extension)",
+      "lead": "The c397 backbone factorial reported F-2 c_v only. c432–c434 added F-7 NMI for V1/V3/V12/V14/V18/V20, then extended in c435 to every recipe with available wordifications. Each cell is the per-(scene, recipe) F-7 NMI mean across 6 labelled scenes. Bold accent = per-backbone winner.",
+      "table": {
+        "backboneRecipe": "backbone \\ recipe",
+        "mean": "mean",
+        "meanFourBackbones": "mean (4 backbones)"
+      },
+      "footnote": "Recipes ordered by mean F-7 NMI across the four backbones. V8 (NFINDR endmember-fraction) leads the cross-backbone mean (0.431 at Q=8). V20 (MI-weighted) is top-3 under LDA and ETM but slips to 4th under ProdLDA and 6th under HDP — no single recipe is top-3 under all four backbones, which is itself the finding: cross-prior portability is recipe-specific, not universal."
+    },
+    "deep": {
+      "anomaly": {
+        "title": "B-9 anomaly indicators — LDA vs deep ρ comparison",
+        "loadingLead": "Loading anomaly correlations…",
+        "loading": "Loading…",
+        "lead": "Spearman ρ between per-document anomaly score and theta-logistic misclassification. Positive ρ (green) = the indicator flags hard examples (works as anomaly); negative (red) = the indicator anti-correlates (deep encoders concentrate capacity on rare informative spectra). LDA's recon NLL works as anomaly; deep methods invert the heuristic.",
+        "col": {
+          "scene": "scene",
+          "ldaNll": "LDA recon NLL ρ",
+          "ldaSoftmax": "LDA softmax ρ",
+          "caeRmse": "CAE-1D recon RMSE ρ",
+          "bvRmse": "β-VAE recon RMSE ρ",
+          "bvKl": "β-VAE KL ρ"
+        },
+        "note": "Headline: LDA recon NLL is positive ρ on every scene (Pavia U +0.306, Salinas-A +0.298, KSC +0.226, IP +0.214) — it works as an anomaly indicator. Deep methods produce mostly negative ρ — the \"high recon = unfamiliar\" heuristic does NOT transfer to deep nonlinear encoders. Deep encoders concentrate capacity on rare informative spectra, which the latent then discriminates well."
+      },
+      "kcurve": {
+        "title": "CAE-1D capacity-driven scaling — ARI vs K",
+        "loadingLead": "Per-scene CAE-1D K-curve (K∈{4,6,8,10,12,16,32}). Each line is one labelled scene; each point is the K-means(latent) ARI vs ground-truth label.",
+        "loading": "Loading deep K-curve payloads (42 cells)…",
+        "lead": "K-means(latent) ARI vs ground-truth label, per scene. Almost-monotonic on every scene (Salinas 0.547 → 0.561, KSC 0.250 → 0.314 from K=4 to K=32). x-axis is log K.",
+        "aria": "CAE-1D K curve",
+        "xAxis": "latent dimension K (log scale)",
+        "yAxis": "K-means(latent) ARI vs label",
+        "note": "Capacity-driven scaling: every scene improves with K; no overfitting at K=32. KSC's canonical fit (LDA θ-logistic F1=0.021 on B-3) recovers to F1=0.710 at CAE-1D K=32 on the linear-probe panel, a 33× gain attributable to deep encoder capacity."
+      },
+      "cae3d": {
+        "title": "CAE-3D — anchor decoder vs full-patch decoder (K-curve {4, 8})",
+        "loadingLead": "Loading anchor + full-patch payloads at K∈{4, 8} across 6 labelled scenes…",
+        "loading": "Loading…",
+        "lead": "Two decoders share the same 3-D conv encoder. Anchor reconstructs only the centre-pixel spectrum (Linear K→B); full-patch reconstructs the entire P×P patch (Linear K→B·P·P). Both K=8 and K=4 capacities are swept. The decoder target is itself a hyperparameter — direction is broadly stable across capacity, with one inversion (Pavia U).",
+        "col": {
+          "scene": "scene",
+          "full": "full",
+          "anchor": "anchor"
+        },
+        "netMean": "net mean ΔARI",
+        "note": "Honest read: net mean ΔARI is essentially neutral at both K (+0.011 K=4, +0.003 K=8). Direction matches across K on 5/6 scenes — IP and Botswana persistently benefit; Salinas family persistently harmed (magnitude grows with K). Pavia U is the single capacity-dependent inversion: full-patch helps at K=4 (+0.026), hurts at K=8 (-0.023). The decoder target is itself a hyperparameter worth surfacing per scene, not a default to flip globally."
+      },
+      "betaVae": {
+        "title": "β-VAE β-sweep — disentanglement vs posterior collapse",
+        "loadingLead": "Loading β-sweep payloads…",
+        "loading": "Loading…",
+        "lead": "K-means(latent) ARI per scene at K=8 across β∈{1, 2, 4, 8, 16}. Bright = high ARI; black cells = posterior collapse (β-VAE encoder converges to q(z|x)≈p(z), latent is uninformative).",
+        "aria": "β-VAE β-sweep ARI grid",
+        "note": "Salinas posterior collapse at β≥8 (ARI=0.000 — KL term overwhelms the reconstruction signal; encoder maps every input to N(0, I)). Salinas-A resists collapse and even gains with β (compact 6-class signal dominates the regulariser). Pavia U degrades monotonically with β. The β=4 default sits at the inflection point."
+      }
+    },
+    "gating": {
+      "common": {
+        "loading": "Loading…",
+        "scene": "scene",
+        "winsBestPerScene": "wins (best per scene)"
+      },
+      "deepGate": {
+        "title": "B-3 follow-up — any encoder as gate? raw vs θ-routed vs deep gates",
+        "loadingLead": "Loading deep-gate payloads…",
+        "lead": "Five candidate gates compete on per-fold macro F1 across labelled scenes: raw_logistic (no gating), θ_routed (LDA topic mixture, natural Dirichlet simplex), and three deep gates (PCA-8, CAE-1D-8, β-VAE-8) projected onto the simplex via softmax. Tests whether any deep encoder recovers θ's gating advantage.",
+        "finding": {
+          "part1": "Honest finding: deep gates with naive softmax-to-simplex projection do",
+          "not": "not",
+          "part2": "outperform raw_logistic or θ_routed. raw_logistic wins on most scenes; θ_routed ties or wins where Dirichlet-simplex structure aligns with class topology (e.g. Salinas). The advantage of θ comes from the natural simplex constraint of Dirichlet-distributed topic mixtures, not merely from compressing to K dimensions — softmaxed deep latents fail to recover the gating mechanism."
+        }
+      },
+      "neuralTopic": {
+        "title": "Neural topic models — head-to-head LDA vs ProdLDA vs ETM",
+        "loadingLead": "Loading per-scene neural-topic comparison…",
+        "lead": "Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics: (1) K-means(theta) ARI vs ground-truth label — clustering quality. (2) c_v topic coherence (Röder 2015 sliding-window, top-15 words) — semantic quality. ProdLDA + ETM cells show mean ± std across N=5 seeds. LDA cell uses the canonical fit (single seed; per-seed LDA stability is in the separate Workspace stability tab). The two metrics tell different stories — coherence ≠ class discriminability on band-frequency vocabularies.",
+        "header": {
+          "cls": "cls",
+          "ariVsLabel": "ARI vs label",
+          "cvCoherence": "c_v coherence (top-15)"
+        },
+        "finding": {
+          "headline": "Coherence vs discriminability are NOT the same metric on band-frequency tokens.",
+          "body1": "ProdLDA wins c_v on every scene (highest semantic coherence among the three) but loses ARI on 4/6 scenes — its topics are internally tight but do not align with class structure. LDA wins ARI on 4/6 scenes (most class-discriminative theta on average) yet loses c_v on every scene. ETM lands between on both axes — slight improvement over ProdLDA on ARI (5/6 wins), slight regression on c_v.",
+          "ruleLabel": "Operational rule",
+          "body2": ": pick the topic family by the downstream task, not by coherence alone. For class clustering use LDA (or neural fallback when LDA collapses, e.g. KSC). For interpretability / topic-vocabulary cards (Workspace Topics tab) use ProdLDA's higher coherence. ETM is the safe middle if both matter."
+        }
+      },
+      "bayesian": {
+        "title": "Bayesian method comparison — hierarchical NUTS posteriors",
+        "loadingLead": "Loading PyMC posteriors at 4 chains × 1000 tune + 1000 draws…",
+        "lead": "PyMC hierarchical normal model: y ~ N(μ_method + α_scene + γ_fold, σ). Posterior means shown as red dots, HDI94 intervals as blue bars. Methods are ordered by posterior mean. Vertical dashed line at μ=0 is the model-mean reference.",
+        "forestFooter": "{{obs}} observations · {{methods}} methods · {{summary}}",
+        "forest": {
+          "classification": {
+            "title": "Classification (labelled scenes, 150 obs)",
+            "note": "raw / pca / topic_routed_* HDIs strictly positive; theta_logistic HDI includes 0 — naive theta-flat is statistically indistinguishable from the model mean."
+          },
+          "classificationDeep": {
+            "title": "Classification with deep gates (labelled scenes, 150 obs)",
+            "note": "B-3 follow-up: gates are raw_logistic vs. θ_routed vs. PCA-8 / CAE-1D-8 / β-VAE-8 routed (deep latents softmaxed to a simplex). raw_logistic dominates θ_routed and all deep gates with P≥0.999; θ_routed dominates every deep gate with P≥0.999. Decisive Bayesian evidence that softmaxed deep latents do NOT recover θ's gating advantage — θ's edge comes from the natural Dirichlet simplex."
+          },
+          "regression": {
+            "title": "Regression (HIDSAG, n≥50 subsets: GEOMET + MINERAL1)",
+            "note": "Pool restricted to n≥50 subsets — the three small-n subsets (PORPHYRY R²≈−12500, MINERAL2, GEOCHEM) are excluded because their exploding R² poisoned the earlier pooled posterior. Honest read: pooled across the two valid subsets no method clears zero (raw_ridge highest point estimate, the proposed soft θ-gated ensemble second, statistically indistinguishable). But the soft gate beats its own hard-routing ablation by ~0.44 R² units, and per-subset on GEOMET (n=146) the soft ensemble is the best method (R²=0.307 > raw 0.258). The win is subset-specific, not universal."
+          }
+        }
+      }
+    },
+    "hidsag": {
+      "cross_preproc": {
+        "title": "HIDSAG — cross-preprocessing stability (B-6 follow-up)",
+        "lead": "How stable LDA topics are when the preprocessing recipe changes. Reported as Hungarian-matched top-15 token Jaccard across the 4 policies (raw / heuristic-band-mask / SNV / SavGol+SNV). Low = topics change substantially across recipes; high = topics survive.",
+        "policies_count_one": "{{count}} policy",
+        "policies_count_other": "{{count}} policies",
+        "off_diag_mean": "off-diag mean",
+        "metric_note": "Metric: top-15 token Jaccard with Hungarian assignment. Each cell of the N×N matrices is the average per-topic stability between policies i, j.",
+        "matrix_aria": "Cross-preprocessing matrix for {{code}}"
+      },
+      "preprocessing": {
+        "title": "HIDSAG — spectral preprocessing sensitivity",
+        "lead": "Four preprocessing policies (raw / heuristic-bad-band-mask / SNV / Savitzky-Golay+SNV) over the 5 HIDSAG scenes. Measures how downstream performance (classification + regression) changes when the spectral cleaning recipe varies.",
+        "loading": "Loading preprocessing sensitivity…",
+        "load_error": "Could not load {{endpoint}}.",
+        "classification_title": "Classification · balanced accuracy",
+        "regression_title": "Regression · R²",
+        "regression_not_shown": "Not shown — cross-validated R² is not estimable at n<50 (here n={{n}}); the test folds explode to R²≪0 and the metric is noise, not a result. See the regression panel below for the n≥50 subsets."
+      },
+      "regression": {
+        "title": "HIDSAG — regression over measurements",
+        "lead": "A hard cross-domain probe: can the topic representations linearly predict continuous geo-assays (Cu %, Au g/t, mineralogy)? R² < 0 means worse than predicting the target's mean. This is separate from — and much harder than — the labelled-scene topic results; treat it as a stress test, not the headline.",
+        "loading": "Loading HIDSAG rankings…",
+        "no_block": "No regression block available.",
+        "forest_aria": "HIDSAG {{code}} forest",
+        "excluded_label": "<strong>Excluded (n < {{minN}}):</strong>",
+        "excluded_note": ". Cross-validated regression R² is not estimable at these sample sizes — the folds are too small for the band/feature dimension, so the values are statistical noise rather than results.",
+        "r2_explainer": "R² < 0 means the model predicts the numeric target worse than its own mean — expected for assay regression (Cu %, Au g/t) on these small mineral subsets (n = tens to low hundreds). This is a deliberately hard cross-domain probe and is <em>separate</em> from the labelled-scene topic results, where the representations do separate classes.",
+        "off_scale_note": "Methods with R² ≪ 0 (catastrophic small-sample fits) are clamped to the axis edge at {{floor}} and labelled with their true value.",
+        "method_labels": {
+          "soft_theta_gated": "soft θ-gated ensemble  ★ proposed",
+          "hard_route": "hard route (ablation)",
+          "raw_ridge": "raw spectra · Ridge",
+          "raw_pls": "raw spectra · PLS",
+          "theta_region": "θ feature · region",
+          "theta_cube": "θ feature · cube",
+          "theta_pixel": "θ feature · pixel"
+        }
+      }
+    },
+    "llm": {
+      "empty": {
+        "title": "B-12 — LLM tea-leaves (Stammbach et al. TACL 2024)",
+        "lead": "Word-intrusion + coherent-label probes via Anthropic Claude. Builder is gated by ANTHROPIC_API_KEY; outputs land in data/derived/llm_tea_leaves once the env var is set and the builder is run.",
+        "note": "No scenes evaluated yet. Set <code>ANTHROPIC_API_KEY</code> and run <code>build-b12-llm-tea-leaves</code> to populate."
+      },
+      "section": {
+        "title": "B-12 — LLM tea-leaves (Stammbach et al. 2023, EMNLP)",
+        "lead": "Per-scene word-intrusion accuracy + per-topic LLM-generated labels. Higher intrusion accuracy means the LLM correctly identifies the foreign word slipped into each topic's top-10 — a coherence signal that correlates with NPMI in prior work. Outputs shipped here are the deterministic Claude Opus 4.7 self-judgment stand-in (see model column); a full API-driven run via build_b12_llm_tea_leaves.py is also implemented for external reproduction."
+      },
+      "table": {
+        "scene": "scene",
+        "topics": "topics",
+        "intrusionAccuracy": "intrusion accuracy",
+        "model": "model"
+      },
+      "detail": {
+        "summary": "{{sceneId}} — per-topic LLM labels",
+        "topic": "topic {{topicId}}",
+        "skipped": "— skipped ({{reason}})",
+        "noLabel": "(no label)"
+      }
+    },
+    "summary": {
+      "forest_title": "Forest plot — macro-F1 with CI95 per scene",
+      "forest_lead": "Each bar is a scene × method; the dot is the mean, the whiskers are the 2.5 and 97.5 percentiles of the bootstrap over the 25 evaluations.",
+      "forest_aria": "Forest plot for {{scene}}",
+      "paired_title": "Paired comparisons (Δ macro-F1)",
+      "paired_lead": "Each pair shows the difference between methods per evaluation; summarised as mean ± std of Δ. Negative = the second method loses.",
+      "paired_col_a": "A",
+      "paired_col_b": "B",
+      "paired_col_delta_mean": "Δ mean",
+      "paired_col_delta_std": "Δ std",
+      "paired_col_delta_range": "[Δ min, Δ max]",
+      "method_defs_title": "Method definitions",
+      "stat_scenes_evaluated": "Scenes evaluated",
+      "stat_evaluations_per_method": "Evaluations per method",
+      "stat_alpha_significance": "α significance",
+      "classes_suffix": "classes",
+      "battery_title": "Multi-Axis Addendum B — battery summary",
+      "battery_lead_loading": "One row per labelled scene, one column per axis (B-1 fair-baseline F1, B-3 topic-routed F1, B-6 LDA off-diag stability). The three axes load in parallel. See the wiki for the full framework.",
+      "battery_loading": "Loading multi-axis battery payloads…",
+      "battery_lead": "One row per labelled scene. Columns: theta-as-feature F1 (B-1, naive), ICA-10 F1 (B-1, fair-baseline winner), best CAE-1D F1 across K∈{4..32} (B-1 deep ladder), topic_routed_soft F1 (B-3 the master-plan thesis), raw_logistic F1 (B-3 strong baseline), and LDA off-diagonal stability (B-6, N=7 seeds). The framework is on the wiki Multi-Axis-Addendum-B page.",
+      "battery_col_scene": "scene",
+      "battery_col_theta_flat": "θ flat (B-1)",
+      "battery_col_ica10": "ICA-10 (B-1)",
+      "battery_col_cae_best": "CAE-1D best (B-1)",
+      "battery_col_theta_logistic": "θ_logistic (B-3)",
+      "battery_col_routed_soft": "routed_soft (B-3)",
+      "battery_col_raw_logistic": "raw_logistic (B-3)",
+      "battery_col_lda_stability": "LDA stability (B-6)",
+      "battery_headlines": "<strong>Headlines:</strong> ICA-10 wins B-1 fair-baseline on every scene. CAE-1D K=32 closes much of the gap (KSC θ=0.021 → CAE-1D K=32=0.710, a 33× recovery). topic_routed_soft matches or beats raw_logistic on every scene; θ_logistic loses by 30-50 points everywhere — the master-plan thesis \"θ as a gate, never as a feature\" is empirically validated. LDA off-diag stability ≥ 0.954 across all 6 scenes vs CAE-1D 0.74-0.97 and β-VAE 0.18-0.89."
+    },
+    "vsweep_coverage": {
+      "title": "V-sweep coverage matrix (10 axes × 19 recipes × 6 scenes)",
+      "lead": "1140 numeric cells in total — all populated. Toggle between boolean (cells filled?) and value (per-cell numeric, viridis colormap). F-13 SHAP has no scalar value so it stays boolean.",
+      "toggle": {
+        "values": "values",
+        "boolean": "boolean"
+      },
+      "table": {
+        "axisSceneRecipe": "axis \\ scene·recipe"
+      },
+      "footnote": "Generated {{date}}. F-14 jaccard uses inverted colour (lower = better, mapped to \"high\" colour band). F-17 cross-scene (portable only) and B-12 / F-15 per-scene LLM-judge records are reported in their dedicated panels.",
+      "recipeMeans": {
+        "heading": "Per-axis recipe-mean ranking",
+        "axis": "axis"
+      }
     }
   },
   "workspace_methods": {

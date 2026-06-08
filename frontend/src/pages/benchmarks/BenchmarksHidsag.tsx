@@ -1,4 +1,5 @@
 import { useQuery, useQueries } from "@tanstack/react-query";
+import { Trans, useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import type {
   HidsagCrossPreprocessingStability as HidsagCrossPreprocessingStabilityPayload,
@@ -19,6 +20,7 @@ export function BenchmarksHidsag() {
 }
 
 function HidsagCrossPreprocessingStability() {
+  const { t } = useTranslation(["pages"]);
   const subsets = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"];
   const queries = useQueries({
     queries: subsets.map((code) => ({
@@ -35,8 +37,8 @@ function HidsagCrossPreprocessingStability() {
   return (
     <Section
       id="hidsag-cross-preproc-stability"
-      title="HIDSAG — cross-preprocessing stability (B-6 follow-up)"
-      lead="How stable LDA topics are when the preprocessing recipe changes. Reported as Hungarian-matched top-15 token Jaccard across the 4 policies (raw / heuristic-band-mask / SNV / SavGol+SNV). Low = topics change substantially across recipes; high = topics survive."
+      title={t("pages:benchmarks.hidsag.cross_preproc.title")}
+      lead={t("pages:benchmarks.hidsag.cross_preproc.lead")}
     >
       <div className="space-y-4 mt-2">
         {successes.map((s) => (
@@ -60,8 +62,11 @@ function HidsagCrossPreprocessingStability() {
                 className="text-xs font-mono"
                 style={{ color: "var(--color-fg-faint)" }}
               >
-                K={s.data!.topic_count} · {s.data!.policies.length} policies ·{" "}
-                off-diag mean ={" "}
+                K={s.data!.topic_count} ·{" "}
+                {t("pages:benchmarks.hidsag.cross_preproc.policies_count", {
+                  count: s.data!.policies.length,
+                })}{" "}
+                · {t("pages:benchmarks.hidsag.cross_preproc.off_diag_mean")} ={" "}
                 <span
                   style={{
                     color:
@@ -85,8 +90,7 @@ function HidsagCrossPreprocessingStability() {
         className="mt-3 text-[12px]"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        Metric: top-15 token Jaccard with Hungarian assignment. Each cell of
-        the N×N matrices is the average per-topic stability between policies i, j.
+        {t("pages:benchmarks.hidsag.cross_preproc.metric_note")}
       </p>
     </Section>
   );
@@ -97,6 +101,7 @@ function CrossPreprocessingMatrix({
 }: {
   data: HidsagCrossPreprocessingStabilityPayload;
 }) {
+  const { t } = useTranslation(["pages"]);
   const policies = data.policies;
   const matrix = data.pairwise_matched_jaccard_top15_mean_matrix;
   const n = policies.length;
@@ -112,7 +117,9 @@ function CrossPreprocessingMatrix({
       viewBox={`0 0 ${w} ${h}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label={`Cross-preprocessing matrix for ${data.subset_code}`}
+      aria-label={t("pages:benchmarks.hidsag.cross_preproc.matrix_aria", {
+        code: data.subset_code,
+      })}
       style={{ color: "var(--color-fg)" }}
     >
       <g
@@ -185,6 +192,7 @@ function CrossPreprocessingMatrix({
 }
 
 function HidsagPreprocessing() {
+  const { t } = useTranslation(["pages"]);
   const { data, isLoading, error } = useQuery({
     queryKey: ["hidsag-preprocessing-sensitivity"],
     queryFn: api.hidsagPreprocessingSensitivity,
@@ -194,12 +202,12 @@ function HidsagPreprocessing() {
   return (
     <Section
       id="hidsag-preprocessing"
-      title="HIDSAG — spectral preprocessing sensitivity"
-      lead="Four preprocessing policies (raw / heuristic-bad-band-mask / SNV / Savitzky-Golay+SNV) over the 5 HIDSAG scenes. Measures how downstream performance (classification + regression) changes when the spectral cleaning recipe varies."
+      title={t("pages:benchmarks.hidsag.preprocessing.title")}
+      lead={t("pages:benchmarks.hidsag.preprocessing.lead")}
     >
       {isLoading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Loading preprocessing sensitivity…
+          {t("pages:benchmarks.hidsag.preprocessing.loading")}
         </p>
       )}
       {error && (
@@ -211,7 +219,9 @@ function HidsagPreprocessing() {
           }}
         >
           <p style={{ color: "var(--color-warn)" }}>
-            Could not load /api/hidsag-preprocessing-sensitivity.
+            {t("pages:benchmarks.hidsag.preprocessing.load_error", {
+              endpoint: "/api/hidsag-preprocessing-sensitivity",
+            })}
           </p>
           <p
             className="mt-2 text-sm"
@@ -268,6 +278,7 @@ function PreprocessingSubsetCard({
 }: {
   subset: HidsagPreprocessingSubset;
 }) {
+  const { t } = useTranslation(["pages"]);
   return (
     <div
       className="rounded-md border p-4"
@@ -293,7 +304,7 @@ function PreprocessingSubsetCard({
       </header>
       <div className="grid sm:grid-cols-2 gap-5">
         <PolicyBars
-          title="Classification · balanced accuracy"
+          title={t("pages:benchmarks.hidsag.preprocessing.classification_title")}
           rows={subset.classification_policy_ranking.map((r) => ({
             policy_id: r.policy_id,
             best_model: r.best_model,
@@ -303,7 +314,7 @@ function PreprocessingSubsetCard({
         />
         {(subset.sample_count ?? 0) >= 50 ? (
           <PolicyBars
-            title="Regression · R²"
+            title={t("pages:benchmarks.hidsag.preprocessing.regression_title")}
             rows={subset.regression_policy_ranking.map((r) => ({
               policy_id: r.policy_id,
               best_model: r.best_model,
@@ -317,13 +328,12 @@ function PreprocessingSubsetCard({
               className="text-[11px] uppercase tracking-widest font-semibold mb-2"
               style={{ color: "var(--color-fg-faint)" }}
             >
-              Regression · R²
+              {t("pages:benchmarks.hidsag.preprocessing.regression_title")}
             </div>
             <p className="text-[12px]" style={{ color: "var(--color-fg-faint)" }}>
-              Not shown — cross-validated R² is not estimable at n&lt;50
-              (here n={subset.sample_count}); the test folds explode to
-              R²≪0 and the metric is noise, not a result. See the regression
-              panel below for the n≥50 subsets.
+              {t("pages:benchmarks.hidsag.preprocessing.regression_not_shown", {
+                n: subset.sample_count,
+              })}
             </p>
           </div>
         )}
@@ -412,6 +422,7 @@ function PolicyBars({
 }
 
 function HidsagBenchmarks() {
+  const { t } = useTranslation(["pages"]);
   const queries = useQueries({
     queries: HIDSAG_SUBSETS.map((code) => ({
       queryKey: ["hidsag-method", code],
@@ -437,12 +448,12 @@ function HidsagBenchmarks() {
   return (
     <Section
       id="hidsag"
-      title="HIDSAG — regression over measurements"
-      lead="A hard cross-domain probe: can the topic representations linearly predict continuous geo-assays (Cu %, Au g/t, mineralogy)? R² < 0 means worse than predicting the target's mean. This is separate from — and much harder than — the labelled-scene topic results; treat it as a stress test, not the headline."
+      title={t("pages:benchmarks.hidsag.regression.title")}
+      lead={t("pages:benchmarks.hidsag.regression.lead")}
     >
       {loading && (
         <p style={{ color: "var(--color-fg-faint)" }}>
-          Loading HIDSAG rankings…
+          {t("pages:benchmarks.hidsag.regression.loading")}
         </p>
       )}
       <div className="space-y-6 mt-2">
@@ -455,13 +466,15 @@ function HidsagBenchmarks() {
           className="mt-4 text-[12px]"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          <strong>Excluded (n &lt; {MIN_N}):</strong>{" "}
+          <Trans
+            i18nKey="pages:benchmarks.hidsag.regression.excluded_label"
+            values={{ minN: MIN_N }}
+            components={{ strong: <strong /> }}
+          />{" "}
           {excludedReg
             .map((s) => `${s.code} (n=${s.data.sample_count ?? "?"})`)
             .join(", ")}
-          . Cross-validated regression R² is not estimable at these sample
-          sizes — the folds are too small for the band/feature dimension, so the
-          values are statistical noise rather than results.
+          {t("pages:benchmarks.hidsag.regression.excluded_note")}
         </p>
       )}
     </Section>
@@ -471,22 +484,24 @@ function HidsagBenchmarks() {
 // Readable labels + role for each regression method, so the forest plot
 // reads as "what is compared" rather than raw identifiers. The proposed
 // method (soft theta-gated ensemble) is highlighted; the naive hard route is
-// marked as an ablation.
-const METHOD_INFO: Record<string, { label: string; role: "proposed" | "ablation" | "baseline" | "feature" }> = {
-  topic_routed_linear_regression: { label: "soft θ-gated ensemble  ★ proposed", role: "proposed" },
-  topic_routed_hard_linear_regression: { label: "hard route (ablation)", role: "ablation" },
-  raw_ridge_regression: { label: "raw spectra · Ridge", role: "baseline" },
-  pls_regression: { label: "raw spectra · PLS", role: "baseline" },
-  region_topic_mixture_linear_regression: { label: "θ feature · region", role: "feature" },
-  cube_topic_mixture_linear_regression: { label: "θ feature · cube", role: "feature" },
-  topic_mixture_linear_regression: { label: "θ feature · pixel", role: "feature" },
+// marked as an ablation. Labels are resolved via i18n at render time
+// (label_key → t(...)); the role drives the colour/weight encoding.
+const METHOD_INFO: Record<string, { label_key: string; role: "proposed" | "ablation" | "baseline" | "feature" }> = {
+  topic_routed_linear_regression: { label_key: "soft_theta_gated", role: "proposed" },
+  topic_routed_hard_linear_regression: { label_key: "hard_route", role: "ablation" },
+  raw_ridge_regression: { label_key: "raw_ridge", role: "baseline" },
+  pls_regression: { label_key: "raw_pls", role: "baseline" },
+  region_topic_mixture_linear_regression: { label_key: "theta_region", role: "feature" },
+  cube_topic_mixture_linear_regression: { label_key: "theta_cube", role: "feature" },
+  topic_mixture_linear_regression: { label_key: "theta_pixel", role: "feature" },
 };
 
-function methodInfo(method: string): { label: string; role: "proposed" | "ablation" | "baseline" | "feature" } {
-  return METHOD_INFO[method] ?? { label: method, role: "baseline" };
+function methodInfo(method: string): { label_key: string | null; role: "proposed" | "ablation" | "baseline" | "feature" } {
+  return METHOD_INFO[method] ?? { label_key: null, role: "baseline" };
 }
 
 function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
+  const { t } = useTranslation(["pages"]);
   const block = stats.regression;
   if (!block || !block.method_aggregates) {
     return (
@@ -508,7 +523,7 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
           className="text-sm"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          No regression block available.
+          {t("pages:benchmarks.hidsag.regression.no_block")}
         </p>
       </div>
     );
@@ -579,7 +594,9 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
         viewBox={`0 0 ${w} ${h}`}
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label={`HIDSAG ${stats.subset_code} forest`}
+        aria-label={t("pages:benchmarks.hidsag.regression.forest_aria", {
+          code: stats.subset_code,
+        })}
         style={{ color: "var(--color-fg)" }}
       >
         <g
@@ -637,7 +654,9 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
                   fontWeight={info.role === "proposed" ? 700 : 400}
                   fill={info.role === "proposed" ? "#22c55e" : "currentColor"}
                 >
-                  {info.label}
+                  {info.label_key
+                    ? t(`pages:benchmarks.hidsag.regression.method_labels.${info.label_key}`)
+                    : e.method}
                 </text>
                 {e.ci95_lo !== null && e.ci95_hi !== null && (
                   <line
@@ -680,13 +699,14 @@ function HidsagSubsetCard({ stats }: { stats: HidsagMethodStatistics }) {
         className="mt-1 text-[11.5px]"
         style={{ color: "var(--color-fg-faint)" }}
       >
-        R² &lt; 0 means the model predicts the numeric target worse than its
-        own mean — expected for assay regression (Cu %, Au g/t) on these small
-        mineral subsets (n = tens to low hundreds). This is a deliberately hard
-        cross-domain probe and is <em>separate</em> from the labelled-scene
-        topic results, where the representations do separate classes.
+        <Trans
+          i18nKey="pages:benchmarks.hidsag.regression.r2_explainer"
+          components={{ em: <em /> }}
+        />
         {anyOffScale
-          ? ` Methods with R² ≪ 0 (catastrophic small-sample fits) are clamped to the axis edge at ${FLOOR} and labelled with their true value.`
+          ? ` ${t("pages:benchmarks.hidsag.regression.off_scale_note", {
+              floor: FLOOR,
+            })}`
           : ""}
       </p>
     </div>

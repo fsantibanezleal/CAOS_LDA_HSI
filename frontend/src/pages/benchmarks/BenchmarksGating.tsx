@@ -1,4 +1,5 @@
 import { useQuery, useQueries } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import type { BayesianComparison } from "@/api/client";
 import { Section } from "@/components/Section";
@@ -15,6 +16,7 @@ export function BenchmarksGating() {
 }
 
 function DeepGateSection() {
+  const { t } = useTranslation(["pages"]);
   const queries = useQueries({
     queries: LABELLED_SCENES.map((sc) => ({
       queryKey: ["topic-routed-deep-gate", sc],
@@ -26,10 +28,10 @@ function DeepGateSection() {
   if (!ready) {
     return (
       <Section
-        title="B-3 follow-up — any encoder as gate? raw vs θ-routed vs deep gates"
-        lead="Loading deep-gate payloads…"
+        title={t("pages:benchmarks.gating.deepGate.title")}
+        lead={t("pages:benchmarks.gating.deepGate.loadingLead")}
       >
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.gating.common.loading")}</p>
       </Section>
     );
   }
@@ -72,14 +74,14 @@ function DeepGateSection() {
 
   return (
     <Section
-      title="B-3 follow-up — any encoder as gate? raw vs θ-routed vs deep gates"
-      lead="Five candidate gates compete on per-fold macro F1 across labelled scenes: raw_logistic (no gating), θ_routed (LDA topic mixture, natural Dirichlet simplex), and three deep gates (PCA-8, CAE-1D-8, β-VAE-8) projected onto the simplex via softmax. Tests whether any deep encoder recovers θ's gating advantage."
+      title={t("pages:benchmarks.gating.deepGate.title")}
+      lead={t("pages:benchmarks.gating.deepGate.lead")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
-              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.gating.common.scene")}</th>
               {METHODS.map((m) => (
                 <th key={m.key} className="text-right font-mono text-[12px] pb-2 pr-3">
                   {m.label}
@@ -122,7 +124,7 @@ function DeepGateSection() {
                 className="py-1.5 pr-3 font-mono text-[11px]"
                 style={{ color: "var(--color-text-muted)" }}
               >
-                wins (best per scene)
+                {t("pages:benchmarks.gating.common.winsBestPerScene")}
               </td>
               {METHODS.map((m) => (
                 <td
@@ -138,18 +140,15 @@ function DeepGateSection() {
         </table>
       </div>
       <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-        Honest finding: deep gates with naive softmax-to-simplex projection do <em>not</em>{" "}
-        outperform raw_logistic or θ_routed. raw_logistic wins on most scenes; θ_routed
-        ties or wins where Dirichlet-simplex structure aligns with class topology
-        (e.g. Salinas). The advantage of θ comes from the natural simplex constraint
-        of Dirichlet-distributed topic mixtures, not merely from compressing to K
-        dimensions — softmaxed deep latents fail to recover the gating mechanism.
+        {t("pages:benchmarks.gating.deepGate.finding.part1")} <em>{t("pages:benchmarks.gating.deepGate.finding.not")}</em>{" "}
+        {t("pages:benchmarks.gating.deepGate.finding.part2")}
       </p>
     </Section>
   );
 }
 
 function NeuralTopicComparisonSection() {
+  const { t } = useTranslation(["pages"]);
   const queries = useQueries({
     queries: LABELLED_SCENES.map((sc) => ({
       queryKey: ["neural-topic-comparison", sc],
@@ -168,10 +167,10 @@ function NeuralTopicComparisonSection() {
   if (!ready) {
     return (
       <Section
-        title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM"
-        lead="Loading per-scene neural-topic comparison…"
+        title={t("pages:benchmarks.gating.neuralTopic.title")}
+        lead={t("pages:benchmarks.gating.neuralTopic.loadingLead")}
       >
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.gating.common.loading")}</p>
       </Section>
     );
   }
@@ -236,28 +235,28 @@ function NeuralTopicComparisonSection() {
 
   return (
     <Section
-      title="Neural topic models — head-to-head LDA vs ProdLDA vs ETM"
-      lead="Three neural-style topic models compared on the canonical 220-per-class stratified sample. Two metrics: (1) K-means(theta) ARI vs ground-truth label — clustering quality. (2) c_v topic coherence (Röder 2015 sliding-window, top-15 words) — semantic quality. ProdLDA + ETM cells show mean ± std across N=5 seeds. LDA cell uses the canonical fit (single seed; per-seed LDA stability is in the separate Workspace stability tab). The two metrics tell different stories — coherence ≠ class discriminability on band-frequency vocabularies."
+      title={t("pages:benchmarks.gating.neuralTopic.title")}
+      lead={t("pages:benchmarks.gating.neuralTopic.lead")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
-              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">cls</th>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.gating.common.scene")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.gating.neuralTopic.header.cls")}</th>
               <th
                 className="text-right font-mono text-[12px] pb-2 pr-3"
                 colSpan={3}
                 style={{ borderBottom: "1px solid var(--color-border)" }}
               >
-                ARI vs label
+                {t("pages:benchmarks.gating.neuralTopic.header.ariVsLabel")}
               </th>
               <th
                 className="text-right font-mono text-[12px] pb-2 pr-3"
                 colSpan={3}
                 style={{ borderBottom: "1px solid var(--color-border)" }}
               >
-                c_v coherence (top-15)
+                {t("pages:benchmarks.gating.neuralTopic.header.cvCoherence")}
               </th>
             </tr>
             <tr style={{ color: "var(--color-text-muted)" }}>
@@ -330,7 +329,7 @@ function NeuralTopicComparisonSection() {
             ))}
             <tr style={{ borderTop: "2px solid var(--color-border)" }}>
               <td className="py-1.5 pr-3 font-mono text-[11px]" style={{ color: "var(--color-text-muted)" }} colSpan={2}>
-                wins (best per scene)
+                {t("pages:benchmarks.gating.common.winsBestPerScene")}
               </td>
               {METHODS.map((m) => (
                 <td
@@ -355,23 +354,17 @@ function NeuralTopicComparisonSection() {
         </table>
       </div>
       <p className="mt-3 text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-        <strong>Coherence vs discriminability are NOT the same metric on band-frequency
-        tokens.</strong> ProdLDA wins c_v on every scene (highest semantic coherence among the
-        three) but loses ARI on 4/6 scenes — its topics are internally tight but do not align
-        with class structure. LDA wins ARI on 4/6 scenes (most class-discriminative theta on
-        average) yet loses c_v on every scene. ETM lands between on both axes — slight
-        improvement over ProdLDA on ARI (5/6 wins), slight regression on c_v.
+        <strong>{t("pages:benchmarks.gating.neuralTopic.finding.headline")}</strong>{" "}
+        {t("pages:benchmarks.gating.neuralTopic.finding.body1")}
         <br /><br />
-        <strong>Operational rule</strong>: pick the topic family by the downstream task, not by
-        coherence alone. For class clustering use LDA (or neural fallback when LDA collapses,
-        e.g. KSC). For interpretability / topic-vocabulary cards (Workspace Topics tab) use
-        ProdLDA's higher coherence. ETM is the safe middle if both matter.
+        <strong>{t("pages:benchmarks.gating.neuralTopic.finding.ruleLabel")}</strong>{t("pages:benchmarks.gating.neuralTopic.finding.body2")}
       </p>
     </Section>
   );
 }
 
 function BayesianHdiSection() {
+  const { t } = useTranslation(["pages"]);
   const cls = useQuery({
     queryKey: ["bayesian-classification-labelled"],
     queryFn: () => api.bayesianClassificationLabelled(),
@@ -391,11 +384,11 @@ function BayesianHdiSection() {
   if (!cls.data && !reg.data && !clsDeep.data) {
     return (
       <Section
-        title="Bayesian method comparison — hierarchical NUTS posteriors"
-        lead="Loading PyMC posteriors at 4 chains × 1000 tune + 1000 draws…"
+        title={t("pages:benchmarks.gating.bayesian.title")}
+        lead={t("pages:benchmarks.gating.bayesian.loadingLead")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading…
+          {t("pages:benchmarks.gating.common.loading")}
         </p>
       </Section>
     );
@@ -510,7 +503,7 @@ function BayesianHdiSection() {
           className="mt-2 text-[11.5px]"
           style={{ color: "var(--color-text-muted)" }}
         >
-          {payload.n_observations} observations · {payload.method_posteriors.length} methods · {payload.model_summary}
+          {t("pages:benchmarks.gating.bayesian.forestFooter", { obs: payload.n_observations, methods: payload.method_posteriors.length, summary: payload.model_summary })}
         </p>
       </div>
     );
@@ -518,23 +511,23 @@ function BayesianHdiSection() {
 
   return (
     <Section
-      title="Bayesian method comparison — hierarchical NUTS posteriors"
-      lead="PyMC hierarchical normal model: y ~ N(μ_method + α_scene + γ_fold, σ). Posterior means shown as red dots, HDI94 intervals as blue bars. Methods are ordered by posterior mean. Vertical dashed line at μ=0 is the model-mean reference."
+      title={t("pages:benchmarks.gating.bayesian.title")}
+      lead={t("pages:benchmarks.gating.bayesian.lead")}
     >
       {renderForest(
-        "Classification (labelled scenes, 150 obs)",
+        t("pages:benchmarks.gating.bayesian.forest.classification.title"),
         cls.data,
-        "raw / pca / topic_routed_* HDIs strictly positive; theta_logistic HDI includes 0 — naive theta-flat is statistically indistinguishable from the model mean.",
+        t("pages:benchmarks.gating.bayesian.forest.classification.note"),
       )}
       {renderForest(
-        "Classification with deep gates (labelled scenes, 150 obs)",
+        t("pages:benchmarks.gating.bayesian.forest.classificationDeep.title"),
         clsDeep.data,
-        "B-3 follow-up: gates are raw_logistic vs. θ_routed vs. PCA-8 / CAE-1D-8 / β-VAE-8 routed (deep latents softmaxed to a simplex). raw_logistic dominates θ_routed and all deep gates with P≥0.999; θ_routed dominates every deep gate with P≥0.999. Decisive Bayesian evidence that softmaxed deep latents do NOT recover θ's gating advantage — θ's edge comes from the natural Dirichlet simplex.",
+        t("pages:benchmarks.gating.bayesian.forest.classificationDeep.note"),
       )}
       {renderForest(
-        "Regression (HIDSAG, n≥50 subsets: GEOMET + MINERAL1)",
+        t("pages:benchmarks.gating.bayesian.forest.regression.title"),
         reg.data,
-        "Pool restricted to n≥50 subsets — the three small-n subsets (PORPHYRY R²≈−12500, MINERAL2, GEOCHEM) are excluded because their exploding R² poisoned the earlier pooled posterior. Honest read: pooled across the two valid subsets no method clears zero (raw_ridge highest point estimate, the proposed soft θ-gated ensemble second, statistically indistinguishable). But the soft gate beats its own hard-routing ablation by ~0.44 R² units, and per-subset on GEOMET (n=146) the soft ensemble is the best method (R²=0.307 > raw 0.258). The win is subset-specific, not universal.",
+        t("pages:benchmarks.gating.bayesian.forest.regression.note"),
       )}
     </Section>
   );

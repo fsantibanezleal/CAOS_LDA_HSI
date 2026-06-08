@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useQuery, useQueries } from "@tanstack/react-query";
 import { api } from "@/api/client";
 import { Section } from "@/components/Section";
@@ -18,6 +19,7 @@ export function BenchmarksAxes() {
 }
 
 function SpatialCoherenceSection() {
+  const { t } = useTranslation(["pages"]);
   const subQs = useQueries({
     queries: LABELLED_SCENES.map((sc) => ({
       queryKey: ["topic-spatial-continuous", sc],
@@ -35,8 +37,8 @@ function SpatialCoherenceSection() {
   const ready = subQs.every((q) => q.data || q.error);
   if (!ready) {
     return (
-      <Section title="B-10 spatial coherence — Moran's I + Geary's C" lead="Loading spatial coherence…">
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+      <Section title={t("pages:benchmarks.axes.spatial_title")} lead={t("pages:benchmarks.axes.spatial_loading")}>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.axes.loading")}</p>
       </Section>
     );
   }
@@ -49,18 +51,18 @@ function SpatialCoherenceSection() {
   }));
   return (
     <Section
-      title="B-10 spatial coherence — Moran's I + Geary's C"
-      lead="Per-topic θ_k abundance maps Moran's I + Geary's C with 4-neighbour rook contiguity, mean across topics. Two readings: subsampled (220-per-class basis) and full (full-pixel mask LDA refit). KSC's collapse on the subsampled basis is a pipeline artifact — full-pixel refit recovers spatial coherence."
+      title={t("pages:benchmarks.axes.spatial_title")}
+      lead={t("pages:benchmarks.axes.spatial_lead")}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
-              <th className="text-left font-mono text-[12px] pb-2 pr-3">scene</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">subsampled mean Moran I</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">subsampled mean Geary C</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">full-pixel mean Moran I</th>
-              <th className="text-right font-mono text-[12px] pb-2 pr-3">full-pixel mean Geary C</th>
+              <th className="text-left font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.axes.col_scene")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.axes.spatial_col_sub_moran")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.axes.spatial_col_sub_geary")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.axes.spatial_col_full_moran")}</th>
+              <th className="text-right font-mono text-[12px] pb-2 pr-3">{t("pages:benchmarks.axes.spatial_col_full_geary")}</th>
             </tr>
           </thead>
           <tbody>
@@ -97,16 +99,17 @@ function SpatialCoherenceSection() {
         </table>
       </div>
       <p className="mt-3 text-[12.5px]" style={{ color: "var(--color-text-muted)" }}>
-        Headline: 5/6 scenes show high spatial coherence (mean Moran I ≥ 0.80) on the subsampled basis.
-        KSC drops to 0.064 (red) — but the <strong>full-pixel refit</strong> recovers I = 0.837, demonstrating that
-        KSC's "collapse" is an artifact of stratified 220-per-class sampling on a sparse-class scene, not a fundamental
-        data problem.
+        <Trans
+          i18nKey="pages:benchmarks.axes.spatial_finding"
+          components={{ strong: <strong /> }}
+        />
       </p>
     </Section>
   );
 }
 
 function EndmemberBaselineSection() {
+  const { t } = useTranslation(["pages"]);
   const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
   const { data, error } = useQuery({
     queryKey: ["endmember-baseline", scene],
@@ -115,8 +118,8 @@ function EndmemberBaselineSection() {
   });
   if (!data || error) {
     return (
-      <Section title="B-11 endmember baseline — NFINDR / ATGP vs LDA topics" lead="Loading endmember baseline…">
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+      <Section title={t("pages:benchmarks.axes.endmember_title")} lead={t("pages:benchmarks.axes.endmember_loading")}>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.axes.loading")}</p>
       </Section>
     );
   }
@@ -125,11 +128,15 @@ function EndmemberBaselineSection() {
 
   return (
     <Section
-      title="B-11 endmember baseline — NFINDR / ATGP vs LDA topics"
-      lead={`At K=${data.K}, NFINDR + ATGP endmembers extracted from the canonical labelled-pixel subset (${data.n_pixels_used.toLocaleString()} px, ${data.n_bands} bands). Cosine similarity between LDA topics and NFINDR endmembers — at the same K, both methods land on the same spectral primitives (typical cosine 0.92-1.00).`}
+      title={t("pages:benchmarks.axes.endmember_title")}
+      lead={t("pages:benchmarks.axes.endmember_lead", {
+        K: data.K,
+        nPixels: data.n_pixels_used.toLocaleString(),
+        nBands: data.n_bands,
+      })}
     >
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>Scene:</span>
+        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.axes.scene_label")}</span>
         {LABELLED_SCENES.map((sc) => (
           <button
             key={sc}
@@ -157,7 +164,7 @@ function EndmemberBaselineSection() {
             }}
           >
             <div className="text-[10px] mb-1 font-mono uppercase tracking-wide" style={{ color: "var(--color-text-muted)" }}>
-              {m.replace(/_/g, " ")} RMSE (normalised)
+              {t("pages:benchmarks.axes.endmember_rmse_label", { method: m.replace(/_/g, " ") })}
             </div>
             <div className="font-mono text-[13px]" style={{ color: "var(--color-text)" }}>
               {v.toFixed(4)}
@@ -168,12 +175,12 @@ function EndmemberBaselineSection() {
       {matrix.length > 0 ? (
         <div className="overflow-x-auto">
           <p className="text-[12px] mb-2" style={{ color: "var(--color-text-muted)" }}>
-            Topic × NFINDR endmember cosine matrix:
+            {t("pages:benchmarks.axes.endmember_matrix_label")}
           </p>
           <svg
             viewBox={`0 0 ${matrix[0]!.length * cell + 80} ${matrix.length * cell + 50}`}
             role="img"
-            aria-label="topic × endmember cosine matrix"
+            aria-label={t("pages:benchmarks.axes.endmember_matrix_aria")}
             style={{ maxWidth: "min(100%, 540px)" }}
           >
             {matrix.map((row, i) =>
@@ -228,13 +235,14 @@ function EndmemberBaselineSection() {
         </div>
       ) : null}
       <p className="mt-3 text-[12.5px]" style={{ color: "var(--color-text-muted)" }}>
-        Bright cells = high cosine (topic and endmember spectrally aligned). Diagonal-like pattern = the two methods recover the same spectral primitives. Master-plan position: at the same K, NMF, NFINDR, and LDA all recover comparable spectral structure; what separates them is interpretability and downstream gating utility (B-3, B-7).
+        {t("pages:benchmarks.axes.endmember_finding")}
       </p>
     </Section>
   );
 }
 
 function MutualInfoSection() {
+  const { t } = useTranslation(["pages"]);
   const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
   const { data, error } = useQuery({
     queryKey: ["mutual-information", scene],
@@ -243,8 +251,8 @@ function MutualInfoSection() {
   });
   if (!data || error) {
     return (
-      <Section title="B-4 mutual information — per-feature MI(z; y)" lead="Loading mutual information…">
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Loading…</p>
+      <Section title={t("pages:benchmarks.axes.mi_title")} lead={t("pages:benchmarks.axes.mi_loading")}>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.axes.loading")}</p>
       </Section>
     );
   }
@@ -272,11 +280,11 @@ function MutualInfoSection() {
 
   return (
     <Section
-      title="B-4 mutual information — per-feature MI(z; y)"
-      lead="For each method, MI between every latent feature z_k and the label y. Bright = high MI = informative feature. Per-feature distribution is the right discriminative signal — joint MI clips to label entropy once K is non-degenerate."
+      title={t("pages:benchmarks.axes.mi_title")}
+      lead={t("pages:benchmarks.axes.mi_lead")}
     >
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>Scene:</span>
+        <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>{t("pages:benchmarks.axes.scene_label")}</span>
         {LABELLED_SCENES.map((sc) => (
           <button
             key={sc}
@@ -297,10 +305,14 @@ function MutualInfoSection() {
         className="text-[12px] mb-2"
         style={{ color: "var(--color-text-muted)" }}
       >
-        Label entropy H(Y) = {data.label_entropy_nats.toFixed(3)} nats ({data.label_entropy_bits.toFixed(3)} bits) — the upper bound for joint MI. Top {methods.length} methods sorted by per-feature MI sum.
+        {t("pages:benchmarks.axes.mi_entropy_note", {
+          nats: data.label_entropy_nats.toFixed(3),
+          bits: data.label_entropy_bits.toFixed(3),
+          count: methods.length,
+        })}
       </p>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="MI heatmap" style={{ maxWidth: "min(100%, 760px)" }}>
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("pages:benchmarks.axes.mi_heatmap_aria")} style={{ maxWidth: "min(100%, 760px)" }}>
           {methods.map(([mname, info], i) => {
             const feats = info.per_feature_mi.slice(0, maxCols);
             return (
@@ -347,7 +359,7 @@ function MutualInfoSection() {
             );
           })}
           <text x={labelW + (maxCols * cellW) / 2} y={14} fontSize="11" textAnchor="middle" fill="currentColor" opacity="0.7">
-            feature index k → (capped at {maxCols} for readability)
+            {t("pages:benchmarks.axes.mi_feature_axis", { maxCols })}
           </text>
         </svg>
       </div>
@@ -356,6 +368,7 @@ function MutualInfoSection() {
 }
 
 function RateDistortionSection() {
+  const { t } = useTranslation(["pages"]);
   const [scene, setScene] = useState<string>(LABELLED_SCENES[0]!);
   const { data, error } = useQuery({
     queryKey: ["rate-distortion-curve", scene],
@@ -365,11 +378,11 @@ function RateDistortionSection() {
   if (!data || error) {
     return (
       <Section
-        title="B-2 rate-distortion curve — reconstruction RMSE vs K"
-        lead="Loading rate-distortion curves…"
+        title={t("pages:benchmarks.axes.rate_distortion_title")}
+        lead={t("pages:benchmarks.axes.rate_distortion_loading")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading…
+          {t("pages:benchmarks.axes.loading")}
         </p>
       </Section>
     );
@@ -399,12 +412,12 @@ function RateDistortionSection() {
   };
   return (
     <Section
-      title="B-2 rate-distortion curve — reconstruction RMSE vs K"
-      lead="LDA / NMF / PCA reconstruction RMSE on a 20% held-out test split, across K∈{4, 6, 8, 10, 12, 16}. PCA is the L2-optimal compressor (wins everywhere). NMF a close second. LDA last because it optimises a multinomial likelihood, not L2 RMSE — this is the expected picture and is documented as Axis G."
+      title={t("pages:benchmarks.axes.rate_distortion_title")}
+      lead={t("pages:benchmarks.axes.rate_distortion_lead")}
     >
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <span className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-          Scene:
+          {t("pages:benchmarks.axes.scene_label")}
         </span>
         {LABELLED_SCENES.map((sc) => (
           <button
@@ -423,7 +436,7 @@ function RateDistortionSection() {
         ))}
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H + 30}`} role="img" aria-label="rate-distortion curve">
+      <svg viewBox={`0 0 ${W} ${H + 30}`} role="img" aria-label={t("pages:benchmarks.axes.rate_distortion_aria")}>
         <line x1={padding} y1={H - padding} x2={W - padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
         <line x1={padding} y1={padding} x2={padding} y2={H - padding} stroke="currentColor" strokeWidth="1" />
         {Ks.map((k) => (
@@ -492,6 +505,7 @@ function RateDistortionSection() {
 }
 
 function CrossSceneTransferSection() {
+  const { t } = useTranslation(["pages"]);
   const { data, error } = useQuery({
     queryKey: ["cross-scene-transfer"],
     queryFn: () => api.crossSceneTransfer(),
@@ -500,11 +514,11 @@ function CrossSceneTransferSection() {
   if (!data || error) {
     return (
       <Section
-        title="B-8 cross-scene transfer — fit on A, infer on B"
-        lead="Loading transfer matrix…"
+        title={t("pages:benchmarks.axes.cross_scene_title")}
+        lead={t("pages:benchmarks.axes.cross_scene_loading")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Loading…
+          {t("pages:benchmarks.axes.loading")}
         </p>
       </Section>
     );
@@ -525,14 +539,18 @@ function CrossSceneTransferSection() {
   }
   return (
     <Section
-      title="B-8 cross-scene transfer — fit on A, infer on B"
-      lead={`5 AVIRIS-class scenes resampled to a common ${data.common_wavelength_grid.n_bands}-band ${data.common_wavelength_grid.min_nm}-${data.common_wavelength_grid.max_nm} nm grid. Each cell is the macro-F1 of a 5-fold logistic on θ (LDA fit on row scene, inferred on column scene). Diagonal = within-scene baseline. Pavia U excluded (ROSIS).`}
+      title={t("pages:benchmarks.axes.cross_scene_title")}
+      lead={t("pages:benchmarks.axes.cross_scene_lead", {
+        nBands: data.common_wavelength_grid.n_bands,
+        minNm: data.common_wavelength_grid.min_nm,
+        maxNm: data.common_wavelength_grid.max_nm,
+      })}
     >
       <div className="overflow-x-auto">
         <svg
           viewBox={`0 0 ${labelW + scenes.length * cell + 50} ${headerH + scenes.length * cell + 30}`}
           role="img"
-          aria-label="Cross-scene transfer matrix"
+          aria-label={t("pages:benchmarks.axes.cross_scene_aria")}
           style={{ maxWidth: "min(100%, 760px)" }}
         >
           <text
@@ -543,7 +561,7 @@ function CrossSceneTransferSection() {
             fill="currentColor"
             fontWeight="600"
           >
-            target scene (column)
+            {t("pages:benchmarks.axes.cross_scene_axis_target")}
           </text>
           {scenes.map((s, j) => (
             <text
@@ -617,7 +635,7 @@ function CrossSceneTransferSection() {
             fontWeight="600"
             transform={`rotate(-90, 20, ${headerH + (scenes.length * cell) / 2})`}
           >
-            source scene (row)
+            {t("pages:benchmarks.axes.cross_scene_axis_source")}
           </text>
         </svg>
       </div>
@@ -625,12 +643,7 @@ function CrossSceneTransferSection() {
         className="mt-3 text-[12.5px]"
         style={{ color: "var(--color-text-muted)" }}
       >
-        Diagonal cells (white border) are within-scene F1 — they match the
-        native-grid B-3 numbers within ±0.025, so the resampling is honest.
-        Salinas → Salinas-A = 0.747 is the strongest off-diagonal (same
-        campaign, overlapping fields). KSC's collapsed topics neither transfer
-        well (KSC → others ≤ 0.405) nor receive well (others → KSC ≤ 0.405).
-        Salinas-A is the easiest target (0.65-0.75 from any source — compact 6-class).
+        {t("pages:benchmarks.axes.cross_scene_finding")}
       </p>
     </Section>
   );
@@ -640,6 +653,7 @@ function CrossSceneTransferSection() {
 
 
 function SuperTopicsSection() {
+  const { t } = useTranslation(["pages"]);
   const { data, error } = useQuery({
     queryKey: ["super-topics"],
     queryFn: () => api.superTopics(),
@@ -648,11 +662,11 @@ function SuperTopicsSection() {
   if (error || !data) {
     return (
       <Section
-        title="Cross-scene super-topics (master plan §12)"
-        lead="Hierarchical clustering of every topic across all six labelled scenes on the common 400–2500 nm grid (average linkage on cosine). Reveals which topics group across scenes vs. stay scene-local."
+        title={t("pages:benchmarks.axes.super_topics_title")}
+        lead={t("pages:benchmarks.axes.super_topics_lead_loading")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          super_topics payload not available yet.
+          {t("pages:benchmarks.axes.super_topics_unavailable")}
         </p>
       </Section>
     );
@@ -664,16 +678,21 @@ function SuperTopicsSection() {
   );
   return (
     <Section
-      title="Cross-scene super-topics (master plan §12)"
-      lead={`Hierarchical clustering of all ${data.n_topics_total} topics across ${data.n_scenes} labelled scenes on the common 400–2500 nm grid (average linkage on cosine). Cut level shown: ${cut8.cut_level} → ${cut8.n_clusters} super-topic clusters. Multi-scene clusters identify topics that recur across data sets — what "unites" the scenes.`}
+      title={t("pages:benchmarks.axes.super_topics_title")}
+      lead={t("pages:benchmarks.axes.super_topics_lead", {
+        nTopics: data.n_topics_total,
+        nScenes: data.n_scenes,
+        cutLevel: cut8.cut_level,
+        nClusters: cut8.n_clusters,
+      })}
     >
       <table className="w-full text-sm" style={{ color: "var(--color-text)" }}>
         <thead>
           <tr style={{ color: "var(--color-text-muted)" }}>
-            <th className="text-left font-mono text-[12px] pb-2">cluster</th>
-            <th className="text-left font-mono text-[12px] pb-2">members</th>
-            <th className="text-left font-mono text-[12px] pb-2">scenes</th>
-            <th className="text-left font-mono text-[12px] pb-2">topic ids</th>
+            <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.axes.super_topics_col_cluster")}</th>
+            <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.axes.super_topics_col_members")}</th>
+            <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.axes.super_topics_col_scenes")}</th>
+            <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.axes.super_topics_col_topic_ids")}</th>
           </tr>
         </thead>
         <tbody>

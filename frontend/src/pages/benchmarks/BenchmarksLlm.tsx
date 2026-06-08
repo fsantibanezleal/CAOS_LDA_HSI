@@ -1,4 +1,5 @@
 import { useQueries } from "@tanstack/react-query";
+import { Trans, useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { Section } from "@/components/Section";
 import { LABELLED_SCENES } from "./shared";
@@ -12,6 +13,7 @@ export function BenchmarksLlm() {
 }
 
 function LlmTeaLeavesSection() {
+  const { t } = useTranslation(["pages"]);
   const queries = useQueries({
     queries: LABELLED_SCENES.map((sceneId) => ({
       queryKey: ["llm-tea-leaves", sceneId],
@@ -26,12 +28,14 @@ function LlmTeaLeavesSection() {
   if (ready.length === 0) {
     return (
       <Section
-        title="B-12 — LLM tea-leaves (Stammbach et al. TACL 2024)"
-        lead="Word-intrusion + coherent-label probes via Anthropic Claude. Builder is gated by ANTHROPIC_API_KEY; outputs land in data/derived/llm_tea_leaves once the env var is set and the builder is run."
+        title={t("pages:benchmarks.llm.empty.title")}
+        lead={t("pages:benchmarks.llm.empty.lead")}
       >
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          No scenes evaluated yet. Set <code className="font-mono">ANTHROPIC_API_KEY</code>{" "}
-          and run <code className="font-mono">build-b12-llm-tea-leaves</code> to populate.
+          <Trans
+            i18nKey="pages:benchmarks.llm.empty.note"
+            components={{ code: <code className="font-mono" /> }}
+          />
         </p>
       </Section>
     );
@@ -39,8 +43,8 @@ function LlmTeaLeavesSection() {
 
   return (
     <Section
-      title="B-12 — LLM tea-leaves (Stammbach et al. 2023, EMNLP)"
-      lead="Per-scene word-intrusion accuracy + per-topic LLM-generated labels. Higher intrusion accuracy means the LLM correctly identifies the foreign word slipped into each topic's top-10 — a coherence signal that correlates with NPMI in prior work. Outputs shipped here are the deterministic Claude Opus 4.7 self-judgment stand-in (see model column); a full API-driven run via build_b12_llm_tea_leaves.py is also implemented for external reproduction."
+      title={t("pages:benchmarks.llm.section.title")}
+      lead={t("pages:benchmarks.llm.section.lead")}
     >
       <div className="space-y-6">
         <table
@@ -49,12 +53,12 @@ function LlmTeaLeavesSection() {
         >
           <thead>
             <tr style={{ color: "var(--color-text-muted)" }}>
-              <th className="text-left font-mono text-[12px] pb-2">scene</th>
-              <th className="text-left font-mono text-[12px] pb-2">topics</th>
+              <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.llm.table.scene")}</th>
+              <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.llm.table.topics")}</th>
               <th className="text-left font-mono text-[12px] pb-2">
-                intrusion accuracy
+                {t("pages:benchmarks.llm.table.intrusionAccuracy")}
               </th>
-              <th className="text-left font-mono text-[12px] pb-2">model</th>
+              <th className="text-left font-mono text-[12px] pb-2">{t("pages:benchmarks.llm.table.model")}</th>
             </tr>
           </thead>
           <tbody>
@@ -87,17 +91,17 @@ function LlmTeaLeavesSection() {
             }}
           >
             <summary className="cursor-pointer font-mono text-[13px]">
-              {sceneId} — per-topic LLM labels
+              {t("pages:benchmarks.llm.detail.summary", { sceneId })}
             </summary>
             <ul className="mt-2 space-y-1 text-sm">
               {data!.per_topic.map((tt) => (
                 <li key={tt.topic_id} className="font-mono text-[12.5px]">
                   <span style={{ color: "var(--color-text-muted)" }}>
-                    topic {tt.topic_id}
+                    {t("pages:benchmarks.llm.detail.topic", { topicId: tt.topic_id })}
                   </span>{" "}
                   {tt.skipped ? (
                     <span style={{ color: "var(--color-text-muted)" }}>
-                      — skipped ({tt.reason})
+                      {t("pages:benchmarks.llm.detail.skipped", { reason: tt.reason })}
                     </span>
                   ) : (
                     <>
@@ -110,7 +114,7 @@ function LlmTeaLeavesSection() {
                       >
                         [{tt.intrusion_correct ? "✓" : "✗"}]
                       </span>{" "}
-                      {tt.llm_label || "(no label)"}
+                      {tt.llm_label || t("pages:benchmarks.llm.detail.noLabel")}
                     </>
                   )}
                 </li>
