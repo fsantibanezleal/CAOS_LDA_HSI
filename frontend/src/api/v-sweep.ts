@@ -98,6 +98,8 @@ export type VSweepHdpRecord = {
   T_truncation: number;
   K_inferred_total: number;
   K_effective: number;
+  N_eff_topics?: number | null;
+  topic_prevalence_top5?: number[] | null;
   K_ground_truth_classes: number;
   f16_model_selection_adequacy: number | null;
   f2_c_v: number;
