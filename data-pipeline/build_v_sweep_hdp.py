@@ -104,23 +104,29 @@ def fit_hdp(doc_term: sp.csr_matrix, scene_id: str, recipe: str):
         phi = np.concatenate([phi, pad], axis=1)
     K_inferred = phi.shape[0]
 
-    # Topic prevalence via projecting the corpus through the inferred HDP
-    # and counting topics that hold meaningful posterior mass. gensim's
-    # HdpModel doesn't expose theta directly; we approximate prevalence
-    # by the L1-norm of each topic's word distribution after subtracting
-    # the uniform baseline, then count topics whose prevalence is at
-    # least 5% of the maximum. This better tracks the 'effective' K than
-    # truncation level alone.
-    if phi.shape[1] > 0:
-        uniform = 1.0 / phi.shape[1]
-        deviation = np.abs(phi - uniform).sum(axis=1)  # L1 from uniform
-        if deviation.max() > 0:
-            normalised = deviation / deviation.max()
-            K_effective = int((normalised > 0.05).sum())
-        else:
-            K_effective = 0
+    # Topic prevalence: project the corpus through the inferred HDP and
+    # accumulate per-topic posterior MASS — the token-weighted sum of the
+    # per-document topic proportions theta_d (gensim hdp[doc] returns the
+    # variational document-topic distribution). This is corpus-level topic
+    # USAGE (Teh-Jordan-Beal-Blei 2006 top-level prevalence), NOT the
+    # word-distribution peakedness of phi. We then count topics holding at
+    # least 1% of the total corpus mass, and also report the perplexity-
+    # style effective topic count N_eff = exp(H(pi)).
+    mass = np.zeros(K_inferred, dtype=np.float64)
+    doc_lens = np.asarray(doc_term.sum(axis=1)).ravel().astype(np.float64)
+    for d in range(D):
+        for topic_id, prob in hdp[corpus[d]]:
+            if 0 <= topic_id < K_inferred:
+                mass[topic_id] += doc_lens[d] * prob
+    total_mass = mass.sum()
+    if total_mass > 0:
+        pi = mass / total_mass
+        K_effective = int((pi > 0.01).sum())
+        nz = pi[pi > 0]
+        N_eff_topics = float(np.exp(-(nz * np.log(nz)).sum()))
     else:
         K_effective = 0
+        N_eff_topics = 0.0
 
     n_classes = CLASS_COUNTS.get(scene_id, 0)
     f16 = abs(K_effective - n_classes) if n_classes else None
@@ -176,6 +182,7 @@ def fit_hdp(doc_term: sp.csr_matrix, scene_id: str, recipe: str):
         "backbone": "HDP",
         "T_truncation": 20, "K_inferred_total": int(K_inferred),
         "K_effective": int(K_effective),
+        "N_eff_topics": round(N_eff_topics, 4),
         "K_ground_truth_classes": n_classes,
         "f16_model_selection_adequacy": f16,
         "f2_c_v": round(c_v, 6),

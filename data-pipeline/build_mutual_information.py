@@ -81,7 +81,11 @@ def total_mi_classif(X: np.ndarray, y: np.ndarray) -> dict:
     per_feat = mutual_info_classif(X, y, random_state=RANDOM_STATE)
     H_y = label_entropy(y)
     sum_mi = float(per_feat.sum())
-    # Joint MI is bounded above by H(Y); per-feature sum overestimates.
+    # I(X;Y) <= H(Y) always, so clip the per-feature MI sum to H(Y). NOTE:
+    # sum_i I(X_i;Y) is only a heuristic for the joint MI — it over-estimates
+    # under feature redundancy but UNDER-estimates under synergy (e.g. XOR,
+    # where each I(X_i;Y)=0 yet I(X;Y)=H(Y)). So this is a proxy, not a bound
+    # from the sum side; only the H(Y) clip guarantees the upper bound.
     joint_proxy = min(sum_mi, H_y)
     return {
         "label_entropy_nats": round(float(H_y), 6),

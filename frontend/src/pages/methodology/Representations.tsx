@@ -80,9 +80,9 @@ const METHODS: MethodEntry[] = [
     id: "etm",
     family: "neural-topic",
     equations: [
-      "\\beta_k = \\rho \\cdot \\alpha_k^\\top \\in \\mathbb{R}^V",
+      "\\beta_k = \\text{softmax}(\\rho^\\top \\alpha_k) \\in \\Delta^{V-1}",
       "q_\\phi(\\theta \\mid w) = \\mathcal{N}(\\mu_\\phi(w), \\Sigma_\\phi(w))",
-      "p(w \\mid \\theta, \\rho, \\alpha) = \\text{softmax}(\\theta^\\top \\beta)",
+      "p(w \\mid \\theta, \\rho, \\alpha) = \\sum_k \\theta_k\\, \\beta_k = \\beta\\theta",
     ],
   },
   {
@@ -457,7 +457,7 @@ export default function MethodologyRepresentations() {
             <strong>Quantile (Q)</strong>: empirical-quantile bins so each cell receives 1/Q of the corpus mass. Equalises token frequencies; the variant the project defaults to for V1.
           </li>
           <li>
-            <strong>Lloyd-Max (L)</strong>: K-means in 1D over the corpus values — minimises mean-square quantisation error. Optimal under the 1/(12·Q²) bound (Gersho-Gray 1992) when values are approximately uniform inside each cell.
+            <strong>Lloyd-Max (L)</strong>: K-means in 1D over the corpus values — the MSE-optimal Q-level quantiser for the empirical value density (Lloyd 1957 / Max 1960), satisfying the centroid and nearest-neighbour conditions. Its high-resolution distortion follows the Panter-Dite integral ∝ (∫ f<sup>1/3</sup>)³ / (12·Q²), which is ≤ the uniform-quantiser figure Δ²/12 = 1/(12·Q²) (range normalised to 1) — equality only when values are uniform over the range.
           </li>
         </ul>
         <p
