@@ -1587,7 +1587,7 @@
   },
   "benchmarks": {
     "title": "Benchmarks",
-    "lead": "16+ paneles organizados por eje del framework Addendum B. Usa los tabs para saltar al grupo que te interesa. URL con #hash permite compartir un tab específico.",
+    "lead": "24 paneles organizados por eje del framework Addendum B. Usa los tabs para saltar al grupo que te interesa. URL con #hash permite compartir un tab específico.",
     "tabs": {
       "summary": "Resumen",
       "summary_tag": "Batería multi-eje + baselines",

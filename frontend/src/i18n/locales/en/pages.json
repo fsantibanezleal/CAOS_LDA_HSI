@@ -1587,7 +1587,7 @@
   },
   "benchmarks": {
     "title": "Benchmarks",
-    "lead": "16+ panels organised by Addendum B axis. Use the tabs to jump to the group you want. URL #hash allows sharing a specific tab.",
+    "lead": "24 panels organised by Addendum B axis. Use the tabs to jump to the group you want. URL #hash allows sharing a specific tab.",
     "tabs": {
       "summary": "Summary",
       "summary_tag": "Multi-axis battery + baselines",
