@@ -104,29 +104,32 @@ def fit_hdp(doc_term: sp.csr_matrix, scene_id: str, recipe: str):
         phi = np.concatenate([phi, pad], axis=1)
     K_inferred = phi.shape[0]
 
-    # Topic prevalence: project the corpus through the inferred HDP and
-    # accumulate per-topic posterior MASS — the token-weighted sum of the
-    # per-document topic proportions theta_d (gensim hdp[doc] returns the
-    # variational document-topic distribution). This is corpus-level topic
-    # USAGE (Teh-Jordan-Beal-Blei 2006 top-level prevalence), NOT the
-    # word-distribution peakedness of phi. We then count topics holding at
-    # least 1% of the total corpus mass, and also report the perplexity-
-    # style effective topic count N_eff = exp(H(pi)).
-    mass = np.zeros(K_inferred, dtype=np.float64)
-    doc_lens = np.asarray(doc_term.sum(axis=1)).ravel().astype(np.float64)
-    for d in range(D):
-        for topic_id, prob in hdp[corpus[d]]:
-            if 0 <= topic_id < K_inferred:
-                mass[topic_id] += doc_lens[d] * prob
-    total_mass = mass.sum()
+    # Topic prevalence: the corpus-level expected topic weights are the HDP
+    # top-level stick-breaking proportions (Teh-Jordan-Beal-Blei 2006), which
+    # gensim exposes as the converted-LDA alpha via hdp_to_lda(). This is the
+    # canonical corpus-level topic USAGE, NOT the word-distribution peakedness
+    # of phi (the previous, wrong, L1-from-uniform proxy). We deliberately use
+    # the top-level sticks rather than averaging the per-document __getitem__
+    # projection, whose variational inference is unstable on these corpora and
+    # collapses onto a single topic for several scenes. We count topics holding
+    # >= 1% of corpus mass and report the perplexity-style effective topic
+    # count N_eff = exp(H(pi)).
+    try:
+        lda_alpha, _ = hdp.hdp_to_lda()
+        alpha = np.asarray(lda_alpha, dtype=np.float64)[:K_inferred]
+    except Exception:
+        alpha = np.zeros(K_inferred, dtype=np.float64)
+    total_mass = alpha.sum()
     if total_mass > 0:
-        pi = mass / total_mass
+        pi = alpha / total_mass
         K_effective = int((pi > 0.01).sum())
         nz = pi[pi > 0]
         N_eff_topics = float(np.exp(-(nz * np.log(nz)).sum()))
+        prevalence_top5 = [round(float(x), 6) for x in np.sort(pi)[::-1][:5]]
     else:
         K_effective = 0
         N_eff_topics = 0.0
+        prevalence_top5 = []
 
     n_classes = CLASS_COUNTS.get(scene_id, 0)
     f16 = abs(K_effective - n_classes) if n_classes else None
@@ -189,7 +192,7 @@ def fit_hdp(doc_term: sp.csr_matrix, scene_id: str, recipe: str):
         "f14_mean_pairwise_jaccard": round(mean_jacc, 6),
         "fit_seconds": round(fit_secs, 3),
         "D": int(D), "V": int(V),
-        "topic_deviation_top5": [round(float(x), 6) for x in sorted(deviation)[::-1][:5]] if phi.shape[1] > 0 else [],
+        "topic_prevalence_top5": prevalence_top5,
         "generated_at": datetime.now(timezone.utc)
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),

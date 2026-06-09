@@ -6,21 +6,22 @@
   "backbone": "HDP",
   "T_truncation": 20,
   "K_inferred_total": 20,
-  "K_effective": 20,
+  "K_effective": 3,
+  "N_eff_topics": 1.5326,
   "K_ground_truth_classes": 9,
-  "f16_model_selection_adequacy": 11,
+  "f16_model_selection_adequacy": 6,
   "f2_c_v": 0.609879,
   "f14_mean_pairwise_jaccard": 0.048567,
-  "fit_seconds": 0.9,
+  "fit_seconds": 0.881,
   "D": 1980,
   "V": 103,
-  "topic_mass_top5": [
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    1.0
+  "topic_prevalence_top5": [
+    0.929698,
+    0.014589,
+    0.013651,
+    0.008624,
+    0.008164
   ],
-  "generated_at": "2026-05-27T03:34:39Z",
+  "generated_at": "2026-06-09T06:39:48Z",
   "builder": "build_v_sweep_hdp v0.1"
 }
