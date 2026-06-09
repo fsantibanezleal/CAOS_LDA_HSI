@@ -290,9 +290,6 @@ export type TopicToData = {
 };
 
 export const api = {
-  health: () => request<{ status: string }>("/api/healthz"),
-  appData: () => request<unknown>("/api/app-data"),
-  manifest: () => request<unknown>("/api/manifest"),
   inventory: () => request<DatasetInventory>("/api/local-dataset-inventory"),
   methodStatistics: () => request<MethodStatistics>("/api/method-statistics"),
   edaPerScene: (sceneId: string) =>
