@@ -1569,6 +1569,20 @@
       "corr_title": "Pearson correlation between geochemistry targets",
       "corr_lead": "Blue = positive correlation, red = negative. First {{count}} targets shown. Strong off-diagonal pairs (|ρ| ≥ 0.5) indicate redundancy / co-located mineralisation.",
       "corr_aria": "Pearson correlation matrix of HIDSAG geochemistry targets"
+    },
+    "spectral_library": {
+      "loading": "Loading reference spectra…",
+      "error": "Could not load the spectral library.",
+      "header": "Reference spectra · {{n}} materials · {{bands}} bands",
+      "blurb": "Reflectance vs wavelength, coloured by material group. Click a material below to highlight it and see how its spectrum becomes wordification tokens. Source: {{source}}.",
+      "svg_aria": "USGS reference reflectance spectra by material group",
+      "axis_wavelength": "wavelength (nm)",
+      "axis_reflectance": "refl.",
+      "materials_picker": "materials — click to inspect",
+      "sample_meta": "· {{group}} · {{sensor}}",
+      "explainer": "How this spectrum becomes an LDA \"document\": each band's reflectance is quantised, then named as a token. These tokens are the words the topic model sees.",
+      "band_tokens_label": "quantised band tokens (preview)",
+      "absorption_tokens_label": "absorption-feature tokens"
     }
   },
   "benchmarks": {
