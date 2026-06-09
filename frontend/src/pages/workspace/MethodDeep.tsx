@@ -178,7 +178,7 @@ export default function MethodDeep() {
   );
 }
 
-type AxisTab = "fit" | "f1" | "f2" | "f7" | "reliability" | "backbones" | "interp";
+type AxisTab = "fit" | "f1" | "f2" | "f7" | "reliability" | "backbones" | "interp" | "modelsel";
 
 // For each metric, "higher" = true if higher value is preferred. F-14 (jaccard
 // repetitiveness) is the only "lower is better" axis surfaced in the panel.
@@ -197,6 +197,7 @@ const HIGHER_IS_BETTER: Record<string, boolean> = {
   hdp_cv: true,
   prodlda_cv: true,
   etm_cv: true,
+  f16: false,
 };
 
 function diffColor(a: number | null | undefined, b: number | null | undefined, metric: string): string {
@@ -216,6 +217,7 @@ const AXIS_TABS: Array<{ id: AxisTab; label: string; title: string }> = [
   { id: "reliability", label: "Reliability", title: "F-14 repetitiveness, F-18 seed-pair top-10 alignment" },
   { id: "interp", label: "Interp", title: "F-13 SHAP top-feature, F-22 counterfactual L1 to flip argmax topic" },
   { id: "backbones", label: "Backbones", title: "F-2 c_v under HDP / ProdLDA / ETM backbones" },
+  { id: "modelsel", label: "F-16", title: "HDP model-selection adequacy: effective topic count (top-level stick prevalence) vs #classes" },
 ];
 
 function SweepPanelPlaceholder({
@@ -473,6 +475,45 @@ function SweepPanelPlaceholder({
                 </th>
               </>
             )}
+            {tab === "modelsel" && (
+              <>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="HDP effective topic count: #topics holding ≥1% of corpus mass under the top-level stick-breaking prevalence (hdp_to_lda)"
+                >
+                  HDP K_eff
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="Perplexity-style effective number of topics N_eff = exp(H(π)) over the corpus topic-prevalence vector π"
+                >
+                  N_eff
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="Dominant topic share: prevalence mass of the single most-used topic (topic_prevalence_top5[0])"
+                >
+                  top share
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="Number of ground-truth classes for the scene"
+                >
+                  #classes
+                </th>
+                <th
+                  className="text-right px-3 py-1.5 border"
+                  style={{ borderColor: "var(--color-border)" }}
+                  title="F-16 model-selection adequacy = |K_eff − #classes| (lower is better)"
+                >
+                  F-16 |Δ|
+                </th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -594,6 +635,25 @@ function SweepPanelPlaceholder({
                     </td>
                     <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
                       {diffCell(s.etm?.f2_c_v, cs?.etm?.f2_c_v, 3, "etm_cv")}
+                    </td>
+                  </>
+                )}
+                {tab === "modelsel" && (
+                  <>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.hdp?.K_effective ?? null, cs?.hdp?.K_effective ?? null, 0, "hdp_keff")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.hdp?.N_eff_topics ?? null, cs?.hdp?.N_eff_topics ?? null, 2, "hdp_neff")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.hdp?.topic_prevalence_top5?.[0] ?? null, cs?.hdp?.topic_prevalence_top5?.[0] ?? null, 3, "hdp_topshare")}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {fmt(s.hdp?.K_ground_truth_classes ?? null, 0)}
+                    </td>
+                    <td className="px-3 py-1 border text-right" style={{ borderColor: "var(--color-border)" }}>
+                      {diffCell(s.hdp?.f16_model_selection_adequacy ?? null, cs?.hdp?.f16_model_selection_adequacy ?? null, 0, "f16")}
                     </td>
                   </>
                 )}
