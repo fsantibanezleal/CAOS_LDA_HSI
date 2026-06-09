@@ -7,20 +7,21 @@
   "T_truncation": 20,
   "K_inferred_total": 20,
   "K_effective": 20,
+  "N_eff_topics": 19.9375,
   "K_ground_truth_classes": 16,
   "f16_model_selection_adequacy": 4,
   "f2_c_v": 0.625962,
   "f14_mean_pairwise_jaccard": 0.028599,
-  "fit_seconds": 0.712,
+  "fit_seconds": 1.173,
   "D": 2812,
   "V": 171,
-  "topic_deviation_top5": [
-    0.789704,
-    0.781107,
-    0.762018,
-    0.757713,
-    0.741741
+  "topic_prevalence_top5": [
+    0.056901,
+    0.056049,
+    0.053206,
+    0.052815,
+    0.052246
   ],
-  "generated_at": "2026-05-28T03:06:48Z",
+  "generated_at": "2026-06-09T06:38:41Z",
   "builder": "build_v_sweep_hdp v0.1"
 }
