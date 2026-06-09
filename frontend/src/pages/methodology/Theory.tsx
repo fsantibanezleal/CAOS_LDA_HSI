@@ -255,8 +255,8 @@ export default function MethodologyTheory() {
           disagreement. The project's F-3 axis reports ARI(KMeans on θ,
           ground-truth label). Companion measures:{" "}
           <strong>Normalised Mutual Information (NMI)</strong>{" "}
-          <Equation tex="\mathrm{NMI}(U, V) = \mathrm{I}(U; V) / \mathrm{mean}(\mathrm{H}(U), \mathrm{H}(V))" />
-          {" "}(Strehl &amp; Ghosh 2002), and{" "}
+          <Equation tex="\mathrm{NMI}(U, V) = \mathrm{I}(U; V) / \sqrt{\mathrm{H}(U)\,\mathrm{H}(V)}" />
+          {" "}(geometric-mean normalisation, Strehl &amp; Ghosh 2002), and{" "}
           <strong>V-measure</strong>{" "}
           <Equation tex="\mathrm{V} = \frac{2 \cdot h \cdot c}{h + c}" />,
           the harmonic mean of homogeneity{" "}

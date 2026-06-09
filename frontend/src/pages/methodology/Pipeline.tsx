@@ -243,8 +243,12 @@ export default function MethodologyPipeline() {
           tex="I_k = \frac{N}{S_0} \cdot \frac{\sum_{i} \sum_{j} W_{ij} (\theta_{i,k} - \bar{\theta}_k)(\theta_{j,k} - \bar{\theta}_k)}{\sum_{i} (\theta_{i,k} - \bar{\theta}_k)^2}, \quad S_0 = \sum_{i,j} W_{ij}."
         />
         <p>
-          <Equation tex="I_k \in [-1, 1]" /> measures how strongly the
-          per-pixel topic weight is spatially clustered. A topic that
+          <Equation tex="I_k" /> measures how strongly the
+          per-pixel topic weight is spatially clustered — typically in
+          roughly <Equation tex="[-1, 1]" /> with null expectation{" "}
+          <Equation tex="\mathbb{E}[I_k] = -1/(N-1)" /> (its exact extremes
+          are the min/max eigenvalues of the centred, symmetrised weight
+          matrix and may fall slightly outside this range). A topic that
           captures a contiguous mineral assemblage shows{" "}
           <Equation tex="I_k \approx 0.6\text{–}0.9" /> on HIDSAG MINERAL1;
           a noisy / over-fragmented topic falls below 0.2. The Workspace{" "}
