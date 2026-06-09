@@ -1569,6 +1569,20 @@
       "corr_title": "Correlación de Pearson entre objetivos geoquímicos",
       "corr_lead": "Azul = correlación positiva, rojo = negativa. Se muestran los primeros {{count}} objetivos. Pares fuertes fuera de la diagonal (|ρ| ≥ 0.5) indican redundancia / mineralización co-localizada.",
       "corr_aria": "Matriz de correlación de Pearson de objetivos geoquímicos HIDSAG"
+    },
+    "spectral_library": {
+      "loading": "Cargando espectros de referencia…",
+      "error": "No se pudo cargar la biblioteca espectral.",
+      "header": "Espectros de referencia · {{n}} materiales · {{bands}} bandas",
+      "blurb": "Reflectancia vs longitud de onda, coloreada por grupo de material. Haz clic en un material abajo para resaltarlo y ver cómo su espectro se convierte en tokens de wordification. Fuente: {{source}}.",
+      "svg_aria": "Espectros de reflectancia de referencia USGS por grupo de material",
+      "axis_wavelength": "longitud de onda (nm)",
+      "axis_reflectance": "refl.",
+      "materials_picker": "materiales — haz clic para inspeccionar",
+      "sample_meta": "· {{group}} · {{sensor}}",
+      "explainer": "Cómo este espectro se convierte en un «documento» LDA: la reflectancia de cada banda se cuantiza y luego se nombra como un token. Estos tokens son las palabras que ve el modelo de tópicos.",
+      "band_tokens_label": "tokens de banda cuantizados (vista previa)",
+      "absorption_tokens_label": "tokens de rasgos de absorción"
     }
   },
   "benchmarks": {

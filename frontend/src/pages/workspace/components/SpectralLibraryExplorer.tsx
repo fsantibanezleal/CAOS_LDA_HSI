@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { request } from "@/api/_http";
 
 // Interactive viz for the individual-spectra families (USGS splib07,
@@ -38,6 +39,7 @@ const PADT = 12;
 const PADB = 34;
 
 export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
+  const { t } = useTranslation(["pages"]);
   const q = useQuery({
     queryKey: ["spectral-library", datasetId],
     queryFn: () =>
@@ -58,7 +60,7 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
 
   if (q.isLoading)
     return (
-      <p style={{ color: "var(--color-fg-faint)" }}>Loading reference spectra…</p>
+      <p style={{ color: "var(--color-fg-faint)" }}>{t("pages:workspace.spectral_library.loading")}</p>
     );
   if (q.error || !q.data)
     return (
@@ -66,7 +68,7 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
         className="rounded-lg border p-5"
         style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)" }}
       >
-        <p style={{ color: "var(--color-warn)" }}>Could not load the spectral library.</p>
+        <p style={{ color: "var(--color-warn)" }}>{t("pages:workspace.spectral_library.error")}</p>
       </div>
     );
 
@@ -100,12 +102,10 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
       >
         <header className="mb-2">
           <h4 className="text-base font-semibold tracking-tight" style={{ color: "var(--color-fg)" }}>
-            Reference spectra · {samples.length} materials · {wl.length} bands
+            {t("pages:workspace.spectral_library.header", { n: samples.length, bands: wl.length })}
           </h4>
           <p className="text-[12.5px]" style={{ color: "var(--color-fg-faint)" }}>
-            Reflectance vs wavelength, coloured by material group. Click a material
-            below to highlight it and see how its spectrum becomes wordification
-            tokens. Source: {q.data.source}.
+            {t("pages:workspace.spectral_library.blurb", { source: q.data.source })}
           </p>
         </header>
 
@@ -113,7 +113,7 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
           width="100%"
           viewBox={`0 0 ${W} ${H}`}
           role="img"
-          aria-label="USGS reference reflectance spectra by material group"
+          aria-label={t("pages:workspace.spectral_library.svg_aria")}
           style={{ color: "var(--color-fg)", display: "block", backgroundColor: "var(--color-bg)", borderRadius: 6 }}
         >
           {/* axes */}
@@ -128,9 +128,9 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
             </g>
           ))}
           <text x={(PADL + W - PADR) / 2} y={H - 4} textAnchor="middle" fontSize="10.5" fill="var(--color-fg-faint)">
-            wavelength (nm)
+            {t("pages:workspace.spectral_library.axis_wavelength")}
           </text>
-          <text x={12} y={PADT + 8} fontSize="10.5" fill="var(--color-fg-faint)">refl.</text>
+          <text x={12} y={PADT + 8} fontSize="10.5" fill="var(--color-fg-faint)">{t("pages:workspace.spectral_library.axis_reflectance")}</text>
 
           {/* faint: all visible spectra */}
           {visible.map((s) => (
@@ -177,7 +177,7 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
         style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
       >
         <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: "var(--color-fg-faint)" }}>
-          materials — click to inspect
+          {t("pages:workspace.spectral_library.materials_picker")}
         </div>
         <div className="flex flex-wrap gap-1.5">
           {samples.map((s) => (
@@ -206,17 +206,18 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
           style={{ borderColor: "var(--color-border)", backgroundColor: "var(--color-panel)", boxShadow: "var(--color-shadow)" }}
         >
           <h4 className="text-sm font-semibold mb-1" style={{ color: "var(--color-fg)" }}>
-            {sel.name} <span className="font-normal" style={{ color: "var(--color-fg-faint)" }}>· {sel.group} · {sel.sensor}</span>
+            {sel.name}{" "}
+            <span className="font-normal" style={{ color: "var(--color-fg-faint)" }}>
+              {t("pages:workspace.spectral_library.sample_meta", { group: sel.group, sensor: sel.sensor })}
+            </span>
           </h4>
           <p className="text-[12px] mb-2" style={{ color: "var(--color-fg-faint)" }}>
-            How this spectrum becomes an LDA "document": each band's reflectance is
-            quantised, then named as a token. These tokens are the words the topic
-            model sees.
+            {t("pages:workspace.spectral_library.explainer")}
           </p>
           {sel.token_preview && sel.token_preview.length > 0 && (
             <div className="mb-2">
               <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "var(--color-fg-faint)" }}>
-                quantised band tokens (preview)
+                {t("pages:workspace.spectral_library.band_tokens_label")}
               </div>
               <div className="flex flex-wrap gap-1">
                 {sel.token_preview.slice(0, 40).map((tk, i) => (
@@ -231,7 +232,7 @@ export function SpectralLibraryExplorer({ datasetId }: { datasetId: string }) {
           {sel.absorption_tokens && sel.absorption_tokens.length > 0 && (
             <div>
               <div className="text-[10px] uppercase tracking-widest font-semibold mb-1" style={{ color: "var(--color-fg-faint)" }}>
-                absorption-feature tokens
+                {t("pages:workspace.spectral_library.absorption_tokens_label")}
               </div>
               <div className="flex flex-wrap gap-1">
                 {sel.absorption_tokens.map((tk, i) => (
