@@ -1043,7 +1043,7 @@
         "picker_axis": "eje",
         "axis_help_f1": "macro-F1 de clasificación (topic-routed soft, media por fold) — más alto es mejor",
         "axis_help_f2": "coherencia tópico-palabra c_v — más alto es mejor",
-        "axis_help_f7": "información mutua normalizada tópico-etiqueta — más alto es mejor",
+        "axis_help_f7": "información mutua tópico-etiqueta normalizada por la entropía de la etiqueta, I(Ẑ;Y)/H(Y) — el coeficiente de incertidumbre asimétrico (completeness de Rosenberg–Hirschberg), no la NMI simétrica ni corregida por azar; más alto es mejor",
         "axis_help_f14": "Jaccard medio por pares de top-tokens (repetitividad) — más bajo es mejor",
         "axis_help_f18": "coseno medio de tópicos emparejados por semilla (fiabilidad) — más alto es mejor",
         "axis_help_f22": "L1 mediana contrafactual para cambiar el tópico argmax (robustez) — más alto es mejor",
