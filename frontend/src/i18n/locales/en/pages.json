@@ -1043,7 +1043,7 @@
         "picker_axis": "axis",
         "axis_help_f1": "classification macro-F1 (topic-routed soft, per-fold mean) — higher is better",
         "axis_help_f2": "topic-word coherence c_v — higher is better",
-        "axis_help_f7": "topic-to-label normalised mutual information — higher is better",
+        "axis_help_f7": "topic-to-label mutual information normalised by the label entropy, I(Ẑ;Y)/H(Y) — the asymmetric uncertainty coefficient (Rosenberg–Hirschberg completeness), not the symmetric NMI and not chance-corrected; higher is better",
         "axis_help_f14": "mean pairwise top-token Jaccard (repetitiveness) — lower is better",
         "axis_help_f18": "mean seed-matched topic cosine (reliability) — higher is better",
         "axis_help_f22": "counterfactual median L1 to flip argmax topic (robustness) — higher is better",
