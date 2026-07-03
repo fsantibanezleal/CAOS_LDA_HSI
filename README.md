@@ -1,5 +1,9 @@
 # CAOS LDA HSI
 
+[![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_LDA_HSI/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_LDA_HSI/actions)
+[![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_LDA_HSI)](LICENSE)
+[![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://lda-hsi.fasl-work.com)
+
 CAOS LDA HSI is a local-first research and validation repository for
 **probabilistic topic modelling, deep representation learning, and
 hierarchical Bayesian comparison** over multispectral and hyperspectral
@@ -202,8 +206,7 @@ visually and the Bayesian endpoints make decisive:
 ### Frontend cycles 100–108 (Step 3-8 closure + smoke hardening)
 
 After the analytical surface stabilised at cycles 51–63, cycles
-100–108 closed every remaining gap in the Workspace 8-step flow
-(`_CAOS_MANAGE/wip/caos-lda-hsi/web-app-spec.md`):
+100–108 closed every remaining gap in the Workspace 8-step flow:
 
 - **c100** — FalseColorBandPicker (Step 4 raw RGB) with 4
   scientific presets: True colour 660/550/450, Vegetation NIR
@@ -451,12 +454,6 @@ CAOS_LDA_HSI/
   - [`docs/sources.md`](docs/sources.md) — citations and dataset URLs
   - [`docs/technical-roadmap.md`](docs/technical-roadmap.md) — pre-Addendum-B roadmap (kept for context)
 
-- Operational state (private, sibling repo `_CAOS_MANAGE`):
-  - `wip/caos-lda-hsi/current-state.md` — branch + deploy ledger
-  - `wip/caos-lda-hsi/master-plan.md` — methodological master plan
-  - `wip/caos-lda-hsi/pending.md` — P0/P1/P2/P3 backlog with closure status
-  - `deployments/caos-lda-hsi.md` — deploy history per cycle
-
 ## Datasets covered
 
 **Family A — public spectral libraries**: USGS splib07 (AVIRIS-1997
@@ -487,7 +484,7 @@ for licensing, access URLs, and citation expectations.
 
 ## Branch flow & deploy cadence
 
-Branch flow is a hard rule (see `_CAOS_MANAGE` private repo):
+Branch flow is a hard rule:
 
 ```
 task/<5-digit-id>/<short-desc>  →  PR to develop  →  PR develop→main when deploy-ready

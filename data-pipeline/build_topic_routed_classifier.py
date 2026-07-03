@@ -24,7 +24,7 @@ Output: data/derived/topic_routed_classifier/<scene>.json
 
 References
 ----------
-- Master-plan thesis. See `_CAOS_MANAGE/wip/caos-lda-hsi/master-plan.md`
+- Master-plan thesis (internal reference),
   Addendum B Axis C-2 ("theta as a gate, never as a feature"). The
   routed_soft variant is the methodology supports; the routed_hard
   variant is the ablation. The labelled-scene posterior shows

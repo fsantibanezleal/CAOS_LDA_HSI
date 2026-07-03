@@ -59,8 +59,7 @@ heavy). The split keeps the production deploy small while the local
 pipeline can pull in scientific stacks (numpy, scipy, scikit-learn,
 scikit-image, h5py, tifffile) without bloating the deploy image.
 
-The full contract is in
-[`_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md).
+The full contract is maintained privately.
 
 ## API endpoints
 
@@ -150,4 +149,4 @@ Cache-control on `index.html` is `no-store`; the rest is hashed.
 The single FastAPI process serves the API and the built SPA. Behind
 nginx + certbot on `lda-hsi.fasl-work.com`, port `127.0.0.1:8105`.
 Detailed deployment procedure is intentionally **not** in this public
-repo; it lives in the management repo `_CAOS_MANAGE`.
+repo.
