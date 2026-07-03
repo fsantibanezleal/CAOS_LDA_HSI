@@ -8,10 +8,6 @@ Windows, macOS, and Linux.
 
 The deeper documentation lives in:
 
-- `_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md` — the
-  durable two-venv design.
-- `_CAOS_MANAGE/runbooks/local-environment-setup.md` — the
-  clean-machine recipe.
 - The public wiki page
   [Local Reproduction Guide](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Local-Reproduction-Guide).
 
