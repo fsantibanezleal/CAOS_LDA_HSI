@@ -1,13 +1,7 @@
 # Technical Roadmap
 
-Repo-local phase map. The canonical detailed reset plan and pending
-backlog live in `_CAOS_MANAGE/wip/caos-lda-hsi/`:
-
-- [`product-reset-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/product-reset-plan.md)
-- [`offline-validation-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/offline-validation-plan.md)
-- [`web-app-projection-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/web-app-projection-plan.md)
-- [`local-environments-plan.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/local-environments-plan.md)
-- [`pending.md`](../../_CAOS_MANAGE/wip/caos-lda-hsi/pending.md)
+Repo-local phase map. The detailed reset plan and pending backlog are
+maintained privately.
 
 This file is a short repo-local snapshot for contributors who already
 cloned the repo and need to know where to start.
@@ -88,5 +82,4 @@ reflect repo state as of 2026-05-02.
 - Production redeploy without the rebuilt frontend acceptance criteria.
 - Mineral / class identification claims from topic alone without
   external evidence.
-- New documentation surfaces beyond `docs/`, the wiki, and
-  `_CAOS_MANAGE/wip/caos-lda-hsi/`.
+- New documentation surfaces beyond `docs/` and the wiki.

@@ -156,7 +156,7 @@ router = APIRouter(prefix="/api", tags=["content"])
 #   /method-statistics           → Benchmarks
 # Everything else from the prior 23-route static-content cluster was
 # deleted; the audit dated 2026-05-24 found zero frontend consumers.
-# See _CAOS_MANAGE/wip/caos-lda-hsi/audits/2026-05-24-source-pipeline-audit.md
+# See the internal source-pipeline audit (2026-05-24)
 # (Tier-1 #2) for the route-by-route inventory.
 
 @router.get("/local-dataset-inventory", response_model=LocalDatasetInventoryPayload)
