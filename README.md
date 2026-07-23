@@ -501,6 +501,21 @@ Every cycle that lands in production includes:
 7. Cadence comments: PR comment + issue comment + close
 8. Management repo updates: `deployments/caos-lda-hsi.md` + `wip/caos-lda-hsi/current-state.md`
 
+## Manuscripts and DOIs
+
+Five companion manuscripts describe and contextualise the results in this repo.
+All are published as CC-BY-4.0 preprints on Zenodo (the code and derived
+artefacts here remain MIT). Version DOIs (each also has a concept DOI resolving
+to the latest version):
+
+- **P1** Beyond Accuracy: A Multi-Axis Evaluation Framework for Interpretable Topic Models on HSI [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21504116-blue)](https://doi.org/10.5281/zenodo.21504116)
+- **P2** A Band-Mask Robustness Diagnostic for LDA on HSI [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21504110-blue)](https://doi.org/10.5281/zenodo.21504110)
+- **P3** Which Wordification Matters? A Nineteen-Recipe Sweep [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21504118-blue)](https://doi.org/10.5281/zenodo.21504118)
+- **P4** Which Backbone Picks Which Wordification? A Factorial Study [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21504112-blue)](https://doi.org/10.5281/zenodo.21504112)
+- **P5** Post-hoc Interpretability of LDA on HSI [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21504114-blue)](https://doi.org/10.5281/zenodo.21504114)
+
+Manuscript sources: [`CAOS_LDA_HSI_Paper`](https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper).
+
 ## License & acknowledgements
 
 This is a private research repository. Public datasets accessed through
