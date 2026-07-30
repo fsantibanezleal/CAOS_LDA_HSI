@@ -1,7 +1,7 @@
 {
   "name": "caos-lda-hsi-frontend",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.02.000",
   "type": "module",
   "scripts": {
     "dev": "vite",
