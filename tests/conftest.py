@@ -18,6 +18,12 @@ import pytest
 from fastapi.testclient import TestClient
 
 
+# Test modules import ``app.main`` during collection, before fixtures run. Set
+# the clean-checkout SPA shell as soon as conftest is imported so those module
+# imports register the same fallback routes exercised in production.
+os.environ.setdefault("FRONTEND_DIST", "tests/fixtures/frontend")
+
+
 @pytest.fixture(scope="session")
 def client() -> Iterator[TestClient]:
     """FastAPI TestClient bound to the live ASGI app.
@@ -26,20 +32,7 @@ def client() -> Iterator[TestClient]:
     committed minimal SPA shell so a clean checkout exercises the fallback and
     path-traversal routes instead of silently omitting them.
     """
-    previous_dist = os.environ.get("FRONTEND_DIST")
-    os.environ["FRONTEND_DIST"] = "tests/fixtures/frontend"
-
-    from app.config import get_settings
-
-    get_settings.cache_clear()
     from app.main import app
 
-    try:
-        with TestClient(app) as test_client:
-            yield test_client
-    finally:
-        if previous_dist is None:
-            os.environ.pop("FRONTEND_DIST", None)
-        else:
-            os.environ["FRONTEND_DIST"] = previous_dist
-        get_settings.cache_clear()
+    with TestClient(app) as test_client:
+        yield test_client
