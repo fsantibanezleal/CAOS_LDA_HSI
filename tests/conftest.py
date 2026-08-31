@@ -11,15 +11,28 @@ once will pass.
 """
 from __future__ import annotations
 
+import os
+from collections.abc import Iterator
+
 import pytest
 from fastapi.testclient import TestClient
 
 
+# Test modules import ``app.main`` during collection, before fixtures run. Set
+# the clean-checkout SPA shell as soon as conftest is imported so those module
+# imports register the same fallback routes exercised in production.
+os.environ.setdefault("FRONTEND_DIST", "tests/fixtures/frontend")
+
+
 @pytest.fixture(scope="session")
-def client() -> TestClient:
+def client() -> Iterator[TestClient]:
     """FastAPI TestClient bound to the live ASGI app.
 
-    Session-scoped so we pay the app-import cost once across the suite.
+    The repository does not commit ``frontend/dist``. Point the app at a
+    committed minimal SPA shell so a clean checkout exercises the fallback and
+    path-traversal routes instead of silently omitting them.
     """
     from app.main import app
-    return TestClient(app)
+
+    with TestClient(app) as test_client:
+        yield test_client
