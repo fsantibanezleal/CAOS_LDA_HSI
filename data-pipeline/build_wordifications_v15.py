@@ -25,7 +25,6 @@ Tracks #673.
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -46,6 +45,7 @@ from research_core.raw_scenes import (  # noqa: E402
     stratified_sample_indices,
     valid_spectra_mask,
 )
+from research_core.wordification_store import corpus_dir, write_corpus  # noqa: E402
 
 WORDIFICATION_LOCAL_ROOT = DATA_DIR / "local" / "wordifications" / "V15"
 
@@ -195,20 +195,20 @@ def main() -> int:
             print("  SKIP", flush=True)
             n_skip += 1
             continue
-        out_dir = WORDIFICATION_LOCAL_ROOT / f"uniform_Q{args.q}" / scene
-        out_dir.mkdir(parents=True, exist_ok=True)
-        sp.save_npz(out_dir / "doc_term.npz", res["doc_term"])
-        with (out_dir / "vocab.json").open("w", encoding="utf-8") as h:
-            json.dump({
-                "vocab": res["vocab"], "recipe": "V15",
-                "scheme": "uniform", "Q": args.q,
-                "B": res["B"],
-                "indices_computed": res["indices_computed"],
-                "generated_at": datetime.now(timezone.utc)
-                .isoformat(timespec="seconds")
-                .replace("+00:00", "Z"),
-                "builder": "build_wordifications_v15 v0.1",
-            }, h)
+        # The folder, the quantiser and the recorded Q all come from res["Q"]
+        # (#817: the pre-2d51158 builder wrote every --q run to uniform_Q8).
+        out_dir = corpus_dir("V15", "uniform", res["Q"], scene,
+                             root=WORDIFICATION_LOCAL_ROOT.parent)
+        write_corpus(out_dir, res["doc_term"], {
+            "vocab": res["vocab"], "recipe": "V15",
+            "scheme": "uniform", "Q": res["Q"],
+            "B": res["B"],
+            "indices_computed": res["indices_computed"],
+            "generated_at": datetime.now(timezone.utc)
+            .isoformat(timespec="seconds")
+            .replace("+00:00", "Z"),
+            "builder": "build_wordifications_v15 v0.2",
+        })
         n_ok += 1
         print(
             f"  D={res['D']} B={res['B']} indices={res['indices_computed']} "
