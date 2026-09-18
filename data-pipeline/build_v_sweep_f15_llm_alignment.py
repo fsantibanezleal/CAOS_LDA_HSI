@@ -42,6 +42,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research_core.paths import DATA_DIR, DERIVED_DIR  # noqa: E402
+from research_core.wordification_store import load_corpus  # noqa: E402
 
 SWEEP_LOCAL = DATA_DIR / "local" / "v_sweep" / "lda_fits"
 WORDIFICATION_LOCAL = DATA_DIR / "local" / "wordifications"
@@ -83,16 +84,23 @@ def load_artefacts(scene_id: str, recipe: str):
     phi_path = fit_dir / "phi.npy"
     theta_path = fit_dir / "theta.npy"
     vocab_path = fit_dir / "vocab.json"
-    corpus_dir = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id
-    dt_path = corpus_dir / "doc_term.npz"
-    if not all(p.exists() for p in (phi_path, theta_path, vocab_path, dt_path)):
+    if not all(p.exists() for p in (phi_path, theta_path, vocab_path)):
         return None
+    # Validated read (#817): refuses a corpus whose vocab.json records another Q.
+    corpus = load_corpus(recipe, "uniform", 8, scene_id, root=WORDIFICATION_LOCAL)
+    if corpus is None:
+        return None
+    doc_term = corpus[0]
     phi = np.load(phi_path)
     theta = np.load(theta_path)
     with vocab_path.open("r", encoding="utf-8") as h:
         meta = json.load(h)
     vocab = meta.get("vocab", [])
-    doc_term = sp.load_npz(dt_path).tocsr()
+    if phi.shape[1] != doc_term.shape[1] or len(vocab) != doc_term.shape[1]:
+        raise ValueError(
+            f"{scene_id} {recipe}: corpus has {doc_term.shape[1]} tokens, fit phi "
+            f"{phi.shape[1]}, fit vocabulary {len(vocab)}"
+        )
     return phi, theta, vocab, doc_term
 
 
