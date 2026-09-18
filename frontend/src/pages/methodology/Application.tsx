@@ -127,16 +127,16 @@ export default function MethodologyApplication() {
         <p className="mt-3">
           <strong>Builder:</strong>{" "}
           <code>build_topic_routed_classifier.py</code>.{" "}
-          <strong>Honest headline:</strong> topic_routed_soft ties or
+          <strong>Headline:</strong> topic_routed_soft ties or
           narrowly beats raw_logistic on 4 of 6 labelled scenes and
           ties-or-loses on 2 (Indian Pines 0.839 vs 0.833 = +0.006;
           Salinas 0.954 vs 0.951 = +0.003; KSC 0.921 vs 0.914 = +0.007;
           Pavia U 0.819 vs 0.805 = +0.014; Salinas-A 0.996 vs 0.997 =
           −0.001; Botswana 0.962 vs 0.962 = −0.001). The Bayesian
-          posterior of the per-method means gives
-          μ_routed_soft = 0.741 and μ_raw = 0.736 with overlapping
-          HDI94s, and the pairwise probability
-          P(μ_routed_soft &gt; μ_raw) = 0.641 — weak directional
+          posterior of the per-method mean macro-F1 gives
+          μ_routed_soft = 0.915 (HDI94 [0.896, 0.934]) and
+          μ_raw = 0.910 ([0.891, 0.930]), and the pairwise probability
+          P(μ_routed_soft &gt; μ_raw) = 0.632: weak directional
           evidence, not a strong effect. The mechanism (θ as a gate)
           is supported more strongly by the comparison to
           theta_logistic below than by the small raw_logistic delta.
@@ -260,48 +260,64 @@ export default function MethodologyApplication() {
           tex="y_{m,s,f} \sim \mathcal{N}\!\big(\mu_m + \delta_s + \rho_f, \, \sigma^2\big)"
         />
         <p className="mt-3">
-          with weakly informative independent priors
+          with weakly informative priors and scene and fold effects
+          constrained to sum to zero
         </p>
         <Equation
           block
-          tex="\mu_m \sim \mathcal{N}(0, 1), \quad \delta_s \sim \mathcal{N}(0, 0.5^2), \quad \rho_f \sim \mathcal{N}(0, 0.2^2), \quad \sigma \sim \mathrm{HalfNormal}(0.5)."
+          tex="\mu_m \sim \mathcal{N}(0, 1), \quad \delta \sim \mathrm{ZeroSumNormal}(0.5), \quad \rho \sim \mathrm{ZeroSumNormal}(0.2), \quad \sigma \sim \mathrm{HalfNormal}(0.5), \qquad \textstyle\sum_s \delta_s = \sum_f \rho_f = 0."
         />
         <p className="mt-3">
-          There is <em>no</em> hyperprior on <Equation tex="\mu_m" />,
-          so methods are not shrunk toward a global mean — each method
-          posterior is dominated by its data. The quantity exposed in
-          the Benchmarks <em>Routed</em> tab is the per-method
-          posterior mean of <Equation tex="\mu_m" /> with its 94% Highest
-          Density Interval (HDI94), and the pairwise probability{" "}
-          <Equation tex="P(\mu_{m_a} > \mu_{m_b})" /> derived from the
-          joint posterior draws.
+          The zero-sum constraint identifies{" "}
+          <Equation tex="\mu_m" /> as method <Equation tex="m" />'s mean
+          macro-F1 over the six scenes and five folds. Without it (the
+          first version of this model) a constant could move from every{" "}
+          <Equation tex="\mu_m" /> to every <Equation tex="\delta_s" />{" "}
+          without changing the likelihood, so the locations sat about
+          0.17 below the observed means with HDI94s above 1.0; only
+          differences between methods were meaningful. There is{" "}
+          <em>no</em> hyperprior on <Equation tex="\mu_m" />, so
+          methods are not shrunk toward a global mean. The quantity
+          exposed in the Benchmarks <em>Routed</em> tab is the
+          per-method posterior mean of <Equation tex="\mu_m" /> with
+          its 94% Highest Density Interval (HDI94), and the pairwise
+          probability <Equation tex="P(\mu_{m_a} > \mu_{m_b})" />{" "}
+          derived from the joint posterior draws.
         </p>
         <p className="mt-3">
           <strong>Current numbers.</strong> On the canonical 6-scene
-          × 5-fold corpus the per-method posterior means are
-          <Equation tex="\mu_{\mathrm{routed\_soft}} = 0.741" /> (HDI94
-          [0.418, 1.134]) and{" "}
-          <Equation tex="\mu_{\mathrm{raw}} = 0.736" /> (HDI94
-          [0.410, 1.122]), giving{" "}
-          <Equation tex="P(\mu_{\mathrm{routed\_soft}} > \mu_{\mathrm{raw}}) = 0.641" />.
-          The wide HDI94s reflect the high between-scene variance, and
-          the 0.641 tail probability is best read as <em>weak directional
-          evidence</em>, not "robust support". The per-scene F1 deltas
-          (Indian Pines +0.006, Salinas +0.003, Salinas-A −0.001,
-          Pavia U +0.014, KSC +0.008, Botswana −0.001) tell the same
-          story: small, mostly positive, scene-dependent direction.
+          × 5-fold corpus the per-method posterior means are{" "}
+          <Equation tex="\mu_{\mathrm{routed\_soft}} = 0.915" /> (HDI94
+          [0.896, 0.934]) and{" "}
+          <Equation tex="\mu_{\mathrm{raw}} = 0.910" /> (HDI94
+          [0.891, 0.930]), giving{" "}
+          <Equation tex="P(\mu_{\mathrm{routed\_soft}} > \mu_{\mathrm{raw}}) = 0.632" />.
+          The model treats the five methods of one (scene, fold) cell
+          as independent, so its difference{" "}
+          <Equation tex="\mu_{\mathrm{routed\_soft}} - \mu_{\mathrm{raw}}" />{" "}
+          (+0.005, HDI94 [−0.023, +0.031]) is wider than a paired
+          comparison of the same cells; the 0.632 tail probability is
+          best read as <em>weak directional evidence</em>, not "robust
+          support". The per-scene F1 deltas (Indian Pines +0.006,
+          Salinas +0.003, Salinas-A −0.001, Pavia U +0.014, KSC +0.008,
+          Botswana −0.001) tell the same story: small, mostly positive,
+          scene-dependent direction.
         </p>
         <p className="mt-3">
-          <strong>Sampler.</strong> PyMC's NUTS with{" "}
-          <code>chains=2</code>, <code>tune=1000</code>,{" "}
-          <code>draws=1000</code>, <code>target_accept=0.9</code> (the
-          defaults pinned in <code>build_bayesian_classification_labelled.py</code>;
-          override via <code>CAOS_NUTS_CHAINS</code>,
+          <strong>Sampler.</strong> NUTS from numpyro (JAX, CPU) on the
+          PyMC model, with <code>chains=4</code>,{" "}
+          <code>tune=1000</code>, <code>draws=1000</code>,{" "}
+          <code>target_accept=0.9</code> (the defaults pinned in{" "}
+          <code>build_bayesian_classification_labelled.py</code>;
+          override via <code>CAOS_NUTS_CHAINS</code> (at least 4),{" "}
           <code>CAOS_NUTS_DRAWS</code>, <code>CAOS_NUTS_TUNE</code>).
-          The rank-normalised
-          <Equation tex="\widehat{R}" /> diagnostic of Vehtari et al.
-          2021 is checked at <Equation tex="< 1.01" /> on every
-          monitored parameter before the run is accepted.
+          Every reported quantity (method locations, pairwise
+          differences, scene and fold effects, σ) carries its
+          rank-normalised <Equation tex="\widehat{R}" /> and bulk and
+          tail effective sample sizes (Vehtari et al. 2021) in the
+          artefact; on this run the largest{" "}
+          <Equation tex="\widehat{R}" /> is 1.002, the smallest bulk /
+          tail ESS 5043 / 2486, with no divergent transitions.
         </p>
         <p className="mt-3">
           <strong>Builder + artefact.</strong>{" "}

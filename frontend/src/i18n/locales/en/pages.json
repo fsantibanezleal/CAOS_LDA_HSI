@@ -587,7 +587,7 @@
       },
       "bayesian-spec": {
         "title": "Hierarchical Bayesian benchmark — model spec",
-        "lead": "The pairwise posterior probabilities P(μ_a > μ_b) above come from a flat one-way ANOVA-style model with additive scene and fold offsets, fit with PyMC NUTS. The spec below mirrors the actual code in build_bayesian_classification_labelled.py exactly — no hidden hyperpriors."
+        "lead": "The pairwise posterior probabilities P(μ_a > μ_b) above come from an ANOVA-style model with additive scene and fold offsets that sum to zero, so each method location is its mean macro-F1; it is fitted with NUTS (numpyro, 4 chains). The spec below mirrors the code in build_bayesian_classification_labelled.py: no hidden hyperpriors."
       },
       "hungarian-stability": {
         "title": "Hungarian topic-matching — stability and cross-mask identity",

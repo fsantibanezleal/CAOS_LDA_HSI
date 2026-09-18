@@ -587,7 +587,7 @@
       },
       "bayesian-spec": {
         "title": "Benchmark bayesiano jerárquico — spec del modelo",
-        "lead": "Las probabilidades posteriores pareadas P(μ_a > μ_b) provienen de un modelo aditivo estilo ANOVA con offsets de escena y fold, ajustado con NUTS de PyMC. El spec abajo replica el código de build_bayesian_classification_labelled.py exactamente — sin hyperpriors ocultos."
+        "lead": "Las probabilidades posteriores pareadas P(μ_a > μ_b) provienen de un modelo aditivo estilo ANOVA con offsets de escena y fold que suman cero, de modo que la ubicación de cada método es su macro-F1 medio; se ajusta con NUTS (numpyro, 4 cadenas). El spec abajo replica el código de build_bayesian_classification_labelled.py: sin hyperpriors ocultos."
       },
       "hungarian-stability": {
         "title": "Topic-matching húngaro — estabilidad e identidad cross-mask",
