@@ -14,8 +14,13 @@ normal model identical in shape to the HIDSAG one:
 
   score[m, s, f] ~ Normal(mu[m] + offset_scene[s] + fold_re[f], sigma)
 
-Posterior inference via NUTS. Reports per-method posterior mean +
-HDI94 + pairwise P(mu_a > mu_b).
+with the scene offsets and fold effects constrained to sum to zero (v0.2,
+#817), so mu[m] is method m's mean macro-F1 over the scenes and folds; v0.1
+had no reference level, so mu[m] was fixed only by its prior. Posterior
+inference via NUTS with at least 4 chains (numpyro on JAX by default,
+research_core.bayes_compare). Reports per method the posterior mean, HDI94,
+rank-normalised R-hat and bulk / tail ESS, every pairwise difference with
+the same diagnostics, and the pairwise P(mu_a > mu_b).
 
 Output: data/derived/method_statistics_labelled/cross_classification_bayesian.json
 
@@ -26,8 +31,8 @@ References
   HDI94 conventions used here.
 - Vehtari, Gelman, Simpson, Carpenter, Burkner (2021). "Rank-Normalization,
   Folding, and Localization: An Improved R-hat for Assessing Convergence
-  of MCMC". Bayesian Analysis 16(2):667-718. The 4-chain minimum +
-  rank-normalised R-hat the builder enforces.
+  of MCMC". Bayesian Analysis 16(2):667-718. The rank-normalised R-hat
+  and bulk / tail ESS reported per parameter (at least 4 chains, enforced).
 - Hoffman, Gelman (2014). "The No-U-Turn Sampler: Adaptively Setting
   Path Lengths in Hamiltonian Monte Carlo". JMLR 15(1):1593-1623. NUTS.
 - Salvatier, Wiecki, Fonnesbeck (2016). "Probabilistic programming in
@@ -48,6 +53,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research_core.paths import DERIVED_DIR
+from research_core import bayes_compare as _bc  # noqa: E402
 
 warnings.filterwarnings("ignore")
 
@@ -58,8 +64,12 @@ DERIVED_OUT_DIR = DERIVED_DIR / "method_statistics_labelled"
 import os as _os
 NUTS_DRAWS = int(_os.environ.get("CAOS_NUTS_DRAWS", "1000"))
 NUTS_TUNE = int(_os.environ.get("CAOS_NUTS_TUNE", "1000"))
-NUTS_CHAINS = int(_os.environ.get("CAOS_NUTS_CHAINS", "2"))
+NUTS_CHAINS = int(_os.environ.get("CAOS_NUTS_CHAINS", "4"))
 RANDOM_STATE = 42
+SCOPE = "labelled_scenes"
+BUILDER_VERSION = "build_bayesian_classification_labelled v0.2"
+if NUTS_CHAINS < 4:
+    raise SystemExit("R-hat needs at least 4 chains (CAOS_NUTS_CHAINS)")
 
 
 # Method names appearing in topic_routed_classifier output. The pca_K
@@ -97,11 +107,17 @@ def collect_observations() -> list[dict]:
 
 
 def fit_hierarchical(observations: list[dict]) -> dict:
+    """Identified hierarchical model over scene, fold and method (#817).
+
+    score[m, s, f] = mu[m] + offset[s] + re[f] + eps with the scene offsets and
+    fold effects constrained to sum to zero (research_core.bayes_compare), so
+    mu[m] is method m's mean macro-F1 over the scenes and folds. The archived
+    v0.1 model had no reference level (mu identified only by its prior, about
+    0.17 below the observed means, HDI94 above 1.0) and ran 2 chains with no
+    convergence diagnostic.
+    """
     if not observations:
         return {}
-    import pymc as pm
-    import arviz as az
-
     methods = sorted({o["method"] for o in observations})
     scenes = sorted({o["scene"] for o in observations})
     folds = sorted({o["fold"] for o in observations})
@@ -111,64 +127,42 @@ def fit_hierarchical(observations: list[dict]) -> dict:
     fold_idx = np.array([folds.index(o["fold"]) for o in observations])
     scores = np.array([o["score"] for o in observations], dtype=np.float64)
 
-    with pm.Model() as model:  # noqa: F841
-        mu_method = pm.Normal("mu_method", mu=0.0, sigma=1.0, shape=len(methods))
-        offset_scene = pm.Normal("offset_scene", mu=0.0, sigma=0.5, shape=len(scenes))
-        fold_re = pm.Normal("fold_re", mu=0.0, sigma=0.2, shape=len(folds))
-        sigma = pm.HalfNormal("sigma", sigma=0.5)
-        mu = mu_method[method_idx] + offset_scene[scene_idx] + fold_re[fold_idx]
-        pm.Normal("y", mu=mu, sigma=sigma, observed=scores)
-
-        idata = pm.sample(
-            draws=NUTS_DRAWS,
-            tune=NUTS_TUNE,
-            chains=NUTS_CHAINS,
-            random_seed=RANDOM_STATE,
-            target_accept=0.9,
-            progressbar=False,
+    backend = _bc.default_backend()
+    with _bc.Timer() as timer:
+        idata = _bc.fit_crossed(
+            scores, method_idx, len(methods), scene_idx, len(scenes), fold_idx, len(folds),
+            mu_sigma=1.0, group_sigma=0.5, rep_sigma=0.2, noise_sigma=0.5,
+            draws=NUTS_DRAWS, tune=NUTS_TUNE, chains=NUTS_CHAINS, seed=RANDOM_STATE,
+            target_accept=0.9, backend=backend,
         )
-
-    posterior = idata.posterior
-    mu_samples = posterior["mu_method"].stack(sample=("chain", "draw")).values
-
-    summaries = []
-    for i, m in enumerate(methods):
-        samples = mu_samples[i]
-        hdi = az.hdi(samples, hdi_prob=0.94)
-        summaries.append({
-            "method": m,
-            "posterior_mean": round(float(samples.mean()), 6),
-            "posterior_std": round(float(samples.std()), 6),
-            "hdi94_lo": round(float(hdi[0]), 6),
-            "hdi94_hi": round(float(hdi[1]), 6),
-        })
-
-    pairwise = {}
-    for i in range(len(methods)):
-        for j in range(len(methods)):
-            if i == j:
-                continue
-            p = float((mu_samples[i] > mu_samples[j]).mean())
-            pairwise.setdefault(methods[i], {})[methods[j]] = round(p, 6)
-
+    summary = _bc.summarise(idata, methods, scores, method_idx,
+                            group_names=scenes, rep_names=[f"fold_{f}" for f in folds],
+                            group_var="offset_group", rep_var="re_rep")
     return {
         "task_type": "classification",
-        "scope": "labelled_scenes",
+        "scope": SCOPE,
         "n_observations": int(len(observations)),
         "n_methods": int(len(methods)),
         "n_scenes": int(len(scenes)),
         "n_folds": int(len(folds)),
         "method_names": methods,
         "scene_names": scenes,
-        "method_posteriors": summaries,
-        "pairwise_p_a_gt_b": pairwise,
+        **summary,
+        "identification": (
+            "scene offsets and fold effects sum to zero (ZeroSumNormal), so mu_method is the "
+            "method's mean macro-F1 over the scenes and folds of the study"
+        ),
         "model_summary": (
             "score = mu_method[m] + offset_scene[s] + fold_re[f] + N(0, sigma); "
-            "mu_method ~ N(0, 1); offset_scene ~ N(0, 0.5); fold_re ~ N(0, 0.2); "
-            "sigma ~ HalfNormal(0.5); NUTS draws=1000, tune=1000, 2 chains."
+            "mu_method ~ N(0, 1); offset_scene ~ ZeroSumNormal(0.5); fold_re ~ ZeroSumNormal(0.2); "
+            f"sigma ~ HalfNormal(0.5); NUTS draws={NUTS_DRAWS}, tune={NUTS_TUNE}, "
+            f"{NUTS_CHAINS} chains, target_accept 0.9."
         ),
+        "sampler": _bc.sampler_note(backend, NUTS_DRAWS, NUTS_TUNE, NUTS_CHAINS,
+                                    RANDOM_STATE, 0.9),
+        "sampling_seconds": timer.seconds,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "builder_version": "build_bayesian_classification_labelled v0.1",
+        "builder_version": BUILDER_VERSION,
     }
 
 
@@ -193,7 +187,8 @@ def main() -> int:
     )
     for r in ranked:
         print(
-            f"    {r['method']:25s} mu={r['posterior_mean']:+.3f} HDI94=[{r['hdi94_lo']:+.3f}, {r['hdi94_hi']:+.3f}]",
+            f"    {r['method']:25s} mu={r['posterior_mean']:+.3f} HDI94=[{r['hdi94_lo']:+.3f}, {r['hdi94_hi']:+.3f}] "
+            f"R-hat={r['r_hat']:.3f} ESS bulk/tail={r['ess_bulk']:.0f}/{r['ess_tail']:.0f}",
             flush=True,
         )
     print(f"  wrote {out_path.name}", flush=True)
