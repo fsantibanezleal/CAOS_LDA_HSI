@@ -6,115 +6,222 @@
   "K": 9,
   "V": 103,
   "n_docs": 20,
-  "n_yes": 9,
-  "n_no": 11,
-  "n_ambiguous": 0,
-  "f15_alignment": 0.45,
+  "f15_alignment": 0.568296,
+  "expected_yes": 11.365928,
+  "expected_no": 8.634072,
+  "expected_ambiguous": 0.0,
+  "f15_alignment_legacy_argsort": 0.45,
+  "legacy_n_yes": 9,
+  "legacy_n_no": 11,
+  "legacy_n_ambiguous": 0,
+  "n_docs_tie_dependent": 16,
+  "n_docs_fewer_than_3_tokens": 0,
+  "no_verdict_impossible_vocab": false,
   "decisions": [
     {
       "doc_idx": 1518,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 99,
+      "p_yes": 0.12753623188405797,
+      "p_no": 0.8724637681159421,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 1417,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 102,
+      "p_yes": 0.35080645161290325,
+      "p_no": 0.6491935483870968,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 396,
       "topic": 5,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 73,
+      "p_yes": 1.0,
+      "p_no": 0.0,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 1923,
       "topic": 5,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 57,
+      "p_yes": 1.0,
+      "p_no": 0.0,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 1661,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 101,
+      "p_yes": 0.057692307692307696,
+      "p_no": 0.9423076923076923,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 1502,
       "topic": 8,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 102,
+      "p_yes": 0.6414941978989966,
+      "p_no": 0.35850580210100336,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 253,
       "topic": 5,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 63,
+      "p_yes": 0.9470218064342442,
+      "p_no": 0.052978193565755824,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 175,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 97,
+      "p_yes": 0.6207430340557275,
+      "p_no": 0.37925696594427244,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 1284,
       "topic": 4,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 83,
+      "p_yes": 0.8906178489702518,
+      "p_no": 0.10938215102974828,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 1014,
       "topic": 6,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 63,
+      "p_yes": 0.37142857142857144,
+      "p_no": 0.6285714285714286,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 850,
       "topic": 4,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 77,
+      "p_yes": 0.8906178489702518,
+      "p_no": 0.10938215102974828,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 169,
       "topic": 1,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 102,
+      "p_yes": 0.8041795665634675,
+      "p_no": 0.19582043343653252,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 891,
       "topic": 6,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 66,
+      "p_yes": 0.8981900452488688,
+      "p_no": 0.10180995475113122,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 1688,
       "topic": 8,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 100,
+      "p_yes": 0.0,
+      "p_no": 1.0,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 185,
       "topic": 1,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 101,
+      "p_yes": 1.0,
+      "p_no": 0.0,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 1451,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 100,
+      "p_yes": 0.05172413793103448,
+      "p_no": 0.9482758620689655,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 1553,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 101,
+      "p_yes": 0.05660377358490566,
+      "p_no": 0.9433962264150944,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 861,
       "topic": 5,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 36,
+      "p_yes": 0.9601897967424956,
+      "p_no": 0.039810203257504374,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     },
     {
       "doc_idx": 1372,
       "topic": 2,
-      "verdict": "NO"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 101,
+      "p_yes": 2.4001536098310292e-05,
+      "p_no": 0.9999759984639017,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "NO"
     },
     {
       "doc_idx": 1037,
       "topic": 6,
-      "verdict": "YES"
+      "tied_argmax_topics": null,
+      "n_distinct_tokens": 63,
+      "p_yes": 0.6970588235294117,
+      "p_no": 0.3029411764705882,
+      "p_ambiguous": 0.0,
+      "verdict_legacy_argsort": "YES"
     }
   ],
   "model": "claude-opus-4-7 (1M context, self-judgment, deterministic rule)",
-  "judge_method": "self_judgment_deterministic_rule",
-  "judge_rule_description": "YES if doc top-10 shares >=3 elements with topic top-10, OR doc top-1 is in topic top-5. NO if doc top-3 shares 0 elements with topic top-10. AMBIGUOUS otherwise. Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_v_sweep_f15_llm_alignment.py.",
-  "generated_at": "2026-05-28T03:00:15Z",
-  "builder": "build_v_sweep_f15_self_judge v0.1"
+  "judge_method": "self_judgment_deterministic_rule_tie_invariant",
+  "judge_rule_description": "YES if doc top-10 shares >=3 elements with topic top-10, OR doc top-1 is in topic top-5. NO if doc top-3 shares 0 elements with topic top-10. AMBIGUOUS otherwise. Top-k lists are taken under uniformly random tie-breaking and each document contributes its exact P(YES), P(NO), P(AMBIGUOUS); F-15 = sum P(YES) / sum (P(YES) + P(NO)). Encoded by Claude Opus 4.7 (1M context) as a stand-in for the API-driven LLM-as-judge in build_v_sweep_f15_llm_alignment.py; tie-invariant form #817.",
+  "generated_at": "2026-09-18T19:49:23Z",
+  "builder": "build_v_sweep_f15_self_judge v0.2"
 }
