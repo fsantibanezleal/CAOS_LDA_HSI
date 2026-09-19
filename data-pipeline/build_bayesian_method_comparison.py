@@ -12,12 +12,17 @@ Model (per task type — regression / classification):
   for each method m, target t in subset s:
     score[m, t, s] ~ Normal(mu[m] + subset_offset[s] + target_noise[t], sigma)
     mu[m] ~ Normal(0, 1)               # method-level effect
-    subset_offset[s] ~ Normal(0, 0.5)  # subset random intercept
-    target_noise[t] ~ Normal(0, 0.5)
+    subset_offset[s] ~ Normal(0, 0.5)  # subset random intercept, sum_s n_s offset_s = 0
+    target_noise[t] ~ ZeroSumNormal(0.5) within each subset
     sigma ~ HalfNormal(1)
 
-Posterior inference via NUTS. Reports per-method posterior mean +
-HDI94, plus pairwise P(mu_a > mu_b) matrix.
+The zero-sum constraints (v0.3, #817) identify mu[m] as the method's mean
+score over the targets; v0.2 had no reference level, so mu[m] was fixed only
+by its prior. Posterior inference via NUTS with at least 4 chains (numpyro on
+JAX by default, see research_core.bayes_compare.default_backend). Reports per
+method the posterior mean, HDI94, rank-normalised R-hat and bulk / tail ESS,
+every pairwise difference with the same diagnostics, and the pairwise
+P(mu_a > mu_b) matrix.
 
 Output: data/derived/method_statistics_hidsag/<subset|cross>_bayesian.json
 """
@@ -36,6 +41,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research_core.paths import DERIVED_DIR
+from research_core import bayes_compare as _bc  # noqa: E402
 
 warnings.filterwarnings("ignore")
 
@@ -46,8 +52,10 @@ DERIVED_OUT_DIR = DERIVED_DIR / "method_statistics_hidsag"
 import os as _os
 NUTS_DRAWS = int(_os.environ.get("CAOS_NUTS_DRAWS", "1000"))
 NUTS_TUNE = int(_os.environ.get("CAOS_NUTS_TUNE", "1000"))
-NUTS_CHAINS = int(_os.environ.get("CAOS_NUTS_CHAINS", "2"))
+NUTS_CHAINS = int(_os.environ.get("CAOS_NUTS_CHAINS", "4"))
 RANDOM_STATE = 42
+if NUTS_CHAINS < 4:
+    raise SystemExit("R-hat needs at least 4 chains (CAOS_NUTS_CHAINS)")
 
 
 def load_subset_metric_matrix(task_type: str) -> dict:
@@ -134,62 +142,39 @@ def collect_per_target_scores(task_type: str) -> dict:
 def fit_hierarchical(
     observations: list[dict], task_type: str
 ) -> dict:
-    """PyMC hierarchical normal model with method, subset, target effects."""
+    """Identified hierarchical model with method, subset and target effects (#817).
+
+    score[m, t] = mu[m] + offset[subset(t)] + target_re[t] + eps, with the cell
+    effects offset[subset(t)] + target_re[t] summing to zero over the targets
+    (subset offsets weighted by their target counts, target effects zero-sum
+    within each subset; research_core.bayes_compare.fit_nested), so mu[m] is
+    method m's mean score over the targets. The archived v0.2 model had no
+    reference level and ran 2 chains with no convergence diagnostic.
+    """
     if not observations:
         return {}
-    import pymc as pm
-    import arviz as az
 
     methods = sorted({o["method"] for o in observations})
     subsets = sorted({o["subset"] for o in observations})
     targets = sorted({(o["subset"], o["target"]) for o in observations})
 
     method_idx = np.array([methods.index(o["method"]) for o in observations])
-    subset_idx = np.array([subsets.index(o["subset"]) for o in observations])
     target_idx = np.array([targets.index((o["subset"], o["target"])) for o in observations])
+    target_group = np.array([subsets.index(s) for s, _ in targets])
     scores = np.array([o["score"] for o in observations], dtype=np.float64)
 
-    with pm.Model() as model:
-        mu_method = pm.Normal("mu_method", mu=0.0, sigma=1.0, shape=len(methods))
-        offset_subset = pm.Normal("offset_subset", mu=0.0, sigma=0.5, shape=len(subsets))
-        target_re = pm.Normal("target_re", mu=0.0, sigma=0.5, shape=len(targets))
-        sigma = pm.HalfNormal("sigma", sigma=1.0)
-        mu = mu_method[method_idx] + offset_subset[subset_idx] + target_re[target_idx]
-        pm.Normal("y", mu=mu, sigma=sigma, observed=scores)
-
-        idata = pm.sample(
-            draws=NUTS_DRAWS,
-            tune=NUTS_TUNE,
-            chains=NUTS_CHAINS,
-            random_seed=RANDOM_STATE,
-            target_accept=0.9,
-            progressbar=False,
+    backend = _bc.default_backend()
+    with _bc.Timer() as timer:
+        idata = _bc.fit_nested(
+            scores, method_idx, len(methods), target_idx, target_group, len(subsets),
+            mu_sigma=1.0, group_sigma=0.5, target_sigma=0.5, noise_sigma=1.0,
+            draws=NUTS_DRAWS, tune=NUTS_TUNE, chains=NUTS_CHAINS, seed=RANDOM_STATE,
+            target_accept=0.9, backend=backend,
         )
-
-    posterior = idata.posterior
-    mu_samples = posterior["mu_method"].stack(sample=("chain", "draw")).values  # [n_methods, n_samples]
-
-    summaries = []
-    for i, m in enumerate(methods):
-        samples = mu_samples[i]
-        hdi = az.hdi(samples, hdi_prob=0.94)
-        summaries.append({
-            "method": m,
-            "posterior_mean": round(float(samples.mean()), 6),
-            "posterior_std": round(float(samples.std()), 6),
-            "hdi94_lo": round(float(hdi[0]), 6),
-            "hdi94_hi": round(float(hdi[1]), 6),
-        })
-
-    # Pairwise P(mu_a > mu_b)
-    pairwise = {}
-    for i in range(len(methods)):
-        for j in range(len(methods)):
-            if i == j:
-                continue
-            p = float((mu_samples[i] > mu_samples[j]).mean())
-            pairwise.setdefault(methods[i], {})[methods[j]] = round(p, 6)
-
+    summary = _bc.summarise(idata, methods, scores, method_idx,
+                            group_names=subsets, rep_names=[f"{s}:{t}" for s, t in targets],
+                            group_var="offset_group", rep_var="cell_effect")
+    metric = "R^2" if task_type == "regression" else "macro-F1"
     return {
         "task_type": task_type,
         "n_observations": int(len(observations)),
@@ -198,19 +183,27 @@ def fit_hierarchical(
         "n_targets": int(len(targets)),
         "method_names": methods,
         "subset_names": subsets,
-        "method_posteriors": summaries,
-        "pairwise_p_a_gt_b": pairwise,
+        **summary,
+        "identification": (
+            "the cell effects offset_subset + target_re sum to zero over the targets (subset "
+            "offsets weighted by target count, target effects zero-sum within each subset), so "
+            f"mu_method is the method's mean {metric} over the targets"
+        ),
         "model_summary": (
             "score = mu_method[m] + offset_subset[s] + target_re[t] + N(0, sigma); "
-            "mu_method ~ N(0, 1); offset_subset ~ N(0, 0.5); target_re ~ N(0, 0.5); "
-            "sigma ~ HalfNormal(1); NUTS draws=1000, tune=1000, 2 chains."
+            "mu_method ~ N(0, 1); offset_subset ~ N(0, 0.5) on the plane sum_s n_s offset_s = 0; "
+            "target_re ~ ZeroSumNormal(0.5) within each subset; sigma ~ HalfNormal(1); "
+            f"NUTS draws={NUTS_DRAWS}, tune={NUTS_TUNE}, {NUTS_CHAINS} chains, target_accept 0.9."
         ),
+        "sampler": _bc.sampler_note(backend, NUTS_DRAWS, NUTS_TUNE, NUTS_CHAINS,
+                                    RANDOM_STATE, 0.9),
+        "sampling_seconds": timer.seconds,
     }
 
 
 def main() -> int:
     DERIVED_OUT_DIR.mkdir(parents=True, exist_ok=True)
-    written = 0
+    written = failed = 0
     for task_type in ("regression", "classification"):
         print(f"[bayesian_compare] {task_type} ...", flush=True)
         collected = collect_per_target_scores(task_type)
@@ -227,12 +220,13 @@ def main() -> int:
             print(f"  FAILED: {exc}", flush=True)
             import traceback
             traceback.print_exc()
+            failed += 1
             continue
         if not payload:
             continue
         payload["excluded_subsets"] = excluded
         payload["generated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-        payload["builder_version"] = "build_bayesian_method_comparison v0.2"
+        payload["builder_version"] = "build_bayesian_method_comparison v0.3"
         out_path = DERIVED_OUT_DIR / f"cross_{task_type}_bayesian.json"
         with out_path.open("w", encoding="utf-8") as h:
             json.dump(payload, h, separators=(",", ":"))
@@ -245,12 +239,17 @@ def main() -> int:
         )
         for r in ranked:
             print(
-                f"    {r['method']:35s} mu={r['posterior_mean']:+.3f} HDI94=[{r['hdi94_lo']:+.3f}, {r['hdi94_hi']:+.3f}]",
+                f"    {r['method']:35s} mu={r['posterior_mean']:+.3f} HDI94=[{r['hdi94_lo']:+.3f}, {r['hdi94_hi']:+.3f}] "
+                f"R-hat={r['r_hat']:.3f} ESS bulk/tail={r['ess_bulk']:.0f}/{r['ess_tail']:.0f}",
                 flush=True,
             )
+        d = payload["diagnostics"]
+        print(f"  divergences={d['divergences']} max R-hat={d['max_r_hat']:.4f} "
+              f"min ESS bulk/tail={d['min_ess_bulk']:.0f}/{d['min_ess_tail']:.0f} "
+              f"({payload['sampling_seconds']} s)", flush=True)
         written += 1
-    print(f"[bayesian_compare] done — {written} payloads written.", flush=True)
-    return 0
+    print(f"[bayesian_compare] done: {written} payloads written, {failed} failed.", flush=True)
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

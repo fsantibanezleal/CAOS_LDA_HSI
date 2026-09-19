@@ -32,6 +32,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from research_core.paths import DATA_DIR, DERIVED_DIR  # noqa: E402
+from research_core.wordification_store import load_corpus  # noqa: E402
 
 WORDIFICATION_LOCAL = DATA_DIR / "local" / "wordifications"
 HDP_DERIVED = DERIVED_DIR / "v_sweep" / "hdp_backbone"
@@ -53,10 +54,9 @@ CLASS_COUNTS = {
 
 
 def load_doc_term(recipe: str, scene_id: str) -> sp.csr_matrix | None:
-    p = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id / "doc_term.npz"
-    if not p.exists():
-        return None
-    return sp.load_npz(p).tocsr()
+    """The Q = 8 corpus, refused when its vocab.json records another Q (#817)."""
+    corpus = load_corpus(recipe, "uniform", 8, scene_id, root=WORDIFICATION_LOCAL)
+    return None if corpus is None else corpus[0]
 
 
 def csr_to_gensim_corpus(mat: sp.csr_matrix) -> list[list[tuple[int, int]]]:

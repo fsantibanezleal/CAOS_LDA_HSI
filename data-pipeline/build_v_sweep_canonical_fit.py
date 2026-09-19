@@ -38,6 +38,8 @@ if str(ROOT) not in sys.path:
 from research_core.class_catalog import has_labels  # noqa: E402
 from research_core.paths import DATA_DIR, DERIVED_DIR  # noqa: E402
 from research_core.raw_scenes import SCENES  # noqa: E402
+from research_core import k_policy as _k_policy  # noqa: E402
+from research_core.wordification_store import load_corpus  # noqa: E402
 
 WORDIFICATION_LOCAL = DATA_DIR / "local" / "wordifications"
 SWEEP_LOCAL_DIR = DATA_DIR / "local" / "v_sweep" / "lda_fits"
@@ -61,43 +63,16 @@ LDA_TOPIC_WORD_PRIOR = 0.20
 RANDOM_STATE = 42
 
 
-def class_count_for(scene_id: str) -> int:
-    if scene_id == "indian-pines-corrected":
-        return 16
-    if scene_id == "salinas-corrected":
-        return 16
-    if scene_id == "salinas-a-corrected":
-        return 6
-    if scene_id == "pavia-university":
-        return 9
-    if scene_id == "kennedy-space-center":
-        return 13
-    if scene_id == "botswana":
-        return 14
-    return 0
-
-
-def topic_count_for(scene_id: str, mean_doc_length: float) -> int:
-    """Per-V K-policy: clip(round(mean_doc/2), 3, 12) bounded by class count."""
-    cls = class_count_for(scene_id)
-    upper = max(4, min(12, cls)) if cls > 0 else 12
-    if mean_doc_length < 2.5:
-        return max(3, min(upper, 4))
-    if mean_doc_length < 8:
-        return max(3, min(upper, int(round(mean_doc_length / 2))))
-    return upper
+# The K policy lives in research_core.k_policy (#817) so that every fixed-K
+# backbone (LDA here, ProdLDA / ETM in build_v_sweep_prodlda_backbone and
+# build_v_sweep_backbones_f7) uses the same K for a (recipe, scene) cell.
+class_count_for = _k_policy.class_count_for
+topic_count_for = _k_policy.topic_count_for
 
 
 def load_doc_term(recipe: str, scheme: str, q: int, scene_id: str) -> tuple[sp.csr_matrix, dict] | None:
-    corpus_dir = WORDIFICATION_LOCAL / recipe / f"{scheme}_Q{q}" / scene_id
-    npz_path = corpus_dir / "doc_term.npz"
-    vocab_path = corpus_dir / "vocab.json"
-    if not (npz_path.exists() and vocab_path.exists()):
-        return None
-    matrix = sp.load_npz(npz_path).tocsr()
-    with vocab_path.open("r", encoding="utf-8") as handle:
-        meta = json.load(handle)
-    return matrix, meta
+    """The corpus and its vocab.json, refused when its recorded Q or vocabulary disagree (#817)."""
+    return load_corpus(recipe, scheme, q, scene_id, root=WORDIFICATION_LOCAL)
 
 
 def fit_one(recipe: str, scheme: str, q: int, scene_id: str) -> dict | None:

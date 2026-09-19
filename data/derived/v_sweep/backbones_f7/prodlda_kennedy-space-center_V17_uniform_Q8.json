@@ -4,8 +4,15 @@
   "backbone": "prodlda",
   "scheme": "uniform",
   "Q": 8,
-  "normalised_mi": 0.008257,
+  "normalised_mi": 0.00419,
+  "K": 3,
+  "K_policy": "per-recipe K of the LDA canonical fit (research_core.k_policy.topic_count_for)",
+  "K_used_argmax": 2,
+  "f7_upper_bound": 0.271843,
+  "label_entropy_bits": 3.678599,
+  "topic_entropy_bits": 0.29222,
+  "mean_doc_length": 3.1485,
   "n_docs": 2686,
-  "generated_at": "2026-05-30T06:55:41Z",
-  "builder": "build_v_sweep_backbones_f7 v0.1"
+  "generated_at": "2026-09-18T22:55:46Z",
+  "builder": "build_v_sweep_backbones_f7 v0.2"
 }

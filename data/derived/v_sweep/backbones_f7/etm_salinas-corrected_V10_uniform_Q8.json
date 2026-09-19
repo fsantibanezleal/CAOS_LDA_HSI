@@ -4,8 +4,15 @@
   "backbone": "etm",
   "scheme": "uniform",
   "Q": 8,
-  "normalised_mi": 0.26075,
+  "normalised_mi": 0.258539,
+  "K": 3,
+  "K_policy": "per-recipe K of the LDA canonical fit (research_core.k_policy.topic_count_for)",
+  "K_used_argmax": 3,
+  "f7_upper_bound": 0.396241,
+  "label_entropy_bits": 4.0,
+  "topic_entropy_bits": 1.346891,
+  "mean_doc_length": 3.0,
   "n_docs": 3520,
-  "generated_at": "2026-05-30T06:44:12Z",
-  "builder": "build_v_sweep_backbones_f7 v0.1"
+  "generated_at": "2026-09-18T21:43:47Z",
+  "builder": "build_v_sweep_backbones_f7 v0.2"
 }

@@ -32,7 +32,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from research_core import k_policy as _k_policy  # noqa: E402
 from research_core.paths import DATA_DIR, DERIVED_DIR  # noqa: E402
+from research_core.wordification_store import load_corpus  # noqa: E402
 
 _PIPE = ROOT / "data-pipeline"
 _spec = importlib.util.spec_from_file_location("neural_models", _PIPE / "build_neural_topic_models.py")
@@ -50,28 +52,16 @@ RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 TOP_N = 10
 EPS = 1e-12
 
-CLASS_COUNTS = {
-    "indian-pines-corrected": 16, "salinas-corrected": 16,
-    "salinas-a-corrected": 6, "pavia-university": 9,
-    "kennedy-space-center": 13, "botswana": 14,
-}
+CLASS_COUNTS = _k_policy.CLASS_COUNTS
 
 
 def load_doc_term(recipe: str, scene_id: str):
-    p = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id / "doc_term.npz"
-    if not p.exists():
-        return None
-    return sp.load_npz(p).tocsr()
+    corpus = load_corpus(recipe, "uniform", 8, scene_id, root=WORDIFICATION_LOCAL)
+    return None if corpus is None else corpus[0]
 
 
-def k_for(scene_id: str, mean_doc: float) -> int:
-    cls = CLASS_COUNTS.get(scene_id, 0)
-    upper = max(4, min(12, cls)) if cls > 0 else 12
-    if mean_doc < 2.5:
-        return max(3, min(upper, 4))
-    if mean_doc < 8:
-        return max(3, min(upper, int(round(mean_doc / 2))))
-    return upper
+# Same per-recipe K as the LDA canonical fit (research_core.k_policy).
+k_for = _k_policy.topic_count_for
 
 
 def compute_f2_f14(phi: np.ndarray, doc_term: sp.csr_matrix) -> dict:

@@ -30,6 +30,25 @@ API-driven path uses. It is documented here so that any third party
 re-running the sweep with an API key can compare to the same rule
 or to a fresh LLM-as-judge output.
 
+Tie-invariant F-15 (v0.2, issue #817). "Top-10" is not defined when
+counts tie at the cut, and v0.1 took the first entries of numpy.argsort, so
+on recipes whose documents hold every token once (V3, V12, V15) the value
+was set by the numbering of the vocabulary (V3: 0.033 with ties broken by
+band index, 0.117 archived, about 0.18 at random). ``f15_alignment`` is now
+the rule's exact expectation under uniformly random tie-breaking, in the
+document and in the topic: each document contributes P(YES), P(NO) and
+P(AMBIGUOUS), and F-15 = sum P(YES) / sum (P(YES) + P(NO)). It equals v0.1
+wherever no tie crosses a cut, and it does not depend on how tokens or
+topics are numbered. The derivation, the exact computation and the
+construction limits that remain (vocabularies of <= 12 tokens, documents
+with < 3 distinct tokens: never NO) are in research_core/f15_alignment.py.
+The v0.1 value is kept as ``f15_alignment_legacy_argsort``.
+
+The corpus is read through research_core.wordification_store.load_corpus,
+which refuses a corpus whose recorded Q or vocabulary differs from the one
+asked for, and the judge refuses a corpus whose vocabulary size differs from
+the fit's phi (v0.1 compared the Q = 32 V15 corpus with Q = 8 topics).
+
 Output schema mirrors ``build_v_sweep_f15_llm_alignment.py``:
 data/derived/v_sweep/f15_llm_alignment/{scene}_{V}_uniform_Q8.json
 with an extra field ``judge_model`` set to
@@ -44,13 +63,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
-import scipy.sparse as sp
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from research_core.f15_alignment import (  # noqa: E402
+    N_TOP_TOKENS,
+    cell_alignment,
+    legacy_top_indices,
+    legacy_verdict,
+)
 from research_core.paths import DATA_DIR, DERIVED_DIR  # noqa: E402
+from research_core.wordification_store import load_corpus  # noqa: E402
 
 SWEEP_LOCAL = DATA_DIR / "local" / "v_sweep" / "lda_fits"
 WORDIFICATION_LOCAL = DATA_DIR / "local" / "wordifications"
@@ -62,7 +87,6 @@ LABELLED_SCENES = [
 ]
 RECIPES = [f"V{i}" for i in range(1, 16)] + ["V17", "V18", "V19", "V20"]
 N_DOCS = 20
-N_TOP_TOKENS = 10
 RANDOM_STATE = 42
 
 JUDGE_MODEL = "claude-opus-4-7 (1M context, self-judgment, deterministic rule)"
@@ -72,50 +96,20 @@ def load_artefacts(scene_id: str, recipe: str):
     fit_dir = SWEEP_LOCAL / f"{scene_id}_{recipe}_uniform_Q8"
     phi_path = fit_dir / "phi.npy"
     theta_path = fit_dir / "theta.npy"
-    corpus_dir = WORDIFICATION_LOCAL / recipe / "uniform_Q8" / scene_id
-    dt_path = corpus_dir / "doc_term.npz"
-    if not all(p.exists() for p in (phi_path, theta_path, dt_path)):
+    if not (phi_path.exists() and theta_path.exists()):
         return None
+    corpus = load_corpus(recipe, "uniform", 8, scene_id, root=WORDIFICATION_LOCAL)
+    if corpus is None:
+        return None
+    doc_term, _meta = corpus
     phi = np.load(phi_path)
     theta = np.load(theta_path)
-    doc_term = sp.load_npz(dt_path).tocsr()
     return phi, theta, doc_term
 
 
-def top_indices(weights: np.ndarray, n: int, threshold: float = 0.0) -> list[int]:
-    n = min(n, weights.size)
-    idx = np.argsort(weights)[::-1]
-    out = []
-    for i in idx[:n]:
-        if float(weights[int(i)]) > threshold:
-            out.append(int(i))
-        if len(out) >= n:
-            break
-    return out
-
-
-def self_judge(doc_top: list[int], topic_top: list[int]) -> str:
-    """Apply the deterministic rule documented in the module docstring.
-
-    Returns 'YES', 'NO', or 'AMBIGUOUS'.
-    """
-    if not doc_top:
-        return "AMBIGUOUS"
-    topic_set = set(topic_top)
-    overlap = sum(1 for t in doc_top if t in topic_set)
-    if overlap >= 3:
-        return "YES"
-    # High-signal recipes (e.g. V7, V9, V10) produce documents with
-    # only a few non-zero tokens; in that regime use the top-1 rule.
-    top_1_in_topic_top_5 = doc_top[0] in set(topic_top[:5])
-    if top_1_in_topic_top_5:
-        return "YES"
-    # Zero overlap on top-3 -> misaligned
-    if len(doc_top) >= 3:
-        if not any(t in topic_set for t in doc_top[:3]):
-            return "NO"
-    # Marginal overlap -> ambiguous (LLM would likely be uncertain too)
-    return "AMBIGUOUS" if overlap == 0 else "YES"
+# v0.1 helpers, kept for callers: the archived argsort top-n and judge.
+top_indices = legacy_top_indices
+self_judge = legacy_verdict
 
 
 def for_cell(recipe: str, scene_id: str) -> dict | None:
@@ -130,51 +124,30 @@ def for_cell(recipe: str, scene_id: str) -> dict | None:
 
     rng = np.random.default_rng(RANDOM_STATE)
     sample_idx = rng.choice(D, size=min(N_DOCS, D), replace=False)
-    z_stars = np.argmax(theta[sample_idx], axis=1)
-
-    topic_top_indices = [top_indices(phi[k], N_TOP_TOKENS) for k in range(K)]
-
-    decisions = []
-    n_yes = n_no = n_ambiguous = 0
-    for i, d_idx in enumerate(sample_idx):
-        z = int(z_stars[i])
-        doc_row = np.asarray(doc_term[d_idx].toarray()).reshape(-1).astype(np.float64)
-        doc_top = top_indices(doc_row, N_TOP_TOKENS)
-        verdict = self_judge(doc_top, topic_top_indices[z])
-        if verdict == "YES":
-            n_yes += 1
-        elif verdict == "NO":
-            n_no += 1
-        else:
-            n_ambiguous += 1
-        decisions.append({
-            "doc_idx": int(d_idx),
-            "topic": z,
-            "verdict": verdict,
-        })
-
-    total_decisive = n_yes + n_no
-    f15 = n_yes / max(total_decisive, 1) if total_decisive > 0 else 0.0
+    cell = cell_alignment(doc_term, theta, phi, sample_idx, n_top=N_TOP_TOKENS)
     return {
         "scene_id": scene_id, "recipe": recipe, "scheme": "uniform", "Q": 8,
-        "K": int(K), "V": int(V),
-        "n_docs": int(len(sample_idx)),
-        "n_yes": n_yes, "n_no": n_no, "n_ambiguous": n_ambiguous,
-        "f15_alignment": round(f15, 6),
-        "decisions": decisions,
+        **cell,
+        "f15_alignment": round(cell["f15_alignment"], 6),
+        "expected_yes": round(cell["expected_yes"], 6),
+        "expected_no": round(cell["expected_no"], 6),
+        "expected_ambiguous": round(cell["expected_ambiguous"], 6),
         "model": JUDGE_MODEL,
-        "judge_method": "self_judgment_deterministic_rule",
+        "judge_method": "self_judgment_deterministic_rule_tie_invariant",
         "judge_rule_description": (
             "YES if doc top-10 shares >=3 elements with topic top-10, OR doc "
             "top-1 is in topic top-5. NO if doc top-3 shares 0 elements with "
-            "topic top-10. AMBIGUOUS otherwise. Encoded by Claude Opus 4.7 "
-            "(1M context) as a stand-in for the API-driven LLM-as-judge in "
-            "build_v_sweep_f15_llm_alignment.py."
+            "topic top-10. AMBIGUOUS otherwise. Top-k lists are taken under "
+            "uniformly random tie-breaking and each document contributes its "
+            "exact P(YES), P(NO), P(AMBIGUOUS); F-15 = sum P(YES) / sum "
+            "(P(YES) + P(NO)). Encoded by Claude Opus 4.7 (1M context) as a "
+            "stand-in for the API-driven LLM-as-judge in "
+            "build_v_sweep_f15_llm_alignment.py; tie-invariant form #817."
         ),
         "generated_at": datetime.now(timezone.utc)
         .isoformat(timespec="seconds")
         .replace("+00:00", "Z"),
-        "builder": "build_v_sweep_f15_self_judge v0.1",
+        "builder": "build_v_sweep_f15_self_judge v0.2",
     }
 
 
@@ -186,7 +159,7 @@ def main() -> int:
     args = parser.parse_args()
 
     F15_DERIVED.mkdir(parents=True, exist_ok=True)
-    n_ok = n_skip = 0
+    n_ok = n_skip = n_fail = 0
     summary = []
     for scene in args.scenes:
         for recipe in args.recipes:
@@ -195,7 +168,7 @@ def main() -> int:
                 res = for_cell(recipe, scene)
             except Exception as exc:
                 print(f"[f15] {tag} FAILED: {exc}", flush=True)
-                n_skip += 1
+                n_fail += 1
                 continue
             if res is None:
                 n_skip += 1
@@ -207,8 +180,10 @@ def main() -> int:
             summary.append(res)
             print(
                 f"[f15] {scene:30s} {recipe:5s} "
-                f"yes={res['n_yes']:2d} no={res['n_no']:2d} amb={res['n_ambiguous']:2d} "
-                f"f15={res['f15_alignment']:.3f}",
+                f"E[yes]={res['expected_yes']:5.2f} E[no]={res['expected_no']:5.2f} "
+                f"E[amb]={res['expected_ambiguous']:5.2f} "
+                f"f15={res['f15_alignment']:.3f} "
+                f"(argsort v0.1: {res['f15_alignment_legacy_argsort']:.3f})",
                 flush=True,
             )
 
@@ -222,8 +197,8 @@ def main() -> int:
             v = by_recipe[r]
             print(f"    {r:5s} mean={np.mean(v):.4f} (n={len(v)})", flush=True)
 
-    print(f"\n[f15] done. ok={n_ok} skipped={n_skip}", flush=True)
-    return 0
+    print(f"\n[f15] done. ok={n_ok} skipped={n_skip} failed={n_fail}", flush=True)
+    return 1 if n_fail else 0
 
 
 if __name__ == "__main__":
