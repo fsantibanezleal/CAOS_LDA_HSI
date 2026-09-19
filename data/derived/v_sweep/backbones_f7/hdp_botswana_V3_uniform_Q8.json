@@ -5,7 +5,16 @@
   "scheme": "uniform",
   "Q": 8,
   "normalised_mi": 0.021748,
+  "K": null,
+  "K_policy": "HDP infers its topic count (T = 20)",
+  "K_used_argmax": 3,
+  "f7_upper_bound": 0.420561,
+  "label_entropy_bits": 3.768685,
+  "topic_entropy_bits": 0.1511,
+  "mean_doc_length": 145.0,
   "n_docs": 2775,
-  "generated_at": "2026-05-30T06:52:07Z",
-  "builder": "build_v_sweep_backbones_f7 v0.1"
+  "generated_at": "2026-09-18T21:01:12Z",
+  "builder": "build_v_sweep_backbones_f7 v0.2",
+  "K_effective": 4,
+  "K_inferred_total": 20
 }
