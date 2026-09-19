@@ -99,6 +99,12 @@ build_wordifications_v6plus.py → V6, V8, V9, V12  (Stage 2 — see note)
 build_wordifications_all.py    → orchestrator: imports _v4plus/_v6plus/_v7v11 (no own output)
 ```
 
+After any wordification rebuild, `check_wordification_store.py` audits every stored corpus: its
+`vocab.json` must record the folder's Q, its columns must match the vocabulary, and where a canonical
+LDA fit exists the corpus marginal and document lengths must equal the fit's (#817: the pre-2d51158 V15
+builder wrote its `--q 32` run into `uniform_Q8`). Writers and readers go through
+`research_core/wordification_store.py`, which refuses a corpus whose recorded Q differs from its folder.
+
 ### Stage 2 — First-order consumers
 
 Read Stage-1 artefacts.
@@ -496,6 +502,7 @@ python data-pipeline/build_wordifications_v17.py
 python data-pipeline/build_wordifications_v18.py
 python data-pipeline/build_wordifications_v19.py
 python data-pipeline/build_wordifications_v20.py
+python data-pipeline/check_wordification_store.py   # audit: exit 1 if any corpus disagrees with its folder or fit
 
 # Stage 2 — first-order consumers
 python data-pipeline/build_topic_to_data.py
