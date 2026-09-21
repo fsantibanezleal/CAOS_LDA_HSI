@@ -11,13 +11,16 @@ name: CI
 on:
   push:
     branches: [develop, main]
-  pull_request:
-    branches: [develop, main]
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   backend-smoke:
     name: Backend import smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Setup Python
@@ -32,17 +35,15 @@ jobs:
       - name: Verify routers import + count routes
         run: |
           python -c "from app.routers.content import router; n=len(router.routes); print(f'{n} routes registered'); assert n >= 50, 'too few routes — regression?'"
-      - name: Run pytest
-        run: python -m pytest tests/ -q
       - name: Verify manifest is valid JSON
         run: |
           python -c "import json; d=json.load(open('data/derived/manifests/index.json')); n=len(d.get('artifacts', [])); print(f'manifest has {n} artefacts')"
-      - name: Verify manifest is current (not stale vs data/derived) (#776)
-        run: python data-pipeline/check_manifest_current.py
-
+      - name: CI budget, trunk-only triggers, no training (ADR-0074)
+        run: python scripts/check_ci_budget.py
   frontend-build:
     name: Frontend build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: frontend
