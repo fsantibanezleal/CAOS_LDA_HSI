@@ -106,7 +106,7 @@ export default function Databases() {
             className="mt-2 text-sm"
             style={{ color: "var(--color-fg-faint)" }}
           >
-            <code>/api/local-dataset-inventory</code> —{" "}
+            <code>/api/local-dataset-inventory</code>, {" "}
             {error instanceof Error ? error.message : String(error)}
           </p>
         </div>
@@ -311,7 +311,7 @@ function DatasetCard({ dataset }: { dataset: DatasetEntry }) {
         <KvRow label="Modality" value={dataset.modality} />
         <KvRow
           label="Domains"
-          value={dataset.domains.join(", ") || "—"}
+          value={dataset.domains.join(", ") || ", "}
         />
         <KvRow
           label="Supervision"

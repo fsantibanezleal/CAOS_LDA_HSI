@@ -150,7 +150,7 @@ from app.services.content import (
 router = APIRouter(prefix="/api", tags=["content"])
 
 
-# Routes the frontend actively consumes — kept and audited 2026-05-26 (c351):
+# Routes the frontend actively consumes: kept and audited 2026-05-26 (c351):
 #   /local-dataset-inventory     → api.inventory() in client.ts
 #   /hidsag-preprocessing-sensitivity → BenchmarksHidsag
 #   /method-statistics           → Benchmarks
@@ -167,7 +167,7 @@ def local_dataset_inventory() -> LocalDatasetInventoryPayload:
 
 @router.get("/hidsag-preprocessing-sensitivity", response_model=HidsagPreprocessingSensitivityPayload)
 def hidsag_preprocessing_sensitivity() -> HidsagPreprocessingSensitivityPayload:
-    """B-9 — how downstream metrics shift across 4 spectral preprocessing recipes."""
+    """B-9, how downstream metrics shift across 4 spectral preprocessing recipes."""
     return get_hidsag_preprocessing_sensitivity()
 
 
@@ -184,7 +184,7 @@ def method_statistics() -> MethodStatisticsPayload:
 
 
 # ============================================================================
-# Master-plan §18 precompute layer — endpoints for the new derived files.
+# Master-plan §18 precompute layer: endpoints for the new derived files.
 # These return plain dicts (no Pydantic model) because the schemas are large
 # and the frontend declares its own TypeScript interfaces.
 # ============================================================================
@@ -193,7 +193,7 @@ def method_statistics() -> MethodStatisticsPayload:
 def _serve_or_404(loader, *args, hint: str):
     """Invoke `loader(*args)` and translate FileNotFoundError to 404.
 
-    Closes the dead-helper finding from issue #440 (1.1 + 1.3) — the
+    Closes the dead-helper finding from issue #440 (1.1 + 1.3), the
     previous body imported six callables it never used and only worked
     for the (loader, scene_id) shape. The new signature accepts any
     positional args, so handlers that take 0, 1, 2 or 4 path params all
@@ -415,7 +415,7 @@ def band_masks_index() -> BandMasksIndexResponse:
     response_model_exclude_none=True,
 )
 def band_masks_canonical_comparison() -> BandMaskCanonicalComparisonResponse:
-    """F-5 — paired comparison of band-mask refits against the canonical fit."""
+    """F-5, paired comparison of band-mask refits against the canonical fit."""
     return _typed_or_404(
         BandMaskCanonicalComparisonResponse,
         get_band_masks_canonical_comparison,
@@ -507,7 +507,7 @@ def grouping(method: str, scene_id: str) -> GroupingDetail:
     response_model_exclude_none=True,
 )
 def cross_method_agreement(scene_id: str) -> CrossMethodAgreement:
-    """F-6 — pairwise ARI / NMI / V across partition methods on a labelled scene."""
+    """F-6, pairwise ARI / NMI / V across partition methods on a labelled scene."""
     return _typed_or_404(
         CrossMethodAgreement, get_cross_method_agreement, scene_id,
         hint=f"cross-method agreement for '{scene_id}' not generated yet",
@@ -572,7 +572,7 @@ def narratives(scene_id: str) -> Narratives:
     response_model_exclude_none=True,
 )
 def interpretability(scene_id: str, card_type: str) -> InterpretabilityCards:
-    """B-7 — topic / band / document cards (interpretability scaffold)."""
+    """B-7, topic / band / document cards (interpretability scaffold)."""
     if card_type not in ("topic_cards", "band_cards", "document_cards"):
         raise HTTPException(status_code=400, detail="card_type must be topic_cards | band_cards | document_cards")
     return _typed_or_404(
@@ -719,7 +719,7 @@ def optuna_search(scene_id: str) -> OptunaSearch:
     response_model_exclude_none=True,
 )
 def linear_probe_panel(scene_id: str) -> LinearProbePanel:
-    """B-1 — theta-as-feature vs PCA-K, NMF-K, ICA-K, dense-AE-K linear probes."""
+    """B-1, theta-as-feature vs PCA-K, NMF-K, ICA-K, dense-AE-K linear probes."""
     return _typed_or_404(
         LinearProbePanel, get_linear_probe_panel, scene_id,
         hint=f"linear_probe_panel for '{scene_id}' not generated yet",
@@ -732,7 +732,7 @@ def linear_probe_panel(scene_id: str) -> LinearProbePanel:
     response_model_exclude_none=True,
 )
 def mutual_information(scene_id: str) -> MutualInformation:
-    """B-4 — MI(theta; label) for canonical and competing K-dim representations."""
+    """B-4, MI(theta; label) for canonical and competing K-dim representations."""
     return _typed_or_404(
         MutualInformation, get_mutual_information, scene_id,
         hint=f"mutual_information for '{scene_id}' not generated yet",
@@ -758,7 +758,7 @@ def mutual_information_hidsag(subset_code: str) -> MutualInformationHidsag:
     response_model_exclude_none=True,
 )
 def rate_distortion_curve(scene_id: str) -> RateDistortionCurve:
-    """B-2 — held-out RMSE on doc-term matrix for K in {4, 6, 8, 10, 12, 16}, LDA vs NMF vs PCA."""
+    """B-2, held-out RMSE on doc-term matrix for K in {4, 6, 8, 10, 12, 16}, LDA vs NMF vs PCA."""
     return _typed_or_404(
         RateDistortionCurve, get_rate_distortion_curve, scene_id,
         hint=f"rate_distortion_curve for '{scene_id}' not generated yet",
@@ -771,7 +771,7 @@ def rate_distortion_curve(scene_id: str) -> RateDistortionCurve:
     response_model_exclude_none=True,
 )
 def topic_routed_classifier(scene_id: str) -> TopicRoutedClassifier:
-    """B-3 — soft theta-gated specialists (master-plan Addendum B Axis C-2)."""
+    """B-3, soft theta-gated specialists (master-plan Addendum B Axis C-2)."""
     return _typed_or_404(
         TopicRoutedClassifier, get_topic_routed_classifier, scene_id,
         hint=f"topic_routed_classifier for '{scene_id}' not generated yet",
@@ -784,7 +784,7 @@ def topic_routed_classifier(scene_id: str) -> TopicRoutedClassifier:
     response_model_exclude_none=True,
 )
 def topic_routed_deep_gate(scene_id: str) -> TopicRoutedDeepGate:
-    """B-3 follow-up — theta gate vs PCA-8 / CAE-1D-8 / beta-VAE-8 deep gates."""
+    """B-3 follow-up, theta gate vs PCA-8 / CAE-1D-8 / beta-VAE-8 deep gates."""
     return _typed_or_404(
         TopicRoutedDeepGate, get_topic_routed_deep_gate, scene_id,
         hint=f"topic_routed_deep_gate for '{scene_id}' not generated yet",
@@ -823,7 +823,7 @@ def neural_topic_seed_stability(scene_id: str) -> NeuralTopicSeedStability:
     response_model_exclude_none=True,
 )
 def embedded_baseline(scene_id: str) -> EmbeddedBaseline:
-    """B-5 — [theta || PCA-K] concat readout with sample-weighted logistic regression."""
+    """B-5, [theta || PCA-K] concat readout with sample-weighted logistic regression."""
     return _typed_or_404(
         EmbeddedBaseline, get_embedded_baseline, scene_id,
         hint=f"embedded_baseline for '{scene_id}' not generated yet",
@@ -836,7 +836,7 @@ def embedded_baseline(scene_id: str) -> EmbeddedBaseline:
     response_model_exclude_none=True,
 )
 def topic_stability(scene_id: str, k_offset: int = 0) -> TopicStability:
-    """B-6 — Hungarian-matched cosine seed stability for LDA (Greene 2014)."""
+    """B-6, Hungarian-matched cosine seed stability for LDA (Greene 2014)."""
     try:
         return TopicStability.model_validate(
             get_topic_stability(scene_id, k_offset=k_offset)
@@ -905,7 +905,7 @@ def classical_seed_stability(scene_id: str, method: str = "pca_8") -> SeedStabil
     response_model_exclude_none=True,
 )
 def topic_to_usgs_v7(scene_id: str) -> TopicToUsgsV7:
-    """B-7 — topic-to-USGS splib07 alignment via cosine + SAM (Kruse 1993)."""
+    """B-7, topic-to-USGS splib07 alignment via cosine + SAM (Kruse 1993)."""
     return _typed_or_404(
         TopicToUsgsV7, get_topic_to_usgs_v7, scene_id,
         hint=f"topic_to_usgs_v7 for '{scene_id}' not generated yet",
@@ -944,7 +944,7 @@ def topic_anomaly(scene_id: str) -> TopicAnomaly:
     response_model_exclude_none=True,
 )
 def topic_spatial_continuous(scene_id: str) -> TopicSpatialContinuous:
-    """B-10 — Moran's I (1950) over theta_k abundance per scene."""
+    """B-10, Moran's I (1950) over theta_k abundance per scene."""
     return _typed_or_404(
         TopicSpatialContinuous, get_topic_spatial_continuous, scene_id,
         hint=f"topic_spatial_continuous for '{scene_id}' not generated yet",
@@ -970,7 +970,7 @@ def topic_spatial_full(scene_id: str) -> TopicSpatialFull:
     response_model_exclude_none=True,
 )
 def endmember_baseline(scene_id: str) -> EndmemberBaseline:
-    """B-11 — NFINDR / ATGP / NNLS unmixing comparison."""
+    """B-11, NFINDR / ATGP / NNLS unmixing comparison."""
     return _typed_or_404(
         EndmemberBaseline, get_endmember_baseline, scene_id,
         hint=f"endmember_baseline for '{scene_id}' not generated yet",
@@ -983,7 +983,7 @@ def endmember_baseline(scene_id: str) -> EndmemberBaseline:
     response_model_exclude_none=True,
 )
 def llm_tea_leaves(scene_id: str) -> LlmTeaLeaves:
-    """B-12 — Stammbach 2024 LLM tea-leaves word/topic intrusion per scene."""
+    """B-12, Stammbach 2024 LLM tea-leaves word/topic intrusion per scene."""
     return _typed_or_404(
         LlmTeaLeaves, get_llm_tea_leaves, scene_id,
         hint=(
@@ -1012,7 +1012,7 @@ def super_topics() -> SuperTopics:
     response_model_exclude_none=True,
 )
 def cross_scene_transfer() -> CrossSceneTransfer:
-    """B-8 — Hungarian-matched topic transfer across labelled scenes."""
+    """B-8, Hungarian-matched topic transfer across labelled scenes."""
     return _typed_or_404(
         CrossSceneTransfer, get_cross_scene_transfer,
         hint="cross_scene_transfer not generated yet",
@@ -1020,7 +1020,7 @@ def cross_scene_transfer() -> CrossSceneTransfer:
 
 
 # ---------------------------------------------------------------------------
-# V-sweep (issue #606) — the 19 built wordification recipes (V1-V15, V17-V20;
+# V-sweep (issue #606): the 19 built wordification recipes (V1-V15, V17-V20;
 # V16 is a foundation-model scaffold) evaluated across the multi-axis framework.
 # Reads small per-(scene, recipe, scheme, Q) JSON shards.
 # ---------------------------------------------------------------------------
@@ -1056,7 +1056,7 @@ _V_SWEEP_SCENES = [
 
 @router.get("/v-sweep/status", response_model=VSweepStatus, response_model_exclude_none=True)
 def v_sweep_status(scheme: str = "uniform", q: int = 8) -> VSweepStatus:
-    """Sweep coverage — how many (V, scene) shards exist for the given grid."""
+    """Sweep coverage, how many (V, scene) shards exist for the given grid."""
     s = get_settings()
     tv_count = f1_count = f2_count = 0
     for scene in _V_SWEEP_SCENES:

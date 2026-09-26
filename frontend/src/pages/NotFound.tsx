@@ -1,5 +1,5 @@
 /**
- * 404 surface — shows the requested-but-missing path and points the
+ * 404 surface: shows the requested-but-missing path and points the
  * visitor at the three most likely destinations.
  *
  * Replaces the prior silent `<Navigate to="/" replace />` catch-all,

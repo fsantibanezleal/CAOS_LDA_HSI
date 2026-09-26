@@ -267,7 +267,7 @@ Cross-axis winner counts (5 labelled scenes; Botswana row partial):
 | V1  | 1 | 2 | 0 | 3 |
 | V8  | 1 | 0 | 0 | 1 |
 
-V1 wins zero F-7 cells across all scenes — the strongest single-axis
+V1 wins zero F-7 cells across all scenes, the strongest single-axis
 finding of the sweep. The canonical V1 of P1 is the right *reproducibility*
 default but not a universal best.
 

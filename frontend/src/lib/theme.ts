@@ -7,7 +7,7 @@ export function readTheme(): Theme {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === "light" || saved === "dark") return saved;
   } catch {
-    // ignore — SSR or storage disabled
+    // ignore, SSR or storage disabled
   }
   if (
     typeof window !== "undefined" &&

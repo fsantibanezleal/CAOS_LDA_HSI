@@ -16,7 +16,7 @@ References
   of Classification* 2(1), 193-218. DOI:10.1007/BF01908075. Source
   of the Adjusted Rand Index (ARI) used here as the
   chance-corrected partition-agreement statistic.
-- Strehl, A., Ghosh, J. (2002). "Cluster Ensembles — A Knowledge
+- Strehl, A., Ghosh, J. (2002). "Cluster Ensembles: A Knowledge
   Reuse Framework for Combining Multiple Partitions". *JMLR* 3,
   583-617. Reference for Normalised Mutual Information (NMI) as
   the symmetric information-theoretic agreement statistic.
@@ -227,7 +227,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[cross_method] done — {written} scenes written.", flush=True)
+    print(f"[cross_method] done, {written} scenes written.", flush=True)
     return 0
 
 

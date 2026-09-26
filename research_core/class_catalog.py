@@ -100,7 +100,7 @@ CLASS_NAMES: Dict[str, Dict[int, str]] = {
 }
 
 
-# Stable colour palette for class chips — okabe-ito plus extras for >8 classes.
+# Stable colour palette for class chips: okabe-ito plus extras for >8 classes.
 # Indexed by (label_id - 1) modulo length.
 CLASS_PALETTE = [
     "#0072B2", "#D55E00", "#009E73", "#CC79A7",

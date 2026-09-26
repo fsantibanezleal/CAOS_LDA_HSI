@@ -3,8 +3,8 @@
 Master plan Addendum B Axis C-2 (downstream task battery, embedded use
 of theta).
 
-The user's correction (2026-05-03): "no se modela sobre theta — eso es
-obviamente peor — se hace per-topic specialists con esquema embebido /
+The user's correction (2026-05-03): "no se modela sobre theta, eso es
+obviamente peor, se hace per-topic specialists con esquema embebido /
 jerárquico". This builder implements that: for each labelled scene we
 fit LDA at the recommended K, then for each topic k we fit a per-topic
 logistic regression specialist on the **raw spectrum** with sample
@@ -31,7 +31,7 @@ References
   P(mu_routed_soft > mu_raw) = 0.641 and HDI94[mu_routed_soft - mu_raw]
   strictly positive.
 - Blei, Ng, Jordan (2003). The LDA model that produces theta_d(k).
-- Hubert, Arabie (1985). ARI — companion metric to macro F1 reported in
+- Hubert, Arabie (1985). ARI: companion metric to macro F1 reported in
   the JSON.
 - Demšar (2006). "Statistical Comparisons of Classifiers over Multiple
   Data Sets". JMLR 7:1-30. The non-parametric paired Wilcoxon /
@@ -378,7 +378,7 @@ def build_for_scene(scene_id: str, K_default: int = 8) -> dict | None:
             }
             for m, v in ranking
         ],
-        "framework_axis": "B-3 (master plan Addendum B Axis C-2): topic-routed classifier with soft theta gating — embedded / hierarchical use of theta on top of per-topic specialists, NOT modelled on theta directly",
+        "framework_axis": "B-3 (master plan Addendum B Axis C-2): topic-routed classifier with soft theta gating, embedded / hierarchical use of theta on top of per-topic specialists, NOT modelled on theta directly",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_topic_routed_classifier v0.1",
     }
@@ -409,7 +409,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[topic_routed] done — {written} scenes written.", flush=True)
+    print(f"[topic_routed] done, {written} scenes written.", flush=True)
     return 0
 
 

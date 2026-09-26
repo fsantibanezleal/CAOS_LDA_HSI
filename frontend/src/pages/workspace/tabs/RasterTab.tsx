@@ -206,7 +206,7 @@ export function RasterTab({
                 <div className="font-mono">
                   ({pick.row}, {pick.col}) →{" "}
                   {t("pages:workspace.tabs.RasterTab.topic_n", {
-                    n: pick.topic === null ? "—" : pick.topic + 1,
+                    n: pick.topic === null ? ", " : pick.topic + 1,
                   })}
                 </div>
               ) : (

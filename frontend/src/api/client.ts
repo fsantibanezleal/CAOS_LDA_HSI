@@ -10,7 +10,7 @@
 
 // Shared HTTP primitives moved to `_http.ts` as part of the c261
 // api-client split (#441 P1 2.4). The ApiError re-export was dropped
-// in c343 — no external consumers.
+// in c343, no external consumers.
 import { request, requestBuffer } from "./_http";
 
 // Pull the BandMask family from its own module so we can both consume
@@ -36,7 +36,7 @@ export type {
   HidsagCovariateProbability,
 } from "./bandmask";
 
-// c323 Routed family slice — see api/routed.ts.
+// c323 Routed family slice, see api/routed.ts.
 import * as routed from "./routed";
 export type {
   RoutedFoldMetric,
@@ -45,7 +45,7 @@ export type {
   TopicRoutedDeepGate,
 } from "./routed";
 
-// c324 RateDistortion + MutualInformation slice — see api/rate-distortion.ts.
+// c324 RateDistortion + MutualInformation slice, see api/rate-distortion.ts.
 import * as rateDistortion from "./rate-distortion";
 export type {
   RateDistortionCurvePoint,
@@ -54,7 +54,7 @@ export type {
   MutualInformation,
 } from "./rate-distortion";
 
-// c325 LdaSweep slice — see api/lda-sweep.ts.
+// c325 LdaSweep slice, see api/lda-sweep.ts.
 import * as ldaSweepApi from "./lda-sweep";
 export type { LdaSweepEntry, LdaSweep } from "./lda-sweep";
 
@@ -927,7 +927,7 @@ export type TopicAnomaly = {
   // `indicators` dict keyed by indicator name (softmax_margin,
   // recon_nll, …). Pydantic side has `Dict[str, Any]`; the TS side
   // had no field at all. Caller code already opens an `as any` cast
-  // when it reads it — narrow that to a typed record here.
+  // when it reads it, narrow that to a typed record here.
   indicators?: Record<string, unknown>;
 };
 

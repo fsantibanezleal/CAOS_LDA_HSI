@@ -257,7 +257,7 @@ def test_v15_spectral_indices_count() -> None:
 
 
 def test_v17_sparse_coding_n_nonzero() -> None:
-    """V17 uses n_nonzero_coefs = 8 — each pixel emits at most 8
+    """V17 uses n_nonzero_coefs = 8, each pixel emits at most 8
     nonzero coefficients."""
     from sklearn.decomposition import MiniBatchDictionaryLearning
 
@@ -272,7 +272,7 @@ def test_v17_sparse_coding_n_nonzero() -> None:
     )
     coeffs = dl.fit_transform(X)
     assert coeffs.shape == (N, K_atoms)
-    # Each row should have at most n_nz nonzero entries (or close —
+    # Each row should have at most n_nz nonzero entries (or close, 
     # lasso-lars is not strict about the count, but typically respects it).
     nnz_per_row = (np.abs(coeffs) > 1e-9).sum(axis=1)
     # Allow some slack for lasso-lars not being strict

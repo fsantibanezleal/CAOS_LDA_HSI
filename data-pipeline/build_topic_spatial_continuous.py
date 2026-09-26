@@ -77,7 +77,7 @@ LABELLED_SCENES = [
 def morans_I_continuous(x_grid: np.ndarray, mask: np.ndarray) -> float:
     """Moran's I on a continuous field with 4-neighbour rook weights.
 
-    x_grid: H x W float; mask: H x W bool — valid pixels.
+    x_grid: H x W float; mask: H x W bool, valid pixels.
     Off-mask pixels do not contribute and have no neighbours.
     """
     if mask.sum() < 5:
@@ -259,7 +259,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[spatial_continuous] done — {written} scenes written.", flush=True)
+    print(f"[spatial_continuous] done, {written} scenes written.", flush=True)
     return 0
 
 

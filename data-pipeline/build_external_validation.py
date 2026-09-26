@@ -5,7 +5,7 @@ build_method_statistics_hidsag.py and run a Bayesian hierarchical
 comparison of methods using PyMC, plus SHAP feature attributions on
 the best-performing topic-routed regressor for the dominant target.
 
-For labelled scenes: produce literature-signature alignment scores —
+For labelled scenes: produce literature-signature alignment scores, 
 distance from each topic_band_profile to a small bank of canonical
 mineralogy / vegetation / water / urban references (kaolinite, alunite,
 hematite, chlorophyll-green, water, concrete) sourced from the existing
@@ -299,7 +299,7 @@ def main() -> int:
             run.log_artifact(str(out_path))
             written += 1
 
-    print(f"[external_validation] done — {written} payloads written.", flush=True)
+    print(f"[external_validation] done, {written} payloads written.", flush=True)
     return 0
 
 

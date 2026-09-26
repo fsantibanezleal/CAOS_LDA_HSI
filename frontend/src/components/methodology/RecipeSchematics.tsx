@@ -125,7 +125,7 @@ export function RecipeV2Svg() {
 
 export function RecipeV3Svg() {
   // joint (band, bin): a band×bin grid with exactly one highlighted cell per
-  // band column — each band emits one (band, q-bin) joint token.
+  // band column, each band emits one (band, q-bin) joint token.
   const cols = 12;
   const rows = 5;
   const gx = PAD;

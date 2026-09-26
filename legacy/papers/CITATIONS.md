@@ -5,8 +5,8 @@ repository. It explains, in chronological order, where the methodology
 came from, what each paper contributed, and how the current repository
 inherits or supersedes those contributions.
 
-The author reference is Felipe A. Santibáñez-Leal —
-[ORCID 0000-0002-0150-3246](https://orcid.org/0000-0002-0150-3246) —
+The author reference is Felipe A. Santibáñez-Leal, 
+[ORCID 0000-0002-0150-3246](https://orcid.org/0000-0002-0150-3246), 
 through his postdoctoral work at ALGES / AMTC, Universidad de Chile,
 and earlier collaborations on geostatistical reconstruction and
 sampling.
@@ -17,7 +17,7 @@ These three papers form the spine of `CAOS_LDA_HSI`. The repository's
 working hypothesis, validation patterns, datasets, and inference
 strategy come from these three papers in order.
 
-### 1. Egaña et al. 2020 — Robust Stochastic Hyperspectral Analysis For Geometallurgy
+### 1. Egaña et al. 2020: Robust Stochastic Hyperspectral Analysis For Geometallurgy
 
 > Egaña, A. F., Santibáñez-Leal, F. A., Vidal, C., Díaz, G., Liberman,
 > S., Ehrenfeld, A. (2020). *A Robust Stochastic Approach to Mineral
@@ -42,7 +42,7 @@ mirrors the experimental design of this paper. The
 models" should beat global baselines is testing the same generalisation
 hypothesis on public data.
 
-### 2. Santibáñez-Leal et al. 2022 — A39 — LDA Topic Modelling On HSI
+### 2. Santibáñez-Leal et al. 2022: A39, LDA Topic Modelling On HSI
 
 > Santibáñez-Leal, F. A., Ehrenfeld, A., Garrido, F., Navarro, F.,
 > Egaña, Á. (2022). *Geometallurgical estimation of mineral samples
@@ -70,7 +70,7 @@ the planned absorption / shape extensions. The notebook
 [`legacy/notebooks/LDA_Hyper_legacy.ipynb`](../notebooks/LDA_Hyper_legacy.ipynb)
 is the implementation that accompanied this paper.
 
-### 3. Santibáñez-Leal et al. 2023 — HIDSAG: Public HSI Database For Geometallurgy
+### 3. Santibáñez-Leal et al. 2023: HIDSAG: Public HSI Database For Geometallurgy
 
 > Santibáñez-Leal, F. A., Ehrenfeld, A., Garrido, F., Navarro, F.,
 > Egaña, Á. (2023). *HIDSAG: Hyperspectral Image Database for
@@ -85,7 +85,7 @@ research over HSI cubes. HIDSAG ships multiple subsets (geomet,
 mineralogy, geochemistry, porphyry, controlled-mineral mixtures), each
 with its own per-sample laboratory measurements, and three acquisition
 modes: SWIR_low, VNIR_low, VNIR_high. This is the dataset that finally
-allows third parties — including this repository's public web app — to
+allows third parties, including this repository's public web app, to
 reproduce the kind of validation reported in the 2020 and 2022 papers.
 
 **What this repo inherits.** Everything labelled "Family D" in the
@@ -104,7 +104,7 @@ at the level required by the validation gates.
 
 The author's earlier work that shapes how this repository thinks about
 sampling, sparse reconstruction, and information-theoretic
-selection — even though they are not topic-modelling papers — is
+selection, even though they are not topic-modelling papers, is
 relevant context.
 
 ### Geostatistics And Sparse Reconstruction
@@ -165,7 +165,7 @@ descriptors, which is the empirical observation that justifies the
 These pre-doctoral papers are not directly relevant to spectral topic
 modelling, but they explain why the author insists on validated image
 quantification pipelines and on resisting "pretty visualisation without
-methodological substance" — a principle baked into the current
+methodological substance", a principle baked into the current
 [`product-reset`](https://github.com/fsantibanezleal/CAOS_MANAGE) plan.
 
 ### Geophysics / Mineral Targeting
@@ -229,14 +229,14 @@ the active research memo
 ([`docs/research-memo-2026-05.md`](../../docs/research-memo-2026-05.md))
 will track as candidate extensions:
 
-- Wahabzada, M. et al. — plant hyperspectral LDA work for stress
+- Wahabzada, M. et al.: plant hyperspectral LDA work for stress
   detection.
-- Zou, S., Zare, A. — *Partial-Membership Latent Dirichlet Allocation*
+- Zou, S., Zare, A.: *Partial-Membership Latent Dirichlet Allocation*
   (PM-LDA) and semi-supervised PM-LDA for hyperspectral unmixing and
   endmember variability.
-- Borsoi, R. A. et al. — endmember variability and bundle approaches
+- Borsoi, R. A. et al.: endmember variability and bundle approaches
   for HSI unmixing.
-- Dieng, A. B., Ruiz, F., Blei, D. M. — *Embedded Topic Models* and
+- Dieng, A. B., Ruiz, F., Blei, D. M.: *Embedded Topic Models* and
   follow-on neural topic models.
 - Recent (2023+) survey and method papers on HSI representation
   learning, transformers, and contrastive embeddings, to be tracked in
@@ -247,8 +247,8 @@ change the recipe, dataset, or validation tables of this repository.
 
 ## Maintenance Rule
 
-When a new paper joins the line of work — by Felipe or by close
-collaborators — its full citation goes here, with a one-paragraph
+When a new paper joins the line of work, by Felipe or by close
+collaborators, its full citation goes here, with a one-paragraph
 "what it contributed / what this repo inherits" entry. Major updates to
 this file should also be reflected in
 [`../../docs/sources.md`](../../docs/sources.md) and in the public wiki

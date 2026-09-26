@@ -1,7 +1,7 @@
 """Shared fixtures for the backend test suite.
 
 Tests reuse the real `data/derived/*.json` artefacts produced by the
-pipeline — the smoke harness already proves they exist on a working
+pipeline, the smoke harness already proves they exist on a working
 deploy, and the test suite asserts router behaviour (status codes,
 response shapes) without recreating those payloads.
 

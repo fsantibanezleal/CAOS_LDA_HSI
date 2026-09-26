@@ -307,7 +307,7 @@ def main() -> int:
                 flush=True,
             )
         written_total += len(summaries)
-    print(f"[groupings] done — {written_total} (method x scene) outputs.", flush=True)
+    print(f"[groupings] done, {written_total} (method x scene) outputs.", flush=True)
     return 0
 
 

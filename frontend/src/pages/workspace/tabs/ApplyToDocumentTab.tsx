@@ -7,7 +7,7 @@ import { UnmixingStat } from "../components/StatCard";
 import { TabError, TabLoading } from "../components/TabStates";
 
 /**
- * Apply-to-document tab (cycle 101) — Step 7 of web-app-spec.md.
+ * Apply-to-document tab (cycle 101): Step 7 of web-app-spec.md.
  *
  * Picks one of the K sampled documents, shows its full θ vector vs the
  * scene's marginal θ, and overlays the per-topic empirical P(label | t)
@@ -358,7 +358,7 @@ function DocDetailPanel({
                   <td className="py-1 pr-3 text-right font-mono">{(row.p * 100).toFixed(1)}%</td>
                   <td className="py-1 pr-3 text-right font-mono">{(row.marginal * 100).toFixed(1)}%</td>
                   <td className="py-1 pr-3 text-right font-mono" style={{ color: ratio >= 2 ? "rgba(40,160,80,1)" : ratio <= 0.5 ? "rgba(214,39,40,1)" : "var(--color-fg-faint)" }}>
-                    {row.marginal > 0 ? ratio.toFixed(2) : "—"}×
+                    {row.marginal > 0 ? ratio.toFixed(2) : ", "}×
                   </td>
                   <td className="py-1 pr-3 w-[140px]">
                     <div className="h-2 rounded" style={{ backgroundColor: "var(--color-border)" }}>

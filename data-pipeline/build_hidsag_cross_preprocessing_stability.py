@@ -1,4 +1,4 @@
-"""HIDSAG cross-preprocessing topic stability — Addendum B B-6 follow-up.
+"""HIDSAG cross-preprocessing topic stability, Addendum B B-6 follow-up.
 
 Reads `data/derived/core/hidsag_preprocessing_sensitivity.json`, extracts
 the per-policy LDA top-tokens for each HIDSAG subset, and reports
@@ -139,7 +139,7 @@ def build_for_subset(subset_payload: dict) -> dict | None:
         "methodology_note": (
             f"Hungarian-matched top-{TOP_N} Jaccard between LDA fits on the "
             "same HIDSAG subset under different preprocessing policies. This "
-            "is a token-overlap proxy, not full cosine over phi — phi is not "
+            "is a token-overlap proxy, not full cosine over phi, phi is not "
             "shipped in hidsag_preprocessing_sensitivity. A full-fidelity "
             "B-6 reading on HIDSAG would re-run LDA per policy and capture "
             "phi explicitly."
@@ -181,7 +181,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[hidsag_cross_preproc_stab] done — {written} subsets written.", flush=True)
+    print(f"[hidsag_cross_preproc_stab] done, {written} subsets written.", flush=True)
     return 0
 
 

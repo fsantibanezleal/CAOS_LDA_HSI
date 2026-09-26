@@ -19,7 +19,7 @@ LIVE = [
     "get_derived_manifest",
 ]
 
-# Removed by #588 — must NOT come back (regression lock).
+# Removed by #588: must NOT come back (regression lock).
 DEAD = [
     "get_app_payload",
     "get_overview",

@@ -119,7 +119,7 @@ export function RepresentationFitTab({
               {t("pages:workspace.tabs.RepresentationFitTab.scatter_pca3d")}
               {evList.length ? (
                 <>
-                  {" "}{t("pages:workspace.tabs.RepresentationFitTab.of_latent_space")} (Σ EV {(evTotal * 100).toFixed(1)}% — {t("pages:workspace.tabs.RepresentationFitTab.components")}{" "}
+                  {" "}{t("pages:workspace.tabs.RepresentationFitTab.of_latent_space")} (Σ EV {(evTotal * 100).toFixed(1)}%, {t("pages:workspace.tabs.RepresentationFitTab.components")}{" "}
                   {evList.map((v, i) => (
                     <span key={i} className="font-mono text-[11px]">
                       {i > 0 ? " · " : ""}{(v * 100).toFixed(1)}%
@@ -199,7 +199,7 @@ export function RepresentationFitTab({
                 <span className="font-mono">
                   {typeof v === "number"
                     ? Array.isArray(v)
-                      ? "—"
+                      ? ", "
                       : v.toFixed(4)
                     : Array.isArray(v)
                       ? `[${(v as unknown as number[]).slice(0, 4).map((x) => x.toFixed(3)).join(", ")}${(v as unknown as number[]).length > 4 ? "…" : ""}]`

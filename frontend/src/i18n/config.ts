@@ -56,7 +56,7 @@ void i18n
     ns: ["common", "nav", "pages"],
     interpolation: { escapeValue: false },
     detection: {
-      // Only check localStorage — no navigator fallback so first-visit
+      // Only check localStorage, no navigator fallback so first-visit
       // always starts in English regardless of browser locale.
       order: ["localStorage"],
       lookupLocalStorage: "caos.lang",

@@ -145,7 +145,7 @@ def main() -> int:
     DERIVED_OUT_DIR.mkdir(parents=True, exist_ok=True)
     obs = collect_observations()
     if not obs:
-        print("[bayesian_deep] no observations — run build_topic_routed_deep_gate first", flush=True)
+        print("[bayesian_deep] no observations, run build_topic_routed_deep_gate first", flush=True)
         return 0
     print(f"[bayesian_deep] collected {len(obs)} observations from topic_routed_deep_gate", flush=True)
     result = fit_hierarchical(obs)
@@ -153,7 +153,7 @@ def main() -> int:
         return 0
     out = DERIVED_OUT_DIR / "cross_classification_bayesian_deep.json"
     out.write_text(json.dumps(result, separators=(",", ":")), encoding="utf-8")
-    print(f"[bayesian_deep] done — {len(result.get('method_posteriors', []))} methods", flush=True)
+    print(f"[bayesian_deep] done, {len(result.get('method_posteriors', []))} methods", flush=True)
     for m in result["method_posteriors"]:
         print(
             f"  {m['method']:24s} mu={m['posterior_mean']:+.3f} HDI94=[{m['hdi94_lo']:+.3f}, {m['hdi94_hi']:+.3f}] "

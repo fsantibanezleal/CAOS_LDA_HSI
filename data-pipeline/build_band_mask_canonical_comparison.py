@@ -17,7 +17,7 @@ and computes:
     shift under this mask?".
   - **per-topic Hungarian cosine match** between canonical phi rows and masked
     phi rows. Reports the mean matched cosine plus the min matched cosine
-    (the latter is the weakest-link topic — a low number means at least one
+    (the latter is the weakest-link topic, a low number means at least one
     canonical topic could not be recovered under the mask).
   - **per-topic label-distribution KL divergence** between canonical
     P(L|t=k) and masked P(L|t=match(k)) on the Hungarian alignment. Reports
@@ -168,7 +168,7 @@ def compare_one(scene_id: str, mask_id: str) -> dict | None:
     # builder log but we don't ship phi explicitly. The cosine matching
     # therefore uses just the top-words overlap as a proxy. Skip phi
     # cosine for now and compute it from the dominant-topic agreement
-    # alone — it's the most operational metric anyway.
+    # alone: it's the most operational metric anyway.
     # For a topic-id alignment we use Hungarian on the canonical-vs-masked
     # confusion matrix of dominant-topic assignments.
     K_c = canonical_topic_to_data["topic_count"]
@@ -229,7 +229,7 @@ def compare_one(scene_id: str, mask_id: str) -> dict | None:
     canonical_ari = None
     try:
         # Compute ARI of canonical_dom vs label on the same paired pixels
-        # by re-reading the labels via topic_to_data — actually it isn't
+        # by re-reading the labels via topic_to_data: actually it isn't
         # there. We'll just report canonical_ari = None and rely on the
         # masked ARI vs label which is in summary already.
         pass
@@ -294,7 +294,7 @@ def main() -> int:
         kl_mean = result.get("kl_p_label_given_topic_mean")
         print(
             f"[band_mask_compare] {scene_id}/{mask_id}  paired_ARI="
-            f"{ari:.4f}" if ari is not None else f"  paired_ARI=—"
+            f"{ari:.4f}" if ari is not None else f"  paired_ARI=, "
             ,
             flush=True,
         )

@@ -5,7 +5,7 @@
  * error strings scattered across Workspace.tsx (issue #442 P2).
  *
  * Each component is intentionally lightweight: a single rounded
- * border card with a centred message, no spinner, no animation —
+ * border card with a centred message, no spinner, no animation, 
  * matches the surrounding tab visual language without introducing
  * new design system tokens. A `Retry` button is rendered on the
  * error variant when `onRetry` is supplied.

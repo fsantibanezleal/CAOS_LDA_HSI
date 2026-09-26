@@ -26,8 +26,8 @@ einops==0.8.2
 # ===========================================================================
 # Hyperspectral I/O / geospatial
 # ===========================================================================
-spectral==0.24                # SPy — ENVI / HDR / ECOSTRESS / USGS readers
-rasterio==1.5.0               # GDAL bindings — georeferenced HSI
+spectral==0.24                # SPy, ENVI / HDR / ECOSTRESS / USGS readers
+rasterio==1.5.0               # GDAL bindings, georeferenced HSI
 rioxarray==0.22.0             # xarray + rasterio for CRS-aware cubes
 xarray==2026.4.0              # labelled multi-dim arrays
 h5py==3.16.0                  # HDF5 (PRISMA, EnMAP, custom)
@@ -77,7 +77,7 @@ pymc==5.28.5                  # Bayesian hierarchical method comparison
 arviz==0.23.4                 # ArviZ diagnostics + comparison helpers
 
 # ===========================================================================
-# Probabilistic topic modelling — classical
+# Probabilistic topic modelling: classical
 # ===========================================================================
 gensim==4.4.0                 # LdaModel / LdaMulticore / HdpModel / EnsembleLda / CoherenceModel
 tomotopy==0.14.0              # primary engine: LDA / HDP / CT / PA / sLDA / DMR / DT / PT in C++
@@ -86,7 +86,7 @@ corextopic==1.1               # Correlation Explanation + anchor words
 lda==3.0.2                    # Riddell collapsed Gibbs LDA reference
 
 # ===========================================================================
-# Probabilistic topic modelling — neural / probabilistic programming
+# Probabilistic topic modelling: neural / probabilistic programming
 # ===========================================================================
 torch==2.11.0
 torchvision==0.26.0

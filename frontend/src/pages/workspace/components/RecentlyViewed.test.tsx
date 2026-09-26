@@ -1,5 +1,5 @@
 /**
- * RecentlyViewed (c234) tests — the chip strip + the useTrackRecentScene
+ * RecentlyViewed (c234) tests: the chip strip + the useTrackRecentScene
  * hook persist (scene, rep) tuples through localStorage and exclude the
  * currently-active tuple from the chip list.
  */

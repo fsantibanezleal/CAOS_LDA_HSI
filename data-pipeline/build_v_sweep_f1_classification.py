@@ -1,4 +1,4 @@
-"""V-sweep F-1 — topic-routed classification posterior across V1..V12.
+"""V-sweep F-1, topic-routed classification posterior across V1..V12.
 
 The F-1 axis from the paper is the hierarchical-Bayesian classification
 posterior over methods on a panel of labelled scenes. The existing

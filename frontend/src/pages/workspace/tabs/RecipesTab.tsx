@@ -7,7 +7,7 @@ import { api } from "@/api/client";
 import { UnmixingStat } from "../components/StatCard";
 
 /**
- * Recipes tab (cycle 102) — Step 4 corpus exploration.
+ * Recipes tab (cycle 102): Step 4 corpus exploration.
  *
  * Three axis pickers (recipe, scheme ∈ {U, Q, L}, Q ∈ {8,16,32}) with an
  * availability chip per combo. On selection, queries
@@ -18,7 +18,7 @@ import { UnmixingStat } from "../components/StatCard";
  * Recipe list: this corpus-inspection view covers the recipes that ship full
  * vocab-statistics artefacts (V1-V12). The complete V1-V20 representation
  * sweep, the F-axis evidence, and the optimal recipes (V8, V20) live in
- * Recipe Lab and the Methods deep-dives — see the banner below.
+ * Recipe Lab and the Methods deep-dives: see the banner below.
  */
 
 const RECIPE_IDS_CORPUS = ["V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12"];
@@ -173,7 +173,7 @@ function RecipeDetailCard({ payload }: { payload: import("@/api/client").Wordifi
         <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_docs")} value={payload.D.toLocaleString()} />
         <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_bands")} value={String(payload.B)} />
         <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_vocab")} value={`${payload.V_full} / ${payload.V_actual}`} />
-        <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_entropy")} value={payload.corpus_marginal_entropy_bits != null ? t("pages:workspace.tabs.RecipesTab.entropy_bits", { value: payload.corpus_marginal_entropy_bits.toFixed(3) }) : "—"} />
+        <UnmixingStat label={t("pages:workspace.tabs.RecipesTab.stat_entropy")} value={payload.corpus_marginal_entropy_bits != null ? t("pages:workspace.tabs.RecipesTab.entropy_bits", { value: payload.corpus_marginal_entropy_bits.toFixed(3) }) : ", "} />
       </div>
       <div className="grid sm:grid-cols-2 gap-5">
         <div>

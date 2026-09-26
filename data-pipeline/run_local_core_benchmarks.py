@@ -853,7 +853,7 @@ def topic_routed_soft_regression(
 
     The central A39 contribution for regression, mirroring
     ``topic_routed_soft`` for classification (and the user's 2026-05-03
-    correction: "no se modela sobre theta — se hace per-topic specialists con
+    correction: "no se modela sobre theta, se hace per-topic specialists con
     soft gating"). For each topic k, fit a *regularised* Ridge on the spectra
     with ``sample_weight = theta_train[:, k]``; at test time predict
     ``sum_k theta_test[:, k] * f_k(x_test)`` normalised by the gate sum. Unlike
@@ -870,7 +870,7 @@ def topic_routed_soft_regression(
         specialist = Pipeline([("scale", StandardScaler()), ("reg", Ridge(alpha=alpha))])
         try:
             specialist.fit(x_train, y_train, reg__sample_weight=w)
-        except Exception:  # noqa: BLE001 — a degenerate specialist is skipped
+        except Exception:  # noqa: BLE001, a degenerate specialist is skipped
             continue
         gate = theta_test[:, k].astype(np.float64)
         num += gate * specialist.predict(x_test)
@@ -964,7 +964,7 @@ def crossval_hidsag_regression(
 
         # Ablation baseline: the naive hard-argmax route (one LinearRegression
         # per dominant region-topic on the raw-spectra subset). Shatters the
-        # data and overfits — kept only to show why the soft ensemble is needed.
+        # data and overfits: kept only to show why the soft ensemble is needed.
         train_dominant = np.argmax(region_topic_train, axis=1)
         test_dominant = np.argmax(region_topic_test, axis=1)
         routed_values = []

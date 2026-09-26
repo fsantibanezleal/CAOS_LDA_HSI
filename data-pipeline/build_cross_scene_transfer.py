@@ -14,7 +14,7 @@ truly captures *transferable* spectral structure should produce
 off-diagonals close to the diagonal; a method that overfits to
 scene-specific quirks should drop sharply.
 
-Pavia U (ROSIS, 430-860 nm) is excluded — its narrower range cannot
+Pavia U (ROSIS, 430-860 nm) is excluded, its narrower range cannot
 host the AVIRIS-1997 token vocabulary without massive NaN padding.
 
 Output: data/derived/cross_scene_transfer.json
@@ -256,13 +256,13 @@ def main() -> int:
             }
             for s in scene_order
         ],
-        "framework_axis": "B-8 (master plan Addendum B Axis E): cross-scene topic transfer on a common AVIRIS-1997 grid — fit LDA on A, infer theta on B, evaluate downstream macro F1 on B via theta-logistic",
+        "framework_axis": "B-8 (master plan Addendum B Axis E): cross-scene topic transfer on a common AVIRIS-1997 grid, fit LDA on A, infer theta on B, evaluate downstream macro F1 on B via theta-logistic",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_cross_scene_transfer v0.1",
     }
     with DERIVED_OUT_PATH.open("w", encoding="utf-8") as h:
         json.dump(payload, h, separators=(",", ":"))
-    print(f"[transfer] done — wrote {DERIVED_OUT_PATH.name}", flush=True)
+    print(f"[transfer] done, wrote {DERIVED_OUT_PATH.name}", flush=True)
     return 0
 
 

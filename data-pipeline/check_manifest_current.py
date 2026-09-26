@@ -22,7 +22,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "data-pipeline"))
 
-from curate_for_web import collect_artifacts  # noqa: E402 — needs sys.path setup
+from curate_for_web import collect_artifacts  # noqa: E402, needs sys.path setup
 
 MANIFEST = ROOT / "data" / "derived" / "manifests" / "index.json"
 

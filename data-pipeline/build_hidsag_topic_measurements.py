@@ -190,7 +190,7 @@ def main() -> int:
             json.dump(payload, fh, separators=(",", ":"))
         print(f"{subset}: {payload['record_count']} records, "
               f"{len(payload['variable_names'])} variables, "
-              f"{payload['missing_sample_count']} missing — "
+              f"{payload['missing_sample_count']} missing, "
               f"wrote {out_path}")
     return 0
 

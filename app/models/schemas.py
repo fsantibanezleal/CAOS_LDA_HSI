@@ -27,12 +27,12 @@ class HidsagPreprocessingSensitivityPayload(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Exploration views — precomputed payload for the interactive Workspace.
+# Exploration views: precomputed payload for the interactive Workspace.
 # ---------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------
-# Method statistics — k-fold + multi-seed paired statistics.
+# Method statistics: k-fold + multi-seed paired statistics.
 # ---------------------------------------------------------------------------
 
 

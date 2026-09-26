@@ -1,14 +1,14 @@
-"""Wordification recipes V6 / V8 / V9 / V12 — completing the §7 set
+"""Wordification recipes V6 / V8 / V9 / V12, completing the §7 set
 (except V7 absorption triplet and V11 codebook-VQ which still pend).
 
-  V6  wavelet-coefficient-bin    — pywavelets db4 multi-resolution
+  V6  wavelet-coefficient-bin   , pywavelets db4 multi-resolution
                                   decomposition, coefficients quantised
-  V8  endmember-fraction-bin     — NFINDR + NNLS abundances per
+  V8  endmember-fraction-bin    , NFINDR + NNLS abundances per
                                   endmember, quantised
-  V9  region-token (per-region SAM) — Felzenszwalb regions of the
+  V9  region-token (per-region SAM), Felzenszwalb regions of the
                                   scene; per-spectrum token = (region,
                                   SAM bin to that region's mean)
-  V12 GMM-token                   — sklearn.mixture.GaussianMixture(Q)
+  V12 GMM-token                  , sklearn.mixture.GaussianMixture(Q)
                                   on per-band intensities; tokens =
                                   (band, GMM component) joints
 
@@ -235,7 +235,7 @@ def wordify_v9_region_sam(
     regions in the sample.
     """
     if region_assignment_flat is None:
-        # No groupings available — fall back to a trivial single-region case.
+        # No groupings available: fall back to a trivial single-region case.
         return sparse.csr_matrix(np.ones((spectra.shape[0], 1), dtype=np.int32)), ["region00_q00"]
     H, W = spatial_shape
     region_per_doc = region_assignment_flat[pixel_indices]
@@ -301,7 +301,7 @@ def wordify_v12_gmm(
     """V12: vocab = (band, gmm_component); doc_term[d, b*Q + g] = 1 if
     intensity at band b of spectrum d is assigned to GMM component g.
     GMM is fit globally on the per-band-per-spectrum intensity values
-    (1D, Q components). The "scheme" argument is ignored — GMM
+    (1D, Q components). The "scheme" argument is ignored, GMM
     replaces the quantizer; we use it for parameter consistency."""
     del scheme
     flat = spectra.reshape(-1, 1).astype(np.float64)
@@ -511,7 +511,7 @@ def main() -> int:
                     flush=True,
                 )
         written += 1
-    print(f"[wordifications_v6plus] done — {written} scenes processed.", flush=True)
+    print(f"[wordifications_v6plus] done, {written} scenes processed.", flush=True)
     return 0
 
 

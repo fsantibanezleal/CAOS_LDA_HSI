@@ -5,7 +5,7 @@ The audit flagged that ``method_statistics.json``,
 shipped a bare ``date.today()`` and carried no ``builder_version`` /
 ``git_sha``. The builders now stamp all three via
 ``research_core.provenance``. These builders re-train models, so their
-on-disk artefacts are regenerated only in a deliberate benchmark window —
+on-disk artefacts are regenerated only in a deliberate benchmark window, 
 we therefore lock the *source contract* here (cheap, no retrain) rather
 than asserting against the published JSON.
 """

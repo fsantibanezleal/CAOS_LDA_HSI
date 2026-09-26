@@ -8,28 +8,28 @@ cloned the repo and need to know where to start.
 
 ## Where the project stands today
 
-- **Methodology and documentation** — published. The wiki has been
+- **Methodology and documentation**: published. The wiki has been
   rebuilt with full mathematical depth, four-family taxonomy, recipe
   catalogue, validation framework, dataset inventory, and web app
   design baseline.
-- **Legacy material** — anchored. The A39 paper, the proof-of-concept
+- **Legacy material**: anchored. The A39 paper, the proof-of-concept
   notebook, and the full citation trail are now informative reference
   material under `legacy/`.
-- **Local pipeline** — solid. UPV/EHU scenes, Borsoi unmixing ROIs,
+- **Local pipeline**: solid. UPV/EHU scenes, Borsoi unmixing ROIs,
   USGS spectral library, MicaSense field samples, HIDSAG curated and
   region documents, preprocessing-sensitivity benchmark, SLIC baselines
   are all reproducible from `scripts/local.* fetch-all` +
   `scripts/local.* build-local-core`.
-- **Backend** — typed and stable. All payloads served through Pydantic
+- **Backend**: typed and stable. All payloads served through Pydantic
   schemas. New endpoints `/api/subset-cards` and
   `/api/subset-cards/{subset_id}` decouple the frontend from the deep
   benchmarks file.
-- **Frontend** — checkpoint. The shipped SPA is the rejected workbench
+- **Frontend**: checkpoint. The shipped SPA is the rejected workbench
   layout from the previous cycle. The work branch has a
   `Context + Workspace` first attempt but the file is still a
   2096-line `App.tsx` monolith; it must be split into the six-tab
   architecture before the rebuild is mergeable to `main`.
-- **Deployment** — frozen on the checkpoint until the frontend rebuild
+- **Deployment**: frozen on the checkpoint until the frontend rebuild
   passes the acceptance criteria.
 
 ## Phase map
@@ -40,34 +40,34 @@ reflect repo state as of 2026-05-02.
 | Phase | Topic | Status |
 |---|---|---|
 | 0 | Freeze and reset | done |
-| 1 | Deep research and method review | done — see `docs/research-memo-2026-05.md` |
+| 1 | Deep research and method review | done, see `docs/research-memo-2026-05.md` |
 | 2 | Verified real data acquisition | done for Family A / B / C / D anchors |
-| 3 | Representation and corpus experiments | partial — V1, V2, V3 active; V4–V8 planned |
-| 4 | SLIC, clustering and baseline experiments | partial — SLIC, KMeans, GMM, SAM, NMF active |
-| 5 | Model training on real data | partial — Family D HIDSAG benchmarks active |
-| 6 | Publishable sample and model selection | partial — first 4 interactive subsets registered |
-| 7 | Data taxonomy payload | done — `/api/data-families` + `/api/datasets` |
-| 8 | Corpus recipe engine | partial — V1 / V2 / V3 implemented in static previews |
-| 9 | Workflow UI rebuild | **next priority** — six-tab architecture decomposition |
-| 10 | PTM/LDA and clustering comparison | partial — comparison metrics in benchmarks |
-| 11 | Inference module | partial — Family D supervised metrics |
-| 12 | Scientific validation layer | partial — eight of nine validation blocks have first-pass coverage |
+| 3 | Representation and corpus experiments | partial, V1, V2, V3 active; V4–V8 planned |
+| 4 | SLIC, clustering and baseline experiments | partial, SLIC, KMeans, GMM, SAM, NMF active |
+| 5 | Model training on real data | partial, Family D HIDSAG benchmarks active |
+| 6 | Publishable sample and model selection | partial, first 4 interactive subsets registered |
+| 7 | Data taxonomy payload | done, `/api/data-families` + `/api/datasets` |
+| 8 | Corpus recipe engine | partial, V1 / V2 / V3 implemented in static previews |
+| 9 | Workflow UI rebuild | **next priority**, six-tab architecture decomposition |
+| 10 | PTM/LDA and clustering comparison | partial, comparison metrics in benchmarks |
+| 11 | Inference module | partial, Family D supervised metrics |
+| 12 | Scientific validation layer | partial, eight of nine validation blocks have first-pass coverage |
 
 ## Next concrete steps
 
-1. **Frontend rebuild step 1** — Header + Landing + theme/language
+1. **Frontend rebuild step 1**: Header + Landing + theme/language
    scaffolding. Visible commit, smoke verification, no loss of
    functionality.
-2. **Frontend rebuild step 2** — Overview tab (Concept, Theory,
+2. **Frontend rebuild step 2**: Overview tab (Concept, Theory,
    Representations, Methodology, References). Mostly content, easy
    acceptance test.
-3. **Frontend rebuild step 3** — Datasets tab consuming
+3. **Frontend rebuild step 3**: Datasets tab consuming
    `/api/data-families` and `/api/datasets`.
-4. **Frontend rebuild step 4-6** — Workspace tab consuming
+4. **Frontend rebuild step 4-6**: Workspace tab consuming
    `/api/subset-cards/{id}` (DataStep + CorpusStep, then TopicsStep +
    ComparisonStep, then InferenceStep + ValidationStep).
-5. **Frontend rebuild step 7** — Benchmarks tab.
-6. **Frontend rebuild step 8** — Usage tab.
+5. **Frontend rebuild step 7**: Benchmarks tab.
+6. **Frontend rebuild step 8**: Usage tab.
 7. **Source-aware HIDSAG bad-band masks** to replace the heuristic
    policy used today.
 8. **Cross-scene transfer benchmark** (validation block 9).

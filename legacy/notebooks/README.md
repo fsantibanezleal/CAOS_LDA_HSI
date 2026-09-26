@@ -1,4 +1,4 @@
-# Legacy Notebook — A39 Proof Of Concept
+# Legacy Notebook: A39 Proof Of Concept
 
 `LDA_Hyper_legacy.ipynb` is the **first concrete implementation** of the
 HSI → LDA mapping introduced in the A39 paper
@@ -21,7 +21,7 @@ deterministic, unit-tested code over public datasets.
   example accent removal) are visibly buggy because the source
   characters were lost during text encoding migrations.
 - The notebook **assumes a local folder** `./DB/Example/` with a series
-  of `X_*.npz` files. Those files are **not redistributable** — they
+  of `X_*.npz` files. Those files are **not redistributable**, they
   came from the laboratory mineral dataset of the 2022 paper. The
   notebook will not run end-to-end on a public clone.
 
@@ -139,7 +139,7 @@ recurring spectral regimes.
 A pyLDAvis HTML is rendered for the trained model and saved to
 `./ldavis_prepared_10.html`. This was the first visualisation backend
 used to inspect topics interactively. The current public web app is
-designed to replace this with a richer interactive workspace — pyLDAvis
+designed to replace this with a richer interactive workspace, pyLDAvis
 is fine for scientific inspection but it was never intended as a public
 product surface.
 
@@ -202,7 +202,7 @@ is the maintained recipe for end-to-end reproduction on public data.
 
 - Do not commit notebook outputs.
 - Do not commit local paths such as `./DB/Example/`.
-- Do not edit the inherited Spanish-text helpers — they are kept as
+- Do not edit the inherited Spanish-text helpers: they are kept as
   archaeology, not as utilities.
 - New experiments belong as scripts under `../../data-pipeline/` or as
   benchmark runs in `data/derived/core/`, not as new notebooks here.

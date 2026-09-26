@@ -256,13 +256,13 @@ export default function Workspace() {
     queryFn: api.inventory,
   });
 
-  // Restore state from URL — runs on initial inventory load AND on
+  // Restore state from URL, runs on initial inventory load AND on
   // browser back/forward navigation when the URL drifts from the
   // machine's context.
   //
   // Supports two URL shapes:
   //   ?family=X&subset=Y&rep=Z   (canonical)
-  //   ?scene=<subset>            (shortcut from Overview SceneCard links —
+  //   ?scene=<subset>            (shortcut from Overview SceneCard links, 
   //                               infers family from the inventory)
   // If `rep` is missing on a labelled scene, defaults to "lda" so the user
   // lands on Explore with the canonical topic basis pre-selected.
@@ -297,7 +297,7 @@ export default function Workspace() {
     const urlSub = sub ?? null;
     // Default rep to "lda" ONLY for the ?scene= shortcut (land on Explore in
     // one click). For the canonical ?family&subset[&rep] shape, respect the
-    // exact rep — an ABSENT rep means the user backed out to the rep picker
+    // exact rep, an ABSENT rep means the user backed out to the rep picker
     // (the machine's pickRep state). Defaulting it here would re-dispatch
     // PICK_REP and slam the user back into Explore, making "Change
     // representation" / "Change subset" appear to do nothing.
@@ -315,7 +315,7 @@ export default function Workspace() {
       send({ type: "PICK_FAMILY", family: fam as DatasetFamily });
       if (sub) {
         send({ type: "PICK_SUBSET", subset: sub });
-        // Advance to Explore only when a rep is actually present — either
+        // Advance to Explore only when a rep is actually present, either
         // explicit in the URL, or defaulted for the ?scene= shortcut. An
         // absent rep on the canonical shape leaves the machine at pickRep
         // (the representation picker) so BACK navigation is not undone.
@@ -528,7 +528,7 @@ function RepresentationPickerStep({
 
   // Non-labelled datasets (HIDSAG region-documents, individual spectral
   // libraries, unlabeled image cubes) don't expose the labelled-scene encoder
-  // menu — their Explore view uses ONE fixed representation and ignores `rep`.
+  // menu, their Explore view uses ONE fixed representation and ignores `rep`.
   // Showing the topic/compression/unmixing picker here was wrong (e.g. NFINDR
   // unmixing or PCA make no sense for HIDSAG geochemistry region-documents)
   // and made "Change representation" land on a confusing, irrelevant page.
@@ -770,7 +770,7 @@ function ExploreStep({
   }, [scopeKey]);
 
   // Mirror tab + selectedTopic to URL.
-  // Don't write the default tab to the URL — keeps it short for the
+  // Don't write the default tab to the URL, keeps it short for the
   // common case ("?family=...&subset=...&rep=..." is enough; tab is
   // implicit until the user navigates away from the default).
   useEffect(() => {
@@ -836,7 +836,7 @@ function ExploreStep({
   // tab switch triggered a refetch even though the payload is
   // identical. Now a single query is enabled whenever any of the
   // three consuming tabs is active, and rasterMeta / embed3d alias
-  // it — TanStack Query de-duplicates the network call to one.
+  // it, TanStack Query de-duplicates the network call to one.
   const topicToData = useQuery({
     queryKey: ["topic-to-data", subsetId],
     queryFn: () => api.topicToData(subsetId!),
@@ -1512,7 +1512,7 @@ function SubsetCard({
       title={
         isReady
           ? `Pick ${dataset.name}`
-          : `${dataset.name} has no local raw root downloaded — the pipeline cannot operate on it`
+          : `${dataset.name} has no local raw root downloaded, the pipeline cannot operate on it`
       }
     >
       <header className="flex items-baseline gap-2 justify-between mb-2">
@@ -1675,7 +1675,7 @@ function FamilyPickerStep({
           className="mt-2 text-sm"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          <code>/api/local-dataset-inventory</code> — {error.message}
+          <code>/api/local-dataset-inventory</code>, {error.message}
         </p>
       </div>
     );
@@ -1752,7 +1752,7 @@ function FamilyPickerStep({
 }
 
 /* =========================================================================
-   Scene briefing hero — appears at top of Workspace when a labelled scene
+   Scene briefing hero, appears at top of Workspace when a labelled scene
    is loaded. Shows quick stats + class palette + topic count + spectral
    envelope mini-viz for at-a-glance scene context across all 28 tabs.
    =======================================================================*/
@@ -1789,7 +1789,7 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
   }
 
   const classDist = data.class_distribution ?? [];
-  const sensor = data.sensor ?? "—";
+  const sensor = data.sensor ?? ", ";
   const shape = data.spatial_shape ?? [0, 0];
   const wlLo = (data.wavelengths_nm ?? [400])[0] ?? 400;
   const wlHi = (data.wavelengths_nm ?? [2500])[data.wavelengths_nm?.length ? data.wavelengths_nm.length - 1 : 0] ?? 2500;
@@ -1913,7 +1913,7 @@ function SceneBriefingHero({ subsetId, rep }: { subsetId: string; rep: string | 
           </div>
         </div>
 
-        {/* RIGHT: developer disclosure (folded by default — raw API
+        {/* RIGHT: developer disclosure (folded by default, raw API
             URLs were on-screen in the prior layout, which the
             2026-05-24 user-flow audit flagged as developer noise on
             a user-facing surface). */}
@@ -1961,7 +1961,7 @@ function BriefingStat({ label, value }: { label: string; value: string }) {
 }
 
 /* =========================================================================
-   HIDSAG Explorer — for Etapa 4 when subset is GEOMET/MINERAL{1,2}/
+   HIDSAG Explorer, for Etapa 4 when subset is GEOMET/MINERAL{1,2}/
    GEOCHEM/PORPHYRY. Replaces the previous empty-state placeholder with
    a multi-card panel showing:
      - subset briefing (samples, measurements, modalities, top targets)
@@ -1972,7 +1972,7 @@ function BriefingStat({ label, value }: { label: string; value: string }) {
    =======================================================================*/
 
 // The HIDSAG family is one dataset with five mineral subsets. Let the user
-// pick the subset, then explore its data (spectra, targets, correlations) —
+// pick the subset, then explore its data (spectra, targets, correlations), 
 // the supervised benchmarks live in /benchmarks, not here.
 function HidsagFamilyExplorer({ datasetId }: { datasetId: string }) {
   const { t } = useTranslation(["pages"]);
@@ -2152,15 +2152,15 @@ export function HidsagTargetsCard({ eda }: { eda: import("@/api/client").HidsagE
             {rows.slice(0, 15).map((row) => {
               const s = row.stats;
               const has = s && s.n > 0 && s.mean != null;
-              const fmt = (v: number | undefined) => (v != null ? v.toFixed(3) : "—");
+              const fmt = (v: number | undefined) => (v != null ? v.toFixed(3) : ", ");
               return (
                 <tr key={row.name} style={{ borderTop: "1px solid var(--color-border)" }}>
                   <td className="py-1.5 pr-3 font-mono">{row.name}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.mean) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.std) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.min) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.max) : "—"}</td>
-                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.n : "—"}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.mean) : ", "}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.std) : ", "}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.min) : ", "}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{has ? fmt(s.max) : ", "}</td>
+                  <td className="py-1.5 pr-3 text-right font-mono">{s ? s.n : ", "}</td>
                 </tr>
               );
             })}

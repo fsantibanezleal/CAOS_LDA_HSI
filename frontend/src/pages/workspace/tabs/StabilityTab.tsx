@@ -279,7 +279,7 @@ function StabilityLadderPanel({
                 ) : null}
               </span>
               <span className="shrink-0 w-16 text-right font-mono text-[11.5px]" style={{ color: "var(--color-fg)" }}>
-                {v ? v.mean.toFixed(3) : "—"}
+                {v ? v.mean.toFixed(3) : ", "}
               </span>
               <span className="shrink-0 w-14 text-right font-mono text-[11px]" style={{ color: "var(--color-fg-faint)" }}>
                 {v ? `±${v.std.toFixed(3)}` : ""}

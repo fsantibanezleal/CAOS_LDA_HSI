@@ -34,7 +34,7 @@ every deploy.
   deploy class that escaped in cycles 99-101 (see
   [`scripts/smoke.sh`](scripts/smoke.sh) and
   [`scripts/smoke.ps1`](scripts/smoke.ps1)). Endpoint inventory is
-  the source of truth — count is `grep -c '"/' scripts/smoke.sh`.
+  the source of truth, count is `grep -c '"/' scripts/smoke.sh`.
 - **Manifest**: 3895 derived artifacts (JSON + binary + PNG; the
   full inventory lives in `data/derived/manifests/index.json` and
   is the authoritative source), audited zero-issues by
@@ -43,7 +43,7 @@ every deploy.
   per-scene endpoints + 5 HIDSAG subsets × 6 endpoints + 12
   cross-scene endpoints + `/api/wordifications` (108-config
   corpus index, cycle 102) + `/api/lda-sweep/<scene>` (K-sweep
-  per scene, cycle 107) — full catalog at the
+  per scene, cycle 107), full catalog at the
   [Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads)
   wiki page
 
@@ -96,7 +96,7 @@ every deploy.
                  │  Pages: Overview · Methodology · Databases ·       │
                  │         Workspace (28 tabs in 6 phases:            │
                  │           Data / Topics / Geometry / Drilldown /   │
-                 │           Manipulate / Stability — cycle 132)      │
+                 │           Manipulate / Stability, cycle 132)      │
                  │         · Benchmarks (16 cards)                    │
                  └──────────────────────┘
 ```
@@ -181,7 +181,7 @@ visually and the Bayesian endpoints make decisive:
    hierarchical Bayesian posterior shows
    `raw > θ > {pca_8, cae_1d_8, beta_vae_8}` at `P(μ_a > μ_b) ≥ 0.999`
    for every relevant pair. Softmaxed deep latents do not recover the
-   gating mechanism — the structural Dirichlet simplex constraint
+   gating mechanism, the structural Dirichlet simplex constraint
    matters, not just K-dim compression.
 3. **LDA wins clustering quality, ProdLDA wins coherence, ETM is the
    safe middle.** Cycle 61–63 head-to-head: LDA wins KMeans-vs-label
@@ -191,7 +191,7 @@ visually and the Bayesian endpoints make decisive:
    ~+0.22 ARI.
 4. **Decoder reconstruction target is itself a hyperparameter.**
    CAE-3D anchor-only decoder vs full-patch (cycles 52, 55) gives net
-   mean ΔARI ≈ +0.003 (K=8) and +0.011 (K=4) — neutral on average,
+   mean ΔARI ≈ +0.003 (K=8) and +0.011 (K=4), neutral on average,
    scene-dependent direction. Pavia U inverts with capacity.
 5. **β-VAE posterior collapse on Salinas at β ≥ 8** (ARI = 0.000) is
    the textbook failure mode visible in the Benchmarks β-sweep
@@ -208,32 +208,32 @@ visually and the Bayesian endpoints make decisive:
 After the analytical surface stabilised at cycles 51–63, cycles
 100–108 closed every remaining gap in the Workspace 8-step flow:
 
-- **c100** — FalseColorBandPicker (Step 4 raw RGB) with 4
+- **c100**: FalseColorBandPicker (Step 4 raw RGB) with 4
   scientific presets: True colour 660/550/450, Vegetation NIR
   800/660/550, SWIR mineral 2200/1650/660, Water absorption
   1400/1900/2200. Renders 8000 stratified samples as SVG.
-- **c101** — ApplyToDocumentTab (Step 7) — closes the spec's
+- **c101**: ApplyToDocumentTab (Step 7), closes the spec's
   *Apply-to-document* step entirely. DocPicker + DocDetailPanel +
   PerTopicLabelBars; computes per-doc θ vs scene marginal ratio.
-- **c102** — RecipesTab (Step 4 corpus) — V1..V12 × {U, Q, L} ×
+- **c102**: RecipesTab (Step 4 corpus), V1..V12 × {U, Q, L} ×
   {8, 16, 32} explorer over `/api/wordifications`. Surfaces D, B,
   V_full, V_actual, entropy, doc-length distribution, top tokens.
-- **c103** — 2nd-topic compare overlay on Step 5 dominant-topic
+- **c103**: 2nd-topic compare overlay on Step 5 dominant-topic
   raster + Pairwise overlap card (|A|, |B|, 4-neighbor adjacency
   count proxying spatial confusability).
-- **c104** — P(topic|label) inverse heatmap toggle on Step 6.
+- **c104**: P(topic|label) inverse heatmap toggle on Step 6.
   Computes `P(t|L) = N_t·P(L|t) / Σ_t' N_t'·P(L|t')` client-side
   from already-loaded `topic_to_data`. No new API.
-- **c105** — Topic↔topic similarity graph overlay on Step 6.
+- **c105**: Topic↔topic similarity graph overlay on Step 6.
   JS-MDS layout + cosine-similarity edges with threshold slider
   (0.30 → 0.95, default 0.70) + top-6 most-similar pairs panel.
-- **c106** — Per-recipe V1..V12 SVG schematics in Methodology >
+- **c106**: Per-recipe V1..V12 SVG schematics in Methodology >
   Representations. 12 ~130×78 px illustrations + one-line captions.
-- **c107** — K-sweep model-selection explorer (new `qkexplore`
+- **c107**: K-sweep model-selection explorer (new `qkexplore`
   tab) over `/api/lda-sweep/<scene>` with K ∈ {4, 6, 8, 10, 12, 16}.
   Renders perplexity / topic_diversity / matched_cosine curves
   and the builder-recommended K (★ canonical, ● recommended).
-- **c108** — Smoke harness hardening. Adds SPA shell content
+- **c108**: Smoke harness hardening. Adds SPA shell content
   assertions (body length, `<div id="root"`, `<script type="module"`,
   entry-chunk version marker) so empty-body deploys fail smoke
   instead of being reported green.
@@ -244,7 +244,7 @@ Cycles 109–124 closed the consistency audit (#374; 36 findings, 18 P0
 all closed) and turned the c112 TypeScript-type extensions into
 concrete UI affordances:
 
-- **c109–c111, c118, c124** — wiki rolled forward through c123 across
+- **c109–c111, c118, c124**: wiki rolled forward through c123 across
   five pages: `Web-App-Workflow-and-GUI` (lede rewrite + 27-tab list +
   §13.2 cycle-by-cycle paragraphs c64..c123), `Corpus-Construction`
   (V1 band-frequency alias note), `Backend-Architecture`
@@ -255,7 +255,7 @@ concrete UI affordances:
   topic-topic similarity threshold-edge graph for c105, §25 routed-
   soft prediction formalism for c120/c122), `Local-Reproduction-
   Guide` (cycle 108 smoke contract).
-- **c112** — TypeScript types extended for parity with the live API
+- **c112**: TypeScript types extended for parity with the live API
   (TopicViews, TopicToData, LdaSweep, WordificationPayload now expose
   every JSON key the backend emits including the previously-unused
   `topic_pair_log_odds`, `lda_config`, `perplexity`,
@@ -263,44 +263,44 @@ concrete UI affordances:
   `recommended_K`, `wavelengths_nm_first_last`). The qkexplore tab
   now renders the builder-recommended K (K=4 on Indian Pines) as
   both an accent chip + table marker.
-- **c113** — i18n + README + in-code copy harmonised: tab count
+- **c113**: i18n + README + in-code copy harmonised: tab count
   brought in line with what the code actually ships (currently
-  28 tabs in 6 phases — see `frontend/src/pages/workspace/state/tabs.ts`);
+  28 tabs in 6 phases, see `frontend/src/pages/workspace/state/tabs.ts`);
   smoke 87→109 → 133 + SPA shell content assertions; ETM beats
   ProdLDA 6/6 (not 5/6); β-grid {1,2,4,8,16}; CAE-1D mid-ladder
   reconciled with the README headline #6 stability claim.
-- **c114** — Builder docstring drift fixes: jaccard top-15 (not
+- **c114**: Builder docstring drift fixes: jaccard top-15 (not
   top-30) on `topic_word_jaccard_top15`; dominant_topic_map dual
   paths (local + derived) with sentinel 255 (not −1); full
   16-key list on the wordifications JSON output; lda-sweep formula
   unweighted sum (not "/ 3" as the docstring said).
-- **c115** — `web-app-spec.md` Steps 1-8 carry inline ✅ / ⚠️ status
+- **c115**: `web-app-spec.md` Steps 1-8 carry an inline status (done or warning)
   with cycle refs (in the management repo).
-- **c116** — Topic-pair distinguishing-words panel on the topics
+- **c116**: Topic-pair distinguishing-words panel on the topics
   tab. Reads `topic_pair_log_odds`; renders two side-by-side ranked
   lists of tokens characteristic of topic A vs topic B with
   |log_odds| / max bars.
-- **c117** — LDA config + held-out perplexity badge above the
+- **c117**: LDA config + held-out perplexity badge above the
   intertopic map on the topics tab.
-- **c119** — Top-N documents preview card on the raster tab when a
+- **c119**: Top-N documents preview card on the raster tab when a
   topic is selected; lists top-8 labelled pixels with (row, col),
   θ bar, and label.
-- **c120** — Client-side topic-routed-soft prediction
+- **c120**: Client-side topic-routed-soft prediction
   `P(L|d) = Σ_k θ_d[k] · P(L|k)` per doc, with a Δ badge when the
   top-1 prediction disagrees with the ground-truth label and a
   per-doc drilldown panel showing the top-5 sorted predictions.
-- **c121** — Per-pixel theta sidecar: every labelled scene now
+- **c121**: Per-pixel theta sidecar: every labelled scene now
   ships a `(H, W, K)` float32 binary at
   `data/derived/topic_to_data/<scene>_theta_grid.bin` (168 KB
   Salinas-A → 18 MB Botswana; ~48 MB total). Sampled labelled
   pixels carry their fitted θ vector; all other pixels carry an
   all-zero sentinel vector.
-- **c122** — Click-any-pixel handler on the raster tab. Lazy-fetches
+- **c122**: Click-any-pixel handler on the raster tab. Lazy-fetches
   the c121 theta_grid sidecar; on pixel-click renders a
   PixelDetailCard with top-6 θ as a ranked clickable bar chart +
   top-3 topic-routed-soft prediction + sum-check. Closes Step 7
   per-pixel inference end-to-end.
-- **c123** — Spatial segmentation overlay panel on the raw tab.
+- **c123**: Spatial segmentation overlay panel on the raw tab.
   5-method picker (Felzenszwalb / SLIC-500 / SLIC-2000 / Patch-7
   / Patch-15). Backend mirrored 36 assignment binaries (6 methods
   × 6 scenes) from `data/local/groupings/` to
@@ -409,7 +409,7 @@ Runs `scripts/smoke.{sh,ps1}` against `https://lda-hsi.fasl-work.com`,
 asserting HTTP 200 on 109 path checks (108 GET + 1 SPA root) + 2
 SPA-shell content checks in <10 s (109/109 OK lines). The same harness runs on the VPS as
 the last step of every `deploy/update.sh`. The endpoint count is
-the source of truth — read it with `grep -c '"/' scripts/smoke.sh`
+the source of truth, read it with `grep -c '"/' scripts/smoke.sh`
 rather than hard-coding here.
 
 ## Repository layout
@@ -436,30 +436,30 @@ CAOS_LDA_HSI/
 
 - **Public wiki** (the canonical methodological reference):
   <https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki>
-  - [Home](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Home) — orientation
+  - [Home](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Home): orientation
   - [Scientific Thesis and Method](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Scientific-Thesis-and-Method)
-  - [Mathematical Background](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Mathematical-Background) — LDA, Procrustes, ARI, hierarchical Bayes, ProdLDA, ETM, c_v
-  - [Deep Representations](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Deep-Representations) — CAE-1D/2D/3D + β-VAE + ETM head-to-head
-  - [Bayesian Method Comparison](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Bayesian-Method-Comparison) — 3 hierarchical NUTS posteriors
-  - [Multi-Axis Addendum B](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Multi-Axis-Addendum-B) — 12-axis evaluation framework
-  - [Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads) — full endpoint catalogue + GPU performance §14.1
-  - [Web App Workflow and GUI](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Web-App-Workflow-and-GUI) — page structure + cycles 53-63 surfacings
+  - [Mathematical Background](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Mathematical-Background): LDA, Procrustes, ARI, hierarchical Bayes, ProdLDA, ETM, c_v
+  - [Deep Representations](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Deep-Representations): CAE-1D/2D/3D + β-VAE + ETM head-to-head
+  - [Bayesian Method Comparison](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Bayesian-Method-Comparison): 3 hierarchical NUTS posteriors
+  - [Multi-Axis Addendum B](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Multi-Axis-Addendum-B): 12-axis evaluation framework
+  - [Backend Architecture and Payloads](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Backend-Architecture-and-Payloads): full endpoint catalogue + GPU performance §14.1
+  - [Web App Workflow and GUI](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Web-App-Workflow-and-GUI): page structure + cycles 53-63 surfacings
   - [Local Reproduction Guide](https://github.com/fsantibanezleal/CAOS_LDA_HSI/wiki/Local-Reproduction-Guide)
 
 - Repo-local technical docs under [`docs/`](docs/):
-  - [`docs/theory.md`](docs/theory.md) — long-form methodological essay
-  - [`docs/architecture.md`](docs/architecture.md) — system architecture
-  - [`docs/datasets.md`](docs/datasets.md) — public + private dataset inventory
-  - [`docs/spectral-tokenization.md`](docs/spectral-tokenization.md) — recipe taxonomy V1–V12
-  - [`docs/sources.md`](docs/sources.md) — citations and dataset URLs
-  - [`docs/technical-roadmap.md`](docs/technical-roadmap.md) — pre-Addendum-B roadmap (kept for context)
+  - [`docs/theory.md`](docs/theory.md): long-form methodological essay
+  - [`docs/architecture.md`](docs/architecture.md): system architecture
+  - [`docs/datasets.md`](docs/datasets.md): public + private dataset inventory
+  - [`docs/spectral-tokenization.md`](docs/spectral-tokenization.md): recipe taxonomy V1–V12
+  - [`docs/sources.md`](docs/sources.md): citations and dataset URLs
+  - [`docs/technical-roadmap.md`](docs/technical-roadmap.md): pre-Addendum-B roadmap (kept for context)
 
 ## Datasets covered
 
-**Family A — public spectral libraries**: USGS splib07 (AVIRIS-1997
+**Family A, public spectral libraries**: USGS splib07 (AVIRIS-1997
 2450 spectra × 7 chapters), ECOSTRESS public categories.
 
-**Family B — labelled HSI scenes** (`data/derived/real/real_samples.json`,
+**Family B, labelled HSI scenes** (`data/derived/real/real_samples.json`,
 `data/derived/representations/`, `data/derived/topic_views/`):
 Indian Pines (AVIRIS, 16 classes), Salinas (AVIRIS, 16 classes),
 Salinas-A (AVIRIS, 6 classes), Pavia U (ROSIS, 9 classes), Kennedy
@@ -467,15 +467,15 @@ Space Center (AVIRIS, 13 classes), Botswana (Hyperion, 14 classes).
 All accessed through UPV/EHU's hyperspectral-remote-sensing-scenes
 mirror.
 
-**Family C — Borsoi unmixing benchmarks**: Samson, Jasper Ridge,
+**Family C, Borsoi unmixing benchmarks**: Samson, Jasper Ridge,
 Urban (with manually-defined endmember sets).
 
-**Family D — HIDSAG (Hyperspectral Image Database for Sample
+**Family D, HIDSAG (Hyperspectral Image Database for Sample
 Analysis in Geology)**: GEOMET, MINERAL1, MINERAL2, GEOCHEM,
 PORPHYRY subsets with sample-level geochemistry targets, multi-
 measurement summaries, and bad-band heuristics.
 
-**Family E — MicaSense MSI field samples**: official MicaSense
+**Family E, MicaSense MSI field samples**: official MicaSense
 sample dataset (RedEdge-3 + Altum), used as the only field-grade
 multispectral reference in the repo.
 
@@ -545,6 +545,6 @@ Core methodological references (full list on the wiki
   [`arXiv:1312.6114`](https://arxiv.org/abs/1312.6114)
 - Higgins et al. (2017), *β-VAE: Learning Basic Visual Concepts with a
   Constrained Variational Framework*, ICLR.
-- Egaña et al. (2020) and Santibáñez-Leal et al. (2022) — the A39
+- Egaña et al. (2020) and Santibáñez-Leal et al. (2022): the A39
   hierarchical inference paper that grounds the project's
   methodological position.

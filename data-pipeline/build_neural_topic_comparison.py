@@ -253,7 +253,7 @@ def main() -> int:
         ranking = " > ".join(f"{x['method']}={x['ari']:+.3f}" for x in payload["ranking_by_ari"])
         print(f"  ranking: {ranking}", flush=True)
         written += 1
-    print(f"[neural_tm_compare] done — {written} scenes written", flush=True)
+    print(f"[neural_tm_compare] done, {written} scenes written", flush=True)
     return 0
 
 

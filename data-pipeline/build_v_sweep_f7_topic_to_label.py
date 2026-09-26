@@ -1,4 +1,4 @@
-"""V-sweep F-7 — topic-label coupling H(L | t) + KL across V1..V12.
+"""V-sweep F-7, topic-label coupling H(L | t) + KL across V1..V12.
 
 Reads the local LDA fits written by build_v_sweep_canonical_fit and
 the sample labels recovered via stratified_sample_indices to compute:

@@ -161,7 +161,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             "procrustes_mean": round(float(proc_off.mean()), 6),
             "procrustes_max": round(float(proc_off.max()), 6),
         },
-        "framework_axis": "B-6 follow-up: classical-method seed stability (sklearn) — pairwise cluster ARI + Procrustes between latents across N_SEEDS sklearn random_state seeds",
+        "framework_axis": "B-6 follow-up: classical-method seed stability (sklearn), pairwise cluster ARI + Procrustes between latents across N_SEEDS sklearn random_state seeds",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_classical_seed_stability v0.1",
     }

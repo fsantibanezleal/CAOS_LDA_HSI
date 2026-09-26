@@ -424,7 +424,7 @@ def build_for_scene(scene_id: str) -> dict | None:
 
     fit_dir = LOCAL_FIT_DIR / scene_id
     if not (fit_dir / "vocab.json").exists():
-        print(f"  no fit at {fit_dir} — run build_topic_views.py first", flush=True)
+        print(f"  no fit at {fit_dir}, run build_topic_views.py first", flush=True)
         return None
 
     # Reconstruct doc_term from cube (matches the recipe used by build_topic_views)
@@ -518,7 +518,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[validation_blocks] done — {written} scenes written.", flush=True)
+    print(f"[validation_blocks] done, {written} scenes written.", flush=True)
     return 0
 
 

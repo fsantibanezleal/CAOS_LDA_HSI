@@ -154,7 +154,7 @@ export function DominantTopicRaster({
           ? t("pages:plots.DominantTopicRaster.hover", {
               row: hover.row,
               col: hover.col,
-              topic: hover.topic === null ? "—" : hover.topic + 1,
+              topic: hover.topic === null ? ", " : hover.topic + 1,
             })
           : t("pages:plots.DominantTopicRaster.hint")}
       </div>

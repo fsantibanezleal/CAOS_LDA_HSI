@@ -1,4 +1,4 @@
-"""V-sweep F-15 — self-judgment fallback for the LLM-alignment axis.
+"""V-sweep F-15, self-judgment fallback for the LLM-alignment axis.
 
 The companion file ``build_v_sweep_f15_llm_alignment.py`` calls an
 Anthropic Messages API endpoint (model = claude-haiku-4-5) per
@@ -7,8 +7,8 @@ who configure ``ANTHROPIC_API_KEY``.
 
 For *our* internal preprint preparation we did not provision an
 API key for the build host. Instead, Claude Opus 4.7 (1M-token
-context) — the assistant that was operating the V-sweep program at
-the time of writing — produced the F-15 numbers by manually
+context), the assistant that was operating the V-sweep program at
+the time of writing, produced the F-15 numbers by manually
 inspecting the per-cell artefacts and encoding the resulting
 judgment rule as the deterministic heuristic implemented here.
 

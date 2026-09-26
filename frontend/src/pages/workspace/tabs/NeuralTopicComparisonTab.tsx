@@ -3,13 +3,13 @@
  * c290 as part of #441 P1 2.1).
  *
  * Four stacked cards on head-to-head LDA vs ProdLDA vs ETM:
- *   1. NeuralHeaderCard — context: corpus size, classes, K, framework axis.
- *   2. NeuralComparisonGrid — per-method ARI/NMI/silhouette + coherence
+ *   1. NeuralHeaderCard: context: corpus size, classes, K, framework axis.
+ *   2. NeuralComparisonGrid: per-method ARI/NMI/silhouette + coherence
  *      + θ-entropy in 3 cards.
- *   3. NeuralRankingBar — sorted ARI ranking with normalised bars.
- *   4. NeuralSeedStabilityCard — N-seed ARI mean±std table per method.
+ *   3. NeuralRankingBar: sorted ARI ranking with normalised bars.
+ *   4. NeuralSeedStabilityCard: N-seed ARI mean±std table per method.
  *
- * NEURAL_METHOD_COLOR is module-local — only the cards in this file
+ * NEURAL_METHOD_COLOR is module-local: only the cards in this file
  * use it.
  */
 import { useTranslation } from "react-i18next";
@@ -436,22 +436,22 @@ function NeuralSeedStabilityCard({
                   {name}
                 </td>
                 <td className="py-1 pr-3 text-right font-mono">
-                  {s.ari_mean != null ? s.ari_mean.toFixed(3) : "—"}
+                  {s.ari_mean != null ? s.ari_mean.toFixed(3) : ", "}
                 </td>
                 <td className="py-1 pr-3 text-right font-mono">
-                  {s.ari_std != null ? s.ari_std.toFixed(3) : "—"}
+                  {s.ari_std != null ? s.ari_std.toFixed(3) : ", "}
                 </td>
                 <td className="py-1 pr-3 text-right font-mono">
-                  {s.ari_min != null ? s.ari_min.toFixed(3) : "—"}
+                  {s.ari_min != null ? s.ari_min.toFixed(3) : ", "}
                 </td>
                 <td className="py-1 pr-3 text-right font-mono">
-                  {s.ari_max != null ? s.ari_max.toFixed(3) : "—"}
+                  {s.ari_max != null ? s.ari_max.toFixed(3) : ", "}
                 </td>
                 <td className="py-1 pr-3 text-right font-mono">
-                  {s.c_v_mean != null ? s.c_v_mean.toFixed(3) : "—"}
+                  {s.c_v_mean != null ? s.c_v_mean.toFixed(3) : ", "}
                 </td>
                 <td className="py-1 text-right font-mono">
-                  {s.c_v_std != null ? s.c_v_std.toFixed(3) : "—"}
+                  {s.c_v_std != null ? s.c_v_std.toFixed(3) : ", "}
                 </td>
               </tr>
             );

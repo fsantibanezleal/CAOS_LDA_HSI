@@ -123,7 +123,7 @@ export default function Benchmarks() {
           className="cursor-pointer px-4 py-3 text-sm font-semibold"
           style={{ color: "var(--color-fg)" }}
         >
-          How to read these benchmarks — what is compared, and why each metric
+          How to read these benchmarks, what is compared, and why each metric
         </summary>
         <div
           className="px-4 pb-4 text-[12.5px] space-y-2"
@@ -132,15 +132,15 @@ export default function Benchmarks() {
           <p>
             This is an <strong>evaluation study</strong>, not a leaderboard. The
             question is <em>which spectral representation builds the most useful
-            LDA topics for hyperspectral imagery</em> — and whether the topic
+            LDA topics for hyperspectral imagery</em>, and whether the topic
             mixture θ adds value <strong>as a gate, not as a flat feature</strong>.
           </p>
           <p>
             <strong>What is compared:</strong> raw-spectrum baselines (logistic /
             Ridge / PLS on the full spectrum) · topic features (θ fed directly to
-            a classifier/regressor — the naive "θ as a feature") · the proposed{" "}
+            a classifier/regressor, the naive "θ as a feature") · the proposed{" "}
             <strong>soft θ-gated ensemble</strong> (one specialist per topic,
-            combined weighted by θ — "θ as a gate").
+            combined weighted by θ, "θ as a gate").
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li>
@@ -149,11 +149,11 @@ export default function Benchmarks() {
             </li>
             <li>
               <strong>c_v coherence</strong> (F-2): how well a topic's top words
-              co-occur — topic quality (0–1, higher is better).
+              co-occur, topic quality (0–1, higher is better).
             </li>
             <li>
               <strong>NMI</strong> (F-7): agreement between the unsupervised topics
-              and the true labels (0–1) — does the representation recover class
+              and the true labels (0–1), does the representation recover class
               structure without supervision?
             </li>
             <li>
@@ -167,7 +167,7 @@ export default function Benchmarks() {
             spectra (it was never meant to be a feature); the{" "}
             <strong>soft θ-gated ensemble beats the raw baselines</strong> on
             classification (6/6 scenes) and on the valid regression subset
-            (GEOMET) — which is the point.
+            (GEOMET), which is the point.
           </p>
         </div>
       </details>

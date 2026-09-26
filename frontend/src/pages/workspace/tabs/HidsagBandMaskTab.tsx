@@ -194,7 +194,7 @@ export function HidsagBandMaskTab({
                           ppl:{" "}
                         </span>
                         <span style={{ color: "var(--color-fg)" }}>
-                          {entry.perplexity_train?.toFixed(2) ?? "—"}
+                          {entry.perplexity_train?.toFixed(2) ?? ", "}
                         </span>
                       </span>
                       <span>
@@ -202,7 +202,7 @@ export function HidsagBandMaskTab({
                           conf:{" "}
                         </span>
                         <span style={{ color: "var(--color-fg)" }}>
-                          {entry.mean_confidence?.toFixed(3) ?? "—"}
+                          {entry.mean_confidence?.toFixed(3) ?? ", "}
                         </span>
                       </span>
                     </div>

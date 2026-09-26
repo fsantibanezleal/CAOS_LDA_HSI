@@ -82,7 +82,7 @@ def total_mi_classif(X: np.ndarray, y: np.ndarray) -> dict:
     H_y = label_entropy(y)
     sum_mi = float(per_feat.sum())
     # I(X;Y) <= H(Y) always, so clip the per-feature MI sum to H(Y). NOTE:
-    # sum_i I(X_i;Y) is only a heuristic for the joint MI — it over-estimates
+    # sum_i I(X_i;Y) is only a heuristic for the joint MI: it over-estimates
     # under feature redundancy but UNDER-estimates under synergy (e.g. XOR,
     # where each I(X_i;Y)=0 yet I(X;Y)=H(Y)). So this is a proxy, not a bound
     # from the sum side; only the H(Y) clip guarantees the upper bound.
@@ -301,7 +301,7 @@ def main() -> int:
                 )
             written += 1
 
-    print(f"[mi] done — {written} payloads written.", flush=True)
+    print(f"[mi] done, {written} payloads written.", flush=True)
     return 0
 
 

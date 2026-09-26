@@ -1,4 +1,4 @@
-"""V14 — continuous wavelet transform tokens (Morlet + Mexican-hat) (#672).
+"""V14, continuous wavelet transform tokens (Morlet + Mexican-hat) (#672).
 
 Discrete-time approximation of the continuous wavelet transform on
 each pixel spectrum. Unlike V6 (Db4 level-4 discrete wavelet packet)

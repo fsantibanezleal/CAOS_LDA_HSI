@@ -143,7 +143,7 @@ BUILDER_DIRS = [
     ("build_subset_cards", "subsets"),
 ]
 
-# What the web app is allowed to claim — must trace to one or more derived
+# What the web app is allowed to claim: must trace to one or more derived
 # artifacts. Listed by topic so the eventual UI can render them by section.
 CLAIMS_ALLOWED = [
     {
@@ -203,7 +203,7 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "intertopic_3d_js_mds",
-        "description": "3D MDS on Jensen-Shannon — the rotatable inter-topic map the spec requires",
+        "description": "3D MDS on Jensen-Shannon, the rotatable inter-topic map the spec requires",
         "source_pattern": "topic_views/<scene>.topic_intertopic_3d_js",
     },
     {
@@ -323,17 +323,17 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "band_masks_canonical_comparison",
-        "description": "Cycle-127 post-processor: per (scene, mask) comparison vs the canonical no-mask fit — paired ARI of dominant-topic maps, Hungarian-aligned swap rate, n_topic_swaps absolute count, mean and max Hungarian-aligned KL between canonical and masked P(L|t), plus the Hungarian topic-id assignment dict. Read-only post-processor; no new LDA fits.",
+        "description": "Cycle-127 post-processor: per (scene, mask) comparison vs the canonical no-mask fit, paired ARI of dominant-topic maps, Hungarian-aligned swap rate, n_topic_swaps absolute count, mean and max Hungarian-aligned KL between canonical and masked P(L|t), plus the Hungarian topic-id assignment dict. Read-only post-processor; no new LDA fits.",
         "source_pattern": "band_masks/canonical_comparison.json",
     },
     {
         "id": "band_masks_hidsag_index",
-        "description": "Cycle-138 HIDSAG band-mask sweep master index — 5 subsets x 4 masks = 20 entries. Each entry lists subset_code, mask_id, topic_count, n_bands_kept/full, perplexity_train, summary_path.",
+        "description": "Cycle-138 HIDSAG band-mask sweep master index, 5 subsets x 4 masks = 20 entries. Each entry lists subset_code, mask_id, topic_count, n_bands_kept/full, perplexity_train, summary_path.",
         "source_pattern": "band_masks_hidsag/index.json",
     },
     {
         "id": "band_masks_hidsag_summary",
-        "description": "Per (HIDSAG subset, mask) LDA refit summary (cycle 138): phi top-words at lambda=0.5, K x K cosine distance matrix, P(covariate | topic_dominant), kept_band_indices, perplexity, theta_per_doc, LDA config. Differs from labelled-scene band_masks in that HIDSAG has no spatial grid — outputs are per-document, not per-pixel.",
+        "description": "Per (HIDSAG subset, mask) LDA refit summary (cycle 138): phi top-words at lambda=0.5, K x K cosine distance matrix, P(covariate | topic_dominant), kept_band_indices, perplexity, theta_per_doc, LDA config. Differs from labelled-scene band_masks in that HIDSAG has no spatial grid, outputs are per-document, not per-pixel.",
         "source_pattern": "band_masks_hidsag/<subset>/<mask>/summary.json",
     },
     {
@@ -423,12 +423,12 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "rate_distortion_curve",
-        "description": "B-2 (Addendum B): K -> RMSE curves on the canonical band-frequency document-term matrix for LDA, NMF, PCA on a held-out 20%% test split. Reconstruction quality axis (G) of the framework — the fair K-dim reconstruction comparison.",
+        "description": "B-2 (Addendum B): K -> RMSE curves on the canonical band-frequency document-term matrix for LDA, NMF, PCA on a held-out 20%% test split. Reconstruction quality axis (G) of the framework, the fair K-dim reconstruction comparison.",
         "source_pattern": "rate_distortion_curve/<scene>.json",
     },
     {
         "id": "topic_routed_classifier",
-        "description": "B-3 (Addendum B): per-topic specialists (logistic regression on raw spectrum, sample_weight = theta_d(k)) with soft theta gating at test time. Compared against raw_logistic, theta_logistic (naive), pca_K_logistic, and topic_routed_hard. 5-fold StratifiedKFold macro F1 with bootstrap CI95. The embedded / hierarchical use of theta the user specified — not modelling on theta directly.",
+        "description": "B-3 (Addendum B): per-topic specialists (logistic regression on raw spectrum, sample_weight = theta_d(k)) with soft theta gating at test time. Compared against raw_logistic, theta_logistic (naive), pca_K_logistic, and topic_routed_hard. 5-fold StratifiedKFold macro F1 with bootstrap CI95. The embedded / hierarchical use of theta the user specified, not modelling on theta directly.",
         "source_pattern": "topic_routed_classifier/<scene>.json",
     },
     {
@@ -458,7 +458,7 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "topic_spatial_full",
-        "description": "B-10 follow-up: Moran's I, Geary's C, and Boundary Displacement Error on a *full-pixel* refit of LDA. Each scene's LDA is refit at the canonical K on every labelled pixel (not the 220-per-class subsample) so the abundance maps are dense and BDE has contiguous boundaries. Reveals that KSC's 'topic collapse' (subsampled mean Moran's I = 0.064) is a pipeline artifact of the stratified sampling — the full-pixel refit recovers spatially-coherent topics (mean I = 0.837). The topic basis differs slightly from the canonical fit, so this reading is kept side by side with topic_spatial_continuous rather than replacing it.",
+        "description": "B-10 follow-up: Moran's I, Geary's C, and Boundary Displacement Error on a *full-pixel* refit of LDA. Each scene's LDA is refit at the canonical K on every labelled pixel (not the 220-per-class subsample) so the abundance maps are dense and BDE has contiguous boundaries. Reveals that KSC's 'topic collapse' (subsampled mean Moran's I = 0.064) is a pipeline artifact of the stratified sampling, the full-pixel refit recovers spatially-coherent topics (mean I = 0.837). The topic basis differs slightly from the canonical fit, so this reading is kept side by side with topic_spatial_continuous rather than replacing it.",
         "source_pattern": "topic_spatial_full/<scene>.json",
     },
     {
@@ -468,7 +468,7 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "cross_scene_transfer",
-        "description": "B-8 (Addendum B Axis E): cross-scene topic transfer via fit-on-A-infer-on-B on a common AVIRIS-1997 wavelength grid (400-2500 nm, 224 bands). Five AVIRIS-class scenes (Pavia U excluded as ROSIS) — Indian Pines, Salinas, Salinas-A, KSC, Botswana — resampled to the shared grid; per-source LDA at canonical K; per-target 5-fold StratifiedKFold theta-logistic macro F1. The diagonal is the within-scene baseline; off-diagonals quantify how transferable the source's topic structure is.",
+        "description": "B-8 (Addendum B Axis E): cross-scene topic transfer via fit-on-A-infer-on-B on a common AVIRIS-1997 wavelength grid (400-2500 nm, 224 bands). Five AVIRIS-class scenes (Pavia U excluded as ROSIS), Indian Pines, Salinas, Salinas-A, KSC, Botswana, resampled to the shared grid; per-source LDA at canonical K; per-target 5-fold StratifiedKFold theta-logistic macro F1. The diagonal is the within-scene baseline; off-diagonals quantify how transferable the source's topic structure is.",
         "source_pattern": "cross_scene_transfer/transfer_matrix.json",
     },
     {
@@ -483,7 +483,7 @@ CLAIMS_ALLOWED = [
     },
     {
         "id": "wordifications_v7_v11",
-        "description": "Master plan §7 wordification recipes V7 (absorption-feature triplet — own convex-hull continuum-removal extractor, top-N features per spectrum quantised on (centroid_bucket, depth_bin, area_bin)) and V11 (codebook-VQ via nanopq.PQ(M=4, Ks=Q) — product quantisation partitions each B-band spectrum into 4 sub-vectors and k-means-encodes each independently). Closes the master plan §7 wordification roster (V1..V12 minus V11 and V7 originally — both shipped now). 108 new configs across 6 labelled scenes (2 recipes × 3 schemes × 3 Q × 6 scenes).",
+        "description": "Master plan §7 wordification recipes V7 (absorption-feature triplet, own convex-hull continuum-removal extractor, top-N features per spectrum quantised on (centroid_bucket, depth_bin, area_bin)) and V11 (codebook-VQ via nanopq.PQ(M=4, Ks=Q), product quantisation partitions each B-band spectrum into 4 sub-vectors and k-means-encodes each independently). Closes the master plan §7 wordification roster (V1..V12 minus V11 and V7 originally, both shipped now). 108 new configs across 6 labelled scenes (2 recipes × 3 schemes × 3 Q × 6 scenes).",
         "source_pattern": "wordifications/<scene>_V7_<scheme>_Q<q>.json | wordifications/<scene>_V11_<scheme>_Q<q>.json",
     },
     {

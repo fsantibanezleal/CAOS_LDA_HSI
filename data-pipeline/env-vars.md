@@ -1,7 +1,7 @@
 # data-pipeline environment variables (`CAOS_*`)
 
 Reference for the `CAOS_*` environment variables that tune individual
-builders (#589 Tier 3). All are **optional** — every builder runs with no
+builders (#589 Tier 3). All are **optional**, every builder runs with no
 env set, using the defaults below. They exist to scope a partial rebuild
 (filters) or to trade runtime for thoroughness (seed counts, sampler
 draws) without editing code.
@@ -57,4 +57,4 @@ run; raise them for publication-grade posteriors.
   partial/parameterised runs). A consistent `--scene` / `--variant` CLI
   across all builders is a separate, deferred refactor (#589 Tier 3).
 - `RANDOM_STATE = 42` is the canonical seed and is **not** env-tunable on
-  purpose — reproducibility is a fixed property, not a runtime knob.
+  purpose, reproducibility is a fixed property, not a runtime knob.

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
  *
  * Renders a minimal layout skeleton (header bar + 3 grey content
  * blocks) so the route transition does not collapse to zero height
- * and re-jump on load — the 2026-05-24 user-flow audit flagged the
+ * and re-jump on load: the 2026-05-24 user-flow audit flagged the
  * prior bare \`<p>Loading…\` as visually jarring.
  */
 export function PageFallback() {

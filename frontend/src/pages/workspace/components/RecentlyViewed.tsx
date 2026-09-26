@@ -4,7 +4,7 @@
  * Persists the last 5 (scene, rep) tuples to localStorage and shows
  * them as small clickable chips below SceneQuickSwitch. Researchers
  * frequently want to flip back to "the last scene I had open with
- * topic 4 selected" — this affordance does not yet exist (#442 P1).
+ * topic 4 selected": this affordance does not yet exist (#442 P1).
  *
  * The history is updated by `useTrackRecentScene` which the
  * ExploreStep wrapper calls with the current (scene, rep) tuple on
@@ -100,7 +100,7 @@ export function RecentlyViewed({
   history: RecentEntry[];
 }) {
   const navigate = useNavigate();
-  // Exclude the currently-active tuple — chip list is "things to
+  // Exclude the currently-active tuple, chip list is "things to
   // jump BACK to", not "you are here".
   const others = history.filter(
     (e) => !(e.scene === currentScene && e.rep === currentRep),

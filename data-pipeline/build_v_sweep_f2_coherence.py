@@ -1,4 +1,4 @@
-"""V-sweep F-2 — topic coherence (c_v, c_npmi, U-Mass) across V1..V12.
+"""V-sweep F-2, topic coherence (c_v, c_npmi, U-Mass) across V1..V12.
 
 Reads the local LDA fits written by build_v_sweep_canonical_fit
 (phi.npy + the doc_term.npz of the recipe) and computes the three

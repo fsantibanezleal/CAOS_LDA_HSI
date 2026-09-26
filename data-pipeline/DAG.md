@@ -6,7 +6,7 @@ the build order; the dependency edges were implicit in each builder's
 `np.load` / `json.load` / `sp.load_npz` calls. This document makes them
 explicit.
 
-Every edge below was derived **only from code evidence** — a producer
+Every edge below was derived **only from code evidence**, a producer
 `A → B` edge exists when builder `B` reads a `data/derived/...` or
 `data/local/...` file that builder `A` writes, confirmed by matching the
 actual path string in `A`'s output and `B`'s input. Reading a raw scene
@@ -32,7 +32,7 @@ Run stages strictly in order. Within a stage, builders are mutually
 independent and may run in any order / in parallel, **except** for the
 two cross-stage exceptions noted under Stage 2.
 
-### Stage 0 — Fetch (raw acquisition)
+### Stage 0: Fetch (raw acquisition)
 
 Populate `data/raw/`. Run once per machine; re-run only when a new scene
 or library is added. No derived-data inputs.
@@ -43,7 +43,7 @@ fetch_public_spectral_libraries.py fetch_public_unmixing.py
 fetch_hidsag.py                    fetch_ecostress_metadata.py
 ```
 
-### Stage 1 — Core / foundational builders
+### Stage 1: Core / foundational builders
 
 Read raw scenes (and packaged manifests) only; produce the shared
 artefacts the rest of the pipeline consumes. Mutually independent.
@@ -63,7 +63,7 @@ build_representations.py          → representations/ + data/local/representati
 build_topic_views.py              → topic_views/<scene>.json + data/local/lda_fits/<scene>/{phi,theta,corpus_marginal,sample_*}.npy
 build_neural_topic_models.py      → topic_variants/<variant>/ + data/local/topic_variants/<variant>/<scene>/
 build_topic_model_variants.py     → topic_variants/<variant>/ + data/local/topic_variants/<variant>/<scene>/
-build_band_masked_topic_models.py → band_masks/{index,summary}.json   (soft dep — see note below)
+build_band_masked_topic_models.py → band_masks/{index,summary}.json   (soft dep, see note below)
 build_lda_sweep.py                → lda_sweep/
 build_optuna_hyperparam_search.py → lda_hyperparam_search/
 build_rate_distortion_curve.py    → rate_distortion_curve/
@@ -78,7 +78,7 @@ run_hidsag_preprocessing_sensitivity.py → core/hidsag_preprocessing_sensitivit
 
 The twelve **wordification** builders also belong logically to Stage 1
 (they read raw scenes and write the corpus the V-sweep consumes), with
-one exception — `build_wordifications_v6plus.py` additionally reads
+one exception, `build_wordifications_v6plus.py` additionally reads
 `endmember_baseline/` and `data/local/groupings/`, so it must run later
 (see Stage 2). All write
 `data/local/wordifications/<recipe>/<scheme>_Q<q>/<scene>/{doc_term.npz, vocab.json}`:
@@ -95,7 +95,7 @@ build_wordifications_v17.py    → V17 (sparse-coding dictionary)
 build_wordifications_v18.py    → V18 (graph-Laplacian eigenvectors)
 build_wordifications_v19.py    → V19 (UMAP coordinates)
 build_wordifications_v20.py    → V20 (MI-weighted bands)
-build_wordifications_v6plus.py → V6, V8, V9, V12  (Stage 2 — see note)
+build_wordifications_v6plus.py → V6, V8, V9, V12  (Stage 2, see note)
 build_wordifications_all.py    → orchestrator: imports _v4plus/_v6plus/_v7v11 (no own output)
 ```
 
@@ -105,7 +105,7 @@ LDA fit exists the corpus marginal and document lengths must equal the fit's (#8
 builder wrote its `--q 32` run into `uniform_Q8`). Writers and readers go through
 `research_core/wordification_store.py`, which refuses a corpus whose recorded Q differs from its folder.
 
-### Stage 2 — First-order consumers
+### Stage 2: First-order consumers
 
 Read Stage-1 artefacts.
 
@@ -160,7 +160,7 @@ parallel layer):
    `core/hidsag_curated_subset.json`, so it must run **after**
    `build_hidsag_curated_subset.py`.
 
-**Soft (optional, graceful-fallback) edge** —
+**Soft (optional, graceful-fallback) edge**, 
 `build_interpretability.py → build_band_masked_topic_models.py`: the
 `top_50_fisher` mask variant reads
 `data/derived/interpretability/<scene>/band_cards.json` (written by
@@ -172,7 +172,7 @@ back to keeping all bands). This is the only back-edge in the graph: a
 run in a prior cycle. To get the fully-populated mask, re-run
 `build_band_masked_topic_models.py` after `build_interpretability.py`.
 
-### Stage 3 — Second-order consumers
+### Stage 3: Second-order consumers
 
 ```
 build_band_mask_canonical_comparison.py ← band_masked_topic_models.py + topic_to_data.py + topic_views.py
@@ -190,7 +190,7 @@ build_subset_cards.py           ← corpus_previews.py (+ real_samples / spectra
 build_v_sweep_hidsag_f7.py      ← hidsag_region_documents.py + v_sweep_hidsag.py
 ```
 
-### Stage 4 — V-sweep canonical fit + corpus-only backbones
+### Stage 4: V-sweep canonical fit + corpus-only backbones
 
 All read the wordification corpus from Stage 1
 (`data/local/wordifications/<recipe>/uniform_Q<q>/<scene>/doc_term.npz`).
@@ -208,7 +208,7 @@ build_v_sweep_f17_cross_scene.py← wordifications*   → v_sweep/f17_cross_scen
 build_v_sweep_f18_reliability.py← wordifications*   → v_sweep/f18_reliability/
 ```
 
-### Stage 5 — V-sweep F-axes that read the canonical fits
+### Stage 5: V-sweep F-axes that read the canonical fits
 
 Read `data/local/v_sweep/lda_fits/` from `build_v_sweep_canonical_fit.py`
 (the corpus-reading ones also read the Stage-1 wordifications).
@@ -227,7 +227,7 @@ build_b12_self_judge.py         ← topic_views.py + v_sweep_canonical_fit.py
 audit_citation_openalex.py      → v_sweep/citation_audit.json   (audit, not a build edge)
 ```
 
-### Stage 6 — Aggregators (read many derived artefacts)
+### Stage 6: Aggregators (read many derived artefacts)
 
 ```
 build_external_validation.py ← topic_views.py + spectral_library_samples.py + method_statistics_hidsag.py
@@ -241,7 +241,7 @@ build_narratives.py          ← eda_per_scene.py + topic_views.py + topic_to_da
 build_analysis_payload.py    ← real_samples.py + spectral_library_samples.py   (also serviceable from Stage 2)
 ```
 
-### Stage 7 — Web-app curation (must run last)
+### Stage 7: Web-app curation (must run last)
 
 `curate_for_web.py` rglobs the whole `data/derived/` tree (its
 `BUILDER_DIRS` registry maps every builder to its subdir) and emits the
@@ -400,7 +400,7 @@ probe for optional libraries (gensim / tomotopy / torch / pyro); that is
 ## Standalone builders (no derived-data dependency)
 
 These read raw scenes (`research_core.raw_scenes.load_scene`), packaged
-manifests, or `research_core.*` libraries only — no other builder's
+manifests, or `research_core.*` libraries only, no other builder's
 output. They can run any time after Stage 0.
 
 ```
@@ -413,7 +413,7 @@ build_topic_views.py            build_neural_topic_models.py
 build_topic_model_variants.py   build_band_masked_topic_models.py
 build_lda_sweep.py              build_optuna_hyperparam_search.py
 build_rate_distortion_curve.py  build_classical_seed_stability.py
-build_band_masked_topic_models.py  (* soft dep on build_interpretability — see Stage 1 note)
+build_band_masked_topic_models.py  (* soft dep on build_interpretability, see Stage 1 note)
 build_deep_seed_stability.py    build_deep_anomaly.py
 build_neural_topic_seed_stability.py
 build_hidsag_curated_subset.py
@@ -426,7 +426,7 @@ build_wordifications_v20.py
 ```
 
 (`build_wordifications_v6plus.py` and `build_hidsag_band_quality.py` look
-like standalone wordification/core builders but are **not** — see the
+like standalone wordification/core builders but are **not**, see the
 Stage 2 cross-stage exceptions.)
 
 Audit / inspection scripts that scan the tree but are not part of the
@@ -457,7 +457,7 @@ and the tree), `audit_citation_openalex.py`, `inspect_hidsag_zip.py`,
 ## Full clean rebuild (ordered)
 
 ```bash
-# Stage 0 — fetch raw data (once per machine)
+# Stage 0: fetch raw data (once per machine)
 python data-pipeline/fetch_public_hsi.py
 python data-pipeline/fetch_public_msi.py
 python data-pipeline/fetch_public_spectral_libraries.py
@@ -465,7 +465,7 @@ python data-pipeline/fetch_public_unmixing.py
 python data-pipeline/fetch_hidsag.py
 python data-pipeline/fetch_ecostress_metadata.py
 
-# Stage 1 — core / foundational
+# Stage 1: core / foundational
 python data-pipeline/build_local_inventory.py
 python data-pipeline/build_method_statistics.py
 python data-pipeline/build_exploration_views.py
@@ -504,7 +504,7 @@ python data-pipeline/build_wordifications_v19.py
 python data-pipeline/build_wordifications_v20.py
 python data-pipeline/check_wordification_store.py   # audit: exit 1 if any corpus disagrees with its folder or fit
 
-# Stage 2 — first-order consumers
+# Stage 2: first-order consumers
 python data-pipeline/build_topic_to_data.py
 python data-pipeline/build_topic_to_library.py
 python data-pipeline/build_topic_to_usgs_v7.py
@@ -534,7 +534,7 @@ python data-pipeline/build_v_sweep_hidsag.py
 python data-pipeline/build_hidsag_cross_preprocessing_stability.py
 python data-pipeline/build_wordifications_v6plus.py   # after endmember_baseline + groupings
 
-# Stage 3 — second-order consumers
+# Stage 3: second-order consumers
 python data-pipeline/build_band_mask_canonical_comparison.py
 python data-pipeline/build_cross_method_agreement.py
 python data-pipeline/build_spatial_validation.py
@@ -548,7 +548,7 @@ python data-pipeline/build_bayesian_classification_deep.py
 python data-pipeline/build_subset_cards.py
 python data-pipeline/build_v_sweep_hidsag_f7.py
 
-# Stage 4 — V-sweep canonical fit + corpus-only backbones
+# Stage 4: V-sweep canonical fit + corpus-only backbones
 python data-pipeline/build_v_sweep_canonical_fit.py
 python data-pipeline/build_v_sweep_f1_classification.py
 python data-pipeline/build_v_sweep_hdp.py
@@ -558,7 +558,7 @@ python data-pipeline/build_v_sweep_etm_backbone.py
 python data-pipeline/build_v_sweep_f17_cross_scene.py
 python data-pipeline/build_v_sweep_f18_reliability.py
 
-# Stage 5 — V-sweep F-axes on the canonical fits
+# Stage 5: V-sweep F-axes on the canonical fits
 python data-pipeline/build_v_sweep_f1_bayesian.py
 python data-pipeline/build_v_sweep_f1_bootstrap.py
 python data-pipeline/build_v_sweep_f2_coherence.py
@@ -570,13 +570,13 @@ python data-pipeline/build_v_sweep_f15_llm_alignment.py
 python data-pipeline/build_v_sweep_f15_self_judge.py
 python data-pipeline/build_b12_self_judge.py
 
-# Stage 6 — aggregators
+# Stage 6: aggregators
 python data-pipeline/build_external_validation.py
 python data-pipeline/build_validation_blocks.py
 python data-pipeline/build_interpretability.py
 python data-pipeline/build_narratives.py
 
-# Stage 7 — web curation (LAST)
+# Stage 7: web curation (LAST)
 python data-pipeline/curate_for_web.py
 ```
 

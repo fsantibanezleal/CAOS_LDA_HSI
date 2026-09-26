@@ -3,9 +3,9 @@
  * part of #441 P1 2.1).
  *
  * Two stacked cards:
- *   1. AgreementMatrixCard — N×N {ARI, NMI, V-measure} heatmap for
+ *   1. AgreementMatrixCard: N×N {ARI, NMI, V-measure} heatmap for
  *      every method-vs-method comparison on the same pixels.
- *   2. NarrativesGrid — per-method "what does it capture" card grid.
+ *   2. NarrativesGrid: per-method "what does it capture" card grid.
  *
  * Both helpers are module-local; only this tab consumes them.
  */
@@ -235,9 +235,9 @@ function NarrativesGrid({ narratives }: { narratives: MethodNarratives }) {
             typeof v === "number"
               ? Number.isFinite(v)
                 ? v.toFixed(3)
-                : "—"
+                : ", "
               : v == null
-                ? "—"
+                ? ", "
                 : String(v);
           return (
             <div

@@ -3,7 +3,7 @@
  * the bandmask / eda / topics / hidsag per-family modules can call
  * `request()` without circular imports through `client.ts`.
  *
- * Behaviour identical to the original implementation in `client.ts` —
+ * Behaviour identical to the original implementation in `client.ts`, 
  * extracted as part of the c261 api-client split (#441 P1 item 2.4).
  */
 

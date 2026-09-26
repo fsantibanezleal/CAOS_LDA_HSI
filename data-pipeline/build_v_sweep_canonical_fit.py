@@ -1,14 +1,14 @@
-"""V-sweep canonical LDA fit — V1..V12 wordification recipes.
+"""V-sweep canonical LDA fit, V1..V12 wordification recipes.
 
 Reads the pre-built doc-term sparse matrices under
 ``data/local/wordifications/{V}/{scheme}_Q{q}/{scene_id}/`` and fits an
 online-VB LDA per (V, scheme, Q, scene) tuple. Writes:
 
-- ``data/local/v_sweep/lda_fits/{scene_id}_{V}_{scheme}_Q{q}/`` —
+- ``data/local/v_sweep/lda_fits/{scene_id}_{V}_{scheme}_Q{q}/``, 
   ``phi.npy``, ``theta.npy``, ``corpus_marginal.npy``, ``vocab.json``,
   ``manifest.json``.
 - ``data/derived/v_sweep/topic_views/{scene_id}_{V}_{scheme}_Q{q}.json``
-  — a per-fit summary with K, V, D, perplexity, mean theta, and the
+ , a per-fit summary with K, V, D, perplexity, mean theta, and the
   doc-length distribution.
 
 The per-V K-policy (see ``wip/caos-lda-hsi/audits/2026-05-26-v-recipes-theory.md``):
@@ -16,7 +16,7 @@ recipes with ≤6 mean tokens per document (V7, V9, V10) need a smaller K
 than V1's bandfull regime. We use ``K = clip(round(mean_doc_length / 2),
 3, 12)`` clipped to the number of labelled classes when available.
 
-Tracks issue #607 (Cycle 2 — V-sweep infrastructure).
+Tracks issue #607 (Cycle 2, V-sweep infrastructure).
 """
 from __future__ import annotations
 

@@ -9,7 +9,7 @@ short natural-language verdict.
 
 This is the payload the interactive Workspace consumes to render
 confidence intervals, paired diff plots, and method ranking with
-statistical significance — instead of point estimates.
+statistical significance, instead of point estimates.
 
 References
 ----------
@@ -449,7 +449,7 @@ def main() -> int:
             print(f"  error on {dataset_id}: {exc}", flush=True)
 
     payload: dict[str, Any] = {
-        "source": "Statistical depth — k-fold x multi-seed evaluations with paired comparisons",
+        "source": "Statistical depth, k-fold x multi-seed evaluations with paired comparisons",
         # Audit fix (#589 Tier 1, c391): ISO-8601 with timezone instead of
         # bare date.today() to match the project's provenance convention.
         "generated_at": datetime.now(timezone.utc)

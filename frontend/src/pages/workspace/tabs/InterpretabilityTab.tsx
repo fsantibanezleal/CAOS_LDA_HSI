@@ -2,11 +2,11 @@
  * Interpretability tab (extracted from Workspace.tsx in c293 as part
  * of #441 P1 2.1). Three stacked cards:
  *
- *   1. InterpretTopicCardsGrid — one card per topic: peak λ, FWHM,
+ *   1. InterpretTopicCardsGrid: one card per topic: peak λ, FWHM,
  *      top-3 labels by P(label | topic) with mini bars.
- *   2. InterpretBandImportance — top-24 bands by Fisher ratio +
+ *   2. InterpretBandImportance: top-24 bands by Fisher ratio +
  *      Mutual Information vs label.
- *   3. InterpretDocumentSample — sample of N documents with their θ
+ *   3. InterpretDocumentSample: sample of N documents with their θ
  *      stacked bars + dominant topic + label.
  *
  * BandRankingList is a private rendering helper used twice by
