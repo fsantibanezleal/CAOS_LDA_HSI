@@ -3,7 +3,7 @@
  * in c263 as part of #441 P1 2.1).
  *
  * Renders the per-topic word-intrusion test result from
- * `/api/llm-tea-leaves/{scene}` — headline accuracy + per-topic table
+ * `/api/llm-tea-leaves/{scene}`: headline accuracy + per-topic table
  * with intruder / LLM-picked / verdict / LLM label.
  *
  * No behavioural change versus the inline version; cut and paste +
@@ -172,11 +172,11 @@ export function LlmTeaLeavesTab({
                           borderRadius: 3,
                         }}
                       >
-                        {t.intruder ?? "—"}
+                        {t.intruder ?? ", "}
                       </span>
                     </td>
                     <td className="py-1 pr-3 font-mono">
-                      {t.llm_chose ?? "—"}
+                      {t.llm_chose ?? ", "}
                     </td>
                     <td className="py-1 pr-3 font-mono">
                       {correct === true ? (
@@ -189,7 +189,7 @@ export function LlmTeaLeavesTab({
                         </span>
                       ) : (
                         <span style={{ color: "var(--color-fg-faint)" }}>
-                          —
+                         , 
                         </span>
                       )}
                     </td>
@@ -198,7 +198,7 @@ export function LlmTeaLeavesTab({
                       style={{ maxWidth: 240 }}
                       title={t.llm_label}
                     >
-                      {t.llm_label ?? "—"}
+                      {t.llm_label ?? ", "}
                     </td>
                   </tr>
                 );

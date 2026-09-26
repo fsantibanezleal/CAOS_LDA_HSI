@@ -1,12 +1,12 @@
 /**
- * HIDSAG Explore cards — render smoke test against the REAL served eda /
+ * HIDSAG Explore cards: render smoke test against the REAL served eda /
  * method-statistics payloads (loaded from data/derived on disk).
  *
  * This guards the crash class that white-screened the live app: the cards
  * were written against a fictional HidsagEda type whose fields did not exist
  * in the builder output (e.g. dominant_targets_by_mean[].std -> undefined ->
  * `.toFixed()` TypeError). tsc could not catch it because the type itself was
- * wrong. Rendering each card with the actual JSON would have thrown — so we
+ * wrong. Rendering each card with the actual JSON would have thrown: so we
  * assert it does not, for all five subsets.
  */
 import { describe, expect, it } from "vitest";
@@ -39,7 +39,7 @@ function loadMethods(code: string): HidsagMethodStatistics {
   ) as HidsagMethodStatistics;
 }
 
-describe("HIDSAG Explore cards — real-data render smoke", () => {
+describe("HIDSAG Explore cards, real-data render smoke", () => {
   for (const code of SUBSETS) {
     it(`${code}: all four cards render without throwing`, () => {
       const eda = loadEda(code);

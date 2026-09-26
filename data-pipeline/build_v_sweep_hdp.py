@@ -1,4 +1,4 @@
-"""V-sweep HDP backbone — Bayesian-nonparametric topic count inference.
+"""V-sweep HDP backbone, Bayesian-nonparametric topic count inference.
 
 Replaces LDA with gensim's Hierarchical Dirichlet Process (HDP), which
 infers the topic count K from the data instead of fixing it. For each

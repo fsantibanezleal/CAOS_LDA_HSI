@@ -1,4 +1,4 @@
-"""Manifest auditor — verifies that every artifact declared in
+"""Manifest auditor, verifies that every artifact declared in
 `data/derived/manifests/index.json` exists on disk with the declared
 size, that builder file counts and total bytes are internally
 consistent, that every claim in `claims_allowed` resolves to at least
@@ -35,7 +35,7 @@ DERIVED_EXTENSIONS = {".json", ".png", ".bin", ".npy"}
 def load_manifest() -> dict:
     if not MANIFEST_PATH.is_file():
         raise SystemExit(
-            f"FAIL manifest not found at {MANIFEST_PATH} — run "
+            f"FAIL manifest not found at {MANIFEST_PATH}, run "
             "`scripts/local curate-for-web` first."
         )
     return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -92,7 +92,7 @@ def audit_builders(builders: dict, artifacts: list[dict]) -> list[str]:
 
 def audit_orphans(artifacts: list[dict]) -> list[str]:
     """Files under `data/derived/*` whose path is not in `artifacts`
-    (and is not the manifest itself) are reported as orphans — i.e.
+    (and is not the manifest itself) are reported as orphans, i.e.
     the manifest builder did not see them."""
     declared_paths = {art["path"].replace("\\", "/") for art in artifacts}
     declared_paths.add(SELF_PATH)
@@ -189,10 +189,10 @@ def main() -> int:
                 print(line, flush=True)
 
     if total == 0:
-        print("\n[audit] OK — no issues found.", flush=True)
+        print("\n[audit] OK, no issues found.", flush=True)
         return 0
 
-    print(f"\n[audit] FAIL — {total} issue(s) across {sum(1 for _, i in sections if i)} sections.", flush=True)
+    print(f"\n[audit] FAIL, {total} issue(s) across {sum(1 for _, i in sections if i)} sections.", flush=True)
     return 1
 
 

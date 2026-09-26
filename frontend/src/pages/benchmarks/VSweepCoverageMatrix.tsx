@@ -269,7 +269,7 @@ function RecipeMeansTable({ axes, recipes }: { axes: CoverageAxis[]; recipes: st
                     }}
                     title={winner ? `${r} wins ${axis.axis}` : `${axis.axis} · ${r}`}
                   >
-                    {v === undefined ? "—" : v < 1 ? v.toFixed(2) : v.toFixed(1)}
+                    {v === undefined ? ", " : v < 1 ? v.toFixed(2) : v.toFixed(1)}
                   </td>
                 );
               })}

@@ -1,4 +1,4 @@
-"""V-sweep F-13 — SHAP attributions of LDA topic assignments.
+"""V-sweep F-13, SHAP attributions of LDA topic assignments.
 
 For each (V, scene) we treat the wordification recipe as a fixed
 preprocessing layer and ask SHAP to attribute the topic-mixture
@@ -17,7 +17,7 @@ Concretely:
 Output: data/derived/v_sweep/f13_shap/{scene}_{V}_uniform_Q8.json with
   {top_features_per_topic: [{topic: k, features: [(name, mean_abs_shap), ...]}]}
 
-This is the headline interpretability defence — the SHAP attribution
+This is the headline interpretability defence, the SHAP attribution
 per topic is the answer to "what wavelengths does topic k respond to?",
 which is what a reviewer wants to see when we claim LDA is interpretable.
 
@@ -143,7 +143,7 @@ def shap_attribution(recipe: str, scene_id: str, q: int = 8) -> dict | None:
             # (n_samples, V, K) -> (K, V)
             per_topic_abs = np.abs(arr).mean(axis=0).T
         else:
-            # (n_samples, V) — single output
+            # (n_samples, V): single output
             per_topic_abs = np.abs(arr).mean(axis=0)[None, :]
 
     top_features = []

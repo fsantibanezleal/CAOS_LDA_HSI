@@ -11,12 +11,12 @@ The public web app is a **navigable scientific workspace**, not a
 research dashboard, blog, or hero-first marketing site. It must
 answer, in this order:
 
-1. what is the project — Landing
-2. what is the methodology — Overview
-3. what data is available — Datasets
-4. what can I actually do with it — Workspace
-5. what is the comparison evidence — Benchmarks
-6. how do I reproduce locally — Usage
+1. what is the project: Landing
+2. what is the methodology: Overview
+3. what data is available: Datasets
+4. what can I actually do with it: Workspace
+5. what is the comparison evidence: Benchmarks
+6. how do I reproduce locally: Usage
 
 It must **not** load 20 datasets and 12 charts at once on a single
 flat surface.
@@ -26,7 +26,7 @@ flat surface.
 | Tab | Role | Static images allowed |
 |---|---|---|
 | 1. Landing | hypothesis, KPIs, CTAs, citation | hero illustration only |
-| 2. Overview | methodology, theory, recipes, references | yes — only place |
+| 2. Overview | methodology, theory, recipes, references | yes, only place |
 | 3. Datasets | family selector + dataset cards + provenance | no |
 | 4. Workspace | guided per-subset flow Data → Corpus → Topics → Comparison → Inference → Validation | no |
 | 5. Benchmarks | cross-method / recipe / dataset comparison tables | no |
@@ -63,13 +63,13 @@ supervision use, validation status.
 
 ## What backs the rebuild
 
-- `app/models/schemas.py` — typed payload contracts.
-- `app/services/content.py` — LRU-cached loaders.
-- `app/routers/content.py` — endpoint declarations.
-- `data-pipeline/build_subset_cards.py` — extractor that turns the
+- `app/models/schemas.py`: typed payload contracts.
+- `app/services/content.py`: LRU-cached loaders.
+- `app/routers/content.py`: endpoint declarations.
+- `data-pipeline/build_subset_cards.py`: extractor that turns the
   deep benchmark file into compact per-subset cards (the decoupling
   layer for the public Workspace).
-- `data/manifests/interactive_subsets.json` — registry of public
+- `data/manifests/interactive_subsets.json`: registry of public
   subsets with status, claims, validation block status, artifact
   pointers.
 

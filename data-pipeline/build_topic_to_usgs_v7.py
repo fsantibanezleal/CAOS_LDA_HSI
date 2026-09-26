@@ -235,7 +235,7 @@ def build_for_scene(scene_id: str, samples: list[dict]) -> dict | None:
     return {
         "scene_id": scene_id,
         "topic_count": int(K),
-        "library_subset": "USGS Spectral Library v7 — AVIRIS-Classic 1997 convolution (full)",
+        "library_subset": "USGS Spectral Library v7, AVIRIS-Classic 1997 convolution (full)",
         "library_sample_count": len(samples),
         "library_chapter_counts": {
             ch: sum(1 for s in samples if s["chapter"] == ch) for ch in chapters_present
@@ -283,7 +283,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[usgs_v7] done — {written} scenes written.", flush=True)
+    print(f"[usgs_v7] done, {written} scenes written.", flush=True)
     return 0
 
 

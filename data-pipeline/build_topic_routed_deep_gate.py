@@ -3,10 +3,10 @@
 beats raw" vs the alternative "θ specifically beats other gates".
 
 For each labelled scene, builds gates from:
-  - LDA θ (canonical, K=12 typical)         — the original B-3 method
-  - CAE-1D K=8 latent                       — deep gate
-  - β-VAE K=8 latent                        — deep gate with KL
-  - PCA K=8 features                        — classical determinist gate
+  - LDA θ (canonical, K=12 typical)        : the original B-3 method
+  - CAE-1D K=8 latent                      : deep gate
+  - β-VAE K=8 latent                       : deep gate with KL
+  - PCA K=8 features                       : classical determinist gate
 
 The K-dim latent is row-normalised via softmax to live on the simplex,
 then used as `sample_weight` for K per-component logistic regressions
@@ -250,7 +250,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             }
             for k, v in ranked
         ],
-        "framework_axis": "B-3 follow-up: topic-routed classifier with deep encoders as gates (CAE-1D, beta-VAE, PCA, theta) — tests whether any encoder as gate beats raw, or theta specifically dominates",
+        "framework_axis": "B-3 follow-up: topic-routed classifier with deep encoders as gates (CAE-1D, beta-VAE, PCA, theta), tests whether any encoder as gate beats raw, or theta specifically dominates",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_topic_routed_deep_gate v0.1",
     }

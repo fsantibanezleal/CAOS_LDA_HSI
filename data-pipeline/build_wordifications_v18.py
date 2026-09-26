@@ -1,4 +1,4 @@
-"""V18 — graph-Laplacian eigenvector tokens (#676).
+"""V18, graph-Laplacian eigenvector tokens (#676).
 
 Build a k-NN affinity graph over the sampled pixels using spectral-
 angle distance (SAM), compute the first K normalised Laplacian

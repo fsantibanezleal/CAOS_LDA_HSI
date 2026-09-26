@@ -210,10 +210,10 @@ export function SuperTopicsTab({
                       t{m.topic_k}
                     </td>
                     <td className="py-1 pr-3 font-mono">
-                      {info ? `#${info.clusterId}` : "—"}
+                      {info ? `#${info.clusterId}` : ", "}
                     </td>
                     <td className="py-1 pr-3 text-right font-mono">
-                      {info ? info.nMembers : "—"}
+                      {info ? info.nMembers : ", "}
                     </td>
                     <td className="py-1">
                       {otherScenes.length > 0 ? (

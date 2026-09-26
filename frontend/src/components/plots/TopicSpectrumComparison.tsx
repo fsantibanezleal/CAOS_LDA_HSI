@@ -356,7 +356,7 @@ export function TopicSpectrumComparison({
                           key={b}
                           className="px-2 py-1 text-center opacity-50"
                         >
-                          —
+                         , 
                         </td>
                       );
                     }
@@ -366,7 +366,7 @@ export function TopicSpectrumComparison({
                         key={b}
                         className="px-2 py-1 text-center font-mono"
                       >
-                        {typeof v === "number" ? v.toFixed(3) : "—"}
+                        {typeof v === "number" ? v.toFixed(3) : ", "}
                       </td>
                     );
                   })}

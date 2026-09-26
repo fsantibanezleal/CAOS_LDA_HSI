@@ -12,7 +12,7 @@ absorption features. For each feature we record three quantities:
   - depth = max(1 - cont_removed) within the feature window
   - area = integrated (1 - cont_removed) over the feature window
 
-Tokens combine (centroid_bucket, depth_bin, area_bin) — the "triplet"
+Tokens combine (centroid_bucket, depth_bin, area_bin), the "triplet"
 in the master plan name. We use a small fixed number of wavelength
 buckets (CENTROID_BUCKETS = 8) so the vocabulary stays compact.
 
@@ -411,7 +411,7 @@ def main() -> int:
                     flush=True,
                 )
         written += 1
-    print(f"[wordifications_v7v11] done — {written} scenes processed.", flush=True)
+    print(f"[wordifications_v7v11] done, {written} scenes processed.", flush=True)
     return 0
 
 

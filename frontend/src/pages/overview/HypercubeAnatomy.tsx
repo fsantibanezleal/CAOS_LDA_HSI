@@ -138,6 +138,6 @@ export function HypercubeAnatomy() {
 }
 
 /* =========================================================================
-   5. Scenes showcase — class distribution color bars
+   5. Scenes showcase: class distribution color bars
    =======================================================================*/
 

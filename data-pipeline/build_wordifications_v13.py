@@ -1,4 +1,4 @@
-"""V13 — learned wordification via VQ-VAE codebook (issue #620).
+"""V13, learned wordification via VQ-VAE codebook (issue #620).
 
 A 13th wordification recipe in the V1..V12 family: instead of
 hand-crafted quantisation, learn a discrete codebook with VQ-VAE-style
@@ -25,7 +25,7 @@ This is "Q=8" only nominally because VQ-VAE doesn't bin by intensity;
 the parameter is repurposed as `K = 4 * Q` codewords. Documented in
 the per-scene metadata so downstream builders can read it correctly.
 
-V13 is structurally Q-insensitive at the recipe-token level — the
+V13 is structurally Q-insensitive at the recipe-token level, the
 codebook size K affects training but the vocabulary M·K is the only
 knob, and there is no per-pixel intensity bin. To compare V13 at
 different Q values, retrain the codebook with a different K (e.g.
@@ -92,7 +92,7 @@ class VQVAE(nn.Module):
             nn.Linear(B, 64), nn.GELU(),
             nn.Linear(64, M * latent),
         )
-        # Codebook [K, latent] — separate codebook per sub-vector position
+        # Codebook [K, latent]: separate codebook per sub-vector position
         self.codebook = nn.Parameter(torch.randn(M, K, latent) * 0.1)
         self.decoder = nn.Sequential(
             nn.Linear(M * latent, 64), nn.GELU(),

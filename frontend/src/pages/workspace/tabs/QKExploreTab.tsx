@@ -1,5 +1,5 @@
 /**
- * K-sweep model-selection tab (cycle 107) — Step 8 / Manipulate.
+ * K-sweep model-selection tab (cycle 107): Step 8 / Manipulate.
  *
  * Reads /api/lda-sweep/<scene> precomputed sweeps over K ∈ {4,6,8,10,12,16}
  * × 5 seeds and renders three SVG curves (perplexity test mean ± std,
@@ -214,12 +214,12 @@ export function QKExploreTab({
                   <td className="py-1 pr-3 text-right font-mono">
                     {g.matched_cosine_mean != null
                       ? g.matched_cosine_mean.toFixed(3)
-                      : "—"}
+                      : ", "}
                   </td>
                   <td className="py-1 text-right font-mono">
                     {g.matched_cosine_min != null
                       ? g.matched_cosine_min.toFixed(3)
-                      : "—"}
+                      : ", "}
                   </td>
                 </tr>
               );

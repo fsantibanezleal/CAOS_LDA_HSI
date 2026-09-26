@@ -204,7 +204,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[spectral_density] done — {written} scenes written.", flush=True)
+    print(f"[spectral_density] done, {written} scenes written.", flush=True)
     return 0
 
 

@@ -4,7 +4,7 @@ The fair-baseline argument from master plan Addendum B.
 
 Topics are a K-dim compression of the spectrum. Comparing them
 against the 268-dim raw spectrum on a downstream classifier conflates
-compression with semantic structure — it always looks like "topics
+compression with semantic structure, it always looks like "topics
 lose". The fair comparison is theta against **other K-dim
 compressions of the same data**: PCA-K, NMF-K, ICA-K, dense-AE-K at
 the same K.
@@ -265,7 +265,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             }
             for m, v in ranked
         ],
-        "framework_axis": "B-1 (master plan Addendum B): linear probe panel — theta vs other K-dim compressions, the fair-baseline argument",
+        "framework_axis": "B-1 (master plan Addendum B): linear probe panel, theta vs other K-dim compressions, the fair-baseline argument",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_linear_probe_panel v0.1",
     }
@@ -305,7 +305,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[linear_probe] done — {written} scenes written.", flush=True)
+    print(f"[linear_probe] done, {written} scenes written.", flush=True)
     return 0
 
 

@@ -3,10 +3,10 @@
  * #441 P1 2.1).
  *
  * Renders two stacked cards:
- *   1. EmbeddedBaselineCard — does θ add signal over PCA-K at the same K?
+ *   1. EmbeddedBaselineCard: does θ add signal over PCA-K at the same K?
  *      Trains a logistic head on raw / pca_K / theta / theta⊕pca_K
  *      feature blocks and ranks them by macro F1.
- *   2. DeepGateCard — does a deep latent (CAE-1D / β-VAE / PCA) beat
+ *   2. DeepGateCard: does a deep latent (CAE-1D / β-VAE / PCA) beat
  *      θ as the routing key in the topic-routed classifier?
  *
  * Both helper cards are module-local since only GatingTab consumes them.
@@ -159,7 +159,7 @@ function EmbeddedBaselineCard({ embedded }: { embedded: EmbeddedBaseline }) {
                   <td className="py-1 pr-3 text-right font-mono">
                     {mm.balanced_accuracy
                       ? mm.balanced_accuracy.mean.toFixed(3)
-                      : "—"}
+                      : ", "}
                   </td>
                   <td className="py-1 w-[180px]">
                     <div

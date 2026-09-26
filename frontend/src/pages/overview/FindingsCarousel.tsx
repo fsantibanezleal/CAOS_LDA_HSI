@@ -118,6 +118,6 @@ export function FindingsCarousel() {
 }
 
 /* =========================================================================
-   4. Hypercube anatomy — pixel → spectrum → tokens → topics flow
+   4. Hypercube anatomy: pixel → spectrum → tokens → topics flow
    =======================================================================*/
 

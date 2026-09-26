@@ -1,8 +1,8 @@
 # Dev-only deps for the backend test suite (closes #440 P1 1.7).
 #
 # TEST VENV CONTRACT (#757): the backend tests import app.main
-# (FastAPI/Pydantic), so they run in the WEB venv .venv — created from
-# requirements.txt — NOT the data .venv-pipeline. Install order:
+# (FastAPI/Pydantic), so they run in the WEB venv .venv: created from
+# requirements.txt: NOT the data .venv-pipeline. Install order:
 #   pip install -r requirements.txt && pip install -r dev-requirements.txt
 # One shot:  ./scripts/local.sh setup-test   (PS: .\scripts\local.ps1 setup-test)
 # Run:       ./scripts/local.sh test

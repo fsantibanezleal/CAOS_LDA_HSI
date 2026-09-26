@@ -8,7 +8,7 @@
       "data": "Las escenas hiperespectrales son cortesía del Computational Intelligence Group, UPV/EHU. La base mineralógica HIDSAG surge de una colaboración en aplicaciones de machine learning a las geociencias. Construido sobre el stack científico de Python de código abierto (scikit-learn, NumPy, SciPy, Gensim, tomotopy, Pyro)."
     },
     "landing_cta": {
-      "lead": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales — un framework de evaluación multi-eje que pregunta si los espectros base de LDA añaden valor interpretable sobre los codificadores profundos en la clasificación de escenas HSI.",
+      "lead": "Modelos probabilísticos de tópicos sobre imágenes hiperespectrales, un framework de evaluación multi-eje que pregunta si los espectros base de LDA añaden valor interpretable sobre los codificadores profundos en la clasificación de escenas HSI.",
       "open_workspace": "Abrir el Laboratorio →",
       "read_methodology": "Leer la metodología",
       "primary_actions": "acciones principales"
@@ -18,9 +18,9 @@
       "indian_pines_caption": "Indian Pines · 16 clases · {{bands}} bandas · 400–2500 nm",
       "indian_pines_caption_loading": "Indian Pines · cargando datos en vivo…",
       "title": "Convertimos la variabilidad espectro–espacial en documentos para LDA.",
-      "caption": "Cada curva es la firma media de una clase agronómica del cubo Indian Pines. La diversidad inter-clase a 1100 / 1400 / 1900 nm — absorciones de agua y feldespatos — es lo que el corpus tiene que recuperar discretamente. LDA necesita documentos, pero un cubo hiperespectral no los tiene a priori: los construimos a partir de su variabilidad espectro–espacial — por píxel, por región, por parche o por muestra completa — y preguntamos qué construcción, junto con qué wordification, recupera mejor la estructura latente.",
+      "caption": "Cada curva es la firma media de una clase agronómica del cubo Indian Pines. La diversidad inter-clase a 1100 / 1400 / 1900 nm, absorciones de agua y feldespatos, es lo que el corpus tiene que recuperar discretamente. LDA necesita documentos, pero un cubo hiperespectral no los tiene a priori: los construimos a partir de su variabilidad espectro–espacial, por píxel, por región, por parche o por muestra completa, y preguntamos qué construcción, junto con qué wordification, recupera mejor la estructura latente.",
       "datacube_anatomy": "Anatomía del datacube",
-      "datacube_caption": "Un cubo HSI es (H × W × B); cada píxel x[i, j] es un vector espectral de B bandas. No hay documento a priori — el proyecto construye un corpus a partir de la variabilidad espectro–espacial del cubo (la unidad-documento misma es una elección de representación), lo discretiza en tokens, ajusta tópicos θ ∈ Δ^(K-1) y los compara contra baselines K-dim."
+      "datacube_caption": "Un cubo HSI es (H × W × B); cada píxel x[i, j] es un vector espectral de B bandas. No hay documento a priori, el proyecto construye un corpus a partir de la variabilidad espectro–espacial del cubo (la unidad-documento misma es una elección de representación), lo discretiza en tokens, ajusta tópicos θ ∈ Δ^(K-1) y los compara contra baselines K-dim."
     },
     "headlines": {
       "datasets_label": "Datasets",
@@ -107,13 +107,13 @@
       "cards": {
         "b3": {
           "badge": "B-3",
-          "title": "θ es una compuerta, no un feature — y la compuerta supera a raw",
-          "body": "El ensemble suave θ-gated (un especialista por tópico, combinados ponderados por θ) iguala o supera a los espectros crudos en clasificación en 6 de 6 escenas etiquetadas (media +0.5 pp; Pavia U +1.4), y es el mejor método de regresión en el subset HIDSAG válido (GEOMET, R² 0.307 > raw 0.258 > PLS 0.227). En cambio θ como feature plano pierde frente a raw entre 14 y 47 pp — justo por eso θ debe ser una compuerta, no un feature."
+          "title": "θ es una compuerta, no un feature, y la compuerta supera a raw",
+          "body": "El ensemble suave θ-gated (un especialista por tópico, combinados ponderados por θ) iguala o supera a los espectros crudos en clasificación en 6 de 6 escenas etiquetadas (media +0.5 pp; Pavia U +1.4), y es el mejor método de regresión en el subset HIDSAG válido (GEOMET, R² 0.307 > raw 0.258 > PLS 0.227). En cambio θ como feature plano pierde frente a raw entre 14 y 47 pp, justo por eso θ debe ser una compuerta, no un feature."
         },
         "b3_followup": {
           "badge": "B-3 follow-up",
           "title": "Ningún codificador profundo puede reemplazar a θ como compuerta",
-          "body": "Bayesiano jerárquico: raw > θ > {pca_8, cae_1d_8, beta_vae_8} con P(μ_a > μ_b) ≥ 0.999. Los latentes profundos softmaxeados satisfacen la restricción del símplex geométricamente pero no estructuralmente — el mecanismo de gating no se transfiere."
+          "body": "Bayesiano jerárquico: raw > θ > {pca_8, cae_1d_8, beta_vae_8} con P(μ_a > μ_b) ≥ 0.999. Los latentes profundos softmaxeados satisfacen la restricción del símplex geométricamente pero no estructuralmente, el mecanismo de gating no se transfiere."
         },
         "topic_family": {
           "badge": "Familia de tópicos",
@@ -123,21 +123,21 @@
         "decoder_design": {
           "badge": "Diseño del decodificador",
           "title": "El objetivo de reconstrucción es en sí mismo un hiperparámetro",
-          "body": "CAE-3D anchor-only vs full-patch da una ΔARI media neta ≈ +0.003 (K=8) y +0.011 (K=4) — neutra en promedio, con dirección dependiente de la escena. Pavia U se invierte con la capacidad."
+          "body": "CAE-3D anchor-only vs full-patch da una ΔARI media neta ≈ +0.003 (K=8) y +0.011 (K=4), neutra en promedio, con dirección dependiente de la escena. Pavia U se invierte con la capacidad."
         },
         "gpu_stack": {
           "badge": "Stack GPU · operacional",
           "title": "Aceleración 50–120× en la familia deep / neuronal",
-          "body": "RTX 4070 Laptop CUDA 12.6: cae_3d_full K=32 escena individual baja de ~60 min CPU a ~30 s GPU. Curva K completa {4, 8, 16, 32} × 6 escenas de 9–12 h CPU a ~10 min GPU. Deriva de determinismo ±0.010 ARI por debajo del σ por-seed ≈ 0.05. Afirmación de ingeniería — sólo runtime/determinismo, no resultado metodológico."
+          "body": "RTX 4070 Laptop CUDA 12.6: cae_3d_full K=32 escena individual baja de ~60 min CPU a ~30 s GPU. Curva K completa {4, 8, 16, 32} × 6 escenas de 9–12 h CPU a ~10 min GPU. Deriva de determinismo ±0.010 ARI por debajo del σ por-seed ≈ 0.05. Afirmación de ingeniería, sólo runtime/determinismo, no resultado metodológico."
         },
         "stability": {
           "badge": "Estabilidad",
-          "title": "Escalera de estabilidad por semillas — 9 métodos × 6 escenas",
-          "body": "PCA = ICA (1.000 determinista) > LDA > NMF > CAE-2D > CAE-1D > CAE-3D > dense-AE > β-VAE. β-VAE en KSC con off-diag ≈ 0.18 — la estocasticidad del KL ahoga la señal entre semillas."
+          "title": "Escalera de estabilidad por semillas, 9 métodos × 6 escenas",
+          "body": "PCA = ICA (1.000 determinista) > LDA > NMF > CAE-2D > CAE-1D > CAE-3D > dense-AE > β-VAE. β-VAE en KSC con off-diag ≈ 0.18, la estocasticidad del KL ahoga la señal entre semillas."
         },
         "posterior_collapse": {
           "badge": "Colapso de posterior",
-          "title": "β-VAE Salinas con β ≥ 8 — caso de manual",
+          "title": "β-VAE Salinas con β ≥ 8, caso de manual",
           "body": "β-VAE en Salinas con β=8 y β=16 colapsa a ARI = 0.000: el codificador converge a q(z|x) ≈ p(z) independientemente del input; el latente no aporta información. La estructura compacta de 6 clases de Salinas-A resiste el mismo regularizador."
         }
       }
@@ -185,11 +185,11 @@
       "discretisation_title": "Discretización",
       "discretisation_body": "Cómo el espectro continuo se vuelve token discreto: diecinueve recetas construidas (V1..V15, V17..V20), tres esquemas de cuantización (uniform, quantile, equalised), tres niveles Q ∈ {8, 16, 32}.",
       "model_title": "Modelo",
-      "model_body": "LDA canónico (collapsed Gibbs, variational Bayes, online), HDP, CTM, ProdLDA, ETM, NMF, PCA, ICA, dense-AE, CAE-1D/2D/3D, β-VAE — todos a la misma K para comparación justa."
+      "model_body": "LDA canónico (collapsed Gibbs, variational Bayes, online), HDP, CTM, ProdLDA, ETM, NMF, PCA, ICA, dense-AE, CAE-1D/2D/3D, β-VAE, todos a la misma K para comparación justa."
     },
     "coverage": {
       "tag": "Method coverage",
-      "title": "11 + 5 + 4 + 12 ejes — todo evaluado en la misma escena cuando aplica",
+      "title": "11 + 5 + 4 + 12 ejes, todo evaluado en la misma escena cuando aplica",
       "lda_family": "Familia LDA · 9 variantes",
       "neural_topic": "Tópico neural · 2 variantes",
       "deep_repr": "Representaciones profundas · 5",
@@ -198,7 +198,7 @@
     },
     "reading_path": {
       "tag": "Cómo leer este sitio",
-      "title": "Camino sugerido — 7 paradas",
+      "title": "Camino sugerido, 7 paradas",
       "step1_tag": "Metodología",
       "step1_title": "Teoría",
       "step1_body": "El modelo PTM/LDA y por qué un píxel HSI puede tratarse como documento.",
@@ -242,34 +242,34 @@
     }
   },
   "methodology_theory": {
-    "title": "Teoría — PTM, LDA, HSI",
+    "title": "Teoría, PTM, LDA, HSI",
     "sections": {
       "why-ptm": {
         "title": "¿Qué es un modelo probabilístico de tópicos?",
         "lead": "Un modelo probabilístico de tópicos (PTM) describe cada documento como una mezcla latente sobre un puñado de distribuciones de palabras llamadas tópicos. La idea clave es que esa estructura latente se aprende sin supervisión, sólo a partir de las co-ocurrencias de palabras."
       },
       "lda-plate": {
-        "title": "LDA — notación plate y proceso generativo",
+        "title": "LDA, notación plate y proceso generativo",
         "lead": "Las plates externas se repiten sobre documentos y palabras; las distribuciones latentes (theta y phi) son los objetos que aprende el modelo."
       },
       "hsi-as-document": {
-        "title": "HSI como corpus — por qué un píxel puede ser un documento",
+        "title": "HSI como corpus, por qué un píxel puede ser un documento",
         "lead": "Cada píxel de una imagen hiperespectral es un vector de reflectancia. Para que LDA lo consuma, el espectro debe cuantizarse y convertirse en una secuencia discreta de tokens."
       },
       "why-mixed-membership": {
-        "title": "Pertenencia mezclada — ¿por qué no clasificación dura?",
+        "title": "Pertenencia mezclada, ¿por qué no clasificación dura?",
         "lead": "El espectro de un píxel mineral no proviene de una sola especie. Mezclas, vegetación entrelazada, sombras y dispersión atmosférica producen medidas que reflejan varias firmas a la vez."
       },
       "topics-vs-endmembers": {
-        "title": "Tópicos vs endmembers — la relación φ ↔ E",
-        "lead": "El unmixing espectral lineal factoriza un cubo en firmas endmember × abundancias por píxel. LDA factoriza un cubo tokenizado en distribuciones de tópicos × mezclas por documento. Las dos factorizaciones son objetos distintos, pero en escenas minerales acaban describiendo las mismas familias de material — por eso el mejor coseno por tópico vs endmember se sitúa en 0.94–1.00 en las escenas etiquetadas."
+        "title": "Tópicos vs endmembers, la relación φ ↔ E",
+        "lead": "El unmixing espectral lineal factoriza un cubo en firmas endmember × abundancias por píxel. LDA factoriza un cubo tokenizado en distribuciones de tópicos × mezclas por documento. Las dos factorizaciones son objetos distintos, pero en escenas minerales acaban describiendo las mismas familias de material, por eso el mejor coseno por tópico vs endmember se sitúa en 0.94–1.00 en las escenas etiquetadas."
       },
       "coherence-metrics": {
-        "title": "Coherencia de tópicos — c_v, NPMI y U-Mass",
+        "title": "Coherencia de tópicos, c_v, NPMI y U-Mass",
         "lead": "La coherencia cuantifica si las palabras superiores de un tópico 'van juntas' en el corpus. Las tres métricas que sigue este proyecto (c_v, NPMI, U-Mass) miden esa señal a distintas escalas y con distintas estadísticas. Más alto es mejor para c_v y NPMI; menos negativo es mejor para U-Mass."
       },
       "metric-glossary": {
-        "title": "Glosario de métricas — concordancia de particiones, ángulo espectral, β",
+        "title": "Glosario de métricas, concordancia de particiones, ángulo espectral, β",
         "lead": "Tres definiciones referenciadas a lo largo del sitio que las superficies previas nombraban sin definir on-page. Cada una es una fórmula de una línea más el rol que juega en el framework."
       },
       "readings": {
@@ -279,7 +279,7 @@
   },
   "methodology_representations": {
     "title": "Representaciones · método por método",
-    "lead": "Cada método (16 totales — 5 topic models clásicos + 2 neural-topic + 4 baselines K-dim + 5 deep encoders + 1 unmixing) tiene su propia formulación teórica, principios de diseño, hipótesis de partida, y hallazgos contra las 6 escenas etiquetadas. Elige un método para profundizar.",
+    "lead": "Cada método (16 totales, 5 topic models clásicos + 2 neural-topic + 4 baselines K-dim + 5 deep encoders + 1 unmixing) tiene su propia formulación teórica, principios de diseño, hipótesis de partida, y hallazgos contra las 6 escenas etiquetadas. Elige un método para profundizar.",
     "nav_label": "Métodos",
     "section_theory": "Formulación teórica",
     "section_principles": "Principios de diseño",
@@ -288,7 +288,7 @@
     "recipes_title": "Background · recetas de wordification V1..V20",
     "recipes_lead": "Las representaciones topic-family operan sobre un alfabeto discreto. Hay 19 recetas construidas (V1..V15, V17..V20; V16 es un scaffold fundacional) × 3 esquemas de cuantización × Q ∈ {8, 16, 32} = 171 vocabularios candidatos por escena. La grilla siguiente bosqueja el espacio. La recipe canónica de ajuste es V1 (band-frequency) con uniform Q=8, pero el sweep evalúa las 19.",
     "recipes_figure_caption": "19 recetas × 9 (3 esquemas × 3 Q) = 171 configs por escena.",
-    "recipes_deepdive_lead": "Cada receta tiene una página de análisis detallado con sus resultados del barrido de ejes F en las seis escenas etiquetadas — la base de evidencia completa V1..V20.",
+    "recipes_deepdive_lead": "Cada receta tiene una página de análisis detallado con sus resultados del barrido de ejes F en las seis escenas etiquetadas, la base de evidencia completa V1..V20.",
     "recipes_deepdive_cta": "Abrir los análisis por receta",
     "families": {
       "topic": "Topic models clásicos",
@@ -308,14 +308,14 @@
           "Recipe canónica V1 (band-frequency, banda como palabra) con Q ∈ {8, 16, 32}."
         ],
         "hypothesis": "Si una imagen hiperespectral es un corpus de píxeles-como-documentos, los tópicos discretos descubiertos deberían alinearse con las clases agronómicas/minerales etiquetadas.",
-        "findings": "Gana ARI 4/6 escenas (Indian Pines, Salinas, Salinas-A, Pavia U) vs ProdLDA y ETM head-to-head; pierde 1/6 en KSC donde colapsa a ARI≈0; pierde 1/6 en Botswana vs ETM. Coherencia c_v 0/6 (siempre peor). σ ≤ 0.03 ARI sobre N=5 seeds — extremadamente estable."
+        "findings": "Gana ARI 4/6 escenas (Indian Pines, Salinas, Salinas-A, Pavia U) vs ProdLDA y ETM head-to-head; pierde 1/6 en KSC donde colapsa a ARI≈0; pierde 1/6 en Botswana vs ETM. Coherencia c_v 0/6 (siempre peor). σ ≤ 0.03 ARI sobre N=5 seeds, extremadamente estable."
       },
       "lda_tomo": {
         "label": "LDA · tomotopy (collapsed Gibbs)",
         "tag": "Griffiths–Steyvers 2004 · C++ Gibbs",
         "theory_body": "Colapsado: integra φ y θ analíticamente, deja sólo las asignaciones discretas z como variables de Gibbs. Iteración i: re-muestrea z_i condicional al resto. Más lento (10× online VB) pero suele encontrar mejores máximos.",
         "principles": [
-          "Sin variational gap — la distribución del sampler converge a la posterior real.",
+          "Sin variational gap, la distribución del sampler converge a la posterior real.",
           "Burn-in + N iteraciones efectivas; per-document log-likelihood como diagnóstico.",
           "Implementación C++ vía tomotopy → 50× más rápido que Gibbs puro en Python."
         ],
@@ -329,7 +329,7 @@
         "principles": [
           "Sparsity prior estricto: documentos con sólo 1–3 tópicos activos.",
           "Útil cuando las clases son disjuntas (las clases agronómicas no se mezclan dentro de un píxel).",
-          "Perplexity típicamente peor — pero mejor coincidencia con etiquetas categóricas."
+          "Perplexity típicamente peor, pero mejor coincidencia con etiquetas categóricas."
         ],
         "hypothesis": "Mayor sparsity debería mejorar ARI vs label (cada documento → un tópico dominante claro).",
         "findings": "Perplexity peor que LDA canonical, ARI marginalmente peor en la mayoría de escenas. Confirma que para datos HSI los píxeles no son mono-tópico."
@@ -339,7 +339,7 @@
         "tag": "Hierarchical Dirichlet Process · K aprendido",
         "theory_body": "HDP (Teh–Jordan–Beal–Blei 2006) es la extensión no-paramétrica de LDA: el número de tópicos K se aprende del corpus vía stick-breaking. Los tópicos se comparten entre documentos vía un proceso de Dirichlet jerárquico.",
         "principles": [
-          "K no se fija a priori — el modelo decide cuántos tópicos activos hay.",
+          "K no se fija a priori, el modelo decide cuántos tópicos activos hay.",
           "Truncación T (cap superior) para inferencia tractable; T = 50 típico.",
           "Útil cuando no hay prior sobre n_classes (escenas no etiquetadas)."
         ],
@@ -363,7 +363,7 @@
         "tag": "Srivastava–Sutton 2017 · amortizado",
         "theory_body": "Neural topic model: un encoder MLP amortiza la inferencia de z, el decoder es la multinomial softmax sobre β = K×V. ELBO con KL Dirichlet vía Laplace approximation.",
         "principles": [
-          "Encoder + decoder neurales — entrenamiento por gradiente sobre todo el corpus.",
+          "Encoder + decoder neurales, entrenamiento por gradiente sobre todo el corpus.",
           "Topic Coherence c_v mejor que LDA típicamente (decoder aprende relaciones banda).",
           "Sensible a init: σ(ARI) ≈ 0.03 a través de N=5 seeds."
         ],
@@ -375,12 +375,12 @@
         "tag": "Dieng–Ruiz–Blei 2020 · decoder low-rank",
         "theory_body": "Decoder factorizado: β = ρα^T donde ρ ∈ ℝ^{V×E} son word embeddings y α ∈ ℝ^{K×E} son topic embeddings. E ≪ V acelera y regulariza. Variational gaussian sobre θ.",
         "principles": [
-          "Decoder low-rank E ≤ 256 — captura similitud semántica entre palabras (bandas vecinas).",
+          "Decoder low-rank E ≤ 256, captura similitud semántica entre palabras (bandas vecinas).",
           "Word embeddings ρ son aprendidos junto con tópicos.",
           "Mejor para vocabularios grandes; HSI tiene V ≈ 200 bandas."
         ],
         "hypothesis": "Embedding compartido entre palabras debería ayudar cuando hay redundancia espectral (bandas correlacionadas).",
-        "findings": "ETM > ProdLDA en ARI 6/6 escenas bajo estimación multi-seed N=5 (cycle 63 — la única victoria single-seed de ProdLDA en KSC desaparece con la varianza). Coherencia c_v middle: ProdLDA > ETM > LDA. ETM es el mejor compromiso ARI+c_v."
+        "findings": "ETM > ProdLDA en ARI 6/6 escenas bajo estimación multi-seed N=5 (cycle 63, la única victoria single-seed de ProdLDA en KSC desaparece con la varianza). Coherencia c_v middle: ProdLDA > ETM > LDA. ETM es el mejor compromiso ARI+c_v."
       },
       "nmf": {
         "label": "NMF · K=8",
@@ -388,20 +388,20 @@
         "theory_body": "Non-negative matrix factorization. β-divergence = KL. W ∈ ℝ_+^{N×K} son scores por documento, H ∈ ℝ_+^{K×V} son basis spectra. Multiplicative update rules.",
         "principles": [
           "Parts-based: cada espectro es suma no-negativa de K basis spectra.",
-          "Sin priors estocásticos — solución determinista (init-dependent).",
+          "Sin priors estocásticos, solución determinista (init-dependent).",
           "Baseline K-dim directo contra LDA / PCA / AE en la misma K."
         ],
         "hypothesis": "Si la mezcla espectral es físicamente lineal, NMF debería recuperar endmembers comparables a NFINDR.",
-        "findings": "Reconstrucción RMSE comparable a PCA en K=8. Silhouette y ARI vs label peor que PCA en 4/6 escenas — los componentes NMF son más interpretables que separables."
+        "findings": "Reconstrucción RMSE comparable a PCA en K=8. Silhouette y ARI vs label peor que PCA en 4/6 escenas, los componentes NMF son más interpretables que separables."
       },
       "pca": {
         "label": "PCA · K=8",
         "tag": "Lineal · L2-óptimo",
         "theory_body": "Descomposición espectral de la covarianza C ∈ ℝ^{V×V}. Los K eigenvectores top forman la base V_{:K}. La proyección z_d = V_{:K}^T x_d es L2-óptima en reconstrucción (Eckart–Young).",
         "principles": [
-          "Compresión lineal — preserva varianza máxima en K direcciones.",
+          "Compresión lineal, preserva varianza máxima en K direcciones.",
           "Reconstruction RMSE mínima en cada K (esto es su único título garantizado).",
-          "Componentes pueden ser negativos — sin interpretación física directa."
+          "Componentes pueden ser negativos, sin interpretación física directa."
         ],
         "hypothesis": "Para datos HSI dominados por una sola dirección de varianza (brillo), PCA debería ser una baseline difícil de batir en MSE pero pobre en separabilidad.",
         "findings": "Gana reconstruction RMSE en TODAS las K testeadas (4, 8, 12, 16, 32). Silhouette intermedio. ARI vs label moderado. Es el L2-baseline canónico contra el cual todo deep encoder debe justificarse."
@@ -416,7 +416,7 @@
           "Convergencia más lenta que PCA pero comparable en costo."
         ],
         "hypothesis": "Si la HSI es una mezcla de pocas fuentes físicas independientes, ICA debería recuperar dichas fuentes mejor que PCA en silhouette.",
-        "findings": "Latentes comparables a PCA en ARI/NMI. Silhouette ligeramente menor en 3/6 escenas — los componentes ICA capturan estructura distinta pero no necesariamente más separable."
+        "findings": "Latentes comparables a PCA en ARI/NMI. Silhouette ligeramente menor en 3/6 escenas, los componentes ICA capturan estructura distinta pero no necesariamente más separable."
       },
       "dense_ae": {
         "label": "Dense AE · K=8",
@@ -425,10 +425,10 @@
         "principles": [
           "Generalización no-lineal de PCA con la misma K.",
           "Trained on GPU (cycles 59+ del proyecto).",
-          "Sin regularización adicional (sin KL, sin dropout) — comparable a PCA en degenerados."
+          "Sin regularización adicional (sin KL, sin dropout), comparable a PCA en degenerados."
         ],
         "hypothesis": "Para K bajo (4, 8), las relaciones no-lineales entre bandas deberían dar mejor reconstrucción que PCA.",
-        "findings": "Reconstruction RMSE comparable a PCA (no mejor en K=8 promedio 6 escenas). Silhouette y ARI ligeramente peores que PCA — el modelo aprende lo mismo que PCA pero con más varianza de seed."
+        "findings": "Reconstruction RMSE comparable a PCA (no mejor en K=8 promedio 6 escenas). Silhouette y ARI ligeramente peores que PCA, el modelo aprende lo mismo que PCA pero con más varianza de seed."
       },
       "cae_1d": {
         "label": "CAE-1D · K=8",
@@ -436,11 +436,11 @@
         "theory_body": "Convolutional AE 1D sobre el espectro. Kernel = 7 bandas adyacentes. Encoder = 3 capas Conv1D + 2 dense, bottleneck K = 8.",
         "principles": [
           "Asume estructura local en el espectro (bandas vecinas correlacionadas).",
-          "Receptive field aumenta exponencialmente con la profundidad — captura features amplios.",
+          "Receptive field aumenta exponencialmente con la profundidad, captura features amplios.",
           "Stride 2 entre capas reduce dimensión espectral progresivamente."
         ],
         "hypothesis": "El espectro hiperespectral tiene autocorrelación banda-a-banda. CAE-1D debe capturar features locales (bordes, picos) mejor que PCA/AE denso.",
-        "findings": "Se ubica en el medio de la escalera de estabilidad-9-métodos (por debajo de LDA / NMF / CAE-2D, por encima de CAE-3D / dense-AE / β-VAE — ver README finding #6). Silhouette igualada a PCA. El bias inductivo 1D conv sobre autocorrelación banda-banda lo hace el encoder deep más cercano a PCA en el tradeoff ARI / σ."
+        "findings": "Se ubica en el medio de la escalera de estabilidad-9-métodos (por debajo de LDA / NMF / CAE-2D, por encima de CAE-3D / dense-AE / β-VAE, ver README finding #6). Silhouette igualada a PCA. El bias inductivo 1D conv sobre autocorrelación banda-banda lo hace el encoder deep más cercano a PCA en el tradeoff ARI / σ."
       },
       "cae_2d": {
         "label": "CAE-2D · K=8 (anchor)",
@@ -451,7 +451,7 @@
           "Modo anchor: sólo el centro del parche contribuye al loss y al z.",
           "Spatial neighborhood = 3.5 pixels de radio efectivo."
         ],
-        "hypothesis": "Spatial context debería mejorar separabilidad — un píxel agrícola rodeado de píxeles agrícolas es más clasificable.",
+        "hypothesis": "Spatial context debería mejorar separabilidad, un píxel agrícola rodeado de píxeles agrícolas es más clasificable.",
         "findings": "A N=15 seeds: ARI vs label competitivo con CAE-1D. Mejor en escenas con texturas claras (Indian Pines), peor en mosaicos finos (Salinas-A)."
       },
       "cae_3d": {
@@ -459,12 +459,12 @@
         "tag": "Conv3D sobre (espacio × bandas)",
         "theory_body": "Conv3D sobre cubos completos (dim espacial × dim espectral). Kernels 3D = (3 bandas × 3 px × 3 px). Anchor: sólo el píxel central define z.",
         "principles": [
-          "Receptive field volumétrico — captura simultáneamente vecindad espacial y espectral.",
-          "Más caro computacionalmente — entrenamiento GPU 50–120× con CUDA.",
+          "Receptive field volumétrico, captura simultáneamente vecindad espacial y espectral.",
+          "Más caro computacionalmente, entrenamiento GPU 50–120× con CUDA.",
           "Anchor mode reduce loss noise al concentrarse en el píxel objetivo."
         ],
-        "hypothesis": "Conv3D debería ser estrictamente mejor que CAE-2D + CAE-1D combinados — más capacidad inductiva nativa.",
-        "findings": "K-curve {K=4, K=8} neutral: ΔARI K=4 = +0.011 (5/6 escenas confirman dirección); Pavia U invierte con capacidad. No es ganancia decisiva sobre CAE-1D — la capacidad volumétrica no es la palanca dominante."
+        "hypothesis": "Conv3D debería ser estrictamente mejor que CAE-2D + CAE-1D combinados, más capacidad inductiva nativa.",
+        "findings": "K-curve {K=4, K=8} neutral: ΔARI K=4 = +0.011 (5/6 escenas confirman dirección); Pavia U invierte con capacidad. No es ganancia decisiva sobre CAE-1D, la capacidad volumétrica no es la palanca dominante."
       },
       "cae_3d_full": {
         "label": "CAE-3D full · K=8",
@@ -483,7 +483,7 @@
         "tag": "Higgins et al. 2017 · término β KL",
         "theory_body": "Variational AE con multiplicador β en el término KL. β = 1 ⇒ VAE estándar. β > 1 fuerza dimensiones de z a ser más independientes (desentrelazado).",
         "principles": [
-          "Latente probabilístico — z es una distribución, no un punto.",
+          "Latente probabilístico, z es una distribución, no un punto.",
           "β controla el tradeoff reconstrucción vs disentanglement.",
           "Default canónico aquí: β = 2."
         ],
@@ -495,7 +495,7 @@
         "tag": "Winter 1999 · Heinz–Chang 2001",
         "theory_body": "NFINDR (Winter 1999): K endmembers son los vértices del simplex de máximo volumen en el cubo HSI. NNLS con restricción suma-a-uno (delta = 100 penalty) infiere abundancia por píxel.",
         "principles": [
-          "Modelo lineal de mezcla — cada píxel = suma convexa de K endmembers.",
+          "Modelo lineal de mezcla, cada píxel = suma convexa de K endmembers.",
           "Físicamente interpretable: cada endmember es un material puro candidato.",
           "Comparado contra LDA vía topic_endmember_match: K-K cosine matrix."
         ],
@@ -524,7 +524,7 @@
         "V2": "El píxel se reduce a un único token (banda, nivel cuantizado).",
         "V3": "Cada banda emite un token conjunto (band, q-bin); vocabulario B·Q.",
         "V4": "El espectro de 1ª derivada se discretiza en bins y se tokeniza.",
-        "V5": "El espectro de curvatura se discretiza en bins — sensible a los puntos de inflexión.",
+        "V5": "El espectro de curvatura se discretiza en bins, sensible a los puntos de inflexión.",
         "V6": "Los coeficientes wavelet a múltiples escalas se convierten en tokens.",
         "V7": "Cada valle de absorción más marcado → token triplete (bucket de banda centroide, bin de profundidad, bin de área).",
         "V8": "El píxel como suma ponderada de espectros endmember; los coeficientes α se tokenizan.",
@@ -547,7 +547,7 @@
         "lead": "Los comandos asumen que estás en la raíz del repo y tienes los dos venvs creados (scripts/local setup-all)."
       },
       "spatial-coherence": {
-        "title": "Coherencia espacial — qué mide la etapa de groupings",
+        "title": "Coherencia espacial, qué mide la etapa de groupings",
         "lead": "Las cuatro construcciones de documento (SLIC-500, SLIC-2000, patch-7/15, Felzenszwalb) recortan el cubo de maneras geométricamente distintas. El panel de cross-method agreement resume con qué frecuencia colocan dos píxeles en el mismo documento; los diagnósticos por método de coherencia espacial resumen qué tan compactas son las regiones de cada construcción."
       },
       "reproduce": {
@@ -570,15 +570,15 @@
         "lead": "Cada familia usa theta de manera distinta. La diferencia es metodológica, no cosmética."
       },
       "direct": {
-        "title": "1. Directo — theta como feature",
+        "title": "1. Directo, theta como feature",
         "lead": "El más simple, también el menos informativo."
       },
       "routed": {
-        "title": "2. Routed — un especialista por tópico",
+        "title": "2. Routed, un especialista por tópico",
         "lead": "Cada tópico entrena su propio clasificador sobre el espectro crudo, ponderado por la pertenencia."
       },
       "embedded": {
-        "title": "3. Embedded — theta concatenado con baseline",
+        "title": "3. Embedded, theta concatenado con baseline",
         "lead": "Concat es el menos elegante pero a veces el más sano: dejar que el clasificador decida cuánto pesa theta."
       },
       "regression": {
@@ -586,15 +586,15 @@
         "lead": "Cuando el objetivo no es una clase sino una medición continua (Cu %, Au g/t, ley mineral), la lógica es la misma con regresores lineales."
       },
       "bayesian-spec": {
-        "title": "Benchmark bayesiano jerárquico — spec del modelo",
+        "title": "Benchmark bayesiano jerárquico, spec del modelo",
         "lead": "Las probabilidades posteriores pareadas P(μ_a > μ_b) provienen de un modelo aditivo estilo ANOVA con offsets de escena y fold que suman cero, de modo que la ubicación de cada método es su macro-F1 medio; se ajusta con NUTS (numpyro, 4 cadenas). El spec abajo replica el código de build_bayesian_classification_labelled.py: sin hyperpriors ocultos."
       },
       "hungarian-stability": {
-        "title": "Topic-matching húngaro — estabilidad e identidad cross-mask",
-        "lead": "Los índices de tópicos no son estables entre re-ajustes — tanto las semillas LDA como las máscaras de agua pueden permutar los K tópicos. Los bloques de seed-stability y cross-mask emparejan tópicos con la asignación que maximiza el coseno emparejado medio. Eso es el algoritmo Húngaro (asignación lineal) aplicado a una matriz de costo coseno-tópico."
+        "title": "Topic-matching húngaro, estabilidad e identidad cross-mask",
+        "lead": "Los índices de tópicos no son estables entre re-ajustes, tanto las semillas LDA como las máscaras de agua pueden permutar los K tópicos. Los bloques de seed-stability y cross-mask emparejan tópicos con la asignación que maximiza el coseno emparejado medio. Eso es el algoritmo Húngaro (asignación lineal) aplicado a una matriz de costo coseno-tópico."
       },
       "paired-statistics": {
-        "title": "Estadísticas pareadas — Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi",
+        "title": "Estadísticas pareadas, Cliff δ, Wilcoxon-Holm, Friedman-Nemenyi",
         "lead": "La página Benchmarks reporta comparaciones método-vs-método que usan tres herramientas no paramétricas. Cada una es un párrafo aquí para que los números headline (Cliff δ = +0.28 en el embedded baseline, P(routed_soft > raw) = 0.641, Wilcoxon-Holm < 0.05) sean autocontenidos."
       },
       "axis-crosswalk": {
@@ -612,11 +612,11 @@
   },
   "databases": {
     "title": "Bases de datos",
-    "lead": "21 datasets agrupados en 4 familias. Cada uno declara modalidad, dominios, estado de supervisión, y si tiene raíces locales disponibles para el pipeline. Los datos crudos no se sirven desde la app web — sólo los derivados publicables.",
-    "family_a_tagline": "Curvas USGS / ECOSTRESS — espectros de referencia con etiqueta o medición.",
-    "family_b_tagline": "Cubos AVIRIS / ROSIS / Hyperion con etiquetas pixel-a-pixel — Indian Pines, Salinas, Pavia U, KSC, Botswana.",
-    "family_cd_tagline": "HIDSAG geo-mining + MicaSense MSI — regiones con mediciones físicas o geoquímicas externas.",
-    "family_e_tagline": "Cubos sin etiquetas confiables — Borsoi unmixing benchmarks (Samson, Jasper Ridge, Urban) con endmembers manuales.",
+    "lead": "21 datasets agrupados en 4 familias. Cada uno declara modalidad, dominios, estado de supervisión, y si tiene raíces locales disponibles para el pipeline. Los datos crudos no se sirven desde la app web, sólo los derivados publicables.",
+    "family_a_tagline": "Curvas USGS / ECOSTRESS, espectros de referencia con etiqueta o medición.",
+    "family_b_tagline": "Cubos AVIRIS / ROSIS / Hyperion con etiquetas pixel-a-pixel, Indian Pines, Salinas, Pavia U, KSC, Botswana.",
+    "family_cd_tagline": "HIDSAG geo-mining + MicaSense MSI, regiones con mediciones físicas o geoquímicas externas.",
+    "family_e_tagline": "Cubos sin etiquetas confiables, Borsoi unmixing benchmarks (Samson, Jasper Ridge, Urban) con endmembers manuales.",
     "datasets_count": "{{count}} datasets · {{local}} con raíz local",
     "summary": {
       "cataloged": "Datasets catalogados",
@@ -630,7 +630,7 @@
     "lead": "Flujo guiado en cuatro pasos: familia → conjunto → representación → explorar. Cada paso depende de los anteriores; puedes retroceder en cualquier momento.",
     "explore_phases": {
       "tab_count_aria": "{{label}} ({{count}} pestañas)",
-      "contains_active_suffix": " — contiene la pestaña activa",
+      "contains_active_suffix": ", contiene la pestaña activa",
       "panels_aria": "Paneles de {{label}}",
       "data": {
         "label": "Datos",
@@ -747,17 +747,17 @@
       "AnomalyTab": {
         "loading": "Cargando estadísticas de anomalía…",
         "error": "No se pudieron cargar las estadísticas de anomalía.",
-        "title": "Indicadores de anomalía frente a errores de clasificación — ρ de Spearman",
+        "title": "Indicadores de anomalía frente a errores de clasificación, ρ de Spearman",
         "help": "Cada fila es una señal de anomalía. |ρ| alto ⇒ el indicador concuerda con qué píxeles el clasificador enrutado acierta (negativo) o falla (positivo). p < 0,05 ⇒ correlación significativa al nivel del 5 %. K = {{k}} tópicos, {{docs}} documentos.",
-        "metric_softmax_title": "Basado en tópicos — pico de softmax",
+        "metric_softmax_title": "Basado en tópicos, pico de softmax",
         "metric_softmax_caption": "Un pico de softmax más bajo (menos confianza) ⇒ mayor probabilidad de error.",
-        "metric_nll_title": "Basado en tópicos — log-verosimilitud negativa",
+        "metric_nll_title": "Basado en tópicos, log-verosimilitud negativa",
         "metric_nll_caption": "Un NLL más alto ⇒ mayor probabilidad de error (se espera ρ positivo).",
-        "metric_cae_title": "Profundo — reconstrucción CAE-1D-8",
+        "metric_cae_title": "Profundo, reconstrucción CAE-1D-8",
         "metric_cae_caption": "indicador: {{indicator}} · RMSE p50={{p50}} · p95={{p95}}",
-        "metric_vae_rmse_title": "Profundo — RMSE de reconstrucción β-VAE",
+        "metric_vae_rmse_title": "Profundo, RMSE de reconstrucción β-VAE",
         "metric_vae_rmse_caption": "RMSE p50={{p50}} · p95={{p95}}",
-        "metric_vae_kl_title": "Profundo — KL de β-VAE",
+        "metric_vae_kl_title": "Profundo, KL de β-VAE",
         "metric_vae_kl_caption": "KL p50={{p50}} · p95={{p95}} · KL es el término de regularización (alto = lejos del prior)",
         "tone_strong": "fuerte",
         "tone_moderate": "moderada",
@@ -788,7 +788,7 @@
         "col_ratio": "cociente",
         "col_doc_bar": "barra del doc",
         "col_top_words": "palabras principales (λ=0.5)",
-        "plabel_title": "P(etiqueta | tópico dominante) — ¿predice el tópico dominante la etiqueta del documento?",
+        "plabel_title": "P(etiqueta | tópico dominante), ¿predice el tópico dominante la etiqueta del documento?",
         "plabel_help_pre": "Para los documentos asignados a",
         "plabel_help_mid": ", esta es la distribución empírica de etiquetas. Si",
         "plabel_help_post": " es la barra más alta, el tópico \"enruta correctamente\" la clase de este documento."
@@ -828,7 +828,7 @@
       },
       "Compare3DTab": {
         "title": "Comparador 3D multimétodo · elige 2–4 representaciones",
-        "lead": "Cada panel renderiza la nube de puntos 3D de la representación elegida (PCA-3D del latente K-dimensional) coloreada por la etiqueta de referencia. Arrastra para rotar, desplázate para hacer zoom. Cada panel es independiente (sin cámara sincronizada) — elige disposiciones que te permitan comparar la geometría de los clústeres, no puntos de vista idénticos.",
+        "lead": "Cada panel renderiza la nube de puntos 3D de la representación elegida (PCA-3D del latente K-dimensional) coloreada por la etiqueta de referencia. Arrastra para rotar, desplázate para hacer zoom. Cada panel es independiente (sin cámara sincronizada), elige disposiciones que te permitan comparar la geometría de los clústeres, no puntos de vista idénticos.",
         "loading_method": "Cargando {{method}}…",
         "error_method": "No se pudo cargar {{method}}",
         "loading_3d": "3D…"
@@ -895,10 +895,10 @@
         "title": "Barrido de máscaras de banda HIDSAG · subconjunto {{subset}}",
         "lead_1": "Cuatro reajustes LDA de K canónico con bandas restringidas sobre la modalidad",
         "lead_2": "(ciclo 138). Mismas máscaras que el barrido de escenas etiquetadas en la pestaña",
-        "lead_3": ", pero con dos adaptaciones específicas de HIDSAG: (1) sin superposición espacial — las salidas son por documento (D = ~decenas a centenas), no por píxel; (2)",
+        "lead_3": ", pero con dos adaptaciones específicas de HIDSAG: (1) sin superposición espacial, las salidas son por documento (D = ~decenas a centenas), no por píxel; (2)",
         "lead_4": "selecciona las 50 bandas con la mayor",
         "lead_variance_share": "fracción de varianza entre covariables",
-        "lead_5": "en lugar del discriminante de Fisher sobre etiquetas (HIDSAG no tiene etiqueta por píxel — las covariables son etiquetas a nivel de muestra como litología / mineralogía).",
+        "lead_5": "en lugar del discriminante de Fisher sobre etiquetas (HIDSAG no tiene etiqueta por píxel, las covariables son etiquetas a nivel de muestra como litología / mineralogía).",
         "skipped": "omitido: {{reason}}",
         "not_built": "no construido para este subconjunto",
         "summary_loading": "Cargando resumen de {{mask}}…",
@@ -1017,7 +1017,7 @@
         "lead": "Barrido precomputado de K ∈ {{kGrid}} sobre {{wordification}}, Q={{Q}}, promediado en {{nSeeds}} semillas (partición de entrenamiento del {{trainPct}}%, {{samplesPerClass}} muestras por clase). El Workspace actualmente ajusta en K={{canonicalK}} canónico; esta pestaña muestra cómo se vería el modelo con otros valores de K: el reajuste en vivo no está disponible porque cada combinación requeriría ~minutos de cómputo en el servidor.",
         "builder_recommendation": "Recomendación del builder:",
         "composite_score_title": "Puntaje compuesto: la perplejidad se reescala a [0,1] a lo largo de la grilla de K antes de negarse, y luego se suma sin ponderar con npmi_mean y matched_cosine_mean (ambos ya en su rango natural [0,1]).",
-        "differs_from_canonical": "— difiere del K={{canonicalK}} canónico",
+        "differs_from_canonical": ", difiere del K={{canonicalK}} canónico",
         "canonical_note": "Nota: el ajuste canónico del Workspace mantiene K={{canonicalK}} para la comparabilidad entre escenas. El puntaje compuesto anterior es una observación de selección de modelo, no un mandato: el resto de la app (topics, raster, applydoc, etc.) sigue leyendo el ajuste canónico K={{canonicalK}}.",
         "curve_perplexity_title": "Perplejidad (prueba)",
         "curve_perplexity_subtitle": "menor es mejor; ↓ indica que el modelo captura la distribución de palabras retenida",
@@ -1041,12 +1041,12 @@
         "lead": "Fija la receta de wordification y refina la granularidad de cuantización Q ∈ {8, 16, 32}. El gráfico muestra cómo se mueve la puntuación de esta representación en el eje elegido: la línea gruesa es la media sobre las seis escenas etiquetadas y las líneas tenues son por escena. Así la representación es la variable independiente: p. ej. V20 / F-7 sube a lo largo de Q, mientras que V8 / F-18 se mantiene plano. Todas las celdas son shards de barrido precomputados (sin reajuste en vivo).",
         "picker_recipe": "receta",
         "picker_axis": "eje",
-        "axis_help_f1": "macro-F1 de clasificación (topic-routed soft, media por fold) — más alto es mejor",
-        "axis_help_f2": "coherencia tópico-palabra c_v — más alto es mejor",
-        "axis_help_f7": "información mutua tópico-etiqueta normalizada por la entropía de la etiqueta, I(Ẑ;Y)/H(Y) — el coeficiente de incertidumbre asimétrico (completeness de Rosenberg–Hirschberg), no la NMI simétrica ni corregida por azar; más alto es mejor",
-        "axis_help_f14": "Jaccard medio por pares de top-tokens (repetitividad) — más bajo es mejor",
-        "axis_help_f18": "coseno medio de tópicos emparejados por semilla (fiabilidad) — más alto es mejor",
-        "axis_help_f22": "L1 mediana contrafactual para cambiar el tópico argmax (robustez) — más alto es mejor",
+        "axis_help_f1": "macro-F1 de clasificación (topic-routed soft, media por fold), más alto es mejor",
+        "axis_help_f2": "coherencia tópico-palabra c_v, más alto es mejor",
+        "axis_help_f7": "información mutua tópico-etiqueta normalizada por la entropía de la etiqueta, I(Ẑ;Y)/H(Y), el coeficiente de incertidumbre asimétrico (completeness de Rosenberg–Hirschberg), no la NMI simétrica ni corregida por azar; más alto es mejor",
+        "axis_help_f14": "Jaccard medio por pares de top-tokens (repetitividad), más bajo es mejor",
+        "axis_help_f18": "coseno medio de tópicos emparejados por semilla (fiabilidad), más alto es mejor",
+        "axis_help_f22": "L1 mediana contrafactual para cambiar el tópico argmax (robustez), más alto es mejor",
         "loading": "Cargando trayectoria {{recipe}} · {{axis}}…",
         "error": "No se pudo cargar la trayectoria-Q.",
         "empty": "Aún no existen shards de trayectoria-Q para {{recipe}} en {{axis}}. Prueba otra receta u otro eje.",
@@ -1063,7 +1063,7 @@
       "RasterTab": {
         "loading": "Cargando metadatos del ráster…",
         "error": "No se pudo cargar topic_to_data.",
-        "title": "Mapa espacial — tópico dominante por píxel",
+        "title": "Mapa espacial, tópico dominante por píxel",
         "lead": "Cada píxel etiquetado se colorea según su tópico dominante (arg-max θ_d). Pasa el cursor sobre el ráster para inspeccionar fila/columna + tópico; haz click para fijar la lectura. Selecciona un tópico abajo para aislar su huella espacial.",
         "downloading": "Descargando ráster ({{rows}}×{{cols}} píxeles)…",
         "raster_error": "No se pudo cargar el ráster: {{detail}}",
@@ -1073,19 +1073,19 @@
         "btn_all": "Todos",
         "compare_with": "Comparar con",
         "btn_none": "ninguno",
-        "pairwise_overlap": "Solapamiento por pares — tópico {{a}} vs tópico {{b}}",
+        "pairwise_overlap": "Solapamiento por pares, tópico {{a}} vs tópico {{b}}",
         "topic_n_dominant": "tópico {{n}} dominante",
         "adjacency_4n": "adyacencia 4-vecinos",
         "adjacency_help": "La adyacencia aproxima la confundibilidad espacial. Mayor = los tópicos comparten bordes largos.",
-        "label_mixture": "Mezcla de etiquetas — tópico {{n}}",
-        "top_documents": "Documentos principales — tópico {{n}}",
+        "label_mixture": "Mezcla de etiquetas, tópico {{n}}",
+        "top_documents": "Documentos principales, tópico {{n}}",
         "top_documents_help": "Documentos (píxeles etiquetados) ordenados por θ en este tópico. Haz click en una fila para ver la predicción topic-routed-soft por documento (calculada como",
         "top_documents_help_2": " sin descargas adicionales). La insignia Δ = la predicción top-1 discrepa de la verdad de referencia.",
         "theta_at_topic": "θ en el tópico {{n}} = {{value}}",
         "pred_disagree": "predicción top-1 ({{pred}}) ≠ verdad de referencia ({{truth}})",
         "pred_agree": "la predicción top-1 coincide con la verdad de referencia",
         "routed_soft_doc": "Predicción topic-routed-soft · doc {{docId}}",
-        "routed_soft_doc_help": " — calculada a partir de la θ del documento y la distribución de etiquetas por tópico (ya presente en el payload de topic_to_data).",
+        "routed_soft_doc_help": ", calculada a partir de la θ del documento y la distribución de etiquetas por tópico (ya presente en el payload de topic_to_data).",
         "tip_top1": "predicción routed top-1",
         "tip_ground_truth": "etiqueta de verdad de referencia",
         "legend_footer": "★ = predicción routed top-1 · ● = etiqueta de verdad de referencia · la discrepancia entre ambas es la insignia «Δ» de la fila superior.",
@@ -1099,16 +1099,16 @@
       },
       "RecipeLabTab": {
         "title": "Laboratorio de recetas · la representación es la variable independiente",
-        "lead": "Fija la escena y coloca hasta tres recetas de wordification (V1..V20) lado a lado. Cada columna muestra la bolsa de tokens que construye la receta (tamaño de vocabulario, longitud media de documento) y su puntuación en cinco ejes de evaluación. Se resalta el ganador por eje — lee qué aporta cada representación. En F-14 más bajo es mejor; en el resto de ejes más alto es mejor.",
+        "lead": "Fija la escena y coloca hasta tres recetas de wordification (V1..V20) lado a lado. Cada columna muestra la bolsa de tokens que construye la receta (tamaño de vocabulario, longitud media de documento) y su puntuación en cinco ejes de evaluación. Se resalta el ganador por eje, lee qué aporta cada representación. En F-14 más bajo es mejor; en el resto de ejes más alto es mejor.",
         "picker_scene": "escena",
         "picker_recipes": "recetas ({{count}}/{{max}})",
         "loading": "Cargando informes de recetas para {{scene}}…",
-        "footer_pre": "El vocabulario V y la longitud media de documento provienen del shard topic_view de cada receta para esta escena; las puntuaciones por eje son los resultados precomputados del barrido F-1/F-2/F-7/F-14/F-18. Un «—» significa que ese shard aún no está en disco para esta (receta, escena). Para la tabla completa por eje y entre escenas de una sola receta, abre su página de análisis detallado en",
+        "footer_pre": "El vocabulario V y la longitud media de documento provienen del shard topic_view de cada receta para esta escena; las puntuaciones por eje son los resultados precomputados del barrido F-1/F-2/F-7/F-14/F-18. Un «, » significa que ese shard aún no está en disco para esta (receta, escena). Para la tabla completa por eje y entre escenas de una sola receta, abre su página de análisis detallado en",
         "footer_post": ".",
         "axis_title_f1": "Macro-F1 de clasificación topic-routed soft (media por fold)",
         "axis_title_f2": "Coherencia tópico-palabra c_v",
         "axis_title_f7": "Información mutua normalizada tópico-etiqueta",
-        "axis_title_f14": "Jaccard medio por pares de top-tokens (repetitividad) — más bajo es mejor",
+        "axis_title_f14": "Jaccard medio por pares de top-tokens (repetitividad), más bajo es mejor",
         "axis_title_f18": "Coseno medio de tópicos emparejados por semilla (fiabilidad)",
         "col_load_failed": "fallo de carga: {{detail}}",
         "col_no_shard": "No hay shard de barrido para {{recipe}} en esta escena.",
@@ -1124,7 +1124,7 @@
         "title": "Inspección del corpus · artefactos de vocab V1..V12 × esquema × Q",
         "lead_pre": "{{scene}} tiene",
         "lead_post": "combos de wordification precomputados de la malla de corpus de 12 × 3 × 3 = 108. Los artefactos del modelo de tópicos (φ, θ de LDA) están precomputados sobre la receta canónica V1 / uniform / Q=8; los demás combos exponen estadísticas de vocabulario (V_actual, distribución de longitud de documento, tokens principales) para inspección, pero no reajustes completos de LDA.",
-        "banner": "Esta es la vista de estadísticas de corpus (V1-V12). El barrido completo de representaciones V1-V20 sobre todos los ejes F — y las recetas óptimas (V8, líder F-7 entre backbones; V20, máximo LDA/ETM ponderado por MI) — está en el Laboratorio de recetas y en los análisis detallados de Methods.",
+        "banner": "Esta es la vista de estadísticas de corpus (V1-V12). El barrido completo de representaciones V1-V20 sobre todos los ejes F, y las recetas óptimas (V8, líder F-7 entre backbones; V20, máximo LDA/ETM ponderado por MI), está en el Laboratorio de recetas y en los análisis detallados de Methods.",
         "picker_recipe": "receta",
         "picker_scheme": "esquema",
         "combo_available": "✓ este combo está disponible",
@@ -1192,13 +1192,13 @@
       "RoutedTab": {
         "loading": "Cargando ranking…",
         "error": "No se pudo cargar topic_routed_classifier.",
-        "title": "Ranking macro-F1 (StratifiedKFold de 5 folds) — esta escena",
+        "title": "Ranking macro-F1 (StratifiedKFold de 5 folds), esta escena",
         "lead": "K={{k}} tópicos · {{classes}} clases · {{documents}} documentos. Cinco métodos comparados; routed_soft es el que respalda la metodología (especialista por tópico sobre el espectro crudo, mezclado por theta).",
         "aria_forest": "Forest plot del ranking del clasificador routed",
         "axis_x": "macro-F1 (media ± CI95)",
         "method_definitions": "Definiciones de los métodos",
         "desc_raw_logistic": "Regresión logística sobre el espectro crudo (B bandas).",
-        "desc_theta_logistic": "Regresión logística sobre theta (K dimensiones — control).",
+        "desc_theta_logistic": "Regresión logística sobre theta (K dimensiones, control).",
         "desc_pca_k_logistic": "Regresión logística sobre PCA-K (control de K dimensiones).",
         "desc_topic_routed_soft": "Especialista por tópico sobre el espectro crudo, mezclado por theta (mezcla).",
         "desc_topic_routed_hard": "Especialista por tópico sobre el espectro crudo, con asignación dura al tópico dominante."
@@ -1207,7 +1207,7 @@
         "loading": "Cargando estructura espacial…",
         "error": "No se pudieron cargar los datos espaciales.",
         "full_title": "Autocorrelación espacial · conjunto etiquetado completo ({{pixels}} píxeles)",
-        "full_help": "Las mismas Moran's I y Geary's C que la tarjeta anterior, pero calculadas sobre el reajuste de LDA en el conjunto completo de píxeles etiquetados (max_iter=40, batch_size=1024) en vez del submuestreo de 220 por clase. Los valores son espacialmente fieles — útiles para reportar con honestidad la compacidad de los clusters. Moran's I agregada (media sobre tópicos) = {{moransI}}.",
+        "full_help": "Las mismas Moran's I y Geary's C que la tarjeta anterior, pero calculadas sobre el reajuste de LDA en el conjunto completo de píxeles etiquetados (max_iter=40, batch_size=1024) en vez del submuestreo de 220 por clase. Los valores son espacialmente fieles, útiles para reportar con honestidad la compacidad de los clusters. Moran's I agregada (media sobre tópicos) = {{moransI}}.",
         "full_gearys": "Geary's C agregada = {{gearysC}}.",
         "col_topic": "tópico",
         "col_morans_i_full": "Moran's I (completo)",
@@ -1256,8 +1256,8 @@
         "error": "No se pudo cargar topic_views.",
         "intertopic_title": "Mapa intertópico (LDAvis · JS-MDS 2D)",
         "intertopic_help": "El área de la burbuja es proporcional a la prevalencia del tópico (θ media en el corpus). Haz clic en una burbuja para enfocarla.",
-        "top_words_for_topic": "Top-30 palabras — tópico {{topic}}",
-        "top_words_select": "Top-30 palabras — selecciona un tópico",
+        "top_words_for_topic": "Top-30 palabras, tópico {{topic}}",
+        "top_words_select": "Top-30 palabras, selecciona un tópico",
         "relevance_lambda": "relevancia λ",
         "relevance_formula": "relevancia(w | k) = λ · log P(w | k) + (1 − λ) · log [ P(w | k) / P(w) ]. λ=1 ordena por probabilidad sin penalizar palabras comunes; λ=0 ordena por lift puro.",
         "select_topic_left": "Selecciona un tópico en el mapa de la izquierda.",
@@ -1272,9 +1272,9 @@
         "similarity_graph_help": "Nodos en coordenadas JS-MDS; aparece una arista entre cada par de tópicos cuya similitud coseno (1 − topic_distance_cosine) supera el umbral. El grosor de la arista codifica la similitud y el área del nodo codifica la prevalencia. Haz clic en cualquier nodo para seleccionarlo.",
         "top_similar_pairs": "Pares más similares",
         "pairs_above_threshold": "Los pares por encima del umbral dibujan una arista en el grafo.",
-        "distinguishing_words_title": "Palabras distintivas — tópico {{topic}} vs ___",
+        "distinguishing_words_title": "Palabras distintivas, tópico {{topic}} vs ___",
         "pair_with": "emparejar con",
-        "pick_second_topic": "— elige un 2.º tópico —",
+        "pick_second_topic": ", elige un 2.º tópico, ",
         "distinguishing_words_help": "Tokens ordenados por log-odds = log(P(w | k<subA>A</subA>) / P(w | k<subB>B</subB>)). Columna izquierda = palabras más características del tópico {{topic}}; columna derecha = palabras más características del tópico emparejado. Precalculado por<code> build_topic_views.py</code>; sin llamada a la API.",
         "distinguishing_words_empty": "Elige un segundo tópico arriba para poblar este panel.",
         "held_out_perplexity": "perplejidad held-out",
@@ -1290,7 +1290,7 @@
         "title_forward": "P(etiqueta | tópico) · asignación dominante",
         "title_inverse": "P(tópico | etiqueta) · asignación dominante",
         "aria_direction": "Dirección del mapa de calor",
-        "dominant_help": "<em>Tópico dominante</em> para un píxel d significa<code> arg max<subk>k</subk> θ<subdk>d,k</subdk></code> — el único tópico con mayor peso posterior en ese píxel. Ambos mapas de calor de abajo se calculan sobre la asignación de tópico dominante por píxel (no sobre la mezcla continua completa de θ).",
+        "dominant_help": "<em>Tópico dominante</em> para un píxel d significa<code> arg max<subk>k</subk> θ<subdk>d,k</subdk></code>, el único tópico con mayor peso posterior en ese píxel. Ambos mapas de calor de abajo se calculan sobre la asignación de tópico dominante por píxel (no sobre la mezcla continua completa de θ).",
         "forward_help": "Cada fila es un tópico; las celdas muestran la fracción de píxeles asignados a ese tópico (por θ dominante) que portan cada etiqueta. La celda con borde es la dominante de cada fila. Haz clic en una fila para resaltarla y ver el detalle más abajo.",
         "inverse_help": "Cada fila es una etiqueta; las celdas muestran la fracción de píxeles que portan esa etiqueta cuyo tópico dominante es k. Calculado como P(t|L) = N_t · P(L|t) / Σ_t' N_t' · P(L|t'). Haz clic en una columna para seleccionar ese tópico.",
         "no_inverse_matrix": "No hay matriz inversa para representar.",
@@ -1305,7 +1305,7 @@
         "title": "Tópico ↔ USGS Spectral Library v7",
         "lead": "{{count}} espectros en 7 capítulos. Cada tópico se empareja por coseno + SAM contra la biblioteca completa; haz clic en un tópico abajo para ver sus mejores coincidencias.",
         "topic_n": "tópico {{n}}",
-        "top20_for_topic": "Top 20 — tópico {{n}}",
+        "top20_for_topic": "Top 20, tópico {{n}}",
         "chapters_in_top50": "Capítulos en el top-50",
         "chapter_count_help": "Conteo de capítulos entre los 50 espectros más similares al tópico.",
         "library_distribution": "{{subset}}: {{count}} muestras totales en biblioteca, distribuidas como {{distribution}}."
@@ -1356,7 +1356,7 @@
         "error": "No se pudo cargar topic_stability.",
         "ksens_loading": "Cargando barrido de sensibilidad a K…",
         "ksens_title": "Sensibilidad a K · off-diag de LDA en K-2..K+2 alrededor del canónico",
-        "ksens_help": "Comprueba si la elección de K canónico es un hiperparámetro frágil. Cada barra reajusta LDA en K = K_canonical + offset y reporta la media del coseno emparejado off-diag sobre {{seeds}} semillas. El rango en las 6 escenas es ≥ 0.954 — el K canónico NO es frágil.",
+        "ksens_help": "Comprueba si la elección de K canónico es un hiperparámetro frágil. Cada barra reajusta LDA en K = K_canonical + offset y reporta la media del coseno emparejado off-diag sobre {{seeds}} semillas. El rango en las 6 escenas es ≥ 0.954, el K canónico NO es frágil.",
         "aria_ksens_bars": "Barras de sensibilidad a K",
         "ladder_title": "Escalera de estabilidad · 9 métodos en K=8 (esta escena, N={{seeds}} semillas)",
         "ladder_help": "ARI de clúster fuera de la diagonal (LDA: coseno emparejado por Hungarian sobre φ) a través de {{seeds}} inicializaciones. Mayor = la representación es más reproducible. Haz clic en una fila para inspeccionar la matriz de pares de semillas más abajo.",
@@ -1385,7 +1385,7 @@
         "spectral_envelopes": "Envolventes espectrales por clase",
         "seg_overlay_title": "Superposición de segmentación espacial",
         "method": "método",
-        "off": "— desactivado —",
+        "off": ", desactivado, ",
         "seg_help": "Agrupaciones espaciales precomputadas por build_groupings: Felzenszwalb basado en grafos, superpíxeles SLIC con objetivos de 500 / 2000, y grillas de parches de tamaño fijo. El mapa de color inferior pinta cada segmento con un tono determinista para que los límites se vean de un vistazo; la asignación por id-de-segmento es la misma que se usa como constructor de documentos alternativo en los ciclos 76–77 y es lo que la pestaña agreement compara contra las etiquetas de referencia.",
         "pick_method": "Elige un método de segmentación arriba para renderizar la superposición.",
         "loading_seg": "Cargando segmentación {{method}}…",
@@ -1414,10 +1414,10 @@
       "pick": "Elegir esta familia →"
     },
     "family_descriptions": {
-      "labeled-spectral-image": "Cubos hiperespectrales con etiquetas por píxel — los benchmarks canónicos de la UPV/EHU. Punto de partida natural para clasificación.",
-      "individual-spectra": "Espectros de referencia individuales con identidad de material (USGS splib07, ECOSTRESS). Sin geometría espacial — bibliotecas espectrales.",
-      "regions-with-measurements": "Subconjuntos minerales HIDSAG — espectros agrupados en documentos de región con objetivos geoquímicos / mineralógicos por muestra. Objetivos continuos, no clases.",
-      "unlabeled-spectral-image": "Cubos hiperespectrales / multiespectrales sin etiquetar (Cuprite, suite unmixing-ROI, MicaSense, HySpecNet) — sin etiquetas por píxel; para desmezcla y exploración no supervisada.",
+      "labeled-spectral-image": "Cubos hiperespectrales con etiquetas por píxel, los benchmarks canónicos de la UPV/EHU. Punto de partida natural para clasificación.",
+      "individual-spectra": "Espectros de referencia individuales con identidad de material (USGS splib07, ECOSTRESS). Sin geometría espacial, bibliotecas espectrales.",
+      "regions-with-measurements": "Subconjuntos minerales HIDSAG, espectros agrupados en documentos de región con objetivos geoquímicos / mineralógicos por muestra. Objetivos continuos, no clases.",
+      "unlabeled-spectral-image": "Cubos hiperespectrales / multiespectrales sin etiquetar (Cuprite, suite unmixing-ROI, MicaSense, HySpecNet), sin etiquetas por píxel; para desmezcla y exploración no supervisada.",
       "default": "Familia de datos disponible para el flujo de trabajo del laboratorio."
     },
     "subset_picker": {
@@ -1432,7 +1432,7 @@
       "fixed_heading_default": "Mezcla de tópicos (LDA)",
       "fixed_blurb_hidsag": "HIDSAG se modela con una única representación fija: mezclas de tópicos LDA sobre los espectros medios por región, alimentando el ensamble de regresión con compuerta blanda θ. No hay otro codificador que elegir aquí.",
       "fixed_blurb_default": "Este conjunto usa una única representación fija en Explorar; no hay codificador que elegir.",
-      "fixed_lead": "Este conjunto tiene una sola representación fija — continúa a su análisis.",
+      "fixed_lead": "Este conjunto tiene una sola representación fija, continúa a su análisis.",
       "fixed_badge": "fija",
       "continue_to_analysis": "Continuar al análisis →",
       "families_lead": "Tres familias: tópicos (LDA y variantes), líneas base de compresión de dimensión K (PCA / NMF / AE / ICA / CAE-1D/2D/3D / β-VAE) y desmezcla física. Operan sobre la misma matriz documento-término de la receta canónica V1 de frecuencia de bandas.",
@@ -1456,32 +1456,32 @@
     },
     "representations": {
       "lda": {
-        "label": "LDA — sklearn online",
+        "label": "LDA, sklearn online",
         "short": "Latent Dirichlet Allocation",
         "description": "Bayes variacional en línea (sklearn). Receta canónica V1 de frecuencia de bandas, K=12 (o n_classes), priors α=0.45 / η=0.2. Base por defecto del Workspace."
       },
       "lda_sparse": {
-        "label": "LDA — sklearn sparse",
+        "label": "LDA, sklearn sparse",
         "short": "VB esparsa",
         "description": "Variante VB con priors esparsos (α=0.05). Tópicos más esparsos pero peor perplejidad."
       },
       "lda_tomo": {
-        "label": "LDA — tomotopy (Gibbs colapsado)",
+        "label": "LDA, tomotopy (Gibbs colapsado)",
         "short": "tomotopy_lda",
         "description": "LDA canónico vía Gibbs colapsado en C++. Gana en c_v en 4/6 escenas."
       },
       "hdp": {
-        "label": "HDP — tomotopy",
+        "label": "HDP, tomotopy",
         "short": "Proceso de Dirichlet jerárquico",
-        "description": "K se aprende — el modelo decide cuántos tópicos activos existen. Útil cuando K no debe fijarse."
+        "description": "K se aprende, el modelo decide cuántos tópicos activos existen. Útil cuando K no debe fijarse."
       },
       "ctm": {
-        "label": "CTM — tomotopy",
+        "label": "CTM, tomotopy",
         "short": "Modelo de tópicos correlacionados",
         "description": "Permite correlaciones entre tópicos vía logística-normal sobre θ. Más lento pero captura co-ocurrencias."
       },
       "prodlda": {
-        "label": "ProdLDA — Pyro",
+        "label": "ProdLDA, Pyro",
         "short": "Modelo de tópicos neuronal",
         "description": "Codificador amortizado + decodificador multinomial. Implementación neuronal, comparable a LDA Gibbs en NPMI."
       },
@@ -1506,7 +1506,7 @@
         "description": "K endmembers vía NFINDR (Winter 1999) + abundancia NNLS con suma uno. Línea base física frente a LDA."
       },
       "ica": {
-        "label": "ICA — FastICA",
+        "label": "ICA, FastICA",
         "short": "Componentes independientes",
         "description": "Componentes estadísticamente independientes (FastICA). K=8. Línea base complementaria a PCA en compresión lineal."
       },
@@ -1528,7 +1528,7 @@
       "cae_3d_full": {
         "label": "CAE-3D completo · K=8",
         "short": "Autoencoder conv. 3D parche completo",
-        "description": "Variante de parche completo de CAE-3D — cada píxel del parche contribuye a la pérdida. K=8 entrenado en GPU."
+        "description": "Variante de parche completo de CAE-3D, cada píxel del parche contribuye a la pérdida. K=8 entrenado en GPU."
       },
       "beta_vae": {
         "label": "β-VAE · K=8",
@@ -1539,8 +1539,8 @@
     "explore": {
       "heading": "Explorar <accent>{{subset}}</accent>",
       "representation_suffix": "· representación: {{rep}}",
-      "lead_labelled": "Paneles de modelo de tópicos sobre datos crudos, salida de tópicos, geometría espacial y diagnósticos. Se cargan bajo demanda — elige una pestaña abajo para obtener su artefacto de backend dedicado.",
-      "lead_hidsag": "Un subconjunto mineral de documentos de región: los espectros se agrupan en documentos de región con objetivos geoquímicos / mineralógicos por muestra. Trae benchmarks supervisados (clasificación, regresión, agrupamiento por dueño de muestra) — no los paneles del explorador de tópicos por escena. Mira lo disponible abajo.",
+      "lead_labelled": "Paneles de modelo de tópicos sobre datos crudos, salida de tópicos, geometría espacial y diagnósticos. Se cargan bajo demanda, elige una pestaña abajo para obtener su artefacto de backend dedicado.",
+      "lead_hidsag": "Un subconjunto mineral de documentos de región: los espectros se agrupan en documentos de región con objetivos geoquímicos / mineralógicos por muestra. Trae benchmarks supervisados (clasificación, regresión, agrupamiento por dueño de muestra), no los paneles del explorador de tópicos por escena. Mira lo disponible abajo.",
       "lead_default": "Inventario y procedencia del conjunto. Los paneles del explorador de tópicos se abren automáticamente cuando este conjunto tiene artefactos LDA derivados.",
       "change_representation": "← Cambiar representación",
       "back": "← Volver"
@@ -1555,14 +1555,14 @@
       "stat_bands": "bandas",
       "top_targets": "Principales objetivos geoquímicos",
       "targets_loading": "Cargando objetivos…",
-      "targets_title": "Objetivos geoquímicos — media ± desv. est.",
+      "targets_title": "Objetivos geoquímicos, media ± desv. est.",
       "targets_lead": "Variables geoquímicas continuas medidas por muestra HIDSAG. Se muestran {{count}} objetivos con su rango y cobertura muestral.",
       "col_target": "objetivo",
       "more_targets": "+{{count}} objetivos más",
       "spectra_loading": "Cargando espectros medios…",
       "spectra_title": "Espectros medios de documentos de región",
       "spectra_lead_stratum": "Espectro medio de documento de región por estrato de etiqueta (la unidad que LDA tokeniza). Las modalidades (VNIR/SWIR) se concatenan a lo largo del eje x.",
-      "spectra_lead_sample": "Espectros medios de ejemplo de documentos de región — {{shown}} de {{total}} mediciones. Cada uno es la media sobre su grilla de parches; esta es la unidad espectral que LDA tokeniza. Las modalidades se concatenan a lo largo del eje x.",
+      "spectra_lead_sample": "Espectros medios de ejemplo de documentos de región, {{shown}} de {{total}} mediciones. Cada uno es la media sobre su grilla de parches; esta es la unidad espectral que LDA tokeniza. Las modalidades se concatenan a lo largo del eje x.",
       "spectra_unavailable": "No hay espectros medios disponibles.",
       "legend_n_meas": "n_meas",
       "legend_patches": "parches",
@@ -1578,7 +1578,7 @@
       "svg_aria": "Espectros de reflectancia de referencia USGS por grupo de material",
       "axis_wavelength": "longitud de onda (nm)",
       "axis_reflectance": "refl.",
-      "materials_picker": "materiales — haz clic para inspeccionar",
+      "materials_picker": "materiales, haz clic para inspeccionar",
       "sample_meta": "· {{group}} · {{sensor}}",
       "explainer": "Cómo este espectro se convierte en un «documento» LDA: la reflectancia de cada banda se cuantiza y luego se nombra como un token. Estos tokens son las palabras que ve el modelo de tópicos.",
       "band_tokens_label": "tokens de banda cuantizados (vista previa)",
@@ -1606,42 +1606,42 @@
       "loading": "Cargando…",
       "scene_label": "Escena:",
       "col_scene": "escena",
-      "cross_scene_title": "B-8 transferencia entre escenas — ajustar en A, inferir en B",
+      "cross_scene_title": "B-8 transferencia entre escenas, ajustar en A, inferir en B",
       "cross_scene_loading": "Cargando matriz de transferencia…",
       "cross_scene_lead": "5 escenas de clase AVIRIS remuestreadas a una grilla común de {{nBands}} bandas {{minNm}}-{{maxNm}} nm. Cada celda es el macro-F1 de una regresión logística de 5 pliegues sobre θ (LDA ajustado en la escena de la fila, inferido en la escena de la columna). Diagonal = línea base intra-escena. Pavia U excluida (ROSIS).",
       "cross_scene_aria": "Matriz de transferencia entre escenas",
       "cross_scene_axis_target": "escena destino (columna)",
       "cross_scene_axis_source": "escena origen (fila)",
-      "cross_scene_finding": "Las celdas diagonales (borde blanco) son el F1 intra-escena — coinciden con los números B-3 de grilla nativa dentro de ±0.025, por lo que el remuestreo es fiel. Salinas → Salinas-A = 0.747 es la transferencia fuera de la diagonal más fuerte (misma campaña, campos superpuestos). Los tópicos colapsados de KSC ni transfieren bien (KSC → otros ≤ 0.405) ni reciben bien (otros → KSC ≤ 0.405). Salinas-A es el destino más fácil (0.65-0.75 desde cualquier origen — compacta, 6 clases).",
-      "rate_distortion_title": "B-2 curva tasa-distorsión — RMSE de reconstrucción vs K",
+      "cross_scene_finding": "Las celdas diagonales (borde blanco) son el F1 intra-escena, coinciden con los números B-3 de grilla nativa dentro de ±0.025, por lo que el remuestreo es fiel. Salinas → Salinas-A = 0.747 es la transferencia fuera de la diagonal más fuerte (misma campaña, campos superpuestos). Los tópicos colapsados de KSC ni transfieren bien (KSC → otros ≤ 0.405) ni reciben bien (otros → KSC ≤ 0.405). Salinas-A es el destino más fácil (0.65-0.75 desde cualquier origen, compacta, 6 clases).",
+      "rate_distortion_title": "B-2 curva tasa-distorsión, RMSE de reconstrucción vs K",
       "rate_distortion_loading": "Cargando curvas tasa-distorsión…",
-      "rate_distortion_lead": "RMSE de reconstrucción de LDA / NMF / PCA sobre una partición de prueba retenida del 20%, a lo largo de K∈{4, 6, 8, 10, 12, 16}. PCA es el compresor óptimo en L2 (gana en todas partes). NMF queda muy cerca en segundo lugar. LDA queda última porque optimiza una verosimilitud multinomial, no el RMSE L2 — esta es la imagen esperada y está documentada como Eje G.",
+      "rate_distortion_lead": "RMSE de reconstrucción de LDA / NMF / PCA sobre una partición de prueba retenida del 20%, a lo largo de K∈{4, 6, 8, 10, 12, 16}. PCA es el compresor óptimo en L2 (gana en todas partes). NMF queda muy cerca en segundo lugar. LDA queda última porque optimiza una verosimilitud multinomial, no el RMSE L2, esta es la imagen esperada y está documentada como Eje G.",
       "rate_distortion_aria": "curva tasa-distorsión",
-      "mi_title": "B-4 información mutua — MI(z; y) por característica",
+      "mi_title": "B-4 información mutua, MI(z; y) por característica",
       "mi_loading": "Cargando información mutua…",
-      "mi_lead": "Para cada método, la MI entre cada característica latente z_k y la etiqueta y. Brillante = MI alta = característica informativa. La distribución por característica es la señal discriminativa correcta — la MI conjunta se satura en la entropía de la etiqueta cuando K deja de ser degenerada.",
-      "mi_entropy_note": "Entropía de la etiqueta H(Y) = {{nats}} nats ({{bits}} bits) — la cota superior de la MI conjunta. Los {{count}} métodos principales ordenados por la suma de MI por característica.",
+      "mi_lead": "Para cada método, la MI entre cada característica latente z_k y la etiqueta y. Brillante = MI alta = característica informativa. La distribución por característica es la señal discriminativa correcta, la MI conjunta se satura en la entropía de la etiqueta cuando K deja de ser degenerada.",
+      "mi_entropy_note": "Entropía de la etiqueta H(Y) = {{nats}} nats ({{bits}} bits), la cota superior de la MI conjunta. Los {{count}} métodos principales ordenados por la suma de MI por característica.",
       "mi_heatmap_aria": "mapa de calor de MI",
       "mi_feature_axis": "índice de característica k → (limitado a {{maxCols}} por legibilidad)",
-      "endmember_title": "B-11 línea base de endmembers — NFINDR / ATGP vs tópicos LDA",
+      "endmember_title": "B-11 línea base de endmembers, NFINDR / ATGP vs tópicos LDA",
       "endmember_loading": "Cargando línea base de endmembers…",
-      "endmember_lead": "Con K={{K}}, los endmembers NFINDR + ATGP se extraen del subconjunto canónico de píxeles etiquetados ({{nPixels}} px, {{nBands}} bandas). Similitud coseno entre los tópicos LDA y los endmembers NFINDR — con el mismo K, ambos métodos recuperan las mismas primitivas espectrales (coseno típico 0.92-1.00).",
+      "endmember_lead": "Con K={{K}}, los endmembers NFINDR + ATGP se extraen del subconjunto canónico de píxeles etiquetados ({{nPixels}} px, {{nBands}} bandas). Similitud coseno entre los tópicos LDA y los endmembers NFINDR, con el mismo K, ambos métodos recuperan las mismas primitivas espectrales (coseno típico 0.92-1.00).",
       "endmember_rmse_label": "{{method}} RMSE (normalizado)",
       "endmember_matrix_label": "Matriz coseno tópico × endmember NFINDR:",
       "endmember_matrix_aria": "matriz coseno tópico × endmember",
       "endmember_finding": "Celdas brillantes = coseno alto (tópico y endmember alineados espectralmente). Patrón cuasi-diagonal = los dos métodos recuperan las mismas primitivas espectrales. Posición del plan maestro: con el mismo K, NMF, NFINDR y LDA recuperan una estructura espectral comparable; lo que los separa es la interpretabilidad y la utilidad de gating aguas abajo (B-3, B-7).",
-      "spatial_title": "B-10 coherencia espacial — I de Moran + C de Geary",
+      "spatial_title": "B-10 coherencia espacial, I de Moran + C de Geary",
       "spatial_loading": "Cargando coherencia espacial…",
-      "spatial_lead": "I de Moran + C de Geary sobre los mapas de abundancia θ_k por tópico con contigüidad rook de 4 vecinos, promediados entre tópicos. Dos lecturas: submuestreada (base de 220 por clase) y completa (reajuste de LDA con máscara de todos los píxeles). El colapso de KSC sobre la base submuestreada es un artefacto del pipeline — el reajuste con todos los píxeles recupera la coherencia espacial.",
+      "spatial_lead": "I de Moran + C de Geary sobre los mapas de abundancia θ_k por tópico con contigüidad rook de 4 vecinos, promediados entre tópicos. Dos lecturas: submuestreada (base de 220 por clase) y completa (reajuste de LDA con máscara de todos los píxeles). El colapso de KSC sobre la base submuestreada es un artefacto del pipeline, el reajuste con todos los píxeles recupera la coherencia espacial.",
       "spatial_col_sub_moran": "I de Moran media submuestreada",
       "spatial_col_sub_geary": "C de Geary media submuestreada",
       "spatial_col_full_moran": "I de Moran media todos los píxeles",
       "spatial_col_full_geary": "C de Geary media todos los píxeles",
-      "spatial_finding": "Titular: 5/6 escenas muestran alta coherencia espacial (I de Moran media ≥ 0.80) sobre la base submuestreada. KSC cae a 0.064 (rojo) — pero el <strong>reajuste con todos los píxeles</strong> recupera I = 0.837, demostrando que el \"colapso\" de KSC es un artefacto del muestreo estratificado de 220 por clase en una escena de clases escasas, no un problema fundamental de los datos.",
+      "spatial_finding": "Titular: 5/6 escenas muestran alta coherencia espacial (I de Moran media ≥ 0.80) sobre la base submuestreada. KSC cae a 0.064 (rojo), pero el <strong>reajuste con todos los píxeles</strong> recupera I = 0.837, demostrando que el \"colapso\" de KSC es un artefacto del muestreo estratificado de 220 por clase en una escena de clases escasas, no un problema fundamental de los datos.",
       "super_topics_title": "Super-tópicos entre escenas (plan maestro §12)",
       "super_topics_lead_loading": "Agrupamiento jerárquico de cada tópico de las seis escenas etiquetadas sobre la grilla común 400–2500 nm (enlace promedio sobre coseno). Revela qué tópicos se agrupan entre escenas frente a los que permanecen locales a una escena.",
       "super_topics_unavailable": "La carga útil de super_topics aún no está disponible.",
-      "super_topics_lead": "Agrupamiento jerárquico de los {{nTopics}} tópicos de las {{nScenes}} escenas etiquetadas sobre la grilla común 400–2500 nm (enlace promedio sobre coseno). Nivel de corte mostrado: {{cutLevel}} → {{nClusters}} clústeres de super-tópicos. Los clústeres multi-escena identifican tópicos que reaparecen entre conjuntos de datos — lo que \"une\" a las escenas.",
+      "super_topics_lead": "Agrupamiento jerárquico de los {{nTopics}} tópicos de las {{nScenes}} escenas etiquetadas sobre la grilla común 400–2500 nm (enlace promedio sobre coseno). Nivel de corte mostrado: {{cutLevel}} → {{nClusters}} clústeres de super-tópicos. Los clústeres multi-escena identifican tópicos que reaparecen entre conjuntos de datos, lo que \"une\" a las escenas.",
       "super_topics_col_cluster": "clúster",
       "super_topics_col_members": "miembros",
       "super_topics_col_scenes": "escenas",
@@ -1655,11 +1655,11 @@
         "mean": "media",
         "meanFourBackbones": "media (4 backbones)"
       },
-      "footnote": "Recetas ordenadas por media de F-7 NMI sobre los cuatro backbones. V8 (fracción de endmembers NFINDR) lidera la media cruzada entre backbones (0.431 con Q=8). V20 (ponderada por MI) está en el top-3 bajo LDA y ETM, pero cae al 4.º bajo ProdLDA y al 6.º bajo HDP — ninguna receta está en el top-3 bajo los cuatro backbones, lo cual es en sí mismo el hallazgo: la portabilidad entre priors es específica de la receta, no universal."
+      "footnote": "Recetas ordenadas por media de F-7 NMI sobre los cuatro backbones. V8 (fracción de endmembers NFINDR) lidera la media cruzada entre backbones (0.431 con Q=8). V20 (ponderada por MI) está en el top-3 bajo LDA y ETM, pero cae al 4.º bajo ProdLDA y al 6.º bajo HDP, ninguna receta está en el top-3 bajo los cuatro backbones, lo cual es en sí mismo el hallazgo: la portabilidad entre priors es específica de la receta, no universal."
     },
     "deep": {
       "anomaly": {
-        "title": "Indicadores de anomalía B-9 — comparación de ρ: LDA vs profundo",
+        "title": "Indicadores de anomalía B-9, comparación de ρ: LDA vs profundo",
         "loadingLead": "Cargando correlaciones de anomalía…",
         "loading": "Cargando…",
         "lead": "ρ de Spearman entre el puntaje de anomalía por documento y la mala clasificación theta-logística. ρ positivo (verde) = el indicador detecta ejemplos difíciles (funciona como anomalía); negativo (rojo) = el indicador anticorrelaciona (los codificadores profundos concentran capacidad en espectros raros e informativos). El NLL de reconstrucción de LDA funciona como anomalía; los métodos profundos invierten la heurística.",
@@ -1671,10 +1671,10 @@
           "bvRmse": "ρ RMSE recon β-VAE",
           "bvKl": "ρ KL β-VAE"
         },
-        "note": "Conclusión: el NLL de reconstrucción de LDA tiene ρ positivo en todas las escenas (Pavia U +0.306, Salinas-A +0.298, KSC +0.226, IP +0.214) — funciona como indicador de anomalía. Los métodos profundos producen ρ mayormente negativo — la heurística de \"reconstrucción alta = desconocido\" NO se transfiere a codificadores profundos no lineales. Los codificadores profundos concentran capacidad en espectros raros e informativos, que el latente luego discrimina bien."
+        "note": "Conclusión: el NLL de reconstrucción de LDA tiene ρ positivo en todas las escenas (Pavia U +0.306, Salinas-A +0.298, KSC +0.226, IP +0.214), funciona como indicador de anomalía. Los métodos profundos producen ρ mayormente negativo, la heurística de \"reconstrucción alta = desconocido\" NO se transfiere a codificadores profundos no lineales. Los codificadores profundos concentran capacidad en espectros raros e informativos, que el latente luego discrimina bien."
       },
       "kcurve": {
-        "title": "Escalamiento por capacidad de CAE-1D — ARI vs K",
+        "title": "Escalamiento por capacidad de CAE-1D, ARI vs K",
         "loadingLead": "Curva-K de CAE-1D por escena (K∈{4,6,8,10,12,16,32}). Cada línea es una escena etiquetada; cada punto es el ARI de K-means(latente) vs la etiqueta de referencia.",
         "loading": "Cargando datos de la curva-K profunda (42 celdas)…",
         "lead": "ARI de K-means(latente) vs etiqueta de referencia, por escena. Casi monótono en todas las escenas (Salinas 0.547 → 0.561, KSC 0.250 → 0.314 de K=4 a K=32). El eje x es log K.",
@@ -1684,25 +1684,25 @@
         "note": "Escalamiento por capacidad: todas las escenas mejoran con K; sin sobreajuste en K=32. El ajuste canónico de KSC (LDA θ-logística F1=0.021 en B-3) se recupera a F1=0.710 con CAE-1D K=32 en el panel de sonda lineal, una ganancia de 33× atribuible a la capacidad del codificador profundo."
       },
       "cae3d": {
-        "title": "CAE-3D — decodificador ancla vs decodificador de parche completo (curva-K {4, 8})",
+        "title": "CAE-3D, decodificador ancla vs decodificador de parche completo (curva-K {4, 8})",
         "loadingLead": "Cargando datos de ancla + parche completo en K∈{4, 8} para 6 escenas etiquetadas…",
         "loading": "Cargando…",
-        "lead": "Dos decodificadores comparten el mismo codificador convolucional 3-D. El ancla reconstruye solo el espectro del píxel central (Linear K→B); el parche completo reconstruye todo el parche P×P (Linear K→B·P·P). Se barren ambas capacidades K=8 y K=4. El objetivo del decodificador es en sí un hiperparámetro — la dirección es ampliamente estable a través de la capacidad, con una inversión (Pavia U).",
+        "lead": "Dos decodificadores comparten el mismo codificador convolucional 3-D. El ancla reconstruye solo el espectro del píxel central (Linear K→B); el parche completo reconstruye todo el parche P×P (Linear K→B·P·P). Se barren ambas capacidades K=8 y K=4. El objetivo del decodificador es en sí un hiperparámetro, la dirección es ampliamente estable a través de la capacidad, con una inversión (Pavia U).",
         "col": {
           "scene": "escena",
           "full": "completo",
           "anchor": "ancla"
         },
         "netMean": "ΔARI media neta",
-        "note": "Lectura honesta: el ΔARI medio neto es esencialmente neutro en ambos K (+0.011 K=4, +0.003 K=8). La dirección coincide entre K en 5/6 escenas — IP y Botswana se benefician de forma persistente; la familia Salinas se perjudica de forma persistente (la magnitud crece con K). Pavia U es la única inversión dependiente de la capacidad: el parche completo ayuda en K=4 (+0.026) y perjudica en K=8 (-0.023). El objetivo del decodificador es en sí un hiperparámetro que conviene exponer por escena, no un valor por defecto a invertir globalmente."
+        "note": "Lectura honesta: el ΔARI medio neto es esencialmente neutro en ambos K (+0.011 K=4, +0.003 K=8). La dirección coincide entre K en 5/6 escenas, IP y Botswana se benefician de forma persistente; la familia Salinas se perjudica de forma persistente (la magnitud crece con K). Pavia U es la única inversión dependiente de la capacidad: el parche completo ayuda en K=4 (+0.026) y perjudica en K=8 (-0.023). El objetivo del decodificador es en sí un hiperparámetro que conviene exponer por escena, no un valor por defecto a invertir globalmente."
       },
       "betaVae": {
-        "title": "Barrido de β en β-VAE — desenredo vs colapso posterior",
+        "title": "Barrido de β en β-VAE, desenredo vs colapso posterior",
         "loadingLead": "Cargando datos del barrido de β…",
         "loading": "Cargando…",
         "lead": "ARI de K-means(latente) por escena en K=8 a través de β∈{1, 2, 4, 8, 16}. Brillante = ARI alto; celdas negras = colapso posterior (el codificador β-VAE converge a q(z|x)≈p(z), el latente es no informativo).",
         "aria": "Cuadrícula de ARI del barrido de β en β-VAE",
-        "note": "Colapso posterior de Salinas en β≥8 (ARI=0.000 — el término KL domina la señal de reconstrucción; el codificador mapea toda entrada a N(0, I)). Salinas-A resiste el colapso e incluso mejora con β (la señal compacta de 6 clases domina el regularizador). Pavia U se degrada monótonamente con β. El valor por defecto β=4 se ubica en el punto de inflexión."
+        "note": "Colapso posterior de Salinas en β≥8 (ARI=0.000, el término KL domina la señal de reconstrucción; el codificador mapea toda entrada a N(0, I)). Salinas-A resiste el colapso e incluso mejora con β (la señal compacta de 6 clases domina el regularizador). Pavia U se degrada monótonamente con β. El valor por defecto β=4 se ubica en el punto de inflexión."
       }
     },
     "gating": {
@@ -1712,19 +1712,19 @@
         "winsBestPerScene": "victorias (mejor por escena)"
       },
       "deepGate": {
-        "title": "Seguimiento B-3 — ¿cualquier encoder como compuerta? raw vs θ-routed vs compuertas profundas",
+        "title": "Seguimiento B-3, ¿cualquier encoder como compuerta? raw vs θ-routed vs compuertas profundas",
         "loadingLead": "Cargando payloads de compuerta profunda…",
         "lead": "Cinco compuertas candidatas compiten en macro F1 por fold a lo largo de las escenas etiquetadas: raw_logistic (sin gating), θ_routed (mezcla de tópicos LDA, símplex Dirichlet natural) y tres compuertas profundas (PCA-8, CAE-1D-8, β-VAE-8) proyectadas sobre el símplex vía softmax. Evalúa si algún encoder profundo recupera la ventaja de gating de θ.",
         "finding": {
           "part1": "Hallazgo honesto: las compuertas profundas con proyección ingenua softmax-a-símplex",
           "not": "no",
-          "part2": "superan a raw_logistic ni a θ_routed. raw_logistic gana en la mayoría de las escenas; θ_routed empata o gana donde la estructura símplex-Dirichlet se alinea con la topología de clases (p. ej. Salinas). La ventaja de θ proviene de la restricción natural del símplex de las mezclas de tópicos distribuidas según Dirichlet, no de la mera compresión a K dimensiones — los latentes profundos pasados por softmax no logran recuperar el mecanismo de gating."
+          "part2": "superan a raw_logistic ni a θ_routed. raw_logistic gana en la mayoría de las escenas; θ_routed empata o gana donde la estructura símplex-Dirichlet se alinea con la topología de clases (p. ej. Salinas). La ventaja de θ proviene de la restricción natural del símplex de las mezclas de tópicos distribuidas según Dirichlet, no de la mera compresión a K dimensiones, los latentes profundos pasados por softmax no logran recuperar el mecanismo de gating."
         }
       },
       "neuralTopic": {
-        "title": "Modelos de tópicos neuronales — comparación directa LDA vs ProdLDA vs ETM",
+        "title": "Modelos de tópicos neuronales, comparación directa LDA vs ProdLDA vs ETM",
         "loadingLead": "Cargando comparación de tópicos neuronales por escena…",
-        "lead": "Tres modelos de tópicos de estilo neuronal comparados sobre la muestra estratificada canónica de 220 por clase. Dos métricas: (1) ARI de K-means(theta) vs etiqueta de referencia — calidad de clustering. (2) coherencia de tópicos c_v (ventana deslizante de Röder 2015, top-15 palabras) — calidad semántica. Las celdas de ProdLDA + ETM muestran media ± desv. estándar a lo largo de N=5 semillas. La celda de LDA usa el ajuste canónico (semilla única; la estabilidad por semilla de LDA está en la pestaña separada de estabilidad del Workspace). Las dos métricas cuentan historias distintas — coherencia ≠ discriminabilidad de clases sobre vocabularios de frecuencia de banda.",
+        "lead": "Tres modelos de tópicos de estilo neuronal comparados sobre la muestra estratificada canónica de 220 por clase. Dos métricas: (1) ARI de K-means(theta) vs etiqueta de referencia, calidad de clustering. (2) coherencia de tópicos c_v (ventana deslizante de Röder 2015, top-15 palabras), calidad semántica. Las celdas de ProdLDA + ETM muestran media ± desv. estándar a lo largo de N=5 semillas. La celda de LDA usa el ajuste canónico (semilla única; la estabilidad por semilla de LDA está en la pestaña separada de estabilidad del Workspace). Las dos métricas cuentan historias distintas, coherencia ≠ discriminabilidad de clases sobre vocabularios de frecuencia de banda.",
         "header": {
           "cls": "cls",
           "ariVsLabel": "ARI vs etiqueta",
@@ -1732,35 +1732,35 @@
         },
         "finding": {
           "headline": "Coherencia y discriminabilidad NO son la misma métrica sobre tokens de frecuencia de banda.",
-          "body1": "ProdLDA gana c_v en todas las escenas (la mayor coherencia semántica entre los tres) pero pierde ARI en 4/6 escenas — sus tópicos son internamente compactos pero no se alinean con la estructura de clases. LDA gana ARI en 4/6 escenas (la theta más discriminativa de clases en promedio) pero pierde c_v en todas las escenas. ETM queda en medio en ambos ejes — leve mejora sobre ProdLDA en ARI (5/6 victorias), leve regresión en c_v.",
+          "body1": "ProdLDA gana c_v en todas las escenas (la mayor coherencia semántica entre los tres) pero pierde ARI en 4/6 escenas, sus tópicos son internamente compactos pero no se alinean con la estructura de clases. LDA gana ARI en 4/6 escenas (la theta más discriminativa de clases en promedio) pero pierde c_v en todas las escenas. ETM queda en medio en ambos ejes, leve mejora sobre ProdLDA en ARI (5/6 victorias), leve regresión en c_v.",
           "ruleLabel": "Regla operativa",
           "body2": ": elige la familia de tópicos según la tarea aguas abajo, no solo por la coherencia. Para clustering de clases usa LDA (o el respaldo neuronal cuando LDA colapsa, p. ej. KSC). Para interpretabilidad / tarjetas de vocabulario de tópicos (pestaña Topics del Workspace) usa la mayor coherencia de ProdLDA. ETM es el punto medio seguro si ambos importan."
         }
       },
       "bayesian": {
-        "title": "Comparación bayesiana de métodos — posteriores jerárquicos NUTS",
+        "title": "Comparación bayesiana de métodos, posteriores jerárquicos NUTS",
         "loadingLead": "Cargando posteriores de PyMC con 4 cadenas × 1000 tune + 1000 draws…",
         "lead": "Modelo normal jerárquico de PyMC: y ~ N(μ_method + α_scene + γ_fold, σ). Las medias posteriores se muestran como puntos rojos, los intervalos HDI94 como barras azules. Los métodos están ordenados por media posterior. La línea vertical discontinua en μ=0 es la referencia de la media del modelo.",
         "forestFooter": "{{obs}} observaciones · {{methods}} métodos · {{summary}}",
         "forest": {
           "classification": {
             "title": "Clasificación (escenas etiquetadas, 150 obs)",
-            "note": "Los HDI de raw / pca / topic_routed_* son estrictamente positivos; el HDI de theta_logistic incluye 0 — la theta-flat ingenua es estadísticamente indistinguible de la media del modelo."
+            "note": "Los HDI de raw / pca / topic_routed_* son estrictamente positivos; el HDI de theta_logistic incluye 0, la theta-flat ingenua es estadísticamente indistinguible de la media del modelo."
           },
           "classificationDeep": {
             "title": "Clasificación con compuertas profundas (escenas etiquetadas, 150 obs)",
-            "note": "Seguimiento B-3: las compuertas son raw_logistic vs. θ_routed vs. PCA-8 / CAE-1D-8 / β-VAE-8 routed (latentes profundos pasados por softmax a un símplex). raw_logistic domina a θ_routed y a todas las compuertas profundas con P≥0.999; θ_routed domina a cada compuerta profunda con P≥0.999. Evidencia bayesiana decisiva de que los latentes profundos pasados por softmax NO recuperan la ventaja de gating de θ — la ventaja de θ proviene del símplex Dirichlet natural."
+            "note": "Seguimiento B-3: las compuertas son raw_logistic vs. θ_routed vs. PCA-8 / CAE-1D-8 / β-VAE-8 routed (latentes profundos pasados por softmax a un símplex). raw_logistic domina a θ_routed y a todas las compuertas profundas con P≥0.999; θ_routed domina a cada compuerta profunda con P≥0.999. Evidencia bayesiana decisiva de que los latentes profundos pasados por softmax NO recuperan la ventaja de gating de θ, la ventaja de θ proviene del símplex Dirichlet natural."
           },
           "regression": {
             "title": "Regresión (HIDSAG, subconjuntos n≥50: GEOMET + MINERAL1)",
-            "note": "Pool restringido a subconjuntos n≥50 — los tres subconjuntos de n pequeño (PORPHYRY R²≈−12500, MINERAL2, GEOCHEM) se excluyen porque su R² explosivo contaminó el posterior agrupado anterior. Lectura honesta: agrupado sobre los dos subconjuntos válidos, ningún método supera el cero (raw_ridge con la mayor estimación puntual, el ensemble propuesto con gating suave de θ en segundo lugar, estadísticamente indistinguible). Pero la compuerta suave supera a su propia ablación de routing duro por ~0.44 unidades de R², y por subconjunto en GEOMET (n=146) el ensemble suave es el mejor método (R²=0.307 > raw 0.258). La victoria es específica del subconjunto, no universal."
+            "note": "Pool restringido a subconjuntos n≥50, los tres subconjuntos de n pequeño (PORPHYRY R²≈−12500, MINERAL2, GEOCHEM) se excluyen porque su R² explosivo contaminó el posterior agrupado anterior. Lectura honesta: agrupado sobre los dos subconjuntos válidos, ningún método supera el cero (raw_ridge con la mayor estimación puntual, el ensemble propuesto con gating suave de θ en segundo lugar, estadísticamente indistinguible). Pero la compuerta suave supera a su propia ablación de routing duro por ~0.44 unidades de R², y por subconjunto en GEOMET (n=146) el ensemble suave es el mejor método (R²=0.307 > raw 0.258). La victoria es específica del subconjunto, no universal."
           }
         }
       }
     },
     "hidsag": {
       "cross_preproc": {
-        "title": "HIDSAG — estabilidad entre preprocesamientos (seguimiento B-6)",
+        "title": "HIDSAG, estabilidad entre preprocesamientos (seguimiento B-6)",
         "lead": "Qué tan estables son los tópicos LDA cuando cambia la receta de preprocesamiento. Se reporta como el índice de Jaccard de los 15 tokens principales con emparejamiento húngaro entre las 4 políticas (crudo / máscara de bandas heurística / SNV / SavGol+SNV). Bajo = los tópicos cambian sustancialmente entre recetas; alto = los tópicos se mantienen.",
         "policies_count_one": "{{count}} política",
         "policies_count_other": "{{count}} políticas",
@@ -1769,23 +1769,23 @@
         "matrix_aria": "Matriz entre preprocesamientos para {{code}}"
       },
       "preprocessing": {
-        "title": "HIDSAG — sensibilidad al preprocesamiento espectral",
+        "title": "HIDSAG, sensibilidad al preprocesamiento espectral",
         "lead": "Cuatro políticas de preprocesamiento (crudo / máscara heurística de bandas malas / SNV / Savitzky-Golay+SNV) sobre las 5 escenas HIDSAG. Mide cómo cambia el desempeño posterior (clasificación + regresión) cuando varía la receta de limpieza espectral.",
         "loading": "Cargando sensibilidad al preprocesamiento…",
         "load_error": "No se pudo cargar {{endpoint}}.",
         "classification_title": "Clasificación · exactitud balanceada",
         "regression_title": "Regresión · R²",
-        "regression_not_shown": "No se muestra — el R² validado de forma cruzada no es estimable con n<50 (aquí n={{n}}); los pliegues de prueba se disparan a R²≪0 y la métrica es ruido, no un resultado. Vea el panel de regresión más abajo para los subconjuntos con n≥50."
+        "regression_not_shown": "No se muestra, el R² validado de forma cruzada no es estimable con n<50 (aquí n={{n}}); los pliegues de prueba se disparan a R²≪0 y la métrica es ruido, no un resultado. Vea el panel de regresión más abajo para los subconjuntos con n≥50."
       },
       "regression": {
-        "title": "HIDSAG — regresión sobre mediciones",
-        "lead": "Una prueba interdominio exigente: ¿pueden las representaciones de tópicos predecir linealmente ensayos geológicos continuos (Cu %, Au g/t, mineralogía)? R² < 0 significa peor que predecir la media del objetivo. Esto es independiente de —y mucho más difícil que— los resultados de tópicos en escenas etiquetadas; trátelo como una prueba de estrés, no como el resultado principal.",
+        "title": "HIDSAG, regresión sobre mediciones",
+        "lead": "Una prueba interdominio exigente: ¿pueden las representaciones de tópicos predecir linealmente ensayos geológicos continuos (Cu %, Au g/t, mineralogía)? R² < 0 significa peor que predecir la media del objetivo. Esto es independiente de, y mucho más difícil que, los resultados de tópicos en escenas etiquetadas; trátelo como una prueba de estrés, no como el resultado principal.",
         "loading": "Cargando rankings HIDSAG…",
         "no_block": "No hay bloque de regresión disponible.",
         "forest_aria": "Bosque HIDSAG {{code}}",
         "excluded_label": "<strong>Excluidos (n < {{minN}}):</strong>",
-        "excluded_note": ". El R² de regresión validado de forma cruzada no es estimable con estos tamaños de muestra — los pliegues son demasiado pequeños para la dimensión de bandas/características, así que los valores son ruido estadístico en lugar de resultados.",
-        "r2_explainer": "R² < 0 significa que el modelo predice el objetivo numérico peor que su propia media — algo esperable en la regresión de ensayos (Cu %, Au g/t) sobre estos pequeños subconjuntos minerales (n = decenas a pocas centenas). Es una prueba interdominio deliberadamente difícil y es <em>independiente</em> de los resultados de tópicos en escenas etiquetadas, donde las representaciones sí separan clases.",
+        "excluded_note": ". El R² de regresión validado de forma cruzada no es estimable con estos tamaños de muestra, los pliegues son demasiado pequeños para la dimensión de bandas/características, así que los valores son ruido estadístico en lugar de resultados.",
+        "r2_explainer": "R² < 0 significa que el modelo predice el objetivo numérico peor que su propia media, algo esperable en la regresión de ensayos (Cu %, Au g/t) sobre estos pequeños subconjuntos minerales (n = decenas a pocas centenas). Es una prueba interdominio deliberadamente difícil y es <em>independiente</em> de los resultados de tópicos en escenas etiquetadas, donde las representaciones sí separan clases.",
         "off_scale_note": "Los métodos con R² ≪ 0 (ajustes catastróficos en muestras pequeñas) se recortan al borde del eje en {{floor}} y se etiquetan con su valor real.",
         "method_labels": {
           "soft_theta_gated": "ensamble suave con compuerta θ  ★ propuesto",
@@ -1800,13 +1800,13 @@
     },
     "llm": {
       "empty": {
-        "title": "B-12 — hojas de té LLM (Stammbach et al. TACL 2024)",
+        "title": "B-12, hojas de té LLM (Stammbach et al. TACL 2024)",
         "lead": "Sondas de intrusión de palabras + etiquetas coherentes vía Anthropic Claude. El generador está condicionado por ANTHROPIC_API_KEY; las salidas se guardan en data/derived/llm_tea_leaves una vez definida la variable de entorno y ejecutado el generador.",
         "note": "Aún no hay escenas evaluadas. Define <code>ANTHROPIC_API_KEY</code> y ejecuta <code>build-b12-llm-tea-leaves</code> para poblarlas."
       },
       "section": {
-        "title": "B-12 — hojas de té LLM (Stammbach et al. 2023, EMNLP)",
-        "lead": "Exactitud de intrusión de palabras por escena + etiquetas generadas por el LLM por tópico. Una mayor exactitud de intrusión significa que el LLM identifica correctamente la palabra ajena introducida en el top-10 de cada tópico — una señal de coherencia que correlaciona con NPMI en trabajos previos. Las salidas incluidas aquí son el sustituto determinista de autoevaluación de Claude Opus 4.7 (ver columna model); también se implementa una ejecución completa vía API con build_b12_llm_tea_leaves.py para reproducción externa."
+        "title": "B-12, hojas de té LLM (Stammbach et al. 2023, EMNLP)",
+        "lead": "Exactitud de intrusión de palabras por escena + etiquetas generadas por el LLM por tópico. Una mayor exactitud de intrusión significa que el LLM identifica correctamente la palabra ajena introducida en el top-10 de cada tópico, una señal de coherencia que correlaciona con NPMI en trabajos previos. Las salidas incluidas aquí son el sustituto determinista de autoevaluación de Claude Opus 4.7 (ver columna model); también se implementa una ejecución completa vía API con build_b12_llm_tea_leaves.py para reproducción externa."
       },
       "table": {
         "scene": "escena",
@@ -1815,14 +1815,14 @@
         "model": "modelo"
       },
       "detail": {
-        "summary": "{{sceneId}} — etiquetas LLM por tópico",
+        "summary": "{{sceneId}}, etiquetas LLM por tópico",
         "topic": "tópico {{topicId}}",
-        "skipped": "— omitido ({{reason}})",
+        "skipped": ", omitido ({{reason}})",
         "noLabel": "(sin etiqueta)"
       }
     },
     "summary": {
-      "forest_title": "Diagrama de bosque — macro-F1 con CI95 por escena",
+      "forest_title": "Diagrama de bosque, macro-F1 con CI95 por escena",
       "forest_lead": "Cada barra es una escena × método; el punto es la media y los bigotes son los percentiles 2.5 y 97.5 del bootstrap sobre las 25 evaluaciones.",
       "forest_aria": "Diagrama de bosque para {{scene}}",
       "paired_title": "Comparaciones pareadas (Δ macro-F1)",
@@ -1837,7 +1837,7 @@
       "stat_evaluations_per_method": "Evaluaciones por método",
       "stat_alpha_significance": "Significancia α",
       "classes_suffix": "clases",
-      "battery_title": "Multi-Axis Addendum B — resumen de la batería",
+      "battery_title": "Multi-Axis Addendum B, resumen de la batería",
       "battery_lead_loading": "Una fila por escena etiquetada, una columna por eje (B-1 F1 de línea base justa, B-3 F1 topic-routed, B-6 estabilidad off-diag de LDA). Los tres ejes cargan en paralelo. Consulta la wiki para el marco completo.",
       "battery_loading": "Cargando los datos de la batería multi-eje…",
       "battery_lead": "Una fila por escena etiquetada. Columnas: F1 de theta-como-característica (B-1, ingenuo), F1 ICA-10 (B-1, ganador de la línea base justa), mejor F1 CAE-1D sobre K∈{4..32} (B-1 escalera profunda), F1 topic_routed_soft (B-3 la tesis del master-plan), F1 raw_logistic (B-3 línea base fuerte) y estabilidad off-diagonal de LDA (B-6, N=7 semillas). El marco está en la página Multi-Axis-Addendum-B de la wiki.",
@@ -1849,11 +1849,11 @@
       "battery_col_routed_soft": "routed_soft (B-3)",
       "battery_col_raw_logistic": "raw_logistic (B-3)",
       "battery_col_lda_stability": "estabilidad LDA (B-6)",
-      "battery_headlines": "<strong>Titulares:</strong> ICA-10 gana la línea base justa B-1 en todas las escenas. CAE-1D K=32 cierra gran parte de la brecha (KSC θ=0.021 → CAE-1D K=32=0.710, una recuperación de 33×). topic_routed_soft iguala o supera a raw_logistic en todas las escenas; θ_logistic pierde por 30-50 puntos en todas partes — la tesis del master-plan \"θ como compuerta, nunca como característica\" queda validada empíricamente. La estabilidad off-diag de LDA ≥ 0.954 en las 6 escenas frente a CAE-1D 0.74-0.97 y β-VAE 0.18-0.89."
+      "battery_headlines": "<strong>Titulares:</strong> ICA-10 gana la línea base justa B-1 en todas las escenas. CAE-1D K=32 cierra gran parte de la brecha (KSC θ=0.021 → CAE-1D K=32=0.710, una recuperación de 33×). topic_routed_soft iguala o supera a raw_logistic en todas las escenas; θ_logistic pierde por 30-50 puntos en todas partes, la tesis del master-plan \"θ como compuerta, nunca como característica\" queda validada empíricamente. La estabilidad off-diag de LDA ≥ 0.954 en las 6 escenas frente a CAE-1D 0.74-0.97 y β-VAE 0.18-0.89."
     },
     "vsweep_coverage": {
       "title": "Matriz de cobertura del V-sweep (10 ejes × 19 recetas × 6 escenas)",
-      "lead": "1140 celdas numéricas en total — todas pobladas. Alterna entre boolean (¿celdas llenas?) y value (numérico por celda, mapa de color viridis). F-13 SHAP no tiene valor escalar, así que permanece en modo boolean.",
+      "lead": "1140 celdas numéricas en total, todas pobladas. Alterna entre boolean (¿celdas llenas?) y value (numérico por celda, mapa de color viridis). F-13 SHAP no tiene valor escalar, así que permanece en modo boolean.",
       "toggle": {
         "values": "valores",
         "boolean": "booleano"
@@ -1927,7 +1927,7 @@
         "tag": "absorción · envolvente",
         "title": "Tripletas de absorción (V7)",
         "summary": "Espectro continuum-removed por envolvente convexa; hasta 6 rasgos por píxel como (centro, profundidad, área). El recipe más físico para mineralogía.",
-        "theory": "Cada token es una absorción medida con centro, profundidad y área — la representación más fiel a cómo un espectroscopista lee espectros minerales. Esperado ganar en HIDSAG F-1, F-2 (alineación con USGS) y F-7. Los documentos tienen ≤6 tokens, así que K debe acotarse."
+        "theory": "Cada token es una absorción medida con centro, profundidad y área, la representación más fiel a cómo un espectroscopista lee espectros minerales. Esperado ganar en HIDSAG F-1, F-2 (alineación con USGS) y F-7. Los documentos tienen ≤6 tokens, así que K debe acotarse."
       },
       "V8": {
         "tag": "endmember · NFINDR",
@@ -2011,19 +2011,19 @@
         "tag": "dict sparse-coding",
         "title": "Tokens diccionario sparse (V17)",
         "summary": "sklearn MiniBatchDictionaryLearning K=64 átomos con sparse coding LASSO-LARS (n_nonzero=8). Vocab 64×Q = 512.",
-        "theory": "V17 entrena un diccionario espectral sobre-completo, luego emite un token (atom, abundance_bin) por coeficiente no-cero. Generaliza V8 unmixing sin requerir NFINDR. F-2 c_v 0.34-0.58 — bajo-rinde porque sparse coding por píxel no se alinea con la estructura de clase."
+        "theory": "V17 entrena un diccionario espectral sobre-completo, luego emite un token (atom, abundance_bin) por coeficiente no-cero. Generaliza V8 unmixing sin requerir NFINDR. F-2 c_v 0.34-0.58, bajo-rinde porque sparse coding por píxel no se alinea con la estructura de clase."
       },
       "V19": {
         "tag": "coordenadas UMAP",
         "title": "Tokens coordenadas UMAP (V19)",
         "summary": "Embedding 3D UMAP por escena (n_neighbors=15, min_dist=0.1, seed=42), percentile-binned por eje. 3 tokens por doc, vocab 24.",
-        "theory": "V19 reduce cada píxel a coordenadas 3D UMAP y biniza por eje. Tokens abstractos sin semántica espectral — F-2 c_v 0.32-0.41 (bajo) pero F-7 NMI 0.21-0.36 porque UMAP separa clases por construcción. Demuestra que F-2 y F-7 NO miden lo mismo."
+        "theory": "V19 reduce cada píxel a coordenadas 3D UMAP y biniza por eje. Tokens abstractos sin semántica espectral, F-2 c_v 0.32-0.41 (bajo) pero F-7 NMI 0.21-0.36 porque UMAP separa clases por construcción. Demuestra que F-2 y F-7 NO miden lo mismo."
       },
       "V20": {
         "tag": "bandas ponderadas por MI",
         "title": "Tokens bandas MI-ponderadas (V20)",
         "summary": "Tokens V1 (banda, q-bin) pero con copias ponderadas por la información mutua por banda con las etiquetas. Hasta 8 copias por banda por píxel.",
-        "theory": "V20 toma el vocabulario de V1 y re-pondera cada banda por su poder discriminativo (sklearn mutual_info_classif). Bandas con MI alta emiten más copias; bandas con MI ~0 emiten ~ninguna. F-2 c_v 0.85-0.91 — competitivo con V12. **Los puntajes propios de V20 suben fuerte con Q (su F-2 sube +0.060 y su F-7 sube +0.043 de Q=8 a Q=32), y su conteo de wins LDA F-7 cross-19-recetas crece 1/6 → 1/6 → 4/6 escenas.** Frente a V12 en concreto: a Q=8 V20 va por detrás en F-7 (−0.014) y el ranking se invierte a Q=32 donde V20 lidera (+0.030, 5/6 escenas); en F-2 c_v ambas empatan a Q=32 (0.910 vs 0.909). Base de tópicos más robusta contrafactualmente a Q=8 (F-22 media mediana L1 = 26.3), con pico no monotónico a Q=16 (41.8, +59%). Trade-off: V20 cae en el régimen informativa-pero-seed-sensitive en F-18 (~0.45)."
+        "theory": "V20 toma el vocabulario de V1 y re-pondera cada banda por su poder discriminativo (sklearn mutual_info_classif). Bandas con MI alta emiten más copias; bandas con MI ~0 emiten ~ninguna. F-2 c_v 0.85-0.91, competitivo con V12. **Los puntajes propios de V20 suben fuerte con Q (su F-2 sube +0.060 y su F-7 sube +0.043 de Q=8 a Q=32), y su conteo de wins LDA F-7 cross-19-recetas crece 1/6 → 1/6 → 4/6 escenas.** Frente a V12 en concreto: a Q=8 V20 va por detrás en F-7 (−0.014) y el ranking se invierte a Q=32 donde V20 lidera (+0.030, 5/6 escenas); en F-2 c_v ambas empatan a Q=32 (0.910 vs 0.909). Base de tópicos más robusta contrafactualmente a Q=8 (F-22 media mediana L1 = 26.3), con pico no monotónico a Q=16 (41.8, +59%). Trade-off: V20 cae en el régimen informativa-pero-seed-sensitive en F-18 (~0.45)."
       },
       "V18": {
         "tag": "Laplaciano grafo",
@@ -2041,9 +2041,9 @@
     "lead": "No encontramos nada en esta dirección.",
     "requested_label": "Pediste",
     "suggestions_lead": "Prueba con una de éstas:",
-    "suggest_overview": "Visión general — introducción de alto nivel",
-    "suggest_methodology": "Metodología — Teoría · Representaciones · Pipeline · Aplicación",
-    "suggest_workspace": "Laboratorio — elige una escena y explora"
+    "suggest_overview": "Visión general, introducción de alto nivel",
+    "suggest_methodology": "Metodología, Teoría · Representaciones · Pipeline · Aplicación",
+    "suggest_workspace": "Laboratorio, elige una escena y explora"
   },
   "plots": {
     "ClassDistributionBar": {

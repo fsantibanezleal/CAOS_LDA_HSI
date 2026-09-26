@@ -1,19 +1,19 @@
-"""Wordification recipes V4 / V5 / V10 — extending Procemin V1/V2/V3.
+"""Wordification recipes V4 / V5 / V10, extending Procemin V1/V2/V3.
 
 The master plan §7 lists nine recipes beyond the canonical Procemin
 V1/V2/V3 (already in `build_wordifications.py`):
 
-  V4  derivative-bin           — band → bin id of d/dλ(spectrum)
-  V5  second-derivative-bin    — band → bin id of d²/dλ²(spectrum)
-  V6  wavelet-coefficient-bin  — uses pywavelets (deferred)
-  V7  absorption-feature triplet — uses pysptools.spectro (deferred)
-  V8  endmember-fraction-bin   — uses NFINDR + NNLS (deferred)
-  V9  region-token             — per-Felzenszwalb region SAM (deferred)
-  V10 band-group               — VNIR / SWIR-1 / SWIR-2 + bin
-  V11 codebook-vq              — uses nanopq (deferred)
-  V12 GMM token                — uses sklearn.mixture (deferred)
+  V4  derivative-bin          , band → bin id of d/dλ(spectrum)
+  V5  second-derivative-bin   , band → bin id of d²/dλ²(spectrum)
+  V6  wavelet-coefficient-bin , uses pywavelets (deferred)
+  V7  absorption-feature triplet, uses pysptools.spectro (deferred)
+  V8  endmember-fraction-bin  , uses NFINDR + NNLS (deferred)
+  V9  region-token            , per-Felzenszwalb region SAM (deferred)
+  V10 band-group              , VNIR / SWIR-1 / SWIR-2 + bin
+  V11 codebook-vq             , uses nanopq (deferred)
+  V12 GMM token               , uses sklearn.mixture (deferred)
 
-This builder lands the three pure-numpy ones — V4, V5, V10 — for now.
+This builder lands the three pure-numpy ones, V4, V5, V10, for now.
 The other six need extra libraries or substantial scaffolding and are
 left as follow-ups in pending §6.
 
@@ -354,7 +354,7 @@ def main() -> int:
                     flush=True,
                 )
         written += 1
-    print(f"[wordifications_v4plus] done — {written} scenes processed.", flush=True)
+    print(f"[wordifications_v4plus] done, {written} scenes processed.", flush=True)
     return 0
 
 

@@ -379,7 +379,7 @@ def main() -> int:
                 )
             mlrun.log_artifact(str(out_path))
             written += 1
-    print(f"[method_stats_hidsag] done — {written} subsets written.", flush=True)
+    print(f"[method_stats_hidsag] done, {written} subsets written.", flush=True)
     return 0
 
 

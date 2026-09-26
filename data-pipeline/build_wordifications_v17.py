@@ -1,4 +1,4 @@
-"""V17 — sparse-coding dictionary atom tokens (#675).
+"""V17, sparse-coding dictionary atom tokens (#675).
 
 Train a per-scene over-complete dictionary via scikit-learn's
 MiniBatchDictionaryLearning, encode each pixel as a sparse combination

@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 //                                                                   minus README.md
 //                                                                   + manifests/index.json)
 //   endpoints  = `grep -cE '^@router\.(get|post)' app/routers/content.py` → 59 (post c351 cleanup; was 82 before)
-// Datasets / recipes / variants are surfaced one place each — fixed grid.
+// Datasets / recipes / variants are surfaced one place each, fixed grid.
 // Single source of truth for "artefacts": the manifest. If a manifest
-// rebuild changes the count, this card must match — followed up by
+// rebuild changes the count, this card must match, followed up by
 // issue #570 (the script-based sync proposal).
 const HEADLINE_DEFS = [
   { keyLabel: "datasets_label", keySub: "datasets_sub", value: "21", href: "/databases" },
@@ -61,6 +61,6 @@ export function HeadlineNumbers() {
 }
 
 /* =========================================================================
-   3. Findings carousel — auto-rotating
+   3. Findings carousel: auto-rotating
    =======================================================================*/
 

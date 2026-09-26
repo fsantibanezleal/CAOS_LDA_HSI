@@ -92,7 +92,7 @@ export function MethodTopicLabelHeatmap({ recipe }: { recipe: string }) {
       >
         Each row of every heatmap is a topic; each column a labelled
         class. Colour = P(label | argmax topic = k). Vertical streaks
-        mean the topic concentrates on a single class — good for label
+        mean the topic concentrates on a single class, good for label
         alignment.
       </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">

@@ -1,4 +1,4 @@
-"""V19 — UMAP-coordinate tokens (#677).
+"""V19, UMAP-coordinate tokens (#677).
 
 Embed labelled pixels into 3D via UMAP (n_neighbors=15, min_dist=0.1,
 random_state=42), bin each axis into Q levels, emit one (axis, bin)

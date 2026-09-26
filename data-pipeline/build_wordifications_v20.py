@@ -1,4 +1,4 @@
-"""V20 — mutual-info-weighted band tokens (#678).
+"""V20, mutual-info-weighted band tokens (#678).
 
 V20 is V1 (band-frequency) with bands re-weighted by their per-band
 mutual information with the label vector. Bands with higher MI emit

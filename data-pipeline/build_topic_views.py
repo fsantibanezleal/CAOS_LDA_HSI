@@ -80,7 +80,7 @@ LABELLED_SCENES = [
     "botswana",
 ]
 SAMPLES_PER_CLASS = 220
-SCALE = 12  # quantization levels — matches existing local_core_benchmarks
+SCALE = 12  # quantization levels, matches existing local_core_benchmarks
 RANDOM_STATE = 42
 LAMBDA_GRID = [0.0, 0.3, 0.5, 0.7, 1.0]
 TOP_N_RELEVANCE = 30
@@ -289,7 +289,7 @@ def fit_topic_views_for_scene(scene_id: str) -> dict | None:
     hellinger = hellinger_matrix(phi)
     jaccard = jaccard_top_words_matrix(phi, top_n=15)
 
-    # JS distance for MDS — use sqrt(JS) which is a metric. Force diagonal
+    # JS distance for MDS: use sqrt(JS) which is a metric. Force diagonal
     # to exactly 0 and clip negatives to avoid sqrt-of-tiny-negative NaN.
     js_clean = np.where(np.isfinite(js), js, 0.0)
     js_clean = np.clip(js_clean, 0.0, None)
@@ -300,7 +300,7 @@ def fit_topic_views_for_scene(scene_id: str) -> dict | None:
     intertopic_2d_js = classical_mds(js_distance, n_components=2, random_state=RANDOM_STATE)
     intertopic_3d_js = classical_mds(js_distance, n_components=3, random_state=RANDOM_STATE)
 
-    # PCA on band profiles (alternative view) — reconstruct band profile via
+    # PCA on band profiles (alternative view): reconstruct band profile via
     # phi (band-frequency LDA: phi indices ARE bands so band_profile == phi)
     band_profiles = phi.copy()
 
@@ -411,7 +411,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[topic_views] done — {written} scenes written.", flush=True)
+    print(f"[topic_views] done, {written} scenes written.", flush=True)
     return 0
 
 

@@ -1,4 +1,4 @@
-"""Citation audit via OpenAlex — issue #619.
+"""Citation audit via OpenAlex, issue #619.
 
 Pulls 2024-2026 citations of the three foundational references:
 - Egaña et al. 2020, *Minerals* 10:1139 (DOI 10.3390/min10121139)
@@ -6,7 +6,7 @@ Pulls 2024-2026 citations of the three foundational references:
   10:164 (DOI 10.1038/s41597-023-02061-x)
 - Santibáñez-Leal, Procemin 2022 (best-effort title search)
 
-OpenAlex is a free index — no API key needed; rate limit is generous
+OpenAlex is a free index, no API key needed; rate limit is generous
 but we cache results to disk.
 
 Output: data/derived/v_sweep/citation_audit.json
@@ -128,7 +128,7 @@ def main() -> int:
         work_id = work.get("id", "").rsplit("/", 1)[-1]
         print(
             f"  found {work.get('display_name', work.get('title', '?'))} "
-            f"({work.get('publication_year')}) — work_id={work_id}",
+            f"({work.get('publication_year')}), work_id={work_id}",
             flush=True,
         )
         cites = openalex_citations(work_id)

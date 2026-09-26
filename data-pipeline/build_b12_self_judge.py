@@ -1,4 +1,4 @@
-"""B-12 — LLM tea-leaves via *self-judgment* (no external API call).
+"""B-12, LLM tea-leaves via *self-judgment* (no external API call).
 
 Mirror of ``build_b12_llm_tea_leaves.py`` that bypasses the
 Anthropic API and performs the word-intrusion + label-generation
@@ -18,7 +18,7 @@ For every (scene, topic):
   wavelength is farthest from the median of the rest of the
   candidate set in nanometres, treating that as the intruder. This
   matches the prior empirical behaviour of GPT-4 on the
-  Stammbach et al. word-intrusion task — large-language-model
+  Stammbach et al. word-intrusion task, large-language-model
   judgments cluster on the spectrally-furthest candidate.
 
 * **Coherent label**: the rule synthesises a short scientific label
@@ -101,7 +101,7 @@ SPECTRAL_REGIONS = [
 def parse_wavelength(token: str) -> float | None:
     """Extract a wavelength in nm from a token string.
 
-    Accepts ``'1450nm'``, ``'b067_q05'`` (returns None — not a wavelength
+    Accepts ``'1450nm'``, ``'b067_q05'`` (returns None, not a wavelength
     token), ``'NDVI_q03'`` (None), ``'lap_e02_q05'`` (None), etc."""
     m = re.match(r"^(\d{3,4})(?:nm)?$", token.strip())
     if m:
@@ -167,7 +167,7 @@ def judge_intrusion(candidates: list[str]) -> str | None:
     """Self-judgment rule: pick the wavelength farthest from the median.
 
     This emulates Claude Opus 4.7's word-intrusion behaviour on
-    spectrally-coherent topics — when most candidates lie in a tight
+    spectrally-coherent topics, when most candidates lie in a tight
     spectral band, the LLM consistently identifies the outlier."""
     parsed = [(c, parse_wavelength(c)) for c in candidates]
     wavelengths = [(c, w) for c, w in parsed if w is not None]
@@ -191,7 +191,7 @@ def judge_label(top_words_weighted: list[tuple[str, float]]) -> str:
         if wl is not None:
             parsed.append((wl, max(weight, 1e-9)))
     if not parsed:
-        return "Mixed token alphabet — see top words"
+        return "Mixed token alphabet, see top words"
     total_w = sum(w for _, w in parsed)
     if total_w <= 0:
         # Fallback to unweighted mean when LDA weights are zero
@@ -305,7 +305,7 @@ def main() -> int:
         result = evaluate_scene(scene_id, args.recipe, args.q)
         if result is None:
             skipped += 1
-            print(f"  skipped — no topic_views payload", flush=True)
+            print(f"  skipped, no topic_views payload", flush=True)
             continue
         # When recipe != V1, use suffix in output filename to avoid clobbering
         if args.recipe == "V1":

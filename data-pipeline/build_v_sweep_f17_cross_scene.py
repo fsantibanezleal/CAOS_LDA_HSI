@@ -1,4 +1,4 @@
-"""V-sweep F-17 — cross-scene transfer of topic-label coupling.
+"""V-sweep F-17, cross-scene transfer of topic-label coupling.
 
 For each (V, source_scene) where the recipe has a *scene-portable*
 vocabulary, fit LDA on the source, then transform every other scene's

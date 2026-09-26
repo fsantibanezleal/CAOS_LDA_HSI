@@ -62,7 +62,7 @@ def get_method_statistics() -> MethodStatisticsPayload:
 
 
 # ============================================================================
-# Master-plan §18 precompute layer — generic JSON loaders for the new derived
+# Master-plan §18 precompute layer: generic JSON loaders for the new derived
 # files. Returns plain dicts because the schemas are large and the frontend
 # already declares its own TypeScript types.
 # ============================================================================

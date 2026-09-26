@@ -43,7 +43,7 @@ async def _revalidate_mutable_data(request, call_next):
 
     `/generated/*` (StaticFiles) and the JSON `/api/*` routes are regenerated
     whenever the pipeline reruns, but StaticFiles emits only ETag/Last-Modified
-    with no Cache-Control — so browsers apply heuristic freshness and can serve
+    with no Cache-Control, so browsers apply heuristic freshness and can serve
     a stale payload (e.g. a pre-fix HIDSAG EDA with n=0) long after a deploy.
     `no-cache` means "revalidate before reuse": with the ETag already present
     this is a cheap 304 when unchanged and a 200 with fresh data when not.

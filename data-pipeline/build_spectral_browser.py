@@ -208,7 +208,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[spectral_browser] done — {written} scenes written.", flush=True)
+    print(f"[spectral_browser] done, {written} scenes written.", flush=True)
     return 0
 
 

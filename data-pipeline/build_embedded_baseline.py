@@ -263,7 +263,7 @@ def build_for_scene(scene_id: str, K_default: int = 8) -> dict | None:
             }
             for m, v in ranking
         ],
-        "framework_axis": "B-5 (master plan Addendum B Axis C-3): does theta add signal beyond PCA at the same K? — embedded concat readout",
+        "framework_axis": "B-5 (master plan Addendum B Axis C-3): does theta add signal beyond PCA at the same K?, embedded concat readout",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_embedded_baseline v0.1",
     }
@@ -301,7 +301,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[embedded] done — {written} scenes written.", flush=True)
+    print(f"[embedded] done, {written} scenes written.", flush=True)
     return 0
 
 

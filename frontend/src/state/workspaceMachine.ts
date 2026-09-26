@@ -33,7 +33,7 @@ const initialContext: WorkspaceContext = {
  * Audit cleanup (#592 Tier 1 item 3, c389): the previous skeleton
  * carried orphaned GO_VIEW + PICK_DOC events, the matching `view`
  * and `docId` context fields, the `explore.dynamic` substate, and a
- * `benchmarkFork` final state — none of which were dispatched after
+ * `benchmarkFork` final state: none of which were dispatched after
  * the 6-tab -> 28-tab refactor at c133. Removed.
  */
 export const workspaceMachine = setup({

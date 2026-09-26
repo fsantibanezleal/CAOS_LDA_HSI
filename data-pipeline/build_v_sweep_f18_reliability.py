@@ -1,4 +1,4 @@
-"""V-sweep F-18 — Maier 2024 reliability beyond seed stability.
+"""V-sweep F-18, Maier 2024 reliability beyond seed stability.
 
 From arxiv:2410.23186: the "reliability" of a topic model is the
 proportion of topic pairs (over reseed runs) whose top-N word lists

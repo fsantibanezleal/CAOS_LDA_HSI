@@ -9,22 +9,22 @@ implemented".
 Variants in scope (filtered by available imports):
 
   classical_lda
-    sklearn_online      — sklearn.decomposition.LatentDirichletAllocation
-    gensim_vb           — gensim.models.LdaModel (variational Bayes)
-    gensim_collapsed    — gensim.models.LdaMulticore (multicore VB)
+    sklearn_online     , sklearn.decomposition.LatentDirichletAllocation
+    gensim_vb          , gensim.models.LdaModel (variational Bayes)
+    gensim_collapsed   , gensim.models.LdaMulticore (multicore VB)
 
   beyond_lda
-    nmf                 — sklearn.decomposition.NMF
-    sparse_lda          — sklearn LDA with strong sparsity priors
+    nmf                , sklearn.decomposition.NMF
+    sparse_lda         , sklearn LDA with strong sparsity priors
 
   structured
-    tomotopy_lda        — tomotopy.LDAModel (fast collapsed Gibbs in C++)
-    tomotopy_hdp        — tomotopy.HDPModel (auto-K)
-    tomotopy_ctm        — tomotopy.CTModel (correlated topic model)
-    tomotopy_pa         — tomotopy.PAModel (pachinko allocation, super-topics)
+    tomotopy_lda       , tomotopy.LDAModel (fast collapsed Gibbs in C++)
+    tomotopy_hdp       , tomotopy.HDPModel (auto-K)
+    tomotopy_ctm       , tomotopy.CTModel (correlated topic model)
+    tomotopy_pa        , tomotopy.PAModel (pachinko allocation, super-topics)
 
   embedded / neural (uses torch + pyro when available)
-    prodlda             — pyro ProdLDA (Srivastava-Sutton 2017)
+    prodlda            , pyro ProdLDA (Srivastava-Sutton 2017)
 
 For each fit we save:
 
@@ -583,7 +583,7 @@ def main() -> int:
                     run.log_metric(f"{variant}_perplexity", float(perp))
             written_total += len(summaries)
     print(
-        f"[topic_variants] done — {written_total} (variant x scene) outputs.",
+        f"[topic_variants] done, {written_total} (variant x scene) outputs.",
         flush=True,
     )
     return 0

@@ -1,4 +1,4 @@
-"""V-sweep F-14 — topic repetitiveness (top-N word overlap between topics).
+"""V-sweep F-14, topic repetitiveness (top-N word overlap between topics).
 
 Per arxiv:2502.07352 (Yang et al., LLM-judge framework for topic eval).
 F-14 = within-model overlap of top-N words across topics. Low overlap
@@ -7,7 +7,7 @@ means topics are diverse; high overlap means topics are repetitive
 
 For each phi matrix saved by build_v_sweep_canonical_fit, compute:
 - topic_word_jaccard_top10: K x K matrix of jaccard(top10(k), top10(j))
-- mean_pairwise_jaccard: average off-diagonal — the headline F-14 number.
+- mean_pairwise_jaccard: average off-diagonal: the headline F-14 number.
   Lower is better; 0 = completely diverse topics.
 - max_pairwise_jaccard: worst case.
 

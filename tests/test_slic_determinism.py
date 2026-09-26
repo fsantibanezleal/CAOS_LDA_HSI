@@ -14,7 +14,7 @@ PIPE = Path(__file__).resolve().parents[1] / "data-pipeline"
 def test_v11_pins_numpy_seed_before_pq() -> None:
     src = (PIPE / "build_wordifications_v7v11.py").read_text(encoding="utf-8")
     assert "np.random.seed(RANDOM_STATE)" in src, (
-        "V11 must seed numpy before nanopq.PQ — codebook fit is otherwise "
+        "V11 must seed numpy before nanopq.PQ, codebook fit is otherwise "
         "non-deterministic (issue #589 / #606)"
     )
     # the seed line must appear before the PQ *construction* (not the

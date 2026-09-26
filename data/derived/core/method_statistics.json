@@ -1,5 +1,5 @@
 {
-  "source": "Statistical depth — k-fold x multi-seed evaluations with paired comparisons",
+  "source": "Statistical depth: k-fold x multi-seed evaluations with paired comparisons",
   "generated_at": "2026-05-02",
   "method_definitions": {
     "raw_logistic_regression": "Logistic regression on standardised raw reflectance.",

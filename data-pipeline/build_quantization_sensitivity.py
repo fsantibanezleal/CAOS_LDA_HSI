@@ -75,7 +75,7 @@ def matched_cosine(phi_a: np.ndarray, phi_b: np.ndarray) -> tuple[np.ndarray, fl
 
     phi_a is K_a x V_a; phi_b is K_b x V_b. We need a common vocabulary
     space. Since phi_a and phi_b for the same recipe (V1) share band
-    semantics — V1 vocab is just band ids — they are aligned by index.
+    semantics, V1 vocab is just band ids, they are aligned by index.
     """
     # Take the smaller K
     K = min(phi_a.shape[0], phi_b.shape[0])
@@ -202,7 +202,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[quant_sensitivity] done — {written} scenes written.", flush=True)
+    print(f"[quant_sensitivity] done, {written} scenes written.", flush=True)
     return 0
 
 

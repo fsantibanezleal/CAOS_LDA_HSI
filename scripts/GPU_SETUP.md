@@ -46,7 +46,7 @@ Builders that are inherently CPU-only and **do not benefit from a GPU**:
 - All Bayesian builders that use the default `pm.sample` (PyMC NUTS in
   C compiled mode). These can be ported to JAX/NumPyro for GPU but
   this is a separate cycle.
-- `build_topic_routed_deep_gate.py` — consumes precomputed deep latents,
+- `build_topic_routed_deep_gate.py`: consumes precomputed deep latents,
   does no torch work of its own (previously mis-listed as GPU-aware,
   #589 Tier 2).
 
@@ -205,7 +205,7 @@ labelled scenes):
 | KSC | +0.214 | +0.209 | -0.005 |
 | Botswana | +0.401 | +0.409 | +0.008 |
 
-All differences are within ±0.010 ARI — **well below the per-seed
+All differences are within ±0.010 ARI, **well below the per-seed
 variance** measured in cycles 23–37 (`build_deep_seed_stability`,
 σ ≈ 0.05). The methodological conclusions of the project do not
 change between CPU and GPU runs.

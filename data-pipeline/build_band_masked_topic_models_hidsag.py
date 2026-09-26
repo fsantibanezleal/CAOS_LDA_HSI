@@ -4,14 +4,14 @@ Same Step 8 band-mask sweep but for the five HIDSAG mineral/geochem
 subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY). Reads the
 `swir_low` modality (1000-2500 nm) from the curated subset payload at
 `data/derived/core/hidsag_curated_subset.json`, fits a canonical LDA
-(not DMR-LDA — simpler + comparable to the labelled-scene sweep), and
+(not DMR-LDA, simpler + comparable to the labelled-scene sweep), and
 writes per-(subset, mask) summaries.
 
 HIDSAG specifics vs labelled scenes:
 
 - **No spatial grid**: each document is a single mean spectrum per
   (sample, measurement, cube). The output therefore has *no*
-  `dominant_topic_map.bin` or `theta_grid.bin` sidecars — just a flat
+  `dominant_topic_map.bin` or `theta_grid.bin` sidecars, just a flat
   D × K theta matrix and a `summary.json`.
 - **No pixel-level ground-truth label**: instead, each document
   carries a `covariate` tag (the first measurement tag, e.g. lithology
@@ -21,7 +21,7 @@ HIDSAG specifics vs labelled scenes:
 - **`top_50_fisher` mask** uses a different rule: HIDSAG has no
   per-pixel label, so Fisher discriminant doesn't apply. We rank bands
   by *per-band variance across covariates* (between-covariate
-  variance / total variance — a clustering-discriminative proxy).
+  variance / total variance, a clustering-discriminative proxy).
   Documented in the per-tuple summary.
 
 Outputs:
@@ -129,7 +129,7 @@ MASK_DESCRIPTIONS = {
     "vnir": "Visible + near-infrared only. Auto-skipped for HIDSAG swir_low modality (no VNIR bands).",
     "swir": "Shortwave-infrared only. On HIDSAG swir_low this keeps the full spectrum (no-op).",
     "no_water": "Drop atmospheric water-vapour absorption bands.",
-    "top_50_fisher": "Top-50 bands by between-covariate variance ratio. HIDSAG analogue of the labelled-scene Fisher selector — replaces Fisher discriminant on labels with between-covariate-group variance share.",
+    "top_50_fisher": "Top-50 bands by between-covariate variance ratio. HIDSAG analogue of the labelled-scene Fisher selector, replaces Fisher discriminant on labels with between-covariate-group variance share.",
 }
 
 

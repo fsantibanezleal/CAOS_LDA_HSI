@@ -9,7 +9,7 @@ For every labelled scene with a topic-views fit, this builder:
 2. Reads the curated spectral library
    (`data/derived/spectral/library_samples.json`)
 3. For every (topic, library-sample) pair where the band counts allow
-   (we restrict to the AVIRIS-resampled subset which has 224 bands —
+   (we restrict to the AVIRIS-resampled subset which has 224 bands, 
    close enough to all UPV/EHU AVIRIS scenes after linear resampling),
    computes cosine similarity and SAM (radians) over the common
    wavelength range
@@ -22,7 +22,7 @@ References
 ----------
 - Kruse, F. A., Lefkoff, A. B., Boardman, J. W., Heidebrecht, K. B.,
   Shapiro, A. T., Barloon, P. J., Goetz, A. F. H. (1993). "The
-  Spectral Image Processing System (SIPS) — Interactive Visualization
+  Spectral Image Processing System (SIPS), Interactive Visualization
   and Analysis of Imaging Spectrometer Data". *Remote Sensing of
   Environment* 44(2-3), 145-163.
   DOI:10.1016/0034-4257(93)90013-N. Source of the Spectral Angle
@@ -192,7 +192,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[topic_to_library] done — {written} scenes written.", flush=True)
+    print(f"[topic_to_library] done, {written} scenes written.", flush=True)
     return 0
 
 

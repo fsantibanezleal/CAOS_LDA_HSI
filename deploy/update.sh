@@ -24,7 +24,7 @@ if [ -f frontend/package.json ]; then
     (cd frontend && npm install && npm run build)
   fi
 else
-  echo "[update.sh] no frontend/package.json — skipping frontend build"
+  echo "[update.sh] no frontend/package.json, skipping frontend build"
 fi
 
 systemctl restart fasl-lda-hsi

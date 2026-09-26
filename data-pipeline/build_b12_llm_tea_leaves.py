@@ -1,4 +1,4 @@
-"""B-12 — automated word/topic intrusion via LLM (Stammbach et al. TACL 2024).
+"""B-12, automated word/topic intrusion via LLM (Stammbach et al. TACL 2024).
 
 For each labelled scene, asks an LLM (Anthropic Claude) two questions
 per topic:
@@ -226,7 +226,7 @@ def main() -> int:
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
     if not api_key:
         print(
-            "[b12_llm] ANTHROPIC_API_KEY not set — skipping B-12 LLM tea-leaves. "
+            "[b12_llm] ANTHROPIC_API_KEY not set, skipping B-12 LLM tea-leaves. "
             "Set the env var to run word-intrusion and coherent-label tests on the LLM.",
             flush=True,
         )
@@ -256,7 +256,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[b12_llm] done — {written} scenes written.", flush=True)
+    print(f"[b12_llm] done, {written} scenes written.", flush=True)
     return 0
 
 

@@ -313,7 +313,7 @@ def main() -> int:
                 )
             print(f"  -> recommended K = {payload['recommended_K']}", flush=True)
             written += 1
-    print(f"[lda_sweep] done — {written} scenes written.", flush=True)
+    print(f"[lda_sweep] done, {written} scenes written.", flush=True)
     return 0
 
 

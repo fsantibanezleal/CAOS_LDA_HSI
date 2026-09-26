@@ -19,7 +19,7 @@ Each derived JSON contains:
 
 References
 ----------
-- Pearson (1901) / Hotelling (1933). PCA — orthogonal projection onto
+- Pearson (1901) / Hotelling (1933). PCA: orthogonal projection onto
   axes of maximum variance.
 - Hyvärinen (1999). "Fast and Robust Fixed-Point Algorithms for
   Independent Component Analysis". IEEE TNN 10(3):626-634. FastICA.
@@ -462,7 +462,7 @@ def fit_cae_3d(
             return self.encode(x)
 
     model = CAE3D(latent_dim).to(device)
-    # No reconstruction head for 3D — train via contrastive-style: maximise variance of the latent
+    # No reconstruction head for 3D: train via contrastive-style: maximise variance of the latent
     # while constraining it to remain in [-1, 1] via a bounded MSE to a learned mean.
     # This keeps compute manageable on CPU. We instead fit a simple recon to the central pixel
     # spectrum (the "anchor" that the patch surrounds).
@@ -759,7 +759,7 @@ def main() -> int:
             else:
                 print(f"  {s['method']:13s} FAILED: {s.get('error', '')}", flush=True)
         written_total += sum(1 for s in summaries if s["status"] == "ok")
-    print(f"[representations] done — {written_total} (method x scene) outputs.", flush=True)
+    print(f"[representations] done, {written_total} (method x scene) outputs.", flush=True)
     return 0
 
 

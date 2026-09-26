@@ -10,13 +10,13 @@ which remains the canonical extended description.
 The product is not the FastAPI server alone. The product is the local
 research stack made of three layers, in order of scientific importance:
 
-1. **Data pipeline** (`data-pipeline/`, `research_core/`) — acquires
+1. **Data pipeline** (`data-pipeline/`, `research_core/`): acquires
    raw third-party data, derives compact reproducible JSON, runs LDA
    and baseline benchmarks.
-2. **Backend** (`app/`) — FastAPI service that loads the compact
+2. **Backend** (`app/`): FastAPI service that loads the compact
    derived JSON, validates it against typed Pydantic schemas, and
    serves the public API and the SPA shell.
-3. **Frontend** (`frontend/`) — React + Vite single-page application,
+3. **Frontend** (`frontend/`): React + Vite single-page application,
    bilingual (EN / ES), light / dark theme, that consumes the API and
    renders the public Workspace.
 
@@ -42,7 +42,7 @@ CAOS_LDA_HSI/
 ├── data/
 │   ├── manifests/      Static cards (datasets, families, recipes, interactive_subsets, ...)
 │   ├── derived/        Compact reproducible JSON + previews
-│   ├── raw/            Ignored — third-party scenes locally
+│   ├── raw/            Ignored, third-party scenes locally
 │   └── samples/        Example pointers
 ├── data-pipeline/      Acquisition + derivation scripts (one Python file per step)
 ├── docs/               Repo-local technical documentation (this file)
@@ -53,7 +53,7 @@ CAOS_LDA_HSI/
 
 ## Two virtual environments
 
-The repo deliberately ships two Python venvs — one for runtime
+The repo deliberately ships two Python venvs, one for runtime
 (`.venv`, light) and one for the data pipeline (`.venv-pipeline`,
 heavy). The split keeps the production deploy small while the local
 pipeline can pull in scientific stacks (numpy, scipy, scikit-learn,

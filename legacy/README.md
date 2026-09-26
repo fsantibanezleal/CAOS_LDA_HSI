@@ -87,7 +87,7 @@ Once topics exist, samples can be:
 The A39 paper validated this on two real geometallurgical datasets and
 showed that the hierarchical LDA-routed regressor reduced the mean
 absolute error of copper recovery from ~4.57 (naive per-spectrum
-regressor) to ~0.42 (LDA-V1 hierarchical) — a ~10× reduction on a
+regressor) to ~0.42 (LDA-V1 hierarchical), a ~10× reduction on a
 non-trivial industrial variable.
 
 ## The Three Corpus Recipes Defined In The A39 Paper
@@ -109,7 +109,7 @@ at wavelength `w_l`; `ΣI(w_l) = Σ_p I_p(w_l)`; `ΣW(i_q)` is the count of
 
 V1 and V3 keep the wavelength axis interpretable: it is possible to read
 a topic-word distribution and see which wavelengths dominate the topic.
-V2 does not preserve wavelength identity — it summarises *how* the
+V2 does not preserve wavelength identity, it summarises *how* the
 sample distributes its reflectance levels regardless of where in the
 spectrum each level lives.
 
@@ -174,18 +174,18 @@ A guided cell-by-cell map is in [`notebooks/README.md`](notebooks/README.md).
 
 ## What Of The Notebook Survives In The Live Repo
 
-The current production code does **not** import from this notebook —
+The current production code does **not** import from this notebook, 
 that would be unreasonable, the notebook predates the FastAPI / React
 architecture, the public dataset taxonomy and the validation framework.
 But the underlying recipe definitions are preserved and extended in:
 
-- `data/manifests/corpus_recipes.json` — registered recipes with their
+- `data/manifests/corpus_recipes.json`: registered recipes with their
   alphabet, word, document, normalisation and quantisation policies
-- `data/derived/corpus/corpus_previews.json` — concrete previews of
+- `data/derived/corpus/corpus_previews.json`: concrete previews of
   recipes V1, V2, V3 (and modern extensions) on real datasets
-- `data-pipeline/build_corpus_previews.py` — the script that turns a
+- `data-pipeline/build_corpus_previews.py`: the script that turns a
   recipe manifest plus a public scene or sample slice into a preview
-- `data-pipeline/run_local_core_benchmarks.py` — the script that fits
+- `data-pipeline/run_local_core_benchmarks.py`: the script that fits
   LDA on the chosen recipes and runs supervised, clustering and
   stability comparisons
 
@@ -197,10 +197,10 @@ be reproduced in the live pipeline.
 ## Reading Order If You Just Cloned The Repo
 
 1. This file
-2. [`papers/README.md`](papers/README.md) — what the paper actually says
-3. [`papers/CITATIONS.md`](papers/CITATIONS.md) — the full publication
+2. [`papers/README.md`](papers/README.md): what the paper actually says
+3. [`papers/CITATIONS.md`](papers/CITATIONS.md): the full publication
    line, including HIDSAG and the 2020 *Minerals* paper
-4. [`notebooks/README.md`](notebooks/README.md) — what the notebook does
+4. [`notebooks/README.md`](notebooks/README.md): what the notebook does
 5. The active scientific docs in [`../docs/theory.md`](../docs/theory.md)
    and [`../docs/spectral-tokenization.md`](../docs/spectral-tokenization.md)
 6. The public wiki at

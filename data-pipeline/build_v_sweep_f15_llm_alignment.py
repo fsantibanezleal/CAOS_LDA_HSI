@@ -1,4 +1,4 @@
-"""V-sweep F-15 — LLM-judge topic-document alignment.
+"""V-sweep F-15, LLM-judge topic-document alignment.
 
 From Yang et al. 2025 (arxiv:2502.07352). For each document the
 question is: does the LLM believe this document belongs to its
@@ -224,7 +224,7 @@ def main() -> int:
 
     api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
     if not api_key:
-        print("[f15] ANTHROPIC_API_KEY not set — skipping F-15 LLM-judge. "
+        print("[f15] ANTHROPIC_API_KEY not set, skipping F-15 LLM-judge. "
               "Set the env var and re-run to populate.", flush=True)
         return 0
 

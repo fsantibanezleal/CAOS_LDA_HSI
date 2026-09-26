@@ -1,6 +1,6 @@
 """B-11 Endmember-extraction baseline (NFINDR / ATGP / NNLS unmixing).
 
-Master plan Addendum B Axis G — fair HSI baseline alongside NMF and
+Master plan Addendum B Axis G, fair HSI baseline alongside NMF and
 LDA. Extends `build_segmentation_baselines.py`.
 
 For each labelled scene:
@@ -90,7 +90,7 @@ def safe_cosine(a: np.ndarray, b: np.ndarray) -> float:
 
 def _augmented_volume(reduced_em: np.ndarray) -> float:
     """Volume of the simplex spanned by `reduced_em` (K rows, K-1 cols)
-    via |det| of [1 | reduced_em] (without the (K-1)! factor — only
+    via |det| of [1 | reduced_em] (without the (K-1)! factor, only
     the relative ordering matters)."""
     K = reduced_em.shape[0]
     aug = np.empty((K, K), dtype=np.float64)
@@ -194,7 +194,7 @@ def build_for_scene(scene_id: str, K_default: int = 8) -> dict | None:
     if D < K:
         return None
 
-    # ATGP (pysptools) — also returns the indices we use as NFINDR init
+    # ATGP (pysptools): also returns the indices we use as NFINDR init
     atgp = ATGP()
     X_cube = X.reshape(D, 1, B).astype(np.float32)
     atgp_em = np.asarray(atgp.extract(X_cube, q=K, normalize=False), dtype=np.float64)
@@ -208,7 +208,7 @@ def build_for_scene(scene_id: str, K_default: int = 8) -> dict | None:
         rng = np.random.default_rng(RANDOM_STATE)
         atgp_idx = rng.choice(D, size=K, replace=False)
 
-    # Custom NFINDR (Winter 1999) — geometric, volume-maximising
+    # Custom NFINDR (Winter 1999): geometric, volume-maximising
     nfindr_em = custom_nfindr(X, K=K, atgp_init=atgp_idx, seed=RANDOM_STATE)
 
     # NNLS-with-sum-to-one unmixing on NFINDR endmembers
@@ -309,7 +309,7 @@ def main() -> int:
                     flush=True,
                 )
         written += 1
-    print(f"[endmember] done — {written} scenes written.", flush=True)
+    print(f"[endmember] done, {written} scenes written.", flush=True)
     return 0
 
 

@@ -12,9 +12,9 @@ a fair-baseline reading on the same axis the linear probe touches from
 the supervised side.
 
 Methods:
-  - LDA (sklearn) — reconstruction = theta @ phi * doc_length
-  - NMF (sklearn) — reconstruction = W @ H
-  - PCA (sklearn) — reconstruction = X_centered_K @ V.T + mean
+  - LDA (sklearn): reconstruction = theta @ phi * doc_length
+  - NMF (sklearn): reconstruction = W @ H
+  - PCA (sklearn): reconstruction = X_centered_K @ V.T + mean
 
 Output: data/derived/rate_distortion_curve/<scene>.json
 """
@@ -235,7 +235,7 @@ def build_for_scene(scene_id: str) -> dict | None:
         "samples_per_class": SAMPLES_PER_CLASS,
         "method_curves": method_curves,
         "rmse_test_table_by_K": by_K,
-        "framework_axis": "B-2 (master plan Addendum B Axis G): rate-distortion — RMSE(K) curves for LDA / NMF / PCA on the canonical band-frequency document-term matrix",
+        "framework_axis": "B-2 (master plan Addendum B Axis G): rate-distortion, RMSE(K) curves for LDA / NMF / PCA on the canonical band-frequency document-term matrix",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_rate_distortion_curve v0.1",
     }
@@ -267,7 +267,7 @@ def main() -> int:
             parts.append(f"win={row.get('winner', '-'):3s}")
             print("  " + "  ".join(parts), flush=True)
         written += 1
-    print(f"[rate_distortion] done — {written} scenes written.", flush=True)
+    print(f"[rate_distortion] done, {written} scenes written.", flush=True)
     return 0
 
 

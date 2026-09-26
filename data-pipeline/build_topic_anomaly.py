@@ -6,14 +6,14 @@ For each labelled scene compute, per sampled document:
 
   - confidence = max_k theta_d(k); anomaly_softmax = 1 - confidence
   - reconstruction NLL = - sum_w doc_w * log(theta_d @ phi)_w on the
-    band-frequency document — large NLL means the LDA mixture poorly
+    band-frequency document, large NLL means the LDA mixture poorly
     explains the document
   - per-class summary: median + p95 of each anomaly score, plus
     Spearman correlation between confidence and the document's
     macro-F1 contribution (proxy: 1[predicted_class == true_class])
 
 The HIDSAG XRD-flagged-outlier ROC requested by the master plan is
-deferred — it requires per-cube flag labels not currently in the
+deferred, it requires per-cube flag labels not currently in the
 curated subset metadata. The labelled-scene readouts above already
 deliver Axis B's anomaly-indicator framing.
 
@@ -214,7 +214,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[anomaly] done — {written} scenes written.", flush=True)
+    print(f"[anomaly] done, {written} scenes written.", flush=True)
     return 0
 
 
