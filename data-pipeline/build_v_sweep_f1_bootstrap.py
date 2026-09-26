@@ -1,4 +1,4 @@
-"""V-sweep F-1 bootstrap posterior — quick alternative to the NUTS run.
+"""V-sweep F-1 bootstrap posterior, quick alternative to the NUTS run.
 
 When the full pymc NUTS fit in build_v_sweep_f1_bayesian is too slow
 (Windows + pytensor compile can stall for an hour), this script

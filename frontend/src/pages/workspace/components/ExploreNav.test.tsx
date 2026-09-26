@@ -10,7 +10,7 @@ import type { TFunction } from "i18next";
 import { ExploreNav } from "./ExploreNav";
 import { EXPLORE_PHASES } from "../state/tabs";
 
-// Minimal i18n shim — the component reads pages:workspace.explore_phases.<id>.label.
+// Minimal i18n shim, the component reads pages:workspace.explore_phases.<id>.label.
 // Return the phase <id> (not the trailing "label"/"description" segment) so phase
 // tabs carry an identifiable label (e.g. "topics") the tests can target.
 const t = ((key: string) => {

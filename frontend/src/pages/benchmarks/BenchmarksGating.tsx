@@ -105,7 +105,7 @@ function DeepGateSection() {
                         fontWeight: isWinner ? 600 : 400,
                       }}
                     >
-                      {c ? c.mean.toFixed(3) : "—"}
+                      {c ? c.mean.toFixed(3) : ", "}
                       {c ? (
                         <span
                           className="ml-1 text-[10px]"
@@ -289,7 +289,7 @@ function NeuralTopicComparisonSection() {
                         fontWeight: isWinner ? 600 : 400,
                       }}
                     >
-                      {c ? (c.ari >= 0 ? "+" : "") + c.ari.toFixed(3) : "—"}
+                      {c ? (c.ari >= 0 ? "+" : "") + c.ari.toFixed(3) : ", "}
                       {c?.ari_std != null ? (
                         <span
                           className="ml-1 text-[10px]"
@@ -313,7 +313,7 @@ function NeuralTopicComparisonSection() {
                         fontWeight: isWinner ? 600 : 400,
                       }}
                     >
-                      {c?.cv != null ? (c.cv >= 0 ? "+" : "") + c.cv.toFixed(3) : "—"}
+                      {c?.cv != null ? (c.cv >= 0 ? "+" : "") + c.cv.toFixed(3) : ", "}
                       {c?.cv_std != null ? (
                         <span
                           className="ml-1 text-[10px]"

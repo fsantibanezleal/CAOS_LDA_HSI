@@ -1,4 +1,4 @@
-"""HIDSAG F-7 — NMI of topic-argmax against sample-owner ID.
+"""HIDSAG F-7, NMI of topic-argmax against sample-owner ID.
 
 The HIDSAG region documents come from physical mineral samples; each
 document carries a `sample_owner` integer that identifies which sample

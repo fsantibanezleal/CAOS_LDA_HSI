@@ -1,6 +1,6 @@
 """Generate the workspace_methods i18n block for EN and ES locales.
 
-!!! SUPERSEDED — DO NOT BLINDLY MERGE THIS SCRIPT'S OUTPUT !!!
+!!! SUPERSEDED, DO NOT BLINDLY MERGE THIS SCRIPT'S OUTPUT !!!
 `frontend/src/i18n/locales/{en,es}/pages.json` is now the source of truth
 for the workspace_methods block. This generator only defines V1-V12 (its
 word dicts predate the V13-V20 catalog blocks hand-added under #774, and
@@ -164,7 +164,7 @@ ES_WORDIFICATIONS = {
         "tag": "absorción · envolvente",
         "title": "Tripletas de absorción (V7)",
         "summary": "Espectro continuum-removed por envolvente convexa; hasta 6 rasgos por píxel como (centro, profundidad, área). El recipe más físico para mineralogía.",
-        "theory": "Cada token es una absorción medida con centro, profundidad y área — la representación más fiel a cómo un espectroscopista lee espectros minerales. Esperado ganar en HIDSAG F-1, F-2 (alineación con USGS) y F-7. Los documentos tienen ≤6 tokens, así que K debe acotarse.",
+        "theory": "Cada token es una absorción medida con centro, profundidad y área, la representación más fiel a cómo un espectroscopista lee espectros minerales. Esperado ganar en HIDSAG F-1, F-2 (alineación con USGS) y F-7. Los documentos tienen ≤6 tokens, así que K debe acotarse.",
     },
     "V8": {
         "tag": "endmember · NFINDR",

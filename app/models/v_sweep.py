@@ -109,7 +109,7 @@ class VSweepHdpRecord(BaseModel):
 
 
 class VSweepBackboneRecord(BaseModel):
-    """Common shape for the ProdLDA + ETM backbone records — same
+    """Common shape for the ProdLDA + ETM backbone records, same
     schema as the per-backbone V-sweep result JSON files."""
     scene_id: str
     recipe: str

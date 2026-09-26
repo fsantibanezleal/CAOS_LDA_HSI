@@ -9,7 +9,7 @@ import {
 } from "@/api/v-sweep";
 
 /**
- * Recipe Lab tab (id "recipelab") — the flagship "representation is the
+ * Recipe Lab tab (id "recipelab"): the flagship "representation is the
  * independent variable" panel.
  *
  * Pick a scene and up to three wordification recipes from the full
@@ -22,7 +22,7 @@ import {
  *    winner highlighted (F-14 is lower-is-better; everything else is
  *    higher-is-better).
  *
- * The takeaway: changing the representation — not K, not the scene —
+ * The takeaway: changing the representation: not K, not the scene, 
  * changes the numbers, and you can read off what each representation
  * buys you.
  */
@@ -392,19 +392,19 @@ function RecipeColumn({
               <span style={{ color: "var(--color-fg-faint)" }}>
                 {t("pages:workspace.tabs.RecipeLabTab.vocab_v")}
               </span>
-              <span>{V != null ? V.toLocaleString() : "—"}</span>
+              <span>{V != null ? V.toLocaleString() : ", "}</span>
             </div>
             <div className="flex justify-between">
               <span style={{ color: "var(--color-fg-faint)" }}>
                 {t("pages:workspace.tabs.RecipeLabTab.mean_doc_len")}
               </span>
-              <span>{meanDoc != null ? meanDoc.toFixed(1) : "—"}</span>
+              <span>{meanDoc != null ? meanDoc.toFixed(1) : ", "}</span>
             </div>
             <div className="flex justify-between">
               <span style={{ color: "var(--color-fg-faint)" }}>
                 {t("pages:workspace.tabs.RecipeLabTab.topics_k")}
               </span>
-              <span>{K != null ? K : "—"}</span>
+              <span>{K != null ? K : ", "}</span>
             </div>
           </div>
 
@@ -451,7 +451,7 @@ function RecipeColumn({
                       fontWeight: isWinner ? 700 : 400,
                     }}
                   >
-                    {v != null ? v.toFixed(4) : "—"}
+                    {v != null ? v.toFixed(4) : ", "}
                     {isWinner ? " ★" : ""}
                   </span>
                 </div>

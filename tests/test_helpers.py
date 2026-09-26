@@ -41,7 +41,7 @@ def test_serve_or_404_passes_other_exceptions() -> None:
     def loader() -> dict:
         raise ValueError("not a FileNotFoundError")
 
-    # Should NOT be translated to 404 — propagates as-is.
+    # Should NOT be translated to 404: propagates as-is.
     with pytest.raises(ValueError):
         _serve_or_404(loader, hint="ignored")
 

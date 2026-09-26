@@ -183,7 +183,7 @@ export function BandMaskTab({
                           ppl:{" "}
                         </span>
                         <span style={{ color: "var(--color-fg)" }}>
-                          {entry.perplexity_train?.toFixed(2) ?? "—"}
+                          {entry.perplexity_train?.toFixed(2) ?? ", "}
                         </span>
                       </span>
                       <span>
@@ -191,7 +191,7 @@ export function BandMaskTab({
                           ARI:{" "}
                         </span>
                         <span style={{ color: "var(--color-fg)" }}>
-                          {entry.ari_dominant_vs_label?.toFixed(3) ?? "—"}
+                          {entry.ari_dominant_vs_label?.toFixed(3) ?? ", "}
                         </span>
                       </span>
                     </div>
@@ -432,7 +432,7 @@ function BandMaskDetailCard({
               value={
                 comparison.paired_ari_dominant_topics != null
                   ? comparison.paired_ari_dominant_topics.toFixed(4)
-                  : "—"
+                  : ", "
               }
             />
             <BandMaskStat
@@ -443,7 +443,7 @@ function BandMaskDetailCard({
                       comparison.swap_rate_under_hungarian_alignment *
                       100
                     ).toFixed(1)}%`
-                  : "—"
+                  : ", "
               }
             />
             <BandMaskStat
@@ -451,7 +451,7 @@ function BandMaskDetailCard({
               value={
                 comparison.kl_p_label_given_topic_mean != null
                   ? comparison.kl_p_label_given_topic_mean.toFixed(2)
-                  : "—"
+                  : ", "
               }
             />
             <BandMaskStat
@@ -459,7 +459,7 @@ function BandMaskDetailCard({
               value={
                 comparison.kl_p_label_given_topic_max != null
                   ? comparison.kl_p_label_given_topic_max.toFixed(2)
-                  : "—"
+                  : ", "
               }
             />
           </div>
@@ -571,34 +571,34 @@ function BandMaskComparisonOverview({
               <td className="py-1 pr-3 text-right font-mono">
                 {e.paired_ari_dominant_topics != null
                   ? e.paired_ari_dominant_topics.toFixed(4)
-                  : "—"}
+                  : ", "}
               </td>
               <td className="py-1 pr-3 text-right font-mono">
                 {e.swap_rate_under_hungarian_alignment != null
                   ? `${(
                       e.swap_rate_under_hungarian_alignment * 100
                     ).toFixed(1)}%`
-                  : "—"}
+                  : ", "}
               </td>
               <td className="py-1 pr-3 text-right font-mono">
                 {e.kl_p_label_given_topic_mean != null
                   ? e.kl_p_label_given_topic_mean.toFixed(2)
-                  : "—"}
+                  : ", "}
               </td>
               <td className="py-1 pr-3 text-right font-mono">
                 {e.kl_p_label_given_topic_max != null
                   ? e.kl_p_label_given_topic_max.toFixed(2)
-                  : "—"}
+                  : ", "}
               </td>
               <td className="py-1 pr-3 text-right font-mono">
                 {e.ari_dominant_vs_label_masked != null
                   ? e.ari_dominant_vs_label_masked.toFixed(3)
-                  : "—"}
+                  : ", "}
               </td>
               <td className="py-1 text-right font-mono">
                 {e.perplexity_train_masked != null
                   ? e.perplexity_train_masked.toFixed(2)
-                  : "—"}
+                  : ", "}
               </td>
             </tr>
           ))}

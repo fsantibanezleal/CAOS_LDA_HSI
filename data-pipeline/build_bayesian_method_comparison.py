@@ -7,7 +7,7 @@ is the Benavoli-Mangili 2017 alternative to frequentist Friedman /
 Nemenyi: instead of asking "does Wilcoxon reject the null?", we ask
 "what is P(method A > method B)?".
 
-Model (per task type — regression / classification):
+Model (per task type, regression / classification):
 
   for each method m, target t in subset s:
     score[m, t, s] ~ Normal(mu[m] + subset_offset[s] + target_noise[t], sigma)

@@ -2,6 +2,25 @@
 
 All notable changes to this product. Format: `X.XX.XXX` (display, see the workspace `versioning.md`); stays `0.x` while pre-1.0. Tag every release.
 
+## [0.03.000] · 2026-09-26
+
+No em-dash in the product (ADR-0067), and the repository left with only its two trunk branches.
+
+### Changed
+- 1,081 em-dashes swept from the UI strings (both locales), the pages and components, the Python
+  builders and services, the docs and the README: a bullet's dash becomes a colon, prose gets a comma,
+  a table's empty cell keeps an en-dash. The archetype's `scripts/check_content_standards.py` now
+  runs in CI, so the standard holds from here.
+- One derived artifact carried an em-dash in its `source` description
+  (`data/derived/core/method_statistics.json`); the manifest keeps no checksums, so the text is
+  corrected in place.
+- The README's status markers are words, not emoji.
+
+### Housekeeping
+- 42 merged task branches deleted, three superseded ones among them (`task/version-coherence`,
+  `task/c366/cheap-wins`, `task/c432/v14-v18-q16`: their content had landed on `main` another way or
+  was rebuilt later), two stale stashes dropped, and a temporary worktree removed.
+
 ## [0.02.000] · 2026-09-18
 
 Four pipeline defects behind published numbers, fixed at the source and rerun (issue #817).

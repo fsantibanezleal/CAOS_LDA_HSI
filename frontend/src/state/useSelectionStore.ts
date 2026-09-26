@@ -2,7 +2,7 @@
 // removed in c343 (the hook was never imported; selection state lives in
 // the XState workspace machine + URL params).
 
-// Dataset family ids — these MUST match the `family_id` values emitted by the
+// Dataset family ids, these MUST match the `family_id` values emitted by the
 // inventory (`/api/local-dataset-inventory`). They were previously a stale
 // fiction ("hsi-labelled", "hidsag-mineral", …) that matched nothing; the
 // machine worked only because callers cast to this type. Kept in sync with the

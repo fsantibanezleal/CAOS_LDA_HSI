@@ -7,7 +7,7 @@ the argmax topic from z* to any other topic. Reports:
 - counterfactual_l1_per_topic: median L1 distance of perturbation
   needed to flip OUT of topic k.
 - counterfactual_l1_global: overall median across topics.
-- robust_topic: argmax over per-topic L1 — topic that's hardest to flip.
+- robust_topic: argmax over per-topic L1: topic that's hardest to flip.
 
 Lower L1 = topic boundary is closer = topic is less robust. Higher L1
 = topic is more concentrated.

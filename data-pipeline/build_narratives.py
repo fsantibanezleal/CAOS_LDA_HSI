@@ -200,7 +200,7 @@ def main() -> int:
         n_methods = len(payload["method_narratives"])
         print(f"  methods covered: {n_methods}", flush=True)
         written += 1
-    print(f"[narratives] done — {written} scenes written.", flush=True)
+    print(f"[narratives] done, {written} scenes written.", flush=True)
     return 0
 
 

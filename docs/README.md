@@ -1,4 +1,4 @@
-# `docs/` — repository-local technical documentation
+# `docs/`: repository-local technical documentation
 
 This folder holds the **repo-local technical companion** to the public
 wiki. It is shorter and more operational than the wiki: it is intended
@@ -33,7 +33,7 @@ the wiki. When the repo state contradicts the wiki, fix the wiki.
 | `functional-scope.md` | Repo-local statement of what the public app must answer and what it deliberately does not. | refreshed against the wiki |
 | `technical-roadmap.md` | Repo-local phase map. Where the offline validation core stands today, what is next, and what the rebuild expects from each phase. | refreshed |
 | `sources.md` | Repo-local bibliography. The wiki References page is the canonical extended version. | maintained |
-| `product-reset-research.md` | Historical research memo from the early reset cycle. Kept for traceability — the active research memo is `research-memo-2026-05.md`. | frozen |
+| `product-reset-research.md` | Historical research memo from the early reset cycle. Kept for traceability, the active research memo is `research-memo-2026-05.md`. | frozen |
 | `research-memo-2026-05.md` | Deep external research review (state of the art, planned representations, dataset inventory, decision tables). | new and active |
 
 ## Editing rules

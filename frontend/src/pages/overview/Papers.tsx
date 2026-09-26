@@ -1,10 +1,10 @@
 /**
- * Papers section — links to the canonical manuscript PDFs.
+ * Papers section: links to the canonical manuscript PDFs.
  *
  * The single source of truth for all five manuscript PDFs is the
  * `pdfs/` folder in the CAOS_LDA_HSI_Paper repo; the cards + the
  * "all manuscripts" link point there (not the repo root, and not a
- * stale local copy). All manuscripts are **preprints** — target venues
+ * stale local copy). All manuscripts are **preprints**: target venues
  * are redacted; don't add venue/journal claims here until acceptance.
  *
  * All card copy + section headings + link labels live under
@@ -24,7 +24,7 @@ type PaperCard = {
 };
 
 // Canonical PDFs live in the manuscripts repo's shared pdfs/ folder
-// (one place for all five manuscripts) — link there, don't ship stale
+// (one place for all five manuscripts), link there, don't ship stale
 // local copies.
 const PDFS_FOLDER =
   "https://github.com/fsantibanezleal/CAOS_LDA_HSI_Paper/tree/main/pdfs";

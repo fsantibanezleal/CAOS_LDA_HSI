@@ -7,7 +7,7 @@ region) and emits one document per region. Each document carries:
 - The bag-of-V1-tokens computed from the region's pixel spectra
 - A region-id and parent-sample-id for traceability
 - The measurement vector (XRD/AAS/ICP-MS assays) inherited from the
-  parent sample — used downstream by build_topic_measurements.py and
+  parent sample, used downstream by build_topic_measurements.py and
   build_dmr_lda_hidsag.py.
 
 The region-as-document construction mirrors the SLIC/Felzenszwalb
@@ -271,7 +271,7 @@ def main() -> None:
                 "source": "Patch-level HIDSAG region documents derived from local raw ZIP archives",
                 "generated_at": str(date.today()),
                 "patch_grid": {"rows": PATCH_GRID_ROWS, "cols": PATCH_GRID_COLS},
-                # Repo-relative path only — never leak an absolute local
+                # Repo-relative path only: never leak an absolute local
                 # filesystem path into a published data artefact (audit 2026-05-31).
                 "npz_path": OUTPUT_NPZ_PATH.relative_to(_RC_ROOT).as_posix(),
                 "subsets": subset_summaries,

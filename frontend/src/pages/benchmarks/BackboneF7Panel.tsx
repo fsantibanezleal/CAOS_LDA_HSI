@@ -120,7 +120,7 @@ export function BackboneF7Panel() {
                         }}
                         title={`${b.backbone} · ${r}: ${v !== undefined ? v.toFixed(3) : "n/a"}`}
                       >
-                        {v !== undefined ? v.toFixed(2) : "—"}
+                        {v !== undefined ? v.toFixed(2) : ", "}
                       </td>
                     );
                   })}
@@ -148,7 +148,7 @@ export function BackboneF7Panel() {
                       fontWeight: isFirst ? 800 : 600,
                     }}
                   >
-                    {v !== undefined ? v.toFixed(3) : "—"}
+                    {v !== undefined ? v.toFixed(3) : ", "}
                   </td>
                 );
               })}

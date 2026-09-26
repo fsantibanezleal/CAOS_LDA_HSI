@@ -39,7 +39,7 @@ and in
 - Heinrich, G. (2005). *Parameter estimation for text analysis*.
 - Hoffman, M., Blei, D., Bach, F. (2010). *Online Learning for Latent
   Dirichlet Allocation*. **NIPS 2010**.
-- Rehurek, R., Sojka, P. (2010). *gensim — Software Framework for
+- Rehurek, R., Sojka, P. (2010). *gensim: Software Framework for
   Topic Modelling with Large Corpora*. LREC NLP frameworks workshop.
 - Sievert, C., Shirley, K. (2014). *LDAvis*. ACL Workshop.
 - Röder, M., Both, A., Hinneburg, A. (2015). *Exploring the Space of
@@ -51,10 +51,10 @@ and in
 - Dieng, A. B., Ruiz, F. J. R., Blei, D. M. (2020). *Topic Modeling in
   Embedding Spaces*. TACL.
 
-## PTM on hyperspectral — modern line
+## PTM on hyperspectral: modern line
 
 - Wahabzada, M., Mahlein, A.-K., Bauckhage, C., Steiner, U.,
-  Oerke, E.-C., Kersting, K. — plant phenotyping LDA work.
+  Oerke, E.-C., Kersting, K., plant phenotyping LDA work.
 - Zou, S., Zare, A. (2017). *Partial-Membership LDA* (PM-LDA) for
   hyperspectral unmixing.
 - Borsoi, R. A. et al. (2021). *Spectral Variability in Hyperspectral
@@ -83,7 +83,7 @@ and in
 - Borsoi unmixing examples
   ([github.com/ricardoborsoi](https://github.com/ricardoborsoi)).
 - HIDSAG Figshare release (this project).
-- WHU-Hi, HyRANK, Houston 2013/2018/2020, EuroSAT — tracked.
+- WHU-Hi, HyRANK, Houston 2013/2018/2020, EuroSAT: tracked.
 
 ## Software stack
 

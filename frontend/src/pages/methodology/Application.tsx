@@ -34,17 +34,17 @@ const CROSSWALK_ROWS: {
   link: CrosswalkLink;
 }[] = [
   { fId: "F-1", paperName: "Classification (hierarchical Bayesian)", bId: "B-1", wikiName: "Linear probe panel", workspaceLabel: "Workspace › probe", link: { kind: "tab", tabId: "probe" } },
-  { fId: "F-2", paperName: "Coherence (c_v, NPMI, U-Mass)", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › topics", link: { kind: "tab", tabId: "topics" } },
+  { fId: "F-2", paperName: "Coherence (c_v, NPMI, U-Mass)", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › topics", link: { kind: "tab", tabId: "topics" } },
   { fId: "F-3", paperName: "Seed stability", bId: "B-6", wikiName: "Seed stability", workspaceLabel: "Workspace › stability", link: { kind: "tab", tabId: "stability" } },
-  { fId: "F-4", paperName: "Capacity sensitivity (K-sweep)", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › qkexplore", link: { kind: "tab", tabId: "qkexplore" } },
-  { fId: "F-5", paperName: "Band-mask robustness", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › bandmask", link: { kind: "tab", tabId: "bandmask" } },
-  { fId: "F-6", paperName: "Cross-method agreement", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › agreement", link: { kind: "tab", tabId: "agreement" } },
-  { fId: "F-7", paperName: "Topic–label coupling", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › topiclabel", link: { kind: "tab", tabId: "topiclabel" } },
-  { fId: "F-8", paperName: "Per-topic Hungarian identity", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › bandmask", link: { kind: "tab", tabId: "bandmask" } },
-  { fId: "F-9", paperName: "HIDSAG preprocessing stability", bId: "—", wikiName: "(not a B-axis)", workspaceLabel: "Benchmarks › HIDSAG", link: { kind: "benchmarks", hash: "hidsag" } },
+  { fId: "F-4", paperName: "Capacity sensitivity (K-sweep)", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › qkexplore", link: { kind: "tab", tabId: "qkexplore" } },
+  { fId: "F-5", paperName: "Band-mask robustness", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › bandmask", link: { kind: "tab", tabId: "bandmask" } },
+  { fId: "F-6", paperName: "Cross-method agreement", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › agreement", link: { kind: "tab", tabId: "agreement" } },
+  { fId: "F-7", paperName: "Topic–label coupling", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › topiclabel", link: { kind: "tab", tabId: "topiclabel" } },
+  { fId: "F-8", paperName: "Per-topic Hungarian identity", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Workspace › bandmask", link: { kind: "tab", tabId: "bandmask" } },
+  { fId: "F-9", paperName: "HIDSAG preprocessing stability", bId: ", ", wikiName: "(not a B-axis)", workspaceLabel: "Benchmarks › HIDSAG", link: { kind: "benchmarks", hash: "hidsag" } },
   { fId: "F-10", paperName: "Cross-scene topic transfer", bId: "B-8", wikiName: "Cross-scene transfer", workspaceLabel: "Workspace › robust", link: { kind: "tab", tabId: "robust" } },
   { fId: "F-11", paperName: "Rate–distortion of θ", bId: "B-2", wikiName: "Rate-distortion curve", workspaceLabel: "Workspace › metrics", link: { kind: "tab", tabId: "metrics" } },
-  { fId: "F-12", paperName: "External baseline (literature OA)", bId: "—", wikiName: "(deferred in paper Suppl F)", workspaceLabel: "Benchmarks › external", link: { kind: "benchmarks", hash: "external" } },
+  { fId: "F-12", paperName: "External baseline (literature OA)", bId: ", ", wikiName: "(deferred in paper Suppl F)", workspaceLabel: "Benchmarks › external", link: { kind: "benchmarks", hash: "external" } },
 ];
 
 export default function MethodologyApplication() {
@@ -56,8 +56,8 @@ export default function MethodologyApplication() {
     >
       <Section id="why" title={t("pages:methodology_application.sections.why.title")} lead={t("pages:methodology_application.sections.why.lead")}>
         <p>
-          The classical HSI strategy — fit a random forest or an SVM on the raw
-          spectrum — works on balanced, well-labelled scenes. It fails where it
+          The classical HSI strategy, fit a random forest or an SVM on the raw
+          spectrum, works on balanced, well-labelled scenes. It fails where it
           matters most: class boundaries, fractional mixtures, cover transitions.
           A topic representation sits between the spectrum and the classifier
           and captures the mixture as a dense vector{" "}
@@ -158,7 +158,7 @@ export default function MethodologyApplication() {
           as a θ-weighted mixture{" "}
           <Equation tex="P(y \mid x, \theta) = \sum_{k} \theta_d(k)\, g_k(x)" />.
           Mathematically the second is a <em>local</em> sample-weighted
-          logistic regression — equivalent to a non-parametric conditional
+          logistic regression, equivalent to a non-parametric conditional
           density estimator where θ acts as a soft cluster assignment. It
           preserves the mixture geometry that direct collapses by averaging
           first.
@@ -167,7 +167,7 @@ export default function MethodologyApplication() {
           Two practical consequences. (i) The specialist{" "}
           <Equation tex="g_k" /> sees only the spectra that genuinely
           activate topic <em>k</em>, so each can be a small, well-conditioned
-          linear model — no class confounded with another via averaged θ.
+          linear model, no class confounded with another via averaged θ.
           (ii) The mixture probability inherits the full information of the
           raw spectrum (via{" "}
           <Equation tex="g_k(x)" />), with θ acting only as the gate that
@@ -182,7 +182,7 @@ export default function MethodologyApplication() {
           <em>fails</em> with P(μ_a &gt; μ_b) ≥ 0.999 in every comparison.
           Deep latents satisfy the simplex constraint geometrically
           (softmax outputs sum to 1) but their components have no
-          ‘meaning of cluster’ — they are arbitrary axes in a learned
+          ‘meaning of cluster’, they are arbitrary axes in a learned
           latent space, not soft assignments to interpretable topics.
         </p>
       </Section>
@@ -214,7 +214,7 @@ export default function MethodologyApplication() {
           For the HIDSAG subsets (GEOMET, MINERAL1, MINERAL2, GEOCHEM, PORPHYRY)
           the Benchmarks page reports R² and bootstrap CI95 over each numeric
           target. The DMR-LDA family (Dirichlet-Multinomial Regression)
-          integrates measurements as document meta-data, not as target — that
+          integrates measurements as document meta-data, not as target, that
           is a distinct way of using the same apparatus.
         </p>
         <p className="mt-3">
@@ -232,7 +232,7 @@ export default function MethodologyApplication() {
           learned weight matrix. Standard LDA recovers as the special case
           <Equation tex="W x_d \equiv \alpha" /> for every document. DMR-LDA
           lets topics depend on a sample's Cu / Au / mineral grade without
-          turning those numbers into the prediction target — they enter as
+          turning those numbers into the prediction target, they enter as
           context, not as supervision.
         </p>
         <p className="mt-3">
@@ -440,7 +440,7 @@ export default function MethodologyApplication() {
           <li>
             <strong>Labels</strong>:{" "}
             <Equation tex="P(y \mid k) = \frac{\sum_d \theta_{d,k} \, \mathbf{1}[y_d = y]}{\sum_d \theta_{d,k}}" />{" "}
-            — conditional label distribution given the topic.
+           , conditional label distribution given the topic.
           </li>
           <li>
             <strong>Measurements</strong>: histogram or KDE of each continuous
@@ -448,7 +448,7 @@ export default function MethodologyApplication() {
           </li>
           <li>
             <strong>Spectrum</strong>: the profile <Equation tex="\phi_k" />{" "}
-            re-mapped to wavelength — the topic's "signature".
+            re-mapped to wavelength, the topic's "signature".
           </li>
           <li>
             <strong>Spatial</strong>: the per-pixel map of{" "}
@@ -486,7 +486,7 @@ export default function MethodologyApplication() {
           preprocessing stability; (F-10) cross-scene topic transfer;
           (F-11) interpretability via topic / band / document cards; (F-12)
           external baselines (HybridSN, SpectralFormer). A model that wins
-          on one axis can lose on another — the framework forces the
+          on one axis can lose on another, the framework forces the
           conversation to be plural.
         </p>
         <p className="mt-3">

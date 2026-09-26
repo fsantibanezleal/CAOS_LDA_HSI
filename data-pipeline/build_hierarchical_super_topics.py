@@ -178,7 +178,7 @@ def main() -> int:
         )
 
     if not profiles_per_scene:
-        print("[super_topics] no scenes loaded — aborting.", flush=True)
+        print("[super_topics] no scenes loaded, aborting.", flush=True)
         return 1
 
     profiles = np.vstack(profiles_per_scene)

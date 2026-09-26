@@ -2,12 +2,12 @@
  * Robustness tab (extracted from Workspace.tsx in c272 as part of
  * #441 P1 2.1). Combines two complementary panels:
  *
- *   1. QuantizationSensitivityCard — table of probe configs vs the
+ *   1. QuantizationSensitivityCard: table of probe configs vs the
  *      canonical fit with matched-cosine + ARI per probe.
- *   2. CrossSceneTransferCard — 5×5 SVG heatmap of macro F1 when
+ *   2. CrossSceneTransferCard: 5×5 SVG heatmap of macro F1 when
  *      topics trained on scene i are evaluated downstream on scene j.
  *
- * Both helpers are module-local — only RobustnessTab consumes them.
+ * Both helpers are module-local: only RobustnessTab consumes them.
  */
 import { useTranslation } from "react-i18next";
 import type {
@@ -330,7 +330,7 @@ function CrossSceneTransferCard({
             col: curIdx,
             f1:
               transfer.transfer_matrix_macro_f1[curIdx]?.[curIdx]?.toFixed(3) ??
-              "—",
+              ", ",
           })}
         </p>
       ) : null}

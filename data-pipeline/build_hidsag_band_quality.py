@@ -180,7 +180,7 @@ def main() -> None:
                 },
                 "subsets": subset_rows,
                 # Closes #444 P1 item 3.1 (builder metadata envelope).
-                "framework_axis": "F-9 HIDSAG preprocessing — bad-band quality heuristic",
+                "framework_axis": "F-9 HIDSAG preprocessing, bad-band quality heuristic",
                 "builder_version": "build_hidsag_band_quality v0.2",
             },
             handle,

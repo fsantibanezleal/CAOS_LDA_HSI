@@ -1,15 +1,15 @@
-"""V16 — Foundation-model spectral embedding tokens (#674).
+"""V16, Foundation-model spectral embedding tokens (#674).
 
 Embed each labelled pixel into a frozen HyperSIGMA latent space, then
 quantise the embedding into LDA-compatible tokens.
 
 Three codebook options (selected via ``--codebook``):
 
-* ``pq`` — product quantisation, M=4 sub-vectors, K=64 codewords each.
+* ``pq``: product quantisation, M=4 sub-vectors, K=64 codewords each.
   Vocab = M * K = 256. Cheapest; closest analogue to V11.
-* ``vqvae`` — vector-quantised VAE fit on the 6-scene embedding pool;
+* ``vqvae``: vector-quantised VAE fit on the 6-scene embedding pool;
   K=128 codewords. Vocab = 128. Closest analogue to V13.
-* ``kmeans`` — k-means clusters on the 6-scene pool; k=200.
+* ``kmeans``: k-means clusters on the 6-scene pool; k=200.
   Vocab = 200. Cheapest learnt option.
 
 V16 is GPU-only in practice (HyperSIGMA forward pass on ~30K pixels per
@@ -69,7 +69,7 @@ def normalise_per_row(X: np.ndarray) -> np.ndarray:
 def hypersigma_embed(spectra: np.ndarray) -> np.ndarray:
     """Embed [D, B] spectra into HyperSIGMA latent space.
 
-    NOTE: implementation deferred — needs HyperSIGMA weights vendored
+    NOTE: implementation deferred, needs HyperSIGMA weights vendored
     under ``third_party/HyperSIGMA/``. Until then this raises so V16
     can't be built accidentally without the weights.
     """

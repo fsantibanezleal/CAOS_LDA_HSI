@@ -3,17 +3,17 @@ and Q values. Implements the missing V3 from Procemin 2022.
 
 The three Procemin recipes are:
 
-  V1 — band-frequency
+  V1, band-frequency
        word = wavelength band, count = quantised intensity at that band
        vocab size = B
        token example: "0653nm"
 
-  V2 — magnitude-phrase (bin tokens)
+  V2, magnitude-phrase (bin tokens)
        word = quantised intensity bin id, count = number of bands at that bin
        vocab size = Q
        token example: "q07"
 
-  V3 — band-bin ordered (audit gap #1 — never implemented before)
+  V3, band-bin ordered (audit gap #1, never implemented before)
        word = (band, bin) joint token; the ordering is preserved by the
        band index baked into the token. Used as a bag for LDA.
        vocab size <= B * Q
@@ -44,7 +44,7 @@ For each (recipe, quant_scheme, Q, scene) the builder writes:
     - local_doc_term_path                     pointer to the .npz local sidecar
     - generated_at, builder_version           provenance
 
-Quantization schemes (per_spectrum domain — each spectrum is normalised
+Quantization schemes (per_spectrum domain, each spectrum is normalised
 into [0, 1] then binned with Q breakpoints):
 
   uniform   equi-spaced bin edges
@@ -338,7 +338,7 @@ def main() -> int:
                 flush=True,
             )
         written_total += len(summaries)
-    print(f"[wordifications] done — {written_total} (recipe x quant x scene) configs.", flush=True)
+    print(f"[wordifications] done, {written_total} (recipe x quant x scene) configs.", flush=True)
     return 0
 
 

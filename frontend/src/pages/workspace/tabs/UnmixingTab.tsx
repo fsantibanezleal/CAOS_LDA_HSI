@@ -75,13 +75,13 @@ export function UnmixingTab({
           <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_endmembers")} value={String(data.K)} />
           <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_pixels_used")} value={data.n_pixels_used.toLocaleString()} />
           <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_bands")} value={String(data.n_bands)} />
-          <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_rmse_normalised")} value={rmseNorm != null ? rmseNorm.toFixed(4) : "—"} />
+          <UnmixingStat label={t("pages:workspace.tabs.UnmixingTab.stat_rmse_normalised")} value={rmseNorm != null ? rmseNorm.toFixed(4) : ", "} />
         </div>
         {rmseRaw != null ? (
           <p className="mt-2 text-[11.5px] font-mono" style={{ color: "var(--color-fg-faint)" }}>
             {t("pages:workspace.tabs.UnmixingTab.rmse_raw_line", {
               raw: rmseRaw.toFixed(3),
-              norm: rmseNorm?.toFixed(4) ?? "—",
+              norm: rmseNorm?.toFixed(4) ?? ", ",
             })}
           </p>
         ) : null}

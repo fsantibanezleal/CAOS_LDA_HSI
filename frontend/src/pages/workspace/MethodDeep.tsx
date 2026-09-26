@@ -117,7 +117,7 @@ export default function MethodDeep() {
                 border: "1px solid var(--color-border)",
               }}
             >
-              <option value="">— none —</option>
+              <option value="">, none, </option>
               {METHOD_CATALOG.filter((m) => m.id !== method.id && m.hasSweepArtefacts).map(
                 (m) => (
                   <option key={m.id} value={m.id}>

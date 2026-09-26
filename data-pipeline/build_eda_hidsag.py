@@ -1,4 +1,4 @@
-"""HIDSAG measurement EDA — distributions, correlations, dominant targets.
+"""HIDSAG measurement EDA, distributions, correlations, dominant targets.
 
 Reads the existing curated HIDSAG subset JSON
 (`data/derived/core/hidsag_curated_subset.json`) and produces a per-subset
@@ -56,7 +56,7 @@ def collect_variable_values(subset: dict, var_name: str) -> np.ndarray:
     The curated subset stores numeric geochemistry values per sample under
     `sample['targets']` (a {variable_name: value} dict), one observation per
     sample. (Earlier this walked measurement.variables, which the curated
-    schema no longer carries — that produced empty/degenerate stats.)"""
+    schema no longer carries, that produced empty/degenerate stats.)"""
     out: list[float] = []
     for sample in subset.get("samples", []):
         targets = sample.get("targets") or {}
@@ -386,7 +386,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[eda_hidsag] done — {written} subsets written.", flush=True)
+    print(f"[eda_hidsag] done, {written} subsets written.", flush=True)
     return 0
 
 

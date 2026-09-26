@@ -13,8 +13,8 @@ export type RoutedPrediction = {
  *   P(L = l | d) = Σ_k  θ_d[k] · P(L = l | topic = k)
  *
  * Computed client-side from already-loaded `topic_to_data` fields:
- *   - `thetaFull[K]` — the document's posterior simplex
- *   - `perTopicLabel[K][L]` — per-topic empirical P(L | topic) from the
+ *   - `thetaFull[K]`: the document's posterior simplex
+ *   - `perTopicLabel[K][L]`: per-topic empirical P(L | topic) from the
  *     canonical dominant-topic assignment (`p_label_given_topic_dominant`)
  *
  * Renormalises the result so the rendered top-K probabilities present

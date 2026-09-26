@@ -10,21 +10,21 @@ import {
 } from "@/api/v-sweep";
 
 /**
- * Q-trajectory tab (id "qtraj") — Step / Manipulate.
+ * Q-trajectory tab (id "qtraj"): Step / Manipulate.
  *
  * Pick a wordification recipe (V1..V20) and an evaluation axis, and see
  * how *refining the quantisation Q* (Q ∈ {8, 16, 32}) moves that
  * representation's score. Reads GET /api/v-sweep/q-trajectory and
  * renders a hand-rolled multi-line SVG: one faint line per labelled
  * scene plus the bold cross-scene mean. The point of the tab is that
- * the representation (recipe × Q) is the independent variable here —
+ * the representation (recipe × Q) is the independent variable here, 
  * e.g. V20 F-7 climbs 0.52 → 0.53 → 0.56 across Q, while V8 F-18 stays
  * flat at ~0.96. Live refit is not supported; all cells are precomputed
  * sweep shards.
  */
 
 // The 19 built recipes the v-sweep evaluates (V16 = foundation-model
-// scaffold, no artefacts — matches app/routers/content.py _V_SWEEP_RECIPES).
+// scaffold, no artefacts, matches app/routers/content.py _V_SWEEP_RECIPES).
 const RECIPE_IDS = [
   "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10",
   "V11", "V12", "V13", "V14", "V15", "V17", "V18", "V19", "V20",

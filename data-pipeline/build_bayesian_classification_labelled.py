@@ -1,9 +1,9 @@
 """Bayesian classification posterior on the labelled scenes.
 
-Master plan Addendum B Axis C — extends the existing HIDSAG-only
+Master plan Addendum B Axis C, extends the existing HIDSAG-only
 `build_bayesian_method_comparison` to the **labelled-scene** classifier
 panel. Includes `topic_routed_soft` (B-3) and `theta_concat_pca_K`
-(B-5) — the embedded readouts the user specified — alongside the
+(B-5), the embedded readouts the user specified, alongside the
 flat baselines so the Bayesian dominance reading covers both ends of
 the framework's "how to use theta" question.
 
@@ -171,7 +171,7 @@ def main() -> int:
     obs = collect_observations()
     print(f"[bayes_lab] collected {len(obs)} observations from {len({o['scene'] for o in obs})} scenes", flush=True)
     if not obs:
-        print("  no observations — run build_topic_routed_classifier first", flush=True)
+        print("  no observations, run build_topic_routed_classifier first", flush=True)
         return 1
     payload = fit_hierarchical(obs)
     if not payload:

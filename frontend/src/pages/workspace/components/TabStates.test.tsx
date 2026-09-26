@@ -1,5 +1,5 @@
 /**
- * TabLoading / TabEmpty / TabError (cycle 226) — shared placeholders
+ * TabLoading / TabEmpty / TabError (cycle 226): shared placeholders
  * used across Workspace tabs. Tests cover defaults, custom messages,
  * the retry-button hook, and accessibility roles.
  */

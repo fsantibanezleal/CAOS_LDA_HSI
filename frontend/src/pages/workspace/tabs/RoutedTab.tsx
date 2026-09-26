@@ -267,7 +267,7 @@ export function RoutedTab({
                 >
                   {ROUTED_DESC_KEY[r.method]
                     ? t(`pages:workspace.tabs.RoutedTab.${ROUTED_DESC_KEY[r.method]}`)
-                    : "—"}
+                    : ", "}
                 </dd>
               </div>
             </div>

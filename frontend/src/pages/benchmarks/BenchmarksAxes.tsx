@@ -75,10 +75,10 @@ function SpatialCoherenceSection() {
                 <tr key={r.scene} style={{ borderTop: "1px solid var(--color-border)" }}>
                   <td className="py-1.5 pr-3 font-mono">{r.scene}</td>
                   <td className="py-1.5 pr-3 text-right font-mono" style={{ color: subColor }}>
-                    {r.sub_I != null ? r.sub_I.toFixed(3) : "—"}
+                    {r.sub_I != null ? r.sub_I.toFixed(3) : ", "}
                   </td>
                   <td className="py-1.5 pr-3 text-right font-mono">
-                    {r.sub_C != null ? r.sub_C.toFixed(3) : "—"}
+                    {r.sub_C != null ? r.sub_C.toFixed(3) : ", "}
                   </td>
                   <td
                     className="py-1.5 pr-3 text-right font-mono"
@@ -87,10 +87,10 @@ function SpatialCoherenceSection() {
                       fontWeight: ksc ? "600" : "400",
                     }}
                   >
-                    {r.full_I != null ? r.full_I.toFixed(3) : "—"}
+                    {r.full_I != null ? r.full_I.toFixed(3) : ", "}
                   </td>
                   <td className="py-1.5 pr-3 text-right font-mono">
-                    {r.full_C != null ? r.full_C.toFixed(3) : "—"}
+                    {r.full_C != null ? r.full_C.toFixed(3) : ", "}
                   </td>
                 </tr>
               );

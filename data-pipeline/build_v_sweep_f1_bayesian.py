@@ -1,4 +1,4 @@
-"""V-sweep F-1 Bayesian posterior — pool per-fold macro-F1 across V1..V12.
+"""V-sweep F-1 Bayesian posterior, pool per-fold macro-F1 across V1..V12.
 
 Reads the per-(V, scene) per-fold JSON written by
 build_v_sweep_f1_classification and fits the same hierarchical normal
@@ -191,7 +191,7 @@ def main() -> int:
         flush=True,
     )
     if not obs:
-        print("  no observations — run build_v_sweep_f1_classification first", flush=True)
+        print("  no observations, run build_v_sweep_f1_classification first", flush=True)
         return 1
 
     payload = fit_hierarchical(obs)

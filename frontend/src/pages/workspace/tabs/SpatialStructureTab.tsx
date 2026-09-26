@@ -2,16 +2,16 @@
  * Spatial-structure tab (extracted from Workspace.tsx in c284 as part
  * of #441 P1 2.1). Combines three stacked cards:
  *
- *   1. SpatialAutocorrelationCard — Moran's I + Geary's C per topic
+ *   1. SpatialAutocorrelationCard: Moran's I + Geary's C per topic
  *      on the 220-per-class sub-sample (canonical fit).
- *   2. SpatialFullCard — same metrics on the LDA refit over the FULL
+ *   2. SpatialFullCard: same metrics on the LDA refit over the FULL
  *      labelled pixel set (max_iter=40, batch_size=1024). Used to
  *      check that the canonical sub-sample numbers don't drift.
- *   3. FelzenszwalbCard — graph-based image segmentation produced
+ *   3. FelzenszwalbCard: graph-based image segmentation produced
  *      from the band-frequency wordification + a 720x240 SVG of
  *      mean spectra per group.
  *
- * The three card components are module-local — only SpatialStructureTab
+ * The three card components are module-local: only SpatialStructureTab
  * consumes them.
  */
 import { useTranslation } from "react-i18next";
@@ -268,7 +268,7 @@ function SpatialAutocorrelationCard({
         {t("pages:workspace.tabs.SpatialStructureTab.auto_help", {
           sampled: spatial.n_sampled_pixels,
           moransI:
-            spatial.aggregated_morans_I_mean_over_topics?.toFixed(3) ?? "—",
+            spatial.aggregated_morans_I_mean_over_topics?.toFixed(3) ?? ", ",
         })}
       </p>
       <div className="overflow-x-auto">

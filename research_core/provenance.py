@@ -3,9 +3,9 @@
 Two small, dependency-free helpers so every per-builder artefact can carry
 the same traceable stamp the web manifest does:
 
-- ``git_sha()``   — the HEAD commit the artefact was generated at, or ``None``
+- ``git_sha()``  : the HEAD commit the artefact was generated at, or ``None``
                     when git is unavailable (e.g. an exported tarball).
-- ``iso_z_now()`` — an ISO-8601 UTC timestamp with a trailing ``Z`` (the
+- ``iso_z_now()``: an ISO-8601 UTC timestamp with a trailing ``Z`` (the
                     project's canonical ``generated_at`` format).
 
 Before this module, ``git_sha`` lived only in ``manifests/index.json``
@@ -41,7 +41,7 @@ def git_sha() -> str | None:
             timeout=5,
         )
         return result.stdout.strip()
-    except Exception:  # noqa: BLE001 — any git/OS failure means "no sha"
+    except Exception:  # noqa: BLE001, any git/OS failure means "no sha"
         return None
 
 

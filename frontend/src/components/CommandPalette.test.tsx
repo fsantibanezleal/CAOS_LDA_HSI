@@ -1,5 +1,5 @@
 /**
- * CommandPalette (c232) tests — Ctrl+K toggles open, fuzzy filter
+ * CommandPalette (c232) tests: Ctrl+K toggles open, fuzzy filter
  * narrows results, keyboard nav (Arrow + Enter) selects items, Esc
  * closes.
  */
@@ -51,7 +51,7 @@ describe("CommandPalette", () => {
     expect(screen.getByText(/Open Botswana/i)).toBeInTheDocument();
   });
 
-  it("filters by query — typing 'botswana' narrows to that scene", () => {
+  it("filters by query, typing 'botswana' narrows to that scene", () => {
     renderPalette();
     fireEvent.keyDown(window, { key: "k", ctrlKey: true });
     const input = screen.getByRole("textbox");
@@ -63,7 +63,7 @@ describe("CommandPalette", () => {
 
   it("does not open Ctrl+K when typing inside an input field elsewhere", () => {
     // Render an input and dispatch Ctrl+K with the input as the
-    // event target — the palette should NOT toggle so the user can
+    // event target, the palette should NOT toggle so the user can
     // type 'k' freely inside form fields.
     render(
       <MemoryRouter>

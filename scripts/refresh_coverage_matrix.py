@@ -108,7 +108,7 @@ def main() -> int:
             row["value_max"] = round(max(vals), 4)
         matrix.append(row)
 
-        # Q=16/32 coverage tracking — handle backbone alternate path
+        # Q=16/32 coverage tracking: handle backbone alternate path
         backbone_alt = None
         if axis in ("HDP", "ProdLDA", "ETM"):
             backbone_alt = ("backbones_f7", axis.lower())
@@ -168,7 +168,7 @@ def main() -> int:
     total_have = sum(a["have"] for a in matrix)
     total_target = sum(a["target"] for a in matrix)
     print(
-        f"[coverage] wrote {target_path.name} — "
+        f"[coverage] wrote {target_path.name}, "
         f"{total_have}/{total_target} ({100 * total_have / total_target:.1f}%)",
         flush=True,
     )

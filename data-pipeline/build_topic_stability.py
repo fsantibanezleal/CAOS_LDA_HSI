@@ -1,6 +1,6 @@
 """B-6 Topic stability: Hungarian-matched cosine across seeds.
 
-Master plan Addendum B Axis A (internal stability — Greene-O'Callaghan-
+Master plan Addendum B Axis A (internal stability, Greene-O'Callaghan-
 Cunningham 2014, ACM CSUR 2024).
 
 For each labelled scene at the canonical K:
@@ -166,7 +166,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             pair_std[i, j] = float(cos_vec.std())
 
     # Aggregate to per-topic stability (median cosine across all pairs against seed 0)
-    arr = np.array(per_topic_cos, dtype=np.float64)  # (N_SEEDS, K) — row 0 is self (1.0)
+    arr = np.array(per_topic_cos, dtype=np.float64)  # (N_SEEDS, K), row 0 is self (1.0)
     per_topic_median_vs_seed0 = np.median(arr[1:], axis=0)
     per_topic_min_vs_seed0 = np.min(arr[1:], axis=0)
     per_topic_std_vs_seed0 = np.std(arr[1:], axis=0)
@@ -206,7 +206,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             "off_diagonal_min": round(float(off.min()), 6),
             "off_diagonal_std": round(float(off.std()), 6),
         },
-        "framework_axis": "B-6 (master plan Addendum B Axis A): topic stability via Hungarian-matched cosine across seeds — per-topic vector + agreement matrix",
+        "framework_axis": "B-6 (master plan Addendum B Axis A): topic stability via Hungarian-matched cosine across seeds, per-topic vector + agreement matrix",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_topic_stability v0.1",
     }
@@ -247,7 +247,7 @@ def main() -> int:
                 flush=True,
             )
         written += 1
-    print(f"[stability] done — {written} scenes written.", flush=True)
+    print(f"[stability] done, {written} scenes written.", flush=True)
     return 0
 
 

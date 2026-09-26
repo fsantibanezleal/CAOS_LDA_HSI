@@ -1,4 +1,4 @@
-"""HIDSAG V-sweep — V1..V14, V17..V19 wordification + F-2 coherence
+"""HIDSAG V-sweep, V1..V14, V17..V19 wordification + F-2 coherence
 on 5 mineral subsets.
 
 HIDSAG documents are region-aggregated reflectance spectra
@@ -14,11 +14,11 @@ USGS library matching aligns with absorption peaks.
 Recipe coverage on HIDSAG:
   V1-V7, V10-V14, V17-V19 are dispatched here (all unsupervised; they
   operate directly on the [D, B] region-document spectra matrix).
-  V8 (endmember NFINDR) and V9 (region-SAM Felzenszwalb) are skipped —
+  V8 (endmember NFINDR) and V9 (region-SAM Felzenszwalb) are skipped, 
   they need scene-level precomputes that do not exist for HIDSAG.
   V15 (spectral indices) and V16 (foundation-model scaffold) are out of
   scope (wavelength-band-specific / external-weights dependent).
-  V20 (mineral-class-supervised) is out of scope — HIDSAG region
+  V20 (mineral-class-supervised) is out of scope, HIDSAG region
   documents carry no per-document mineral class label.
 
 Output:
@@ -104,7 +104,7 @@ def normalise_per_row(X: np.ndarray) -> np.ndarray:
 # standalone builders so cells are comparable to the labelled-scene sweep.
 # ---------------------------------------------------------------------------
 
-# V13 (VQ-VAE codebook) — mirrors build_wordifications_v13.py
+# V13 (VQ-VAE codebook): mirrors build_wordifications_v13.py
 V13_M = 4              # number of sub-vectors per spectrum
 V13_K_CODEWORDS = 32   # codewords per sub-vector position
 V13_LATENT = 8
@@ -113,21 +113,21 @@ V13_BATCH = 128
 V13_LR = 3e-3
 V13_COMMITMENT_BETA = 0.25
 
-# V14 (CWT-Morlet) — mirrors build_wordifications_v14.py
+# V14 (CWT-Morlet): mirrors build_wordifications_v14.py
 V14_N_SCALES = 16
 V14_P_BUCKETS = 8
 V14_MAX_TOKENS_PER_DOC = 16
 V14_WAVELET = "morl"
 
-# V17 (sparse-coding dictionary) — mirrors build_wordifications_v17.py
+# V17 (sparse-coding dictionary): mirrors build_wordifications_v17.py
 V17_K_ATOMS = 64
 V17_N_NONZERO = 8
 
-# V18 (graph-Laplacian eigenvectors) — mirrors build_wordifications_v18.py
+# V18 (graph-Laplacian eigenvectors): mirrors build_wordifications_v18.py
 V18_K_EIGEN = 16
 V18_K_NN = 16          # capped per (subset) to min(16, D-2) at call time
 
-# V19 (UMAP coordinates) — mirrors build_wordifications_v19.py
+# V19 (UMAP coordinates): mirrors build_wordifications_v19.py
 V19_N_DIMS = 3
 V19_N_NEIGHBORS = 15
 V19_MIN_DIST = 0.1
@@ -381,11 +381,11 @@ def wordify(recipe: str, X: np.ndarray, scheme: str, Q: int):
     precomputes that don't exist for HIDSAG; we skip them.
 
     Out of scope for HIDSAG (not dispatched here):
-      V15 — spectral indices need wavelength-specific bands (the HIDSAG
+      V15, spectral indices need wavelength-specific bands (the HIDSAG
             documents are region aggregates over a synthetic wavelength
             grid, so named-band indices are not meaningful).
-      V16 — foundation-model scaffold needs external pretrained weights.
-      V20 — supervised: requires a per-document mineral class label that
+      V16, foundation-model scaffold needs external pretrained weights.
+      V20, supervised: requires a per-document mineral class label that
             does not exist for the HIDSAG region documents (only a
             sample_owner id, used by build_v_sweep_hidsag_f7).
     """
@@ -463,7 +463,7 @@ def fit_lda_and_compute(recipe: str, subset: str, doc_term: sp.csr_matrix):
     except Exception:
         perplexity = float("nan")
 
-    # F-14 jaccard repetitiveness — clip top-N to vocab size
+    # F-14 jaccard repetitiveness: clip top-N to vocab size
     effective_n = min(TOP_N, V)
     top_sets = [set(np.argsort(phi[k])[::-1][:effective_n].tolist()) for k in range(K)]
     pair_jaccard = []

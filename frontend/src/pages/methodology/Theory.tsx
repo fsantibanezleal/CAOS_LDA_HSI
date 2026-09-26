@@ -10,12 +10,12 @@ export default function MethodologyTheory() {
   return (
     <PageShell
       title={t("pages:methodology_theory.title")}
-      lead="Probabilistic topic models over hyperspectral imagery — what they are, how they work, and why a pixel can be treated as a document."
+      lead="Probabilistic topic models over hyperspectral imagery, what they are, how they work, and why a pixel can be treated as a document."
     >
       <Section id="why-ptm" title={t("pages:methodology_theory.sections.why-ptm.title")} lead={t("pages:methodology_theory.sections.why-ptm.lead")}>
         <p>
-          Under the most popular model — Latent Dirichlet Allocation (Blei, Ng &amp;
-          Jordan, 2003) — a corpus of <em>D</em> documents over a vocabulary of
+          Under the most popular model, Latent Dirichlet Allocation (Blei, Ng &amp;
+          Jordan, 2003), a corpus of <em>D</em> documents over a vocabulary of
           size <em>V</em> is explained by two families of distributions:{" "}
           <Equation tex="\theta_d \in \Delta^{K-1}" /> is the topic mixture of
           document <em>d</em>, and <Equation tex="\phi_k \in \Delta^{V-1}" /> is
@@ -63,8 +63,8 @@ export default function MethodologyTheory() {
         </p>
         <p className="mt-3">
           Variational inference posits a tractable family{" "}
-          <Equation tex="q(\theta, \phi, z \mid \lambda, \gamma, \nu)" /> — typically
-          a fully-factored mean-field surrogate — and maximises the
+          <Equation tex="q(\theta, \phi, z \mid \lambda, \gamma, \nu)" />, typically
+          a fully-factored mean-field surrogate, and maximises the
           Evidence Lower BOund (ELBO):
         </p>
         <Equation
@@ -121,8 +121,8 @@ export default function MethodologyTheory() {
 
       <Section id="why-mixed-membership" title={t("pages:methodology_theory.sections.why-mixed-membership.title")} lead={t("pages:methodology_theory.sections.why-mixed-membership.lead")}>
         <p>
-          The hard-membership assumption — a pixel belongs to exactly one
-          class — fails in HSI because every spectrum is by construction a
+          The hard-membership assumption, a pixel belongs to exactly one
+          class, fails in HSI because every spectrum is by construction a
           mixture. LDA's mixed decomposition captures that reality directly:{" "}
           <Equation tex="\theta_d" /> is the topical composition of pixel{" "}
           <em>d</em>, and the sum <Equation tex="\sum_{k} \theta_{d,k} \phi_k" /> is
@@ -309,39 +309,39 @@ export default function MethodologyTheory() {
           style={{ color: "var(--color-fg-subtle)" }}
         >
           <li>
-            Blei, Ng &amp; Jordan (2003) —{" "}
+            Blei, Ng &amp; Jordan (2003), {" "}
             <em>Latent Dirichlet Allocation</em>. JMLR 3, 993–1022. The
             canonical paper. §3 of the journal manuscript reproduces the
             joint factorisation; §4.2 motivates the wordification recipes.
           </li>
           <li>
-            Hoffman, Blei &amp; Bach (2010) —{" "}
+            Hoffman, Blei &amp; Bach (2010), {" "}
             <em>Online learning for Latent Dirichlet Allocation</em>. NIPS.
             Source of the stochastic VI updates that <code>gensim</code>
             ships and that this project uses for the LDA fits (§3.3 of the
             journal manuscript).
           </li>
           <li>
-            Griffiths &amp; Steyvers (2004) —{" "}
+            Griffiths &amp; Steyvers (2004), {" "}
             <em>Finding scientific topics</em>. PNAS 101 (Suppl 1),
             5228–5235. Collapsed-Gibbs alternative; cited in the
             inference-choice rationale (§3.4).
           </li>
           <li>
-            Sievert &amp; Shirley (2014) —{" "}
+            Sievert &amp; Shirley (2014), {" "}
             <em>LDAvis: A method for visualizing and interpreting topics</em>.
             Defines the relevance formula λ (Workspace <em>Topics</em> tab)
             and is referenced in §6.1 of the journal manuscript.
           </li>
           <li>
-            Röder, Both &amp; Hinneburg (2015) —{" "}
+            Röder, Both &amp; Hinneburg (2015), {" "}
             <em>Exploring the Space of Topic Coherence Measures</em>. WSDM.
             Source of the c_v / NPMI / U-Mass definitions used above and in
             the Benchmarks <em>Topics</em> tab (§6.2 of the journal
             manuscript).
           </li>
           <li>
-            Stammbach et al. (2023) —{" "}
+            Stammbach et al. (2023), {" "}
             <em>
               Revisiting Automated Topic Model Evaluation with Large Language
               Models
@@ -650,10 +650,10 @@ function MixedMembershipSVG() {
           <rect x="360" y="80" width="120" height="20" fill="#f97316" />
           <rect x="480" y="80" width="50" height="20" fill="#22c55e" />
           <text x="260" y="95" textAnchor="middle" fill="var(--color-on-accent, #ffffff)" fontSize="11">
-            topic 1 — 0.59
+            topic 1, 0.59
           </text>
           <text x="420" y="95" textAnchor="middle" fill="var(--color-on-accent, #ffffff)" fontSize="11">
-            topic 2 — 0.27
+            topic 2, 0.27
           </text>
           <text x="505" y="95" textAnchor="middle" fill="var(--color-on-accent, #ffffff)" fontSize="11">
             t3

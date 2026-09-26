@@ -1,6 +1,6 @@
 """Structural validator: TS payload types vs the live served JSON.
 
-Motivation: the HidsagEda type was fictional — every field mis-shaped — and
+Motivation: the HidsagEda type was fictional, every field mis-shaped, and
 tsc could not catch it because the *type* was wrong, not the consumer. A card
 then did `dominant_targets_by_mean[].std.toFixed()` on a field that does not
 exist -> runtime crash. This script catches that class systemically: for each
@@ -55,9 +55,9 @@ def _kind_of_annotation(ann: str) -> str:
         return "object"
     if a in ("string", "number", "boolean") or re.match(r'^["\d]', a):
         return "scalar"
-    if "|" in a:  # union of literals/types — too ambiguous
+    if "|" in a:  # union of literals/types, too ambiguous
         return "any"
-    return "any"  # named type (HidsagBlock, etc.) — unresolved
+    return "any"  # named type (HidsagBlock, etc.), unresolved
 
 
 def parse_required_fields(

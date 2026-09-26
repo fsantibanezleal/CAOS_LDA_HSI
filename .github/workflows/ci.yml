@@ -5,7 +5,7 @@ name: CI
 #   1. Backend: install requirements + dev-requirements, run the full
 #      pytest suite (route inventory, schemas, CORS, builders, helpers).
 #   2. Frontend: tsc -b + Vite build (type-check gate) + vitest run (#775).
-#   3. data/derived/manifests/index.json is valid JSON AND current — not
+#   3. data/derived/manifests/index.json is valid JSON AND current: not
 #      stale vs the data/derived tree (#776, check_manifest_current.py).
 
 on:
@@ -34,12 +34,14 @@ jobs:
           pip install -r dev-requirements.txt
       - name: Verify routers import + count routes
         run: |
-          python -c "from app.routers.content import router; n=len(router.routes); print(f'{n} routes registered'); assert n >= 50, 'too few routes — regression?'"
+          python -c "from app.routers.content import router; n=len(router.routes); print(f'{n} routes registered'); assert n >= 50, 'too few routes, regression?'"
       - name: Verify manifest is valid JSON
         run: |
           python -c "import json; d=json.load(open('data/derived/manifests/index.json')); n=len(d.get('artifacts', [])); print(f'manifest has {n} artefacts')"
       - name: CI budget, trunk-only triggers, no training (ADR-0074)
         run: python scripts/check_ci_budget.py
+      - name: No em-dash and no emoji in tracked content (ADR-0067)
+        run: python scripts/check_content_standards.py
   frontend-build:
     name: Frontend build
     runs-on: ubuntu-latest

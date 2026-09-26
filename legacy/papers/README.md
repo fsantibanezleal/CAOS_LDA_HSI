@@ -5,8 +5,8 @@ the conference paper that first proposed treating hyperspectral images
 of mineral samples as corpora for probabilistic topic modelling, plus
 its raw text extraction for offline grep / search.
 
-The full bibliographic context — including earlier and later papers in
-the same line of work — lives in [`CITATIONS.md`](CITATIONS.md).
+The full bibliographic context, including earlier and later papers in
+the same line of work, lives in [`CITATIONS.md`](CITATIONS.md).
 
 ## Files
 
@@ -30,7 +30,7 @@ Garrido², Felipe Navarro², Álvaro F. Egaña².
 Engineering, Universidad de Chile, Chile.
 
 **Venue.** 18th International Conference on Mineral Processing and
-Geometallurgy — Procemin Geomet 2022 — Gecamin, Santiago, Chile.
+Geometallurgy, Procemin Geomet 2022, Gecamin, Santiago, Chile.
 
 **Year.** 2022.
 
@@ -99,7 +99,7 @@ contributions are inherited directly:
 
 - It used two laboratory datasets (DB1, DB2) that are **not
   redistributable**. The repo replaces them with publicly redistributable
-  alternatives — UPV/EHU labelled scenes, Borsoi unmixing ROIs, USGS
+  alternatives, UPV/EHU labelled scenes, Borsoi unmixing ROIs, USGS
   spectral libraries, MicaSense field samples, and HIDSAG (Family D).
 - It did not formally analyse topic stability across seeds, sensitivity
   to quantisation level, or cross-scene transfer. Those are explicit
@@ -115,7 +115,7 @@ contributions are inherited directly:
 
 ## Cited Foundational Works (From The A39 Paper)
 
-The reference list of the source paper — kept here as the explicit
+The reference list of the source paper, kept here as the explicit
 intellectual lineage of this repository:
 
 - Blei, D. M., Ng, A. Y., Jordan, M. I. (2003). *Latent Dirichlet
@@ -156,9 +156,9 @@ intellectual lineage of this repository:
   detection of agricultural products and food: a review*. **Food Sci.
   Nutr.** 8(10), 5206–5214.
 
-A more complete and updated source list — including the 2023 HIDSAG
+A more complete and updated source list, including the 2023 HIDSAG
 *Scientific Data* paper, post-2022 PM-LDA work, and the modern dataset
-literature — is maintained in [`CITATIONS.md`](CITATIONS.md) and
+literature, is maintained in [`CITATIONS.md`](CITATIONS.md) and
 [`../../docs/sources.md`](../../docs/sources.md).
 
 ## Citing This Repository
@@ -178,6 +178,6 @@ when referring to the Family D experiments:
   archived references.
 - Do not delete `Article_FASL_A39_final_extracted.txt` because the docx
   parsing pipeline that produced it is not deterministic across machines
-  — keeping the extraction stable matters for reproducible search.
+ , keeping the extraction stable matters for reproducible search.
 - New papers that join the line of work go into [`CITATIONS.md`](CITATIONS.md),
   not as new files here, unless the paper PDF / docx is needed offline.

@@ -108,7 +108,7 @@ function ProtocolBox({ stats }: { stats: MethodStatistics }) {
                 Object.values(stats.labeled_scenes[0]!.methods)[0]
                   ?.n_evaluations ?? 0,
               )
-            : "—"
+            : ", "
         }
       />
       <Stat
@@ -531,32 +531,32 @@ function MultiAxisBatterySection() {
               >
                 <td className="py-1.5 pr-3 font-mono">{r.scene}</td>
                 <td className="py-1.5 pr-3 text-right font-mono">
-                  {Number.isFinite(r.theta_f1) ? r.theta_f1.toFixed(3) : "—"}
+                  {Number.isFinite(r.theta_f1) ? r.theta_f1.toFixed(3) : ", "}
                 </td>
                 <td
                   className="py-1.5 pr-3 text-right font-mono"
                   style={{ color: "var(--color-accent)" }}
                 >
-                  {r.ica10_f1 != null ? r.ica10_f1.toFixed(3) : "—"}
+                  {r.ica10_f1 != null ? r.ica10_f1.toFixed(3) : ", "}
                 </td>
                 <td className="py-1.5 pr-3 text-right font-mono">
                   {r.cae_max_f1 > 0
                     ? `${r.cae_max_f1.toFixed(3)} (K=${r.cae_max_K})`
-                    : "—"}
+                    : ", "}
                 </td>
                 <td className="py-1.5 pr-3 text-right font-mono">
                   {r.theta_logistic != null
                     ? r.theta_logistic.toFixed(3)
-                    : "—"}
+                    : ", "}
                 </td>
                 <td
                   className="py-1.5 pr-3 text-right font-mono"
                   style={{ color: "var(--color-accent)" }}
                 >
-                  {r.routed_soft != null ? r.routed_soft.toFixed(3) : "—"}
+                  {r.routed_soft != null ? r.routed_soft.toFixed(3) : ", "}
                 </td>
                 <td className="py-1.5 pr-3 text-right font-mono">
-                  {r.raw_logistic != null ? r.raw_logistic.toFixed(3) : "—"}
+                  {r.raw_logistic != null ? r.raw_logistic.toFixed(3) : ", "}
                 </td>
                 <td className="py-1.5 pr-3 text-right font-mono">
                   {r.lda_off_diag.toFixed(3)}

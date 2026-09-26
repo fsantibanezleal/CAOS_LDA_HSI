@@ -384,7 +384,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             "procrustes_mean": round(float(proc_off.mean()), 6),
             "procrustes_max": round(float(proc_off.max()), 6),
         },
-        "framework_axis": "B-6 follow-up: deep-method seed stability for CAE-1D — pairwise cluster ARI + Procrustes between latent embeddings across N_SEEDS torch initialisations",
+        "framework_axis": "B-6 follow-up: deep-method seed stability for CAE-1D, pairwise cluster ARI + Procrustes between latent embeddings across N_SEEDS torch initialisations",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "builder_version": "build_deep_seed_stability v0.1",
     }
@@ -417,7 +417,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[deep_seed] done — {written} scenes written.", flush=True)
+    print(f"[deep_seed] done, {written} scenes written.", flush=True)
     return 0
 
 

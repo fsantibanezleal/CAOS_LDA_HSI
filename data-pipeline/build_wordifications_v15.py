@@ -1,4 +1,4 @@
-"""V15 — spectral indices as tokens (#673).
+"""V15, spectral indices as tokens (#673).
 
 Classical remote-sensing vegetation / water / soil indices computed
 per pixel, binned to Q levels, emitted as discrete (index, bin)
@@ -13,7 +13,7 @@ Indices computed:
 - SAVI (Soil Adjusted Vegetation Index): 1.5 * (NIR - RED) / (NIR + RED + 0.5)
 
 The wavelength windows are inferred from each scene's
-approximate_wavelengths() — bands closest to the canonical centers
+approximate_wavelengths(), bands closest to the canonical centers
 (490 BLUE, 560 GREEN, 660 RED, 850 NIR, 1610 SWIR1, 2200 SWIR2).
 
 This is the classical remote-sensing baseline. Closes the reviewer
@@ -139,7 +139,7 @@ def build_for_scene(scene_id: str, q: int = Q_DEFAULT) -> dict | None:
     D = spectra.shape[0]
     wavelengths = approximate_wavelengths(config, B)
 
-    # Normalise spectra to [0, 1] per pixel before computing indices —
+    # Normalise spectra to [0, 1] per pixel before computing indices, 
     # safer when reflectance is in raw DN units rather than reflectance.
     lo = spectra.min(axis=1, keepdims=True)
     hi = spectra.max(axis=1, keepdims=True)

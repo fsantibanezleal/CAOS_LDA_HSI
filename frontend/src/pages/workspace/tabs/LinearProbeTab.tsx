@@ -152,7 +152,7 @@ export function LinearProbeTab({
                     <td className="py-1 pr-3 text-right font-mono">
                       {mm.balanced_accuracy
                         ? mm.balanced_accuracy.mean.toFixed(3)
-                        : "—"}
+                        : ", "}
                     </td>
                     <td className="py-1 w-[180px]">
                       <div

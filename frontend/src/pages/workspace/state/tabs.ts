@@ -39,7 +39,7 @@ export type ExploreTab =
 
 /**
  * Order used by the `[` / `]` keyboard shortcuts to walk the entire
- * tab list. This is intentionally the *full* flat list — phase-aware
+ * tab list. This is intentionally the *full* flat list: phase-aware
  * navigation lives in `EXPLORE_PHASES` below.
  */
 export const EXPLORE_TAB_ORDER: ExploreTab[] = [

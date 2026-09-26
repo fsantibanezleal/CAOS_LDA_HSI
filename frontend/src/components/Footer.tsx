@@ -43,7 +43,7 @@ export function Footer() {
             <span style={{ color: "var(--color-fg-subtle)" }}>{APP_BRANCH}</span>
           </span>
           <span aria-hidden style={{ opacity: 0.4 }}>·</span>
-          <span title="Build timestamp (UTC) — when the bundle was produced">
+          <span title="Build timestamp (UTC), when the bundle was produced">
             <span style={{ color: "var(--color-fg-faint)" }}>built </span>
             <span style={{ color: "var(--color-fg-subtle)" }}>{built}</span>
           </span>

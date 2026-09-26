@@ -92,7 +92,7 @@ export function HeroSpectralViz({ scenes }: { scenes: (ScenePeek | null)[] | nul
             </title>
             <desc id="hero-spectra-desc">
               {series.length === 0
-                ? "Reflectance loading — wavelength axis 400 to 2500 nm."
+                ? "Reflectance loading, wavelength axis 400 to 2500 nm."
                 : `Reflectance curves of the ${series.length} Indian Pines land-cover ` +
                   `classes plotted against wavelength 400 to 2500 nm. Top three by ` +
                   `prevalence: ${series.slice(0, 3).map((s) => s.name).join(", ")}.`}
@@ -217,7 +217,7 @@ function HypercubeMini() {
       <text x="155" y="232" fontSize="10.5" fill="currentColor" opacity="0.65" textAnchor="middle">W = width (px)</text>
       <text x="285" y="100" fontSize="10.5" fill="currentColor" opacity="0.65" transform="rotate(90 285 100)">H = height</text>
 
-      {/* cube — 3D-ish */}
+      {/* cube, 3D-ish */}
       {/* top face */}
       <polygon points="60,40 240,40 268,68 88,68" fill="url(#caos-cube-top)" stroke="currentColor" strokeOpacity="0.45" strokeWidth="1"/>
       {/* front face */}
@@ -242,7 +242,7 @@ function HypercubeMini() {
       <rect x="120" y="120" width="14" height="14" fill="rgba(214, 39, 40, 0.85)" stroke="white" strokeOpacity="0.7" strokeWidth="1.2"/>
       <line x1="134" y1="127" x2="190" y2="127" stroke="rgba(214, 39, 40, 0.85)" strokeWidth="1.4" markerEnd="url(#caos-arr)"/>
       <text x="200" y="124" fontSize="11" fill="rgba(214, 39, 40, 1)" fontWeight="600">x[i,j] ∈ ℝᴮ</text>
-      <text x="200" y="140" fontSize="9.5" fill="currentColor" opacity="0.6">a pixel — one document option (or region / patch / sample)</text>
+      <text x="200" y="140" fontSize="9.5" fill="currentColor" opacity="0.6">a pixel, one document option (or region / patch / sample)</text>
 
       <defs>
         <marker id="caos-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">

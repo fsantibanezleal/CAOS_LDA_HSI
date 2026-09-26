@@ -1,4 +1,4 @@
-"""V-sweep ETM backbone — factorial backbone row (#617 third row).
+"""V-sweep ETM backbone, factorial backbone row (#617 third row).
 
 Embedded Topic Model (Dieng-Ruiz-Blei 2020). Reuses the ETM impl from
 build_neural_topic_models.py and runs it on each (V, scene).

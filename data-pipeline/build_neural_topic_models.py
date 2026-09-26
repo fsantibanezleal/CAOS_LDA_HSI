@@ -1,11 +1,11 @@
-"""Neural variational topic models — ProdLDA via Pyro and CTM via
+"""Neural variational topic models, ProdLDA via Pyro and CTM via
 contextualized-topic-models.
 
 For each labelled scene this builder fits two neural topic models on
 the V1 band-frequency document-term matrix:
 
   prodlda             ProdLDA (Srivastava-Sutton 2017) implemented in Pyro
-  ctm_combined        CombinedTM (Bianchi et al. 2021) — concatenates BoW
+  ctm_combined        CombinedTM (Bianchi et al. 2021), concatenates BoW
                       with sentence-transformer embeddings; here the
                       "embedding" is the topic-mixture from the canonical
                       sklearn LDA fit so the model can sharpen on
@@ -405,7 +405,7 @@ def main() -> int:
             print(f"  FAILED: {exc}", flush=True)
             continue
         written_total += len(summaries)
-    print(f"[neural_tm] done — {written_total} (variant x scene) outputs.", flush=True)
+    print(f"[neural_tm] done, {written_total} (variant x scene) outputs.", flush=True)
     return 0
 
 

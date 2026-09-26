@@ -22,7 +22,7 @@ The canonical (no-mask) fit lives in build_topic_views.py / build_topic_to_data.
 and is referenced for side-by-side comparison in the frontend. This
 builder lets the user answer "what would the topics look like if we
 only saw the VNIR / SWIR / non-water-corrupted / top-50-discriminative
-bands?" — i.e. it instantiates the Step 8 band-mask manipulation that
+bands?", i.e. it instantiates the Step 8 band-mask manipulation that
 web-app-spec.md requested.
 
 Hyperparameters mirror build_topic_views.py:

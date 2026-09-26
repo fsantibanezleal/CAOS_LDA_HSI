@@ -37,7 +37,7 @@ const STAGES: Stage[] = [
       "scripts/local build-wordifications && build-wordifications-v4plus && build-wordifications-v6plus && build-wordifications-v7v11",
     produces: "data/derived/wordifications/<scene>_<recipe>_<scheme>_Q<q>.json (648 configs = 108 per scene × 6 scenes)",
     notes:
-      "The corpus-construction layer: 12 recipes × 3 schemes × 3 Q = 108 per scene. Each config is a distinct document-term matrix, all exposed via /api/wordifications. The full F-axis sweep evaluates all 19 built recipes (V1-V20; V16 scaffold) — see the v_sweep layer.",
+      "The corpus-construction layer: 12 recipes × 3 schemes × 3 Q = 108 per scene. Each config is a distinct document-term matrix, all exposed via /api/wordifications. The full F-axis sweep evaluates all 19 built recipes (V1-V20; V16 scaffold), see the v_sweep layer.",
   },
   {
     id: "topic-views",
@@ -62,11 +62,11 @@ const STAGES: Stage[] = [
     produces:
       "data/derived/groupings/{slic_500, slic_2000, patch_7, patch_15, felzenszwalb}/<scene>.json + cross_method_agreement/<scene>.json",
     notes:
-      "Four document constructions × ARI/NMI/V cross-pair. Metric: off-diagonal ~0.15 — the constructors are genuinely different, not equivalent.",
+      "Four document constructions × ARI/NMI/V cross-pair. Metric: off-diagonal ~0.15, the constructors are genuinely different, not equivalent.",
   },
   {
     id: "addendum-b",
-    name: "Addendum B — multi-axis battery",
+    name: "Addendum B, multi-axis battery",
     command:
       "scripts/local build-linear-probe-panel build-rate-distortion-curve build-topic-routed-classifier build-mutual-information build-embedded-baseline build-topic-stability build-topic-to-usgs-v7 build-cross-scene-transfer build-topic-anomaly build-topic-spatial-continuous build-topic-spatial-full build-endmember-baseline",
     produces:
@@ -104,7 +104,7 @@ const STAGES: Stage[] = [
     command: "scripts/local curate-for-web",
     produces: "data/derived/manifests/index.json",
     notes:
-      "Packs everything above into the contract the web app reads. 1732 manifest-tracked artefacts (1734 on disk minus README.md and the manifest itself), 69 builder source files, 59 routes (post c351 dead-cluster cleanup), 444 MB. Numbers verified 2026-05-26 — the manifest IS the contract, so when these counts change, rebuild it via `python data-pipeline/curate_for_web.py` and update the HeadlineNumbers card.",
+      "Packs everything above into the contract the web app reads. 1732 manifest-tracked artefacts (1734 on disk minus README.md and the manifest itself), 69 builder source files, 59 routes (post c351 dead-cluster cleanup), 444 MB. Numbers verified 2026-05-26, the manifest IS the contract, so when these counts change, rebuild it via `python data-pipeline/curate_for_web.py` and update the HeadlineNumbers card.",
   },
   {
     id: "audit",
@@ -121,7 +121,7 @@ export default function MethodologyPipeline() {
   return (
     <PageShell
       title={t("pages:methodology_pipeline.title")}
-      lead="The web app serves pre-computed material. Generation runs locally — fetches, preprocesses, fits LDA, computes downstream readouts, packs the manifest. Source code lives in the project repo; here we show only how to run it and what it produces."
+      lead="The web app serves pre-computed material. Generation runs locally, fetches, preprocesses, fits LDA, computes downstream readouts, packs the manifest. Source code lives in the project repo; here we show only how to run it and what it produces."
     >
       <Section id="overview" title={t("pages:methodology_pipeline.sections.overview.title")} lead={t("pages:methodology_pipeline.sections.overview.lead")}>
         <Figure caption="The twelve stages of the local pipeline. Arrows indicate data dependencies between stages. Acquisition is one-time; wordifications, validation-blocks and super-topics are re-run when an upstream parameter changes.">
@@ -187,7 +187,7 @@ export default function MethodologyPipeline() {
         <p>
           Three diagnostics are computed by the groupings + spatial-validation
           builders and surfaced in the Workspace <em>Spatial structure</em>{" "}
-          tab. They are independent of LDA — they describe the document
+          tab. They are independent of LDA, they describe the document
           construction itself.
         </p>
 
@@ -206,7 +206,7 @@ export default function MethodologyPipeline() {
         <p>
           Smaller compactness gives spatially tight regions; larger
           compactness lets colour drive the boundaries. This project ships
-          two SLIC budgets — 500 and 2000 regions — both with the
+          two SLIC budgets, 500 and 2000 regions, both with the
           scikit-image default <Equation tex="m = 10" /> for visual
           reproducibility against the published Achanta et al. examples.
         </p>
@@ -233,7 +233,7 @@ export default function MethodologyPipeline() {
         </p>
 
         <p className="mt-3">
-          <strong>3. Moran's I — spatial autocorrelation of θ</strong>{" "}
+          <strong>3. Moran's I, spatial autocorrelation of θ</strong>{" "}
           (Moran 1950). For each topic <Equation tex="k" /> and a row-standardised
           spatial weight matrix <Equation tex="W" /> (4-connectivity on the
           image grid), the topic's spatial concentration is
@@ -244,7 +244,7 @@ export default function MethodologyPipeline() {
         />
         <p>
           <Equation tex="I_k" /> measures how strongly the
-          per-pixel topic weight is spatially clustered — typically in
+          per-pixel topic weight is spatially clustered, typically in
           roughly <Equation tex="[-1, 1]" /> with null expectation{" "}
           <Equation tex="\mathbb{E}[I_k] = -1/(N-1)" /> (its exact extremes
           are the min/max eigenvalues of the centred, symmetrised weight
@@ -257,7 +257,7 @@ export default function MethodologyPipeline() {
         </p>
 
         <p className="mt-3">
-          <strong>4. Geary's C — local contiguity ratio</strong>{" "}
+          <strong>4. Geary's C, local contiguity ratio</strong>{" "}
           (Geary 1954). Complementary to Moran's I but built from
           pairwise squared differences rather than centered products:
         </p>
@@ -278,7 +278,7 @@ export default function MethodologyPipeline() {
 
       <Section id="reproduce" title={t("pages:methodology_pipeline.sections.reproduce.title")}>
         <p>
-          The short form — run everything in order, single session:
+          The short form, run everything in order, single session:
         </p>
         <pre
           className="font-mono text-[12.5px] rounded-md p-3 my-3"

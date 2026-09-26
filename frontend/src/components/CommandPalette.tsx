@@ -21,7 +21,7 @@
  *
  * Workspace deep-links emitted from the palette pre-fill a default
  * scene (Indian Pines) + representation (LDA) so the URL restores a
- * populated state instead of dropping the user on the FamilyPicker —
+ * populated state instead of dropping the user on the FamilyPicker, 
  * fixes the audit-flagged dead-end behaviour of `/workspace?tab=<id>`
  * with no `scene` parameter.
  */
@@ -189,7 +189,7 @@ export function CommandPalette() {
         (e.key === "k" || e.key === "K") &&
         (e.ctrlKey || e.metaKey)
       ) {
-        // Only open when not already in a field — the user pressing
+        // Only open when not already in a field, the user pressing
         // Ctrl+K inside a textarea is editing.
         if (!inField || open) {
           e.preventDefault();

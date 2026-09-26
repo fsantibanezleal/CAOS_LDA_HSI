@@ -1,4 +1,4 @@
-"""V-sweep ProdLDA backbone — factorial backbone row (#617 second row).
+"""V-sweep ProdLDA backbone, factorial backbone row (#617 second row).
 
 Reuses the ProdLDA implementation from build_neural_topic_models.py
 and runs it on each (V, scene) doc_term matrix instead of just V1.

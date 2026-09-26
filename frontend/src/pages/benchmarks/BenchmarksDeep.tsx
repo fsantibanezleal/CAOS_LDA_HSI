@@ -62,7 +62,7 @@ function AnomalyComparisonSection() {
   });
 
   const renderCell = (v: number | null) => {
-    if (v == null) return <span style={{ color: "var(--color-text-muted)" }}>—</span>;
+    if (v == null) return <span style={{ color: "var(--color-text-muted)" }}>, </span>;
     const positive = v > 0;
     return (
       <span style={{ color: positive ? "var(--color-accent)" : "rgba(214,39,40,1)" }}>
@@ -340,13 +340,13 @@ function Cae3dAnchorVsFullSection() {
                     c.delta > 0 ? "var(--color-accent)" : c.delta < 0 ? "rgba(214,39,40,1)" : "var(--color-text-muted)";
                   return [
                     <td key={`f${k}`} className="py-1.5 pr-3 text-right font-mono">
-                      {Number.isFinite(c.full) ? c.full.toFixed(3) : "—"}
+                      {Number.isFinite(c.full) ? c.full.toFixed(3) : ", "}
                     </td>,
                     <td key={`a${k}`} className="py-1.5 pr-3 text-right font-mono">
-                      {Number.isFinite(c.anchor) ? c.anchor.toFixed(3) : "—"}
+                      {Number.isFinite(c.anchor) ? c.anchor.toFixed(3) : ", "}
                     </td>,
                     <td key={`d${k}`} className="py-1.5 pr-3 text-right font-mono" style={{ color: dColor, fontWeight: 600 }}>
-                      {Number.isFinite(c.delta) ? (c.delta >= 0 ? "+" : "") + c.delta.toFixed(3) : "—"}
+                      {Number.isFinite(c.delta) ? (c.delta >= 0 ? "+" : "") + c.delta.toFixed(3) : ", "}
                     </td>,
                   ];
                 })}
@@ -499,7 +499,7 @@ function BetaVaeCollapseSection() {
                       fill={t > 0.4 || collapsed ? "white" : "currentColor"}
                       fontFamily="ui-monospace, monospace"
                     >
-                      {Number.isFinite(c.ari) ? c.ari.toFixed(2) : "—"}
+                      {Number.isFinite(c.ari) ? c.ari.toFixed(2) : ", "}
                     </text>
                   </g>
                 );

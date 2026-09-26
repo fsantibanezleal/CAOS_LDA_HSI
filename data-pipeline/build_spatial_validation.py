@@ -6,7 +6,7 @@ requires:
 
 - Moran's I (global spatial autocorrelation) of the dominant-topic map
 - connected-component count and size distribution per topic
-- IoU per (topic, label) class — how well topic dominance overlaps with
+- IoU per (topic, label) class: how well topic dominance overlaps with
   ground-truth class regions
 
 Output: data/derived/spatial/<scene>.json
@@ -20,7 +20,7 @@ References
 - Geary, R. C. (1954). "The Contiguity Ratio and Statistical Mapping".
   *The Incorporated Statistician* 5(3), 115-145. Provides Geary's C
   as a complementary local-contiguity statistic used alongside Moran's I.
-- Anselin, L. (1995). "Local Indicators of Spatial Association — LISA".
+- Anselin, L. (1995). "Local Indicators of Spatial Association: LISA".
   *Geographical Analysis* 27(2), 93-115. Foundation for the optional
   LISA decomposition that breaks Moran's I into per-pixel contributions.
 """
@@ -65,7 +65,7 @@ def morans_I_categorical(grid: np.ndarray, mask: np.ndarray) -> float:
     weighted by their support.
 
     grid: H x W of int with sentinel values for unassigned, masked by `mask`.
-    mask: H x W bool — True where the pixel has a valid topic assignment.
+    mask: H x W bool, True where the pixel has a valid topic assignment.
     """
     h, w = grid.shape
     n = int(mask.sum())
@@ -229,7 +229,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[spatial_validation] done — {written} scenes written.", flush=True)
+    print(f"[spatial_validation] done, {written} scenes written.", flush=True)
     return 0
 
 

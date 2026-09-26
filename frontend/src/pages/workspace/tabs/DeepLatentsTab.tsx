@@ -177,15 +177,15 @@ function DeepLatentsBody({ data }: { data: RepresentationPayload }) {
         <Stat2 label="latent_dim" value={String(data.latent_dim)} />
         <Stat2
           label="K-means ARI"
-          value={ari != null ? ari.toFixed(3) : "—"}
+          value={ari != null ? ari.toFixed(3) : ", "}
         />
         <Stat2
           label="K-means NMI"
-          value={nmi != null ? nmi.toFixed(3) : "—"}
+          value={nmi != null ? nmi.toFixed(3) : ", "}
         />
         <Stat2
           label="silhouette"
-          value={sil != null ? sil.toFixed(3) : "—"}
+          value={sil != null ? sil.toFixed(3) : ", "}
         />
       </div>
 

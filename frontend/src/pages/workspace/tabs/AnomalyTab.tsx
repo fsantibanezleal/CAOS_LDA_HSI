@@ -7,7 +7,7 @@
  * deep β-VAE RMSE, deep β-VAE KL). Source: `/api/topic-anomaly/{scene}`
  * + `/api/deep-anomaly/{scene}`.
  *
- * AnomalyMetric stays as a private helper inside this module — it
+ * AnomalyMetric stays as a private helper inside this module: it
  * is only used here.
  */
 import { useTranslation } from "react-i18next";
@@ -62,8 +62,8 @@ export function AnomalyTab({
           style={{ color: "var(--color-fg-faint)" }}
         >
           {t("pages:workspace.tabs.AnomalyTab.help", {
-            k: topic?.topic_count ?? "—",
-            docs: topic?.n_documents ?? "—",
+            k: topic?.topic_count ?? ", ",
+            docs: topic?.n_documents ?? ", ",
           })}
         </p>
 

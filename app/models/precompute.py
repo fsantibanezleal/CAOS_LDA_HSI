@@ -251,7 +251,7 @@ class SpatialValidationResponse(BaseModel):
 class ValidationBlock(BaseModel):
     """A single validation block (e.g. corpus-integrity, topic-distinctness).
 
-    Schema varies across blocks — metrics shape depends on block_id.
+    Schema varies across blocks, metrics shape depends on block_id.
     Keeping metrics as dict[str, Any] preserves that flexibility while
     making the OpenAPI envelope explicit.
     """
@@ -618,7 +618,7 @@ class MutualInformationHidsag(BaseModel):
 
 
 # ============================================================================
-# c249: fourth-slice models — agreement, narrative, interpretability,
+# c249: fourth-slice models: agreement, narrative, interpretability,
 # representations, topic-routed, neural-topic, rate-distortion, stability,
 # anomaly, USGS, endmember.
 # ============================================================================
@@ -938,7 +938,7 @@ class MethodStatisticsHidsag(BaseModel):
 
 
 # ============================================================================
-# c254: final-slice models — manifest, groupings, topic-variants,
+# c254: final-slice models: manifest, groupings, topic-variants,
 # representations index, bayesian-comparison, llm-tea-leaves.
 # Closes #440 P1 1.2 fully at 82 of 82 routes (100%).
 # ============================================================================
@@ -977,7 +977,7 @@ class Manifest(BaseModel):
 
 class IndexItem(BaseModel):
     model_config = _PassThroughConfig
-    # No fixed keys — different routes name the discriminator field
+    # No fixed keys: different routes name the discriminator field
     # differently (method vs variant vs subset_code etc).
 
 
@@ -1064,7 +1064,7 @@ class BayesianComparison(BaseModel):
 
 
 class LlmTeaLeaves(BaseModel):
-    """Permissive envelope — no live JSON exists in the test fixture
+    """Permissive envelope, no live JSON exists in the test fixture
     tree, so we cannot tighten the schema. The route returns whatever
     `build_b12_llm_tea_leaves` produced when ANTHROPIC_API_KEY was set.
     """

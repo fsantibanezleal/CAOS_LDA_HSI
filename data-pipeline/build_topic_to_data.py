@@ -108,7 +108,7 @@ def build_for_scene(scene_id: str) -> dict | None:
     fit_dir = LOCAL_FIT_DIR / scene_id
     theta_path = fit_dir / "theta.npy"
     if not theta_path.exists():
-        print(f"  no fit at {fit_dir} — run build_topic_views.py first", flush=True)
+        print(f"  no fit at {fit_dir}, run build_topic_views.py first", flush=True)
         return None
 
     theta = np.load(theta_path)  # [D, K]
@@ -125,7 +125,7 @@ def build_for_scene(scene_id: str) -> dict | None:
     all_labels = sorted({int(c) for c in CLASS_NAMES[scene_id].keys()} | {int(c) for c in np.unique(sample_labels)})
     name_map = CLASS_NAMES.get(scene_id, {})
 
-    # Empirical P(label) — the prior over labels in this corpus
+    # Empirical P(label): the prior over labels in this corpus
     p_label_prior_counts = np.zeros(max(all_labels) + 1, dtype=np.int64)
     for lbl in sample_labels:
         p_label_prior_counts[int(lbl)] += 1
@@ -153,7 +153,7 @@ def build_for_scene(scene_id: str) -> dict | None:
         p_label_given_topic_strict.append(dist_strict)
         docs_per_topic_count_strict.append(int(mask_strict.sum()))
 
-        # KL(P(label|topic=k) || P(label)) — how much does the label distribution
+        # KL(P(label|topic=k) || P(label)): how much does the label distribution
         # for this topic deviate from the prior? Higher = more discriminative.
         if labels_dom.size > 0:
             p_post = np.array([entry["p"] for entry in dist_dom])
@@ -180,7 +180,7 @@ def build_for_scene(scene_id: str) -> dict | None:
             })
         top_docs_per_topic.append(docs)
 
-    # Dominant topic map H x W — uint8 with sentinel 255 for unlabelled / not sampled
+    # Dominant topic map H x W: uint8 with sentinel 255 for unlabelled / not sampled
     dominant_map = np.full(h * w, fill_value=255, dtype=np.uint8)
     for d_idx, pixel_idx in enumerate(sample_pixel_indices):
         dominant_map[int(pixel_idx)] = int(dominant[d_idx])
@@ -213,7 +213,7 @@ def build_for_scene(scene_id: str) -> dict | None:
     )
     derived_theta_grid_path.write_bytes(theta_grid_2d.tobytes())
 
-    # Theta projection 2D via PCA — useful for the document-embedding panel
+    # Theta projection 2D via PCA: useful for the document-embedding panel
     theta_centered = theta - theta.mean(axis=0, keepdims=True)
     u, s, _ = np.linalg.svd(theta_centered, full_matrices=False)
     theta_pca_2d = (u[:, :2] * s[:2])
@@ -319,7 +319,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[topic_to_data] done — {written} scenes written.", flush=True)
+    print(f"[topic_to_data] done, {written} scenes written.", flush=True)
     return 0
 
 

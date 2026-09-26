@@ -85,7 +85,7 @@ def test_cross_scene_transfer_envelope(client: TestClient) -> None:
 
 def test_bayesian_comparison_polymorphic(client: TestClient) -> None:
     """The /bayesian-comparison/{task_type} route returns the same
-    envelope for all 4 task types — verify each works."""
+    envelope for all 4 task types, verify each works."""
     for task in [
         "regression",
         "classification",

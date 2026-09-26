@@ -2,7 +2,7 @@
 
 This folder is the **single entry point** for setting up, building,
 running, and validating the project locally. There are no separate
-per-task scripts — everything is exposed as subcommands of the
+per-task scripts, everything is exposed as subcommands of the
 `local.{ps1,sh}` runner so the surface stays consistent across
 Windows, macOS, and Linux.
 
@@ -15,8 +15,8 @@ The deeper documentation lives in:
 
 | File | Role |
 |---|---|
-| `local.ps1` | Windows / PowerShell runner — every subcommand lives here |
-| `local.sh` | Linux / macOS bash mirror — same subcommands, same flags |
+| `local.ps1` | Windows / PowerShell runner, every subcommand lives here |
+| `local.sh` | Linux / macOS bash mirror, same subcommands, same flags |
 | `smoke.ps1` | Smoke-check runner for the local FastAPI app (Windows) |
 | `smoke.sh` | Smoke-check runner for the local FastAPI app (Linux / macOS) |
 
@@ -66,7 +66,7 @@ without deleting it.
 | `demo` | Rebuild the synthetic deterministic LDA demo payload |
 | `smoke` | Hit the canonical API + static endpoints and assert `200` |
 
-### Pipeline — fetch (raw data → `data/raw/`)
+### Pipeline: fetch (raw data → `data/raw/`)
 
 | Subcommand | Effect |
 |---|---|
@@ -80,7 +80,7 @@ without deleting it.
 
 `data/raw/` is git-ignored.
 
-### Pipeline — build derived (compact JSON + previews → `data/derived/`)
+### Pipeline: build derived (compact JSON + previews → `data/derived/`)
 
 | Subcommand | Effect |
 |---|---|
@@ -99,7 +99,7 @@ without deleting it.
 
 Each script is idempotent.
 
-### Pipeline — benchmarks
+### Pipeline: benchmarks
 
 | Subcommand | Effect |
 |---|---|

@@ -52,7 +52,7 @@ HIDSAG_SUBSETS = ["GEOMET", "MINERAL1", "MINERAL2", "GEOCHEM", "PORPHYRY"]
 HIDSAG_SUBSET_TOPIC_COUNTS = {
     "GEOMET": 6, "MINERAL1": 6, "MINERAL2": 4, "GEOCHEM": 5, "PORPHYRY": 6,
 }
-PRIMARY_MODALITY = "swir_low"  # 1000-2500 nm — best for mineralogy
+PRIMARY_MODALITY = "swir_low"  # 1000-2500 nm, best for mineralogy
 
 
 def normalize01_per_row(values: np.ndarray) -> np.ndarray:
@@ -251,7 +251,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[dmr_lda_hidsag] done — {written} subsets written.", flush=True)
+    print(f"[dmr_lda_hidsag] done, {written} subsets written.", flush=True)
     return 0
 
 

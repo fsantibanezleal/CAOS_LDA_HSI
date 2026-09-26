@@ -1,4 +1,4 @@
-"""EDA per labelled scene — class distributions, percentile envelopes,
+"""EDA per labelled scene, class distributions, percentile envelopes,
 band discriminative power, class-class spectral distances.
 
 Output: data/derived/eda/per_scene/<scene>.json
@@ -298,7 +298,7 @@ def main() -> int:
             flush=True,
         )
         written += 1
-    print(f"[eda_per_scene] done — {written} scenes written.", flush=True)
+    print(f"[eda_per_scene] done, {written} scenes written.", flush=True)
     return 0
 
 

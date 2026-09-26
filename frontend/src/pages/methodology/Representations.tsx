@@ -222,7 +222,7 @@ export default function MethodologyRepresentations() {
           style={{ color: "var(--color-fg-subtle)" }}
         >
           Each card sketches a single recipe's tokenization. These are
-          conceptual — actual implementations operate on the full
+          conceptual, actual implementations operate on the full
           B-band spectrum, with binning controlled by scheme ∈ &#123;U,Q,L&#125;
           and Q ∈ &#123;8,16,32&#125;.
         </p>
@@ -286,7 +286,7 @@ export default function MethodologyRepresentations() {
                 <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V3</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>joint (band, bin)</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
-                  Token = <Equation tex="(b, q_b(x))" /> — one token per band naming its quantised bin (vocabulary <Equation tex="B \cdot Q" />).
+                  Token = <Equation tex="(b, q_b(x))" />, one token per band naming its quantised bin (vocabulary <Equation tex="B \cdot Q" />).
                 </td>
               </tr>
               <tr>
@@ -301,7 +301,7 @@ export default function MethodologyRepresentations() {
                 <td className="px-3 py-1.5 border font-mono" style={{ borderColor: "var(--color-border)" }}>V5</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>2nd-derivative</td>
                 <td className="px-3 py-1.5 border" style={{ borderColor: "var(--color-border)" }}>
-                  V4 with <Equation tex="x''_b = x_{b-1} - 2 x_b + x_{b+1}" /> — curvature-encoded.
+                  V4 with <Equation tex="x''_b = x_{b-1} - 2 x_b + x_{b+1}" />, curvature-encoded.
                 </td>
               </tr>
               <tr>
@@ -419,7 +419,7 @@ export default function MethodologyRepresentations() {
           className="text-[13px] uppercase tracking-widest font-semibold mt-8 mb-3"
           style={{ color: "var(--color-fg-faint)" }}
         >
-          Mechanistic deep dive — V14, V18, V20
+          Mechanistic deep dive, V14, V18, V20
         </h3>
         <p
           className="mb-3 text-[13px] leading-relaxed"
@@ -451,13 +451,13 @@ export default function MethodologyRepresentations() {
         <ul className="list-disc list-outside ml-5 space-y-1.5 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
           <li>
             <strong>Uniform (U)</strong>: equal-width bins{" "}
-            <Equation tex="(\min(x), \max(x))" />. Cheap, but allocates mass uniformly across the value range — wastes bins on saturated regions.
+            <Equation tex="(\min(x), \max(x))" />. Cheap, but allocates mass uniformly across the value range, wastes bins on saturated regions.
           </li>
           <li>
             <strong>Quantile (Q)</strong>: empirical-quantile bins so each cell receives 1/Q of the corpus mass. Equalises token frequencies; the variant the project defaults to for V1.
           </li>
           <li>
-            <strong>Lloyd-Max (L)</strong>: K-means in 1D over the corpus values — the MSE-optimal Q-level quantiser for the empirical value density (Lloyd 1957 / Max 1960), satisfying the centroid and nearest-neighbour conditions. Its high-resolution distortion follows the Panter-Dite integral ∝ (∫ f<sup>1/3</sup>)³ / (12·Q²), which is ≤ the uniform-quantiser figure Δ²/12 = 1/(12·Q²) (range normalised to 1) — equality only when values are uniform over the range.
+            <strong>Lloyd-Max (L)</strong>: K-means in 1D over the corpus values, the MSE-optimal Q-level quantiser for the empirical value density (Lloyd 1957 / Max 1960), satisfying the centroid and nearest-neighbour conditions. Its high-resolution distortion follows the Panter-Dite integral ∝ (∫ f<sup>1/3</sup>)³ / (12·Q²), which is ≤ the uniform-quantiser figure Δ²/12 = 1/(12·Q²) (range normalised to 1), equality only when values are uniform over the range.
           </li>
         </ul>
         <p
@@ -783,7 +783,7 @@ function V20MechanismCard() {
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
           <div>
-            <strong>Step 1 — Per-band MI estimate.</strong>{" "}
+            <strong>Step 1, Per-band MI estimate.</strong>{" "}
             For each band <Equation tex="b \in [1, B]" />, treat the
             scalar feature <Equation tex="\{x_{d, b}\}_{d=1}^{D}" /> as
             a regressor against the categorical label{" "}
@@ -794,14 +794,14 @@ function V20MechanismCard() {
             <Equation tex="\widehat{I}(x_b; y) = \psi(k) - \langle \psi(n_x + 1) + \psi(n_y + 1)\rangle + \psi(N)" />
           </div>
           <div>
-            <strong>Step 2 — Normalise into copy counts.</strong>
+            <strong>Step 2, Normalise into copy counts.</strong>
           </div>
           <div className="py-1">
             <Equation tex="w_b = \mathrm{round}\!\Big(\tfrac{\widehat{I}(x_b; y)}{\max_{b'} \widehat{I}(x_{b'}; y)} \cdot w_{\max}\Big)" />,{" "}
             <Equation tex="w_{\max} = 8" />
           </div>
           <div>
-            <strong>Step 3 — Emit weighted tokens.</strong>{" "}
+            <strong>Step 3, Emit weighted tokens.</strong>{" "}
             Per pixel <em>d</em>, per band <em>b</em>, the V20 multiset
             adds <em>w<sub>b</sub></em> copies of the token{" "}
             <Equation tex="(b, \mathrm{bin}_Q(x_{d, b}))" />:
@@ -835,7 +835,7 @@ function V20MechanismCard() {
 }
 
 function V20MechanismSVG() {
-  // Synthetic MI profile across 16 bands — bumps at b=3, 7, 12
+  // Synthetic MI profile across 16 bands, bumps at b=3, 7, 12
   const bands = Array.from({ length: 16 }, (_, b) => b);
   const mi = bands.map((b) => {
     return (
@@ -859,7 +859,7 @@ function V20MechanismSVG() {
     >
       <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
         <text x="240" y="14" textAnchor="middle" fontSize="11" fontWeight="700">
-          V20 — Per-band MI ⇒ per-band copy count
+          V20, Per-band MI ⇒ per-band copy count
         </text>
 
         {/* MI curve */}
@@ -953,7 +953,7 @@ function V18MechanismCard() {
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
           <div>
-            <strong>Step 1 — Affinity graph.</strong> Build a k-nearest-neighbour
+            <strong>Step 1, Affinity graph.</strong> Build a k-nearest-neighbour
             graph (<Equation tex="K = 10" />) over the normalised pixel
             spectra using cosine distance, then symmetrise and convert
             distances to similarities:
@@ -962,7 +962,7 @@ function V18MechanismCard() {
             <Equation tex="A_{ij} = \exp(-\|x_i - x_j\|^2 / \sigma^2) \cdot \mathbf{1}[j \in \mathrm{kNN}(i) \cup i \in \mathrm{kNN}(j)]" />
           </div>
           <div>
-            <strong>Step 2 — Normalised Laplacian.</strong> Compute the
+            <strong>Step 2, Normalised Laplacian.</strong> Compute the
             symmetric-normalised graph Laplacian:
           </div>
           <div className="py-1">
@@ -970,7 +970,7 @@ function V18MechanismCard() {
             <Equation tex="D = \mathrm{diag}(\sum_j A_{ij})" />
           </div>
           <div>
-            <strong>Step 3 — Spectral coordinates.</strong> Extract the
+            <strong>Step 3, Spectral coordinates.</strong> Extract the
             first <Equation tex="K_e = 16" /> eigenvectors corresponding
             to the smallest eigenvalues (low-frequency modes carry
             manifold structure):
@@ -979,7 +979,7 @@ function V18MechanismCard() {
             <Equation tex="L_{\text{sym}} \phi_k = \lambda_k \phi_k,\quad \lambda_1 \le \lambda_2 \le \cdots \le \lambda_{K_e}" />
           </div>
           <div>
-            <strong>Step 4 — Per-axis percentile binning.</strong> For each
+            <strong>Step 4, Per-axis percentile binning.</strong> For each
             pixel <em>d</em> and each eigenvector <em>k</em>, project the
             pixel onto <Equation tex="\phi_k" />, then percentile-bin the
             projection into <em>Q</em> buckets. Emit one token per axis:
@@ -1037,7 +1037,7 @@ function V18MechanismSVG() {
     >
       <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
         <text x="240" y="14" textAnchor="middle" fontSize="11" fontWeight="700">
-          V18 — kNN graph ⇒ Laplacian spectrum ⇒ binned tokens
+          V18, kNN graph ⇒ Laplacian spectrum ⇒ binned tokens
         </text>
         <text x="180" y="32" textAnchor="middle" fontSize="9" opacity="0.6">
           (a) kNN cosine graph (3 latent classes)
@@ -1065,7 +1065,7 @@ function V18MechanismSVG() {
         ))}
 
         <text x="380" y="32" textAnchor="middle" fontSize="9" opacity="0.6">
-          (b) φ_1 — Fiedler vector
+          (b) φ_1, Fiedler vector
         </text>
         {nodes.map((n, i) => {
           const phi = (i < 4 ? -0.7 : i < 8 ? 0.0 : 0.7) + (i % 3) * 0.06;
@@ -1129,7 +1129,7 @@ function V14MechanismCard() {
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3 text-[13px]" style={{ color: "var(--color-fg-subtle)" }}>
           <div>
-            <strong>Step 1 — CWT decomposition.</strong> The continuous
+            <strong>Step 1, CWT decomposition.</strong> The continuous
             wavelet transform of a spectrum <em>x</em> at scale{" "}
             <em>s</em> and position <em>τ</em> is:
           </div>
@@ -1141,7 +1141,7 @@ function V14MechanismCard() {
             wavelet <Equation tex="\psi(t) = \pi^{-1/4} e^{i \omega_0 t} e^{-t^2/2}" />.
           </div>
           <div>
-            <strong>Step 2 — Discretise scales and positions.</strong>{" "}
+            <strong>Step 2, Discretise scales and positions.</strong>{" "}
             Use <Equation tex="S = 16" /> log-spaced scales{" "}
             <Equation tex="\{s_i\}_{i=1}^{S}" /> and partition the band
             axis into <Equation tex="P = 8" /> equal-width position
@@ -1151,7 +1151,7 @@ function V14MechanismCard() {
             <Equation tex="C_{i, j} = \max_{\tau \in P_j} |W_x(s_i, \tau)|,\quad |\mathcal{V}_{V14}| = S \cdot P = 128" />
           </div>
           <div>
-            <strong>Step 3 — Top-K selection.</strong> Sort the{" "}
+            <strong>Step 3, Top-K selection.</strong> Sort the{" "}
             <Equation tex="S \cdot P" /> magnitudes and emit the top-16
             cells as the document's tokens:
           </div>
@@ -1203,7 +1203,7 @@ function V14MechanismSVG() {
     >
       <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill="currentColor">
         <text x="240" y="14" textAnchor="middle" fontSize="11" fontWeight="700">
-          V14 — CWT-Morlet (scale × position) cells; top-16 ⇒ tokens
+          V14, CWT-Morlet (scale × position) cells; top-16 ⇒ tokens
         </text>
         <text x="10" y={y0 - 8} fontSize="9" opacity="0.7">
           scale (log)

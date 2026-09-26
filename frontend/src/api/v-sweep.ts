@@ -205,7 +205,7 @@ export function vSweepMethodReport(recipe: string, scheme = "uniform", q = 8) {
 }
 
 // ---------------------------------------------------------------------------
-// Q-trajectory — how refining quantisation Q∈{8,16,32} moves a single
+// Q-trajectory, how refining quantisation Q∈{8,16,32} moves a single
 // recipe's score on one evaluation axis. Backed by GET /v-sweep/q-trajectory.
 // Each Q level carries the per-scene cells plus the mean across the scenes
 // that have a shard at that Q. `lower_is_better` flips the winner direction
@@ -241,7 +241,7 @@ export function vSweepQTrajectory(recipe: string, axis: QTrajectoryAxis) {
 }
 
 // ---------------------------------------------------------------------------
-// Backbones F-7 — topic-to-label NMI under each non-LDA backbone (HDP /
+// Backbones F-7, topic-to-label NMI under each non-LDA backbone (HDP /
 // ProdLDA / ETM) plus LDA, for every (recipe, scene) cell on disk at the
 // requested quantisation level. Backed by GET /v-sweep/backbones-f7.
 // ---------------------------------------------------------------------------
